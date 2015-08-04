@@ -1,0 +1,554 @@
+Index: src/main/resources/org/kuali/kra/award/repository-award.xml
+===================================================================
+--- src/main/resources/org/kuali/kra/award/repository-award.xml	(revision 5157)
++++ src/main/resources/org/kuali/kra/award/repository-award.xml	(working copy)
+@@ -381,6 +381,7 @@
+ 		<field-descriptor name="costSharePercentage" column="COST_SHARE_PERCENTAGE" jdbc-type="DECIMAL" conversion="org.kuali.rice.core.framework.persistence.ojb.conversion.OjbKualiDecimalFieldConversion"/>
+ 		<field-descriptor name="costShareTypeCode" column="COST_SHARE_TYPE_CODE" jdbc-type="INTEGER"/><!-- could potentially be anonymous access -->
+ 		<field-descriptor name="source" column="SOURCE" jdbc-type="VARCHAR"/>
++		<field-descriptor name="unitNumber" column="UNIT_NUMBER" jdbc-type="VARCHAR" />
+ 		<field-descriptor name="destination" column="DESTINATION" jdbc-type="VARCHAR"/>
+ 		<field-descriptor name="commitmentAmount" column="COMMITMENT_AMOUNT" jdbc-type="DECIMAL" conversion="org.kuali.rice.core.framework.persistence.ojb.conversion.OjbKualiDecimalFieldConversion"/>
+ 		<field-descriptor name="costShareMet" column="COST_SHARE_MET" jdbc-type="DECIMAL" conversion="org.kuali.rice.core.framework.persistence.ojb.conversion.OjbKualiDecimalFieldConversion"/>
+Index: src/main/java/org/kuali/kra/budget/distributionincome/BudgetCostShareAuditRule.java
+===================================================================
+--- src/main/java/org/kuali/kra/budget/distributionincome/BudgetCostShareAuditRule.java	(revision 5157)
++++ src/main/java/org/kuali/kra/budget/distributionincome/BudgetCostShareAuditRule.java	(working copy)
+@@ -97,6 +97,18 @@
+                                     Constants.BUDGET_DISTRIBUTION_AND_INCOME_PAGE + "." + Constants.BUDGET_COST_SHARE_PANEL_ANCHOR,
+                                     params));
+             }
++            
++            String sourceUnit = costShare.getSourceUnit();
++//          fiscalYear = iuCostShare.getFiscalYear();
++          
++          if (null == sourceUnit || sourceUnit.length() == 0) {
++              retval = false;
++              getAuditErrors().add(new AuditError("document.budget.budgetCostShare["+i+"].sourceUnit",
++                                                  KeyConstants.AUDIT_ERROR_BUDGET_DISTRIBUTION_SOURCE_MISSING,
++                                                  Constants.BUDGET_DISTRIBUTION_AND_INCOME_PAGE + "." + Constants.BUDGET_COST_SHARE_PANEL_ANCHOR,
++                                                  params));
++          }
++            
+             int numberOfProjectPeriods = -1;
+             if (budget.getBudgetPeriods() != null) {
+                 numberOfProjectPeriods = budget.getBudgetPeriods().size();
+Index: src/main/java/org/kuali/kra/budget/document/BudgetDocumentRule.java
+===================================================================
+--- src/main/java/org/kuali/kra/budget/document/BudgetDocumentRule.java	(revision 5157)
++++ src/main/java/org/kuali/kra/budget/document/BudgetDocumentRule.java	(working copy)
+@@ -61,8 +61,10 @@
+ import org.kuali.kra.costshare.CostShareRuleResearchDocumentBase;
+ import org.kuali.kra.infrastructure.Constants;
+ import org.kuali.kra.infrastructure.KeyConstants;
++import org.kuali.kra.infrastructure.KraServiceLocator;
+ import org.kuali.kra.proposaldevelopment.budget.modular.SyncModularBudgetRule;
+ import org.kuali.kra.rules.ActivityTypeAuditRule;
++import org.kuali.kra.service.UnitService;
+ import org.kuali.rice.core.api.util.type.KualiDecimal;
+ import org.kuali.rice.kns.util.AuditCluster;
+ import org.kuali.rice.kns.util.AuditError;
+@@ -73,6 +75,8 @@
+ import org.kuali.rice.krad.util.MessageMap;
+ import org.kuali.rice.krad.util.ObjectUtils;
+ 
++import edu.iu.kra.IUKeyConstants;
++
+ public class BudgetDocumentRule extends CostShareRuleResearchDocumentBase implements AddBudgetPeriodRule, AddBudgetCostShareRule, AddBudgetProjectIncomeRule, SaveBudgetPeriodRule, DeleteBudgetPeriodRule, GenerateBudgetPeriodRule, DocumentAuditRule, SyncModularBudgetRule {
+ 
+     /** 
+@@ -176,7 +180,8 @@
+                     int thisFiscalYear = budgetCostShare.getProjectPeriod() == null ? Integer.MIN_VALUE : budgetCostShare.getProjectPeriod();
+                     int otherFiscalYear = tmpCostShare.getProjectPeriod() == null ? Integer.MIN_VALUE : tmpCostShare.getProjectPeriod();
+                     if (thisFiscalYear == otherFiscalYear
+-                            && StringUtils.equalsIgnoreCase(budgetCostShare.getSourceAccount(), tmpCostShare.getSourceAccount())) {
++                            && StringUtils.equalsIgnoreCase(budgetCostShare.getSourceAccount(), tmpCostShare.getSourceAccount())
++                            && StringUtils.equalsIgnoreCase(budgetCostShare.getSourceUnit(), tmpCostShare.getSourceUnit())) {
+                         errorMap.putError("fiscalYear", KeyConstants.ERROR_COST_SHARE_DUPLICATE, 
+                                 thisFiscalYear == Integer.MIN_VALUE ? "" : thisFiscalYear+"", 
+                                 budgetCostShare.getSourceAccount()==null?"\"\"":budgetCostShare.getSourceAccount());
+@@ -185,6 +190,22 @@
+                 }
+             }        
+             
++          //check if the unit is valid
++            
++            String unitNumber = budgetCostShare.getSourceUnit();
++            
++            if (unitNumber != null) {
++            	valid = false;
++            	UnitService unitService = KraServiceLocator.getService(UnitService.class);
++            	
++            	if (unitService.getUnit(unitNumber) != null) {
++            		valid = true;
++            	} else {
++            		errorMap.putError("sourceUnit", KeyConstants.ERROR_INVALID_COST_SHARE_UNIT, budgetCostShare.getSourceUnit());
++            	}       
++            } 
++            /* IU Customization Ends */
++            
+             //validate project period stuff            
+             String currentField = "document.budget.budgetCostShare[" + i + "].projectPeriod";
+             int numberOfProjectPeriods = budgetDocument.getBudget().getBudgetPeriods().size();
+Index: src/main/java/org/kuali/kra/award/home/fundingproposal/CostSharingDataFeedCommand.java
+===================================================================
+--- src/main/java/org/kuali/kra/award/home/fundingproposal/CostSharingDataFeedCommand.java	(revision 5157)
++++ src/main/java/org/kuali/kra/award/home/fundingproposal/CostSharingDataFeedCommand.java	(working copy)
+@@ -74,6 +74,7 @@
+         awardCostShare.setCommitmentAmount(ipCostShare.getAmount());
+         awardCostShare.setSource(ipCostShare.getSourceAccount());
+         awardCostShare.setProjectPeriod(ipCostShare.getProjectPeriod());
++        awardCostShare.setUnitNumber(ipCostShare.getUnit());
+         
+         return awardCostShare;
+     }
+Index: src/main/resources/org/kuali/kra/datadictionary/InstitutionalProposalCostShare.xml
+===================================================================
+--- src/main/resources/org/kuali/kra/datadictionary/InstitutionalProposalCostShare.xml	(revision 5157)
++++ src/main/resources/org/kuali/kra/datadictionary/InstitutionalProposalCostShare.xml	(working copy)
+@@ -40,6 +40,7 @@
+                 <ref bean="InstitutionalProposalCostShare-costSharePercentage" />
+                 <ref bean="InstitutionalProposalCostShare-costShareTypeCode" />
+                 <ref bean="InstitutionalProposalCostShare-sourceAccount" />
++                <ref bean="InstitutionalProposalCostShare-unit" />
+                 <ref bean="InstitutionalProposalCostShare-amount" />
+                 <ref bean="InstitutionalProposalCostShare-versionNumber" />
+             </list>
+@@ -187,6 +188,22 @@
+     <bean id="InstitutionalProposalCostShare-sourceAccount" parent="KraAttributeReferenceDummy-sourceAccount" >
+     	<property name="required" value="true" />
+     </bean>
++    
++    <bean id="InstitutionalProposalCostShare-unit" parent="InstitutionalProposalCostShare-unit-parentBean" />
++    <bean id="InstitutionalProposalCostShare-unit-parentBean" abstract="true" parent="AttributeDefinition" >
++        <property name="name" value="unit" />
++        <property name="forceUppercase" value="false" />
++        <property name="label" value="Unit" />
++        <property name="shortLabel" value="Unit" />
++        <property name="maxLength" value="10" />
++        <property name="required" value="true" />
++        <property name="control" >
++            <bean parent="TextControlDefinition"
++                p:size="10" />
++        </property>
++        <property name="summary" value="Unit" />
++        <property name="description" value="Unit" />
++    </bean>
+ 
+     <bean id="InstitutionalProposalCostShare-amount" parent="InstitutionalProposalCostShare-amount-parentBean" />
+     <bean id="InstitutionalProposalCostShare-amount-parentBean" abstract="true" parent="AttributeDefinition" >
+@@ -237,6 +254,8 @@
+                             <bean parent="FieldDefinition"
+                                 p:attributeName="projectPeriod" />
+                             <bean parent="FieldDefinition"
++                                p:attributeName="unit" />
++                            <bean parent="FieldDefinition"
+                                 p:attributeName="costSharePercentage" />
+                             <bean parent="FieldDefinition"
+                                 p:attributeName="costShareTypeCode" />
+@@ -275,6 +294,8 @@
+                 <bean parent="FieldDefinition"
+                     p:attributeName="projectPeriod" />
+                 <bean parent="FieldDefinition"
++                    p:attributeName="unit" />
++                <bean parent="FieldDefinition"
+                     p:attributeName="costSharePercentage" />
+                 <bean parent="FieldDefinition"
+                     p:attributeName="costShareTypeCode" />
+@@ -298,6 +319,8 @@
+                 <bean parent="FieldDefinition"
+                     p:attributeName="projectPeriod" />
+                 <bean parent="FieldDefinition"
++                    p:attributeName="unit" />
++                <bean parent="FieldDefinition"
+                     p:attributeName="costSharePercentage" />
+                 <bean parent="FieldDefinition"
+                     p:attributeName="costShareTypeCode" />
+Index: src/main/resources/org/kuali/kra/datadictionary/AwardCostShare.xml
+===================================================================
+--- src/main/resources/org/kuali/kra/datadictionary/AwardCostShare.xml	(revision 5157)
++++ src/main/resources/org/kuali/kra/datadictionary/AwardCostShare.xml	(working copy)
+@@ -29,6 +29,7 @@
+         <ref bean="AwardCostShare-commitmentAmount" /> 
+         <ref bean="AwardCostShare-verificationDate" />
+         <ref bean="AwardCostShare-costShareMet" />   
++        <ref bean="AwardCostShare-unitNumber" />
+       </list>
+     </property>
+   </bean>
+@@ -218,4 +219,19 @@
+     <property name="description" value="Verification Date" />
+   </bean>
+   
++  <bean id="AwardCostShare-unitNumber" parent="AttributeDefinition" >
++        <property name="name" value="unitNumber" />
++        <property name="forceUppercase" value="false" />
++        <property name="label" value="Unit" />
++        <property name="shortLabel" value="Unit" />
++        <property name="maxLength" value="10" />
++        <property name="required" value="true" />
++        <property name="control" >
++            <bean parent="TextControlDefinition"
++                p:size="10" />
++        </property>
++        <property name="summary" value="Unit" />
++        <property name="description" value="Unit" />
++    </bean>
++  
+ </beans>
+Index: src/main/resources/org/kuali/kra/institutionalproposal/repository-institutionalproposal.xml
+===================================================================
+--- src/main/resources/org/kuali/kra/institutionalproposal/repository-institutionalproposal.xml	(revision 5157)
++++ src/main/resources/org/kuali/kra/institutionalproposal/repository-institutionalproposal.xml	(working copy)
+@@ -356,6 +356,7 @@
+ 		<field-descriptor name="costSharePercentage" column="COST_SHARING_PERCENTAGE" jdbc-type="DECIMAL" conversion="org.kuali.rice.core.framework.persistence.ojb.conversion.OjbKualiDecimalFieldConversion"/>
+ 		<field-descriptor name="costShareTypeCode" column="COST_SHARING_TYPE_CODE" jdbc-type="INTEGER" />
+ 		<field-descriptor name="sourceAccount" column="SOURCE_ACCOUNT" jdbc-type="VARCHAR" />
++		<field-descriptor name="unit" column="UNIT" jdbc-type="VARCHAR" />
+ 		<field-descriptor name="amount" column="AMOUNT" jdbc-type="DECIMAL" conversion="org.kuali.rice.core.framework.persistence.ojb.conversion.OjbKualiDecimalFieldConversion"/>
+ 		<field-descriptor name="updateTimestamp" column="UPDATE_TIMESTAMP" jdbc-type="TIMESTAMP" />
+ 		<field-descriptor name="updateUser" column="UPDATE_USER" jdbc-type="VARCHAR" />
+Index: src/main/webapp/WEB-INF/tags/award/awardCostShare.tag
+===================================================================
+--- src/main/webapp/WEB-INF/tags/award/awardCostShare.tag	(revision 5157)
++++ src/main/webapp/WEB-INF/tags/award/awardCostShare.tag	(working copy)
+@@ -39,6 +39,7 @@
+ 					<%--<kul:htmlAttributeLabel attributeEntry="${awardCostShareAttributes.projectPeriod}" useShortLabel="true" noColon="true"/>--%>
+ 				</th>
+ 				
++				<th><kul:htmlAttributeLabel attributeEntry="${awardCostShareAttributes.unitNumber}" useShortLabel="true" noColon="true"/></th>
+ 				<th><kul:htmlAttributeLabel attributeEntry="${awardCostShareAttributes.source}" useShortLabel="true" noColon="true"/></th>
+ 				<th><kul:htmlAttributeLabel attributeEntry="${awardCostShareAttributes.destination}" useShortLabel="true" noColon="true"/></th>
+ 				<th><kul:htmlAttributeLabel attributeEntry="${awardCostShareAttributes.commitmentAmount}" useShortLabel="true" noColon="true"/></th>
+@@ -66,6 +67,13 @@
+             	  	</div>
+ 	            </td>
+ 	            <td class="infoline">
++                    <div align="center">
++                        <kul:htmlControlAttribute property="costShareFormHelper.newAwardCostShare.unitNumber" attributeEntry="${awardCostShareAttributes.unitNumber}"/>
++                        <kul:lookup boClassName="org.kuali.kra.bo.Unit" fieldConversions="unitNumber:costShareFormHelper.newAwardCostShare.unitNumber" anchor="${tabKey}" />
++                        <kul:directInquiry boClassName="org.kuali.kra.bo.Unit" inquiryParameters="costShareFormHelper.newAwardCostShare.unitNumber:unitNumber" anchor="${tabKey}" />
++                    </div>
++                </td>
++	            <td class="infoline">
+ 	            	<div align="center">
+             	    	<kul:htmlControlAttribute property="costShareFormHelper.newAwardCostShare.source" attributeEntry="${awardCostShareAttributes.source}"/>
+             	  	</div>
+@@ -119,6 +127,13 @@
+                   		<kul:htmlControlAttribute property="document.awardList[0].awardCostShares[${status.index}].projectPeriod" attributeEntry="${awardCostShareAttributes.projectPeriod}"/> 
+ 					</div>
+ 					</td>
++					<td width="10%" valign="middle">
++                    <div align="center">
++                        <kul:htmlControlAttribute property="document.awardList[0].awardCostShares[${status.index}].unitNumber" attributeEntry="${awardCostShareAttributes.unitNumber}"/>
++                        <kul:lookup boClassName="org.kuali.kra.bo.Unit" fieldConversions="unitNumber:document.awardList[0].awardCostShares[${status.index}].unitNumber" anchor="${tabKey}" />
++                        <kul:directInquiry boClassName="org.kuali.kra.bo.Unit" inquiryParameters="document.awardList[0].awardCostShares[${status.index}].unitNumber:unitNumber" anchor="${tabKey}" />
++                    </div>
++                    </td>
+ 	                <td width="15%" valign="middle">                	
+ 					<div align="center">
+                   		<kul:htmlControlAttribute property="document.awardList[0].awardCostShares[${status.index}].source" attributeEntry="${awardCostShareAttributes.source}"/> 
+Index: src/main/webapp/WEB-INF/tags/budget/budgetCostSharing.tag
+===================================================================
+--- src/main/webapp/WEB-INF/tags/budget/budgetCostSharing.tag	(revision 5157)
++++ src/main/webapp/WEB-INF/tags/budget/budgetCostSharing.tag	(working copy)
+@@ -47,7 +47,7 @@
+ 						<tr>
+ 							<th width="5%"><div align="left">&nbsp;</div></th>
+ 							<th width="17%"><div align="center">${KualiForm.projectPeriodLabel}</div></th>
+-							<th width="17%"><div align="center">Percentage</div></th>
++							<th width="17%"><div align="center">Unit</div></th>
+ 							<th width="29%"><div align="center">Source Account</div></th>
+ 							<th width="17%"><div align="center">Amount</div></th>					
+ 							<th width="15%"><div align="center">Actions</div></th>	
+@@ -60,8 +60,10 @@
+ 			        			<kul:htmlControlAttribute property="newBudgetCostShare.projectPeriod" attributeEntry="${budgetCostShareAttributes.projectPeriod}" />
+ 			        		</div></td>
+ 			        		<td class="infoline"><div align="center">
+-								<kul:htmlControlAttribute property="newBudgetCostShare.sharePercentage" attributeEntry="${budgetCostShareAttributes.sharePercentage}" styleClass="amount" />						
+-			    			</div></td>
++                                <kul:htmlControlAttribute property="newBudgetCostShare.sourceUnit" attributeEntry="${budgetCostShareAttributes.sourceUnit}" />
++                                <kul:lookup boClassName="org.kuali.kra.bo.Unit" fieldConversions="unitNumber:newBudgetCostShare.sourceUnit" anchor="${tabKey}" />
++                                <kul:directInquiry boClassName="org.kuali.kra.bo.Unit" inquiryParameters="newBudgetCostShare.sourceUnit:unitNumber" anchor="${tabKey}" />
++                            </div></td>
+ 			    			<td class="infoline"><div align="center">
+ 			        			<kul:htmlControlAttribute property="newBudgetCostShare.sourceAccount" attributeEntry="${budgetCostShareAttributes.sourceAccount}" />
+ 			        		</div></td>
+@@ -84,8 +86,10 @@
+ 			        			</div></td>
+ 			        			
+ 			            		<td><div align="center">
+-			            			<kul:htmlControlAttribute property="document.budget.budgetCostShare[${status.index}].sharePercentage" attributeEntry="${budgetCostShareAttributes.sharePercentage}" styleClass="amount" />
+-			    				</div></td>
++                                    <kul:htmlControlAttribute property="document.budget.budgetCostShare[${status.index}].sourceUnit" attributeEntry="${budgetCostShareAttributes.sourceUnit}" />
++                                    <kul:lookup boClassName="org.kuali.kra.bo.Unit" fieldConversions="unitNumber:document.budget.budgetCostShare[${status.index}].sourceUnit" anchor="${tabKey}" />
++                                <kul:directInquiry boClassName="org.kuali.kra.bo.Unit" inquiryParameters="document.budget.budgetCostShare[${status.index}].sourceUnit:unitNumber" anchor="${tabKey}" />
++                                </div></td>
+ 			            		
+ 			            		<td><div align="center">
+ 			        				<kul:htmlControlAttribute property="document.budget.budgetCostShare[${status.index}].sourceAccount" attributeEntry="${budgetCostShareAttributes.sourceAccount}" />
+Index: src/main/webapp/WEB-INF/tags/institutionalproposal/institutionalProposalCostShare.tag
+===================================================================
+--- src/main/webapp/WEB-INF/tags/institutionalproposal/institutionalProposalCostShare.tag	(revision 5157)
++++ src/main/webapp/WEB-INF/tags/institutionalproposal/institutionalProposalCostShare.tag	(working copy)
+@@ -42,6 +42,7 @@
+ 					<%--<kul:htmlAttributeLabel attributeEntry="${institutionalProposalCostShareAttributes.projectPeriod}" useShortLabel="true" noColon="true" />--%>
+ 				</th>
+ 				
++				<th><kul:htmlAttributeLabel attributeEntry="${institutionalProposalCostShareAttributes.unit}" useShortLabel="true" noColon="true" /></th>
+ 				<th><kul:htmlAttributeLabel attributeEntry="${institutionalProposalCostShareAttributes.costShareTypeCode}" useShortLabel="true" noColon="true" /></th>
+ 				<th><kul:htmlAttributeLabel attributeEntry="${institutionalProposalCostShareAttributes.costSharePercentage}" useShortLabel="true" noColon="true"/></th>
+ 				<th><kul:htmlAttributeLabel attributeEntry="${institutionalProposalCostShareAttributes.sourceAccount}" useShortLabel="true" noColon="true"/></th>
+@@ -56,6 +57,13 @@
+             	  	 	<kul:htmlControlAttribute property="institutionalProposalCostShareBean.newInstitutionalProposalCostShare.projectPeriod" attributeEntry="${institutionalProposalCostShareAttributes.projectPeriod}"/>
+             	 	</div>
+             	</td>
++            	<td class="infoline">
++                    <div align="center">
++                        <kul:htmlControlAttribute property="institutionalProposalCostShareBean.newInstitutionalProposalCostShare.unit" attributeEntry="${institutionalProposalCostShareAttributes.unit}"/>
++                        <kul:lookup boClassName="org.kuali.kra.bo.Unit" fieldConversions="unitNumber:institutionalProposalCostShareBean.newInstitutionalProposalCostShare.unit" anchor="${tabKey}" />
++                        <kul:directInquiry boClassName="org.kuali.kra.bo.Unit" inquiryParameters="institutionalProposalCostShareBean.newInstitutionalProposalCostShare.unit:unitNumber" anchor="${tabKey}" />
++                    </div>
++                </td>
+ 	            <td class="infoline">
+ 	              	<div width="75" align="center">
+ 	            		<kul:htmlControlAttribute property="institutionalProposalCostShareBean.newInstitutionalProposalCostShare.costShareTypeCode" attributeEntry="${institutionalProposalCostShareAttributes.costShareTypeCode}" />
+@@ -96,6 +104,13 @@
+                 		<kul:htmlControlAttribute property="document.institutionalProposalList[0].institutionalProposalCostShares[${status.index}].projectPeriod" attributeEntry="${institutionalProposalCostShareAttributes.projectPeriod}"/>
+ 					</div>
+ 					</td>
++					<td width="15%" valign="middle">
++                    <div align="center">
++                        <kul:htmlControlAttribute property="document.institutionalProposalList[0].institutionalProposalCostShares[${status.index}].unit" attributeEntry="${institutionalProposalCostShareAttributes.unit}"/>
++                        <kul:lookup boClassName="org.kuali.kra.bo.Unit" fieldConversions="unitNumber:document.institutionalProposalList[0].institutionalProposalCostShares[${status.index}].unit" anchor="${tabKey}" />
++                        <kul:directInquiry boClassName="org.kuali.kra.bo.Unit" inquiryParameters="document.institutionalProposalList[0].institutionalProposalCostShares[${status.index}].unit:unitNumber" anchor="${tabKey}" />
++                    </div>
++                    </td>
+ 	                <td width="20%" valign="middle">
+ 					<div align="center">
+                 		<kul:htmlControlAttribute property="document.institutionalProposalList[0].institutionalProposalCostShares[${status.index}].costShareTypeCode" attributeEntry="${institutionalProposalCostShareAttributes.costShareTypeCode}"/>
+Index: src/main/java/org/kuali/kra/institutionalproposal/home/InstitutionalProposalCostShare.java
+===================================================================
+--- src/main/java/org/kuali/kra/institutionalproposal/home/InstitutionalProposalCostShare.java	(revision 5157)
++++ src/main/java/org/kuali/kra/institutionalproposal/home/InstitutionalProposalCostShare.java	(working copy)
+@@ -25,6 +25,8 @@
+ public class InstitutionalProposalCostShare extends InstitutionalProposalAssociate implements ValuableItem, SequenceAssociate {
+ 
+     private static final long serialVersionUID = 1L;
++    
++    private String unit;
+ 
+     private Long proposalCostShareId;
+ 
+@@ -90,6 +92,14 @@
+     public void setAmount(KualiDecimal amount) {
+         this.amount = amount;
+     }
++    
++    public String getUnit() {
++		return unit;
++	}
++
++	public void setUnit(String unit) {
++		this.unit = unit;
++	}
+ 
+     /**
+      * Gets the costShareType attribute. 
+Index: src/main/resources/org/kuali/kra/budget/repository-budget.xml
+===================================================================
+--- src/main/resources/org/kuali/kra/budget/repository-budget.xml	(revision 5157)
++++ src/main/resources/org/kuali/kra/budget/repository-budget.xml	(working copy)
+@@ -373,7 +373,8 @@
+ 		<field-descriptor name="budgetId" column="BUDGET_ID" jdbc-type="BIGINT"  primarykey="true" /> 	
+ 		<field-descriptor name="documentComponentId" column="COST_SHARE_ID" jdbc-type="INTEGER" primarykey="true"/>
+ 		<field-descriptor name="projectPeriod" column="PROJECT_PERIOD" jdbc-type="INTEGER" />
+-		<field-descriptor name="sourceAccount" column="SOURCE_ACCOUNT" jdbc-type="VARCHAR"/>		
++		<field-descriptor name="sourceAccount" column="SOURCE_ACCOUNT" jdbc-type="VARCHAR"/>
++		<field-descriptor name="sourceUnit" column="UNIT" jdbc-type="VARCHAR"/>		
+ 		<field-descriptor name="shareAmount" column="AMOUNT" jdbc-type="DECIMAL" conversion="org.kuali.kra.infrastructure.OjbBudgetDecimalFieldConversion"/>
+ 		<field-descriptor name="sharePercentage" column="COST_SHARING_PERCENTAGE" jdbc-type="DECIMAL" conversion="org.kuali.kra.infrastructure.OjbBudgetDecimalFieldConversion"/>		
+ 		<field-descriptor name="objectId" column="OBJ_ID" jdbc-type="VARCHAR"/>
+Index: src/main/java/org/kuali/kra/award/commitments/AwardCostShare.java
+===================================================================
+--- src/main/java/org/kuali/kra/award/commitments/AwardCostShare.java	(revision 5157)
++++ src/main/java/org/kuali/kra/award/commitments/AwardCostShare.java	(working copy)
+@@ -51,6 +51,8 @@
+     private KualiDecimal commitmentAmount;
+ 
+     private CostShareType costShareType;
++    
++    private String unitNumber;
+ 
+     /**
+      * 
+@@ -312,4 +314,12 @@
+     public void resetPersistenceState() {
+         this.awardCostShareId = null;
+     }
++    
++    public String getUnitNumber() {
++		return unitNumber;
++	}
++
++	public void setUnitNumber(String unitNumber) {
++		this.unitNumber = unitNumber;
++	}
+ }
+Index: src/main/java/org/kuali/kra/award/commitments/AwardCostShareRuleImpl.java
+===================================================================
+--- src/main/java/org/kuali/kra/award/commitments/AwardCostShareRuleImpl.java	(revision 5157)
++++ src/main/java/org/kuali/kra/award/commitments/AwardCostShareRuleImpl.java	(working copy)
+@@ -18,12 +18,18 @@
+ import java.util.HashMap;
+ import java.util.Map;
+ 
++import org.apache.commons.lang.StringUtils;
+ import org.kuali.kra.bo.CostShareType;
+ import org.kuali.kra.costshare.CostShareRuleResearchDocumentBase;
+ import org.kuali.kra.infrastructure.KeyConstants;
+ import org.kuali.kra.infrastructure.KraServiceLocator;
++import org.kuali.kra.service.UnitService;
+ import org.kuali.rice.core.api.util.type.KualiDecimal;
+ import org.kuali.rice.krad.service.BusinessObjectService;
++import org.kuali.rice.krad.util.GlobalVariables;
++import org.kuali.rice.krad.util.MessageMap;
++
++import edu.iu.kra.IUKeyConstants;
+ 
+ /**
+  * This class...
+@@ -166,4 +172,44 @@
+         }
+         return isValid;
+     }
++    
++    private boolean validateCostShareUnit(String unitNumber) {
++        boolean valid = true;
++            
++            //check if the unit is valid
++        MessageMap errorMap = GlobalVariables.getMessageMap();
++           
++            
++            if (StringUtils.isNotEmpty(unitNumber)) {
++            	UnitService unitService = KraServiceLocator.getService(UnitService.class);
++            	
++            	if (unitService.getUnit(unitNumber) == null) {
++                	valid = false;
++                	errorMap.putError("unitNumber", IUKeyConstants.ERROR_INVALID_COST_SHARE_UNIT, unitNumber);
++                //    this.reportError(fieldStarter + ".unitNumber", IUKeyConstants.ERROR_INVALID_COST_SHARE_UNIT, unitNumber);
++            	}       
++            } else {
++            	valid = false;
++                this.reportError(fieldStarter + ".unitNumber", IUKeyConstants.ERROR_REQUIRED_COST_SHARE_UNIT, unitNumber);
++            	
++            }
++            
++        
++        return valid;
++    }
++
++    private boolean validateNotEmptyUnit(String unitNumber) {
++        boolean valid = true;
++            
++            //check if the unit is valid           
++            
++            if (StringUtils.isEmpty(unitNumber)) {
++            	valid = false;
++                this.reportError(fieldStarter + ".unitNumber", IUKeyConstants.ERROR_REQUIRED_COST_SHARE_UNIT, unitNumber);
++            	
++            }
++            
++        
++        return valid;
++    }
+ }
+Index: src/main/java/org/kuali/kra/institutionalproposal/rules/InstitutionalProposalAddCostShareRuleImpl.java
+===================================================================
+--- src/main/java/org/kuali/kra/institutionalproposal/rules/InstitutionalProposalAddCostShareRuleImpl.java	(revision 5157)
++++ src/main/java/org/kuali/kra/institutionalproposal/rules/InstitutionalProposalAddCostShareRuleImpl.java	(working copy)
+@@ -18,14 +18,12 @@
+ import java.util.HashMap;
+ import java.util.Map;
+ 
+-import org.apache.commons.lang.StringUtils;
+ import org.kuali.kra.bo.CostShareType;
+ import org.kuali.kra.costshare.CostShareRuleResearchDocumentBase;
+ import org.kuali.kra.infrastructure.KeyConstants;
+ import org.kuali.kra.infrastructure.KraServiceLocator;
+ import org.kuali.kra.institutionalproposal.home.InstitutionalProposalCostShare;
+-import org.kuali.rice.core.api.util.type.KualiDecimal;
+-import org.kuali.rice.krad.service.BusinessObjectService;
++import org.kuali.kra.service.UnitService;
+ 
+ /**
+  * This class...
+@@ -74,6 +72,8 @@
+         
+         isValid &= validateSourceAccount(institutionalProposalCostShare.getSourceAccount());
+         
++        isValid &=validateCostShareUnit(institutionalProposalCostShare.getUnit());
++        
+         return isValid;
+     }
+     
+@@ -162,4 +162,32 @@
+         
+         return isValid;
+     }
++    
++    private boolean validateCostShareUnit(String unitNumber) {
++        boolean valid = true;
++            
++            //check if the unit is valid
++        MessageMap errorMap = GlobalVariables.getMessageMap();
++           
++            
++            if (StringUtils.isNotEmpty(unitNumber)) {
++            	UnitService unitService = KraServiceLocator.getService(UnitService.class);
++            	
++            	if (unitService.getUnit(unitNumber) == null) {
++                	valid = false;
++                //	errorMap.putError("unitNumber", IUKeyConstants.ERROR_INVALID_COST_SHARE_UNIT, unitNumber);
++                    this.reportError(fieldStarter + ".unit", KeyConstants.ERROR_INVALID_COST_SHARE_UNIT, unitNumber);
++            	}       
++            } else {
++                if (displayNullFieldErrors) {
++            	  valid = false;
++                  this.reportError(fieldStarter + ".unit", KeyConstants.ERROR_REQUIRED_COST_SHARE_UNIT, unitNumber);
++                }
++            }
++            /* IU Customization Ends */
++            
++        
++        return valid;
++    }
++    
+ }
+\ No newline at end of file
+Index: src/main/java/org/kuali/kra/institutionalproposal/service/impl/InstitutionalProposalServiceImpl.java
+===================================================================
+--- src/main/java/org/kuali/kra/institutionalproposal/service/impl/InstitutionalProposalServiceImpl.java	(revision 5157)
++++ src/main/java/org/kuali/kra/institutionalproposal/service/impl/InstitutionalProposalServiceImpl.java	(working copy)
+@@ -590,6 +590,7 @@
+             ipCostShare.setCostSharePercentage(new KualiDecimal(budgetCostShare.getSharePercentage().bigDecimalValue()));
+             ipCostShare.setProjectPeriod(budgetCostShare.getProjectPeriod().toString());
+             ipCostShare.setSourceAccount(budgetCostShare.getSourceAccount());
++            ipCostShare.setUnit(budgetCostShare.getSourceUnit());
+             institutionalProposal.add(ipCostShare);
+         }
+         if (!institutionalProposal.getInstitutionalProposalCostShares().isEmpty()) {
+Index: src/main/java/org/kuali/kra/infrastructure/KeyConstants.java
+===================================================================
+--- src/main/java/org/kuali/kra/infrastructure/KeyConstants.java	(revision 5157)
++++ src/main/java/org/kuali/kra/infrastructure/KeyConstants.java	(working copy)
+@@ -1149,6 +1149,9 @@
+     
+     public static final String REPORT_INPUT_PARAMETER_MISSING = "error.missing.report.inputparameters";
+     
++    public static final String ERROR_INVALID_COST_SHARE_UNIT = "error.invalid.cost.share.unit";
++    public static final String ERROR_REQUIRED_COST_SHARE_UNIT = "error.required.cost.share.unit";
++    
+     /**
+      * private utility class ctor.
+      * @throws UnsupportedOperationException if called.

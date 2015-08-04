@@ -1,0 +1,58 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Mon Feb 9 19:26:25 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+SP2-0103: Nothing in SQL buffer to run.
+
+17079 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+17 rows updated.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Table altered.
+
+
+0 rows deleted.
+
+
+Commit complete.
+
+
+0 rows deleted.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

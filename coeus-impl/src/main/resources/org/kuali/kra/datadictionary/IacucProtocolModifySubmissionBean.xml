@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean id="IacucProtocolModifySubmissionBean" parent="IacucProtocolModifySubmissionBean-parentBean" />
+	<bean id="IacucProtocolModifySubmissionBean-parentBean" abstract="true" parent="IacucProtocolSubmitAction-parentBean">
+		<property name="businessObjectClass" value="org.kuali.kra.iacuc.actions.modifysubmission.IacucProtocolModifySubmissionBean" />
+		<property name="objectLabel" value="IACUC Protocol Modify Submission" />
+		<property name="titleAttribute" value="IacucProtocolSubmitAction-submissionTypeCode" />
+		<property name="attributes" >
+			<list>
+				<ref bean="IacucProtocolModifySubmissionBean-submissionTypeCode" />
+				<ref bean="IacucProtocolModifySubmissionBean-protocolReviewTypeCode" />
+				<ref bean="IacucProtocolModifySubmissionBean-submissionQualifierTypeCode" />
+				<ref bean="IacucProtocolModifySubmissionBean-isBillable" />
+			    <ref bean="IacucProtocolModifySubmissionBean-dueDate" />
+				<ref bean="IacucProtocolModifySubmissionBean-scheduleId" />
+				<ref bean="IacucProtocolModifySubmissionBean-committeeId" />
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="IacucProtocolModifySubmissionBean-submissionTypeCode" parent="IacucProtocolSubmitAction-submissionTypeCode-parentBean" />
+	<bean id="IacucProtocolModifySubmissionBean-protocolReviewTypeCode" parent="IacucProtocolSubmitAction-protocolReviewTypeCode-parentBean" />
+	<bean id="IacucProtocolModifySubmissionBean-submissionQualifierTypeCode" parent="IacucProtocolSubmitAction-submissionQualifierTypeCode-parentBean" />
+ 	<bean id="IacucProtocolModifySubmissionBean-dueDate" parent="IacucProtocolModifySubmissionBean-dueDate-parentBean" />
+	<bean id="IacucProtocolModifySubmissionBean-dueDate-parentBean" parent="AttributeReferenceDummy-genericDate" >
+		<property name="name" value="dueDate" />
+        <property name="label" value="Determination Due Date" />
+        <property name="shortLabel" value="Determination Due Date" />
+        <property name="summary" value="Due Date" />
+        <property name="validationPattern" >
+			<bean parent="DateValidationPattern" />
+		</property>        
+        <property name="description" value="Due Date" />
+	</bean>
+	
+	<bean id="IacucProtocolModifySubmissionBean-committeeId" parent="IacucProtocolModifySubmissionBean-committeeId-parentBean" />
+	<bean id="IacucProtocolModifySubmissionBean-committeeId-parentBean" abstract="true" parent="AttributeDefinition" >
+		<property name="name" value="committeeId" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="Committee" />
+		<property name="shortLabel" value="Committee" />
+		<property name="maxLength" value="15" />
+		<property name="required" value="false" />
+		<property name="control" >
+      <bean parent="SelectControlDefinition" p:valuesFinderClass="org.kuali.kra.iacuc.committee.lookup.keyvalue.IacucCommitteeIdValuesFinder" p:includeKeyInLabel="false"/>
+    </property>
+    <property name="optionsFinder">
+      <bean class="org.kuali.kra.iacuc.committee.lookup.keyvalue.IacucCommitteeIdValuesFinder"/>
+    </property>
+    <property name="controlField">
+      <bean parent="Uif-DropdownControl"/>
+		</property>
+		<property name="summary" value="Committee" />
+		<property name="description" value="Committee" />
+	</bean>
+	
+	<bean id="IacucProtocolModifySubmissionBean-scheduleId" parent="IacucProtocolModifySubmissionBean-scheduleId-parentBean" />
+	<bean id="IacucProtocolModifySubmissionBean-scheduleId-parentBean" abstract="true" parent="AttributeDefinition" >
+		<property name="name" value="scheduleId" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="Schedule Date" />
+		<property name="shortLabel" value="Schedule Date" />
+		<property name="maxLength" value="10" />
+		<property name="required" value="false" />
+		<property name="control" >
+      <bean parent="SelectControlDefinition" p:valuesFinderClass="org.kuali.kra.iacuc.actions.modifysubmission.IacucProtocolModifySubmissionScheduleValuesFinder" p:includeKeyInLabel="false"/>
+    </property>
+    <property name="optionsFinder">
+      <bean class="org.kuali.kra.iacuc.actions.modifysubmission.IacucProtocolModifySubmissionScheduleValuesFinder"/>
+    </property>
+    <property name="controlField">
+      <bean parent="Uif-DropdownControl"/>
+		</property>
+		<property name="summary" value="Schedule Date" />
+		<property name="description" value="Schedule Date" />
+	</bean>
+	
+	<bean id="IacucProtocolModifySubmissionBean-isBillable" parent="IacucProtocolModifySubmissionBean-isBillable-parentBean" />
+	<bean id="IacucProtocolModifySubmissionBean-isBillable-parentBean" abstract="true" parent="AttributeReferenceDummy-genericBoolean" >
+		<property name="name" value="billable" />
+		<property name="label" value="Billable" />
+		<property name="shortLabel" value="Is Billable" />
+		<property name="summary" value="Is Billable" />
+		<property name="description" value="Is Billable" />
+	</bean>
+
+</beans>

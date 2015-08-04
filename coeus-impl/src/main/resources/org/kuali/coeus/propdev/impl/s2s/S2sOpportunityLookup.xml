@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+
+    <bean id="S2sOpportunity-LookupView" parent="S2sOpportunity-LookupView-parentBean" p:viewName="S2sOpportunity-LookupViewName"/>
+	<bean id="S2sOpportunity-LookupView-parentBean" abstract="true"
+		parent="Uif-LookupView" p:header.headerText="Opportunity Search"
+		p:dataObjectClassName="org.kuali.coeus.propdev.impl.s2s.S2sOpportunity"
+		p:viewHelperService="#{#getService('s2sOpportunityLookupable')}">
+
+		<property name="criteriaFields">
+			<list>
+				<bean parent="Uif-LookupCriteriaInputField" p:propertyName="providerCode" p:required="true"
+					p:label="Search Domain" p:fieldLabel.renderColon="false" p:order="10">
+					<property name="control">
+						<bean parent="Uif-DropdownControl" />
+					</property>
+					<property name="optionsFinder">
+						<bean
+							class="org.kuali.coeus.sys.framework.keyvalue.ExtendedPersistableBusinessObjectValuesFinder"
+							p:businessObjectClass="org.kuali.coeus.propdev.impl.s2s.S2sProvider"
+							p:includeKeyInDescription="false" p:includeBlankRow="false"
+							p:keyAttributeName="code" p:labelAttributeName="description" />
+					</property>
+				</bean>
+				<bean parent="Uif-LookupCriteriaInputField" p:propertyName="opportunityId"
+					p:fieldLabel.renderColon="false" p:order="20" >
+                    <property name="validCharactersConstraint">
+                        <bean class="org.kuali.rice.krad.datadictionary.validation.constraint.ConfigurationBasedRegexPatternConstraint"
+                              p:messageKey="validation.lookup.opportunityId" p:patternTypeKey="validationPatternRegex.opportunityId"/>
+                    </property>
+                </bean>
+				<bean parent="Uif-LookupCriteriaInputField" p:propertyName="cfdaNumber"
+					p:fieldLabel.renderColon="false" p:order="30" >
+                    <property name="validCharactersConstraint">
+                        <bean class="org.kuali.rice.krad.datadictionary.validation.constraint.ConfigurationBasedRegexPatternConstraint"
+                              p:messageKey="validation.lookup.cfdaNumber" p:patternTypeKey="validationPatternRegex.cfdaNumber"/>
+                    </property>
+                </bean>
+			</list>
+		</property>
+		<property name="resultFields">
+			<list>
+				<bean parent="Uif-DataField" p:propertyName="cfdaNumber"
+					p:order="10" />
+				<bean parent="Uif-DataField" p:propertyName="openingDate"
+					p:order="20" />
+				<bean parent="Uif-DataField" p:propertyName="closingDate"
+					p:order="30" />
+				<bean parent="Uif-DataField" p:propertyName="competetionId"
+					p:order="40" />
+				<bean parent="Uif-DataField" p:propertyName="opportunityId"
+					p:order="50" />
+				<bean parent="Uif-DataField" p:propertyName="opportunityTitle"
+					p:order="60" />	
+				<bean parent="Uif-DataField" p:propertyName="schemaUrl"
+					p:order="70" />
+				<bean parent="Uif-DataField" p:propertyName="instructionUrl"
+					p:order="80" />		
+			</list>
+		</property>
+
+	</bean>
+
+    <bean id="S2sOpportunity-CreateProposalLookupView" parent="S2sOpportunity-CreateProposalLookupView-parentBean" p:viewName="S2sOpportunity-CreateProposalLookupViewName" />
+    <bean id="S2sOpportunity-CreateProposalLookupView-parentBean" abstract="true" parent="S2sOpportunity-LookupView-parentBean">
+        <property name="resultsGroup.lineActions">
+            <list>
+                <bean parent="Uif-Link" p:linkText="Create Proposal"
+                      p:href="@{#ViewHelper.buildCreatePropActionHref(#line)}" p:order="10">
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+</beans>

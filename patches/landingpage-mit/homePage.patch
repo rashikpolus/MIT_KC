@@ -1,0 +1,764 @@
+Index: coeus-impl/src/main/resources/edu/mit/kc/dashboard/datadictionary/DashboardMenuItem.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- coeus-impl/src/main/resources/edu/mit/kc/dashboard/datadictionary/DashboardMenuItem.xml	(revision )
++++ coeus-impl/src/main/resources/edu/mit/kc/dashboard/datadictionary/DashboardMenuItem.xml	(revision )
+@@ -0,0 +1,160 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<beans xmlns="http://www.springframework.org/schema/beans"
++	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
++	xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
++
++	<bean id="DashboardMenuItem" parent="DashboardMenuItem-parentBean" />
++	<bean id="DashboardMenuItem-parentBean" abstract="true" parent="BusinessObjectEntry">
++		<property name="businessObjectClass" value="edu.mit.kc.dashboard.bo.DashboardMenuItem" />
++		<property name="objectLabel" value="Dashboard Menu Item" />
++
++		<property name="titleAttribute" value="menuItem" />
++		<property name="attributes">
++			<list>
++				<ref bean="DashboardMenuItem-id" />
++				<ref bean="DashboardMenuItem-menuItem" />
++				<ref bean="DashboardMenuItem-menuAction" />
++				<ref bean="DashboardMenuItem-ospOnlyFlag" />
++                <ref bean="DashboardMenuItem-active" />
++			</list>
++		</property>
++	</bean>
++
++	<!-- Attribute Definitions -->
++	<bean id="DashboardMenuItem-id" parent="DashboardMenuItem-id-parentBean" />
++	<bean id="DashboardMenuItem-id-parentBean" abstract="true"
++		parent="AttributeDefinition">
++		<property name="name" value="id" />
++		<property name="forceUppercase" value="false" />
++		<property name="label" value="Id" />
++		<property name="shortLabel" value="Id" />
++		<property name="maxLength" value="200" />
++		<property name="validationPattern">
++			<bean parent="AnyCharacterValidationPattern" p:allowWhitespace="true" />
++		</property>
++		<property name="validCharactersConstraint">
++			<bean parent="AnyCharacterPatternConstraint">
++				<property name="allowWhitespace" value="true" />
++			</bean>
++		</property>
++		<property name="required" value="false" />
++		<property name="control">
++			<bean parent="TextControlDefinition" />
++		</property>
++		<property name="controlField">
++			<bean parent="Uif-TextControl" />
++		</property>
++		<property name="summary" value="Id" />
++		<property name="description" value="Id" />
++	</bean>
++    
++    <bean id="DashboardMenuItem-menuItem" parent="DashboardMenuItem-menuItem-parentBean" />
++   	<bean id="DashboardMenuItem-menuItem-parentBean" abstract="true"
++   		parent="AttributeDefinition">
++   		<property name="name" value="menuItem" />
++   		<property name="forceUppercase" value="false" />
++   		<property name="label" value="Menu Item" />
++   		<property name="shortLabel" value="Menu Item" />
++   		<property name="maxLength" value="200" />
++   		<property name="validationPattern">
++   			<bean parent="AnyCharacterValidationPattern" p:allowWhitespace="true" />
++   		</property>
++   		<property name="validCharactersConstraint">
++   			<bean parent="AnyCharacterPatternConstraint">
++   				<property name="allowWhitespace" value="true" />
++   			</bean>
++   		</property>
++   		<property name="required" value="false" />
++   		<property name="control">
++   			<bean parent="TextControlDefinition" />
++   		</property>
++   		<property name="controlField">
++   			<bean parent="Uif-TextControl" />
++   		</property>
++   		<property name="summary" value="Menu Item" />
++   		<property name="description" value="Menu Item" />
++   	</bean>
++    
++    <bean id="DashboardMenuItem-menuAction" parent="DashboardMenuItem-menuAction-parentBean" />
++   	<bean id="DashboardMenuItem-menuAction-parentBean" abstract="true"
++   		parent="AttributeDefinition">
++   		<property name="name" value="menuAction" />
++   		<property name="forceUppercase" value="false" />
++   		<property name="label" value="Menu Action" />
++   		<property name="shortLabel" value="Menu Action" />
++   		<property name="maxLength" value="200" />
++   		<property name="validationPattern">
++   			<bean parent="AnyCharacterValidationPattern" p:allowWhitespace="true" />
++   		</property>
++   		<property name="validCharactersConstraint">
++   			<bean parent="AnyCharacterPatternConstraint">
++   				<property name="allowWhitespace" value="true" />
++   			</bean>
++   		</property>
++   		<property name="required" value="false" />
++   		<property name="control">
++   			<bean parent="TextControlDefinition" />
++   		</property>
++   		<property name="controlField">
++   			<bean parent="Uif-TextControl" />
++   		</property>
++   		<property name="summary" value="Menu Action" />
++   		<property name="description" value="Menu Action" />
++   	</bean>
++
++    <bean id="DashboardMenuItem-ospOnlyFlag" parent="DashboardMenuItem-ospOnlyFlag-parentBean" />
++   	<bean id="DashboardMenuItem-ospOnlyFlag-parentBean" abstract="true"
++   		parent="AttributeDefinition">
++   		<property name="name" value="ospOnlyFlag" />
++   		<property name="forceUppercase" value="false" />
++   		<property name="label" value="OSP Only" />
++   		<property name="shortLabel" value="OSP Only" />
++   		<property name="maxLength" value="1" />
++   		<property name="validationPattern">
++   			<bean parent="AnyCharacterValidationPattern" p:allowWhitespace="true" />
++   		</property>
++   		<property name="validCharactersConstraint">
++   			<bean parent="AnyCharacterPatternConstraint">
++   				<property name="allowWhitespace" value="true" />
++   			</bean>
++   		</property>
++   		<property name="required" value="false" />
++   		<property name="control">
++   			<bean parent="TextControlDefinition" />
++   		</property>
++   		<property name="controlField">
++   			<bean parent="Uif-TextControl" />
++   		</property>
++   		<property name="summary" value="OSP Only" />
++   		<property name="description" value="OSP Only" />
++   	</bean>
++    
++    <bean id="DashboardMenuItem-active" parent="DashboardMenuItem-active-parentBean" />
++   	<bean id="DashboardMenuItem-active-parentBean" abstract="true"
++   		parent="AttributeDefinition">
++   		<property name="name" value="active" />
++   		<property name="forceUppercase" value="false" />
++   		<property name="label" value="Active" />
++   		<property name="shortLabel" value="Active" />
++   		<property name="maxLength" value="1" />
++   		<property name="validationPattern">
++   			<bean parent="AnyCharacterValidationPattern" p:allowWhitespace="true" />
++   		</property>
++   		<property name="validCharactersConstraint">
++   			<bean parent="AnyCharacterPatternConstraint">
++   				<property name="allowWhitespace" value="true" />
++   			</bean>
++   		</property>
++   		<property name="required" value="false" />
++   		<property name="control">
++   			<bean parent="TextControlDefinition" />
++   		</property>
++   		<property name="controlField">
++   			<bean parent="Uif-TextControl" />
++   		</property>
++   		<property name="summary" value="Active" />
++   		<property name="description" value="Active" />
++   	</bean>
++
++</beans>
++	
+Index: coeus-impl/src/main/java/org/kuali/kra/web/krad/LandingPageForm.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- coeus-impl/src/main/java/org/kuali/kra/web/krad/LandingPageForm.java	(date 1426561568000)
++++ coeus-impl/src/main/java/org/kuali/kra/web/krad/LandingPageForm.java	(revision )
+@@ -28,6 +28,8 @@
+     @RequestAccessible
+     private String href;
+ 
++    private String selectedMenuItem;
++
+     public LandingPageForm() {
+         setViewId("Kc-LandingPage-DefaultView");
+     }
+@@ -42,5 +44,13 @@
+ 	 */
+ 	public void setHref(String href) {
+ 		this.href = href;
++	}
++
++    public String getSelectedMenuItem() {
++        return selectedMenuItem;
++    }
++
++    public void setSelectedMenuItem(String selectedMenuItem) {
++        this.selectedMenuItem = selectedMenuItem;
+-	}
++    }
+ }
+Index: coeus-impl/src/main/java/edu/mit/kc/dashboard/bo/DashboardMenuItem.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- coeus-impl/src/main/java/edu/mit/kc/dashboard/bo/DashboardMenuItem.java	(revision )
++++ coeus-impl/src/main/java/edu/mit/kc/dashboard/bo/DashboardMenuItem.java	(revision )
+@@ -0,0 +1,88 @@
++package edu.mit.kc.dashboard.bo;
++
++import org.apache.commons.lang3.StringUtils;
++import org.kuali.coeus.sys.framework.model.KcPersistableBusinessObjectBase;
++import org.kuali.rice.krad.data.jpa.PortableSequenceGenerator;
++
++import javax.persistence.*;
++
++@Entity
++@Table(name = "DASH_BOARD_MENU_ITEMS")
++public class DashboardMenuItem extends KcPersistableBusinessObjectBase {
++    @PortableSequenceGenerator(name = "SEQ_DASH_BOARD_MENU_ITEM_ID")
++    @GeneratedValue(generator = "SEQ_DASH_BOARD_MENU_ITEM_ID")
++	@Id
++	@Column(name = "DASH_BOARD_MENU_ITEM_ID")
++    private String id;
++
++    @Column(name = "MENU_ITEM")
++    private String menuItem;
++
++    @Column(name = "MENU_ACTION")
++    private String menuAction;
++
++    @Column(name = "OSP_ONLY_FLAG")
++    private String ospOnlyFlag;
++
++    @Column(name = "ACTIVE")
++    private String active;
++
++    @Transient
++    private String menuItemFormatted;
++
++    public String getId() {
++        return id;
++    }
++
++    public void setId(String id) {
++        this.id = id;
++    }
++
++    public String getMenuItemFormatted() {
++        if (StringUtils.isNotBlank(menuItem)) {
++            if (ospOnlyFlag.equals("Y")) {
++                menuItemFormatted = menuItem + "<span class='osp-ind'>(OSP)</span>";
++            } else {
++                menuItemFormatted = menuItem;
++            }
++        }
++
++        return menuItemFormatted;
++    }
++
++    public void setMenuItemFormatted(String menuItemFormatted) {
++        this.menuItemFormatted = menuItemFormatted;
++    }
++
++    public String getMenuItem() {
++        return menuItem;
++    }
++
++    public void setMenuItem(String menuItem) {
++        this.menuItem = menuItem;
++    }
++
++    public String getMenuAction() {
++        return menuAction;
++    }
++
++    public void setMenuAction(String menuAction) {
++        this.menuAction = menuAction;
++    }
++
++    public String getOspOnlyFlag() {
++        return ospOnlyFlag;
++    }
++
++    public void setOspOnlyFlag(String ospOnlyFlag) {
++        this.ospOnlyFlag = ospOnlyFlag;
++    }
++
++    public String getActive() {
++        return active;
++    }
++
++    public void setActive(String active) {
++        this.active = active;
++    }
++}
+Index: coeus-webapp/src/main/webapp/scripts/readmore/readmore.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- coeus-webapp/src/main/webapp/scripts/readmore/readmore.js	(revision )
++++ coeus-webapp/src/main/webapp/scripts/readmore/readmore.js	(revision )
+@@ -0,0 +1,313 @@
++/*!
++ * @preserve
++ *
++ * Readmore.js jQuery plugin
++ * Author: @jed_foster
++ * Project home: http://jedfoster.github.io/Readmore.js
++ * Licensed under the MIT license
++ *
++ * Debounce function from http://davidwalsh.name/javascript-debounce-function
++ */
++
++/* global jQuery */
++
++(function($) {
++  'use strict';
++
++  var readmore = 'readmore',
++      defaults = {
++        speed: 100,
++        collapsedHeight: 200,
++        heightMargin: 16,
++        moreLink: '<a href="#">Read More</a>',
++        lessLink: '<a href="#">Close</a>',
++        embedCSS: true,
++        blockCSS: 'display: block; width: 100%;',
++        startOpen: false,
++
++        // callbacks
++        beforeToggle: function(){},
++        afterToggle: function(){}
++      },
++      cssEmbedded = {},
++      uniqueIdCounter = 0;
++
++  function debounce(func, wait, immediate) {
++    var timeout;
++
++    return function() {
++      var context = this, args = arguments;
++      var later = function() {
++        timeout = null;
++        if (! immediate) {
++          func.apply(context, args);
++        }
++      };
++      var callNow = immediate && !timeout;
++
++      clearTimeout(timeout);
++      timeout = setTimeout(later, wait);
++
++      if (callNow) {
++        func.apply(context, args);
++      }
++    };
++  }
++
++  function uniqueId(prefix) {
++    var id = ++uniqueIdCounter;
++
++    return String(prefix == null ? 'rmjs-' : prefix) + id;
++  }
++
++  function setBoxHeights(element) {
++    var el = element.clone().css({
++          height: 'auto',
++          width: element.width(),
++          maxHeight: 'none',
++          overflow: 'hidden'
++        }).insertAfter(element),
++        expandedHeight = el.outerHeight(),
++        cssMaxHeight = parseInt(el.css({maxHeight: ''}).css('max-height').replace(/[^-\d\.]/g, ''), 10),
++        defaultHeight = element.data('defaultHeight');
++
++    el.remove();
++
++    var collapsedHeight = cssMaxHeight || element.data('collapsedHeight') || defaultHeight;
++
++    // Store our measurements.
++    element.data({
++      expandedHeight: expandedHeight,
++      maxHeight: cssMaxHeight,
++      collapsedHeight: collapsedHeight
++    })
++    // and disable any `max-height` property set in CSS
++    .css({
++      maxHeight: 'none'
++    });
++  }
++
++  var resizeBoxes = debounce(function() {
++    $('[data-readmore]').each(function() {
++      var current = $(this),
++          isExpanded = (current.attr('aria-expanded') === 'true');
++
++      setBoxHeights(current);
++
++      current.css({
++        height: current.data( (isExpanded ? 'expandedHeight' : 'collapsedHeight') )
++      });
++    });
++  }, 100);
++
++  function embedCSS(options) {
++    if (! cssEmbedded[options.selector]) {
++      var styles = ' ';
++
++      if (options.embedCSS && options.blockCSS !== '') {
++        styles += options.selector + ' + [data-readmore-toggle], ' +
++          options.selector + '[data-readmore]{' +
++            options.blockCSS +
++          '}';
++      }
++
++      // Include the transition CSS even if embedCSS is false
++      styles += options.selector + '[data-readmore]{' +
++        'transition: height ' + options.speed + 'ms;' +
++        'overflow: hidden;' +
++      '}';
++
++      (function(d, u) {
++        var css = d.createElement('style');
++        css.type = 'text/css';
++
++        if (css.styleSheet) {
++          css.styleSheet.cssText = u;
++        }
++        else {
++          css.appendChild(d.createTextNode(u));
++        }
++
++        d.getElementsByTagName('head')[0].appendChild(css);
++      }(document, styles));
++
++      cssEmbedded[options.selector] = true;
++    }
++  }
++
++  function Readmore(element, options) {
++    var $this = this;
++
++    this.element = element;
++
++    this.options = $.extend({}, defaults, options);
++
++    embedCSS(this.options);
++
++    this._defaults = defaults;
++    this._name = readmore;
++
++    this.init();
++
++    // IE8 chokes on `window.addEventListener`, so need to test for support.
++    if (window.addEventListener) {
++      // Need to resize boxes when the page has fully loaded.
++      window.addEventListener('load', resizeBoxes);
++      window.addEventListener('resize', resizeBoxes);
++    }
++    else {
++      window.attachEvent('load', resizeBoxes);
++      window.attachEvent('resize', resizeBoxes);
++    }
++  }
++
++
++  Readmore.prototype = {
++    init: function() {
++      var $this = this,
++          current = $(this.element);
++
++      current.data({
++        defaultHeight: this.options.collapsedHeight,
++        heightMargin: this.options.heightMargin
++      });
++
++      setBoxHeights(current);
++
++      var collapsedHeight = current.data('collapsedHeight'),
++          heightMargin = current.data('heightMargin');
++
++      if (current.outerHeight(true) <= collapsedHeight + heightMargin) {
++        // The block is shorter than the limit, so there's no need to truncate it.
++        return true;
++      }
++      else {
++        var id = current.attr('id') || uniqueId(),
++            useLink = $this.options.startOpen ? $this.options.lessLink : $this.options.moreLink;
++
++        current.attr({
++          'data-readmore': '',
++          'aria-expanded': false,
++          'id': id
++        });
++
++        current.after($(useLink)
++          .on('click', function(event) { $this.toggle(this, current[0], event); })
++          .attr({
++            'data-readmore-toggle': '',
++            'aria-controls': id
++          }));
++
++        if (! $this.options.startOpen) {
++          current.css({
++            height: collapsedHeight
++          });
++        }
++      }
++    },
++
++    toggle: function(trigger, element, event) {
++      if (event) {
++        event.preventDefault();
++      }
++
++      if (! trigger) {
++        trigger = $('[aria-controls="' + this.element.id + '"]')[0];
++      }
++
++      if (! element) {
++        element = this.element;
++      }
++
++      var $this = this,
++          $element = $(element),
++          newHeight = '',
++          newLink = '',
++          expanded = false,
++          collapsedHeight = $element.data('collapsedHeight');
++
++      if ($element.height() <= collapsedHeight) {
++        newHeight = $element.data('expandedHeight') + 'px';
++        newLink = 'lessLink';
++        expanded = true;
++      }
++      else {
++        newHeight = collapsedHeight;
++        newLink = 'moreLink';
++      }
++
++      // Fire beforeToggle callback
++      // Since we determined the new "expanded" state above we're now out of sync
++      // with our true current state, so we need to flip the value of `expanded`
++      $this.options.beforeToggle(trigger, element, ! expanded);
++
++      $element.css({'height': newHeight});
++
++      // Fire afterToggle callback
++      $element.on('transitionend', function() {
++        $this.options.afterToggle(trigger, element, expanded);
++
++        $(this).attr({
++          'aria-expanded': expanded
++        }).off('transitionend');
++      });
++
++      $(trigger).replaceWith($($this.options[newLink])
++          .on('click', function(event) { $this.toggle(this, element, event); })
++          .attr({
++            'data-readmore-toggle': '',
++            'aria-controls': $element.attr('id')
++          }));
++    },
++
++    destroy: function() {
++      $(this.element).each(function() {
++        var current = $(this);
++
++        current.attr({
++          'data-readmore': null,
++          'aria-expanded': null
++        })
++          .css({
++            maxHeight: '',
++            height: ''
++          })
++          .next('[data-readmore-toggle]')
++          .remove();
++
++        current.removeData();
++      });
++    }
++  };
++
++
++  $.fn.readmore = function(options) {
++    var args = arguments,
++        selector = this.selector;
++
++    options = options || {};
++
++    if (typeof options === 'object') {
++      return this.each(function() {
++        if ($.data(this, 'plugin_' + readmore)) {
++          var instance = $.data(this, 'plugin_' + readmore);
++          instance.destroy.apply(instance);
++        }
++
++        options.selector = selector;
++
++        $.data(this, 'plugin_' + readmore, new Readmore(this, options));
++      });
++    }
++    else if (typeof options === 'string' && options[0] !== '_' && options !== 'init') {
++      return this.each(function () {
++        var instance = $.data(this, 'plugin_' + readmore);
++        if (instance instanceof Readmore && typeof instance[options] === 'function') {
++          instance[options].apply(instance, Array.prototype.slice.call(args, 1));
++        }
++      });
++    }
++  };
++
++})(jQuery);
++
+Index: coeus-webapp/src/main/webapp/scripts/landingPage.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- coeus-webapp/src/main/webapp/scripts/landingPage.js	(revision )
++++ coeus-webapp/src/main/webapp/scripts/landingPage.js	(revision )
+@@ -0,0 +1,8 @@
++function setupViewMore() {
++    jQuery('.kcHome-linkGroup ul').readmore({
++        speed: 200,
++        collapsedHeight: 60,
++        moreLink: '<a href="#"><em>view more...</em></a>',
++        lessLink: '<a href="#"><em>view less</em></a>'
++    });
++}
+\ No newline at end of file
+Index: coeus-impl/src/main/java/edu/mit/kc/dashboard/DashboardMenuService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- coeus-impl/src/main/java/edu/mit/kc/dashboard/DashboardMenuService.java	(revision )
++++ coeus-impl/src/main/java/edu/mit/kc/dashboard/DashboardMenuService.java	(revision )
+@@ -0,0 +1,107 @@
++package edu.mit.kc.dashboard;
++
++import edu.mit.kc.dashboard.bo.DashboardMenuItem;
++import edu.mit.kc.workloadbalancing.bo.WlAbsentee;
++import org.apache.commons.lang3.StringUtils;
++import org.kuali.rice.core.api.config.property.ConfigurationService;
++import org.kuali.rice.core.api.criteria.QueryByCriteria;
++import org.kuali.rice.core.api.criteria.QueryResults;
++import org.kuali.rice.krad.data.DataObjectService;
++import org.kuali.rice.krad.service.KRADServiceLocator;
++import org.kuali.rice.krad.uif.util.UifKeyValueLocation;
++import org.kuali.rice.krad.util.KRADConstants;
++import org.kuali.rice.krad.web.service.ControllerService;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.beans.factory.annotation.Qualifier;
++import org.springframework.stereotype.Service;
++
++import java.net.URLEncoder;
++import java.util.ArrayList;
++import java.util.HashMap;
++import java.util.List;
++import java.util.Map;
++
++@Service
++public class DashboardMenuService {
++
++    @Autowired
++    @Qualifier("dataObjectService")
++    private DataObjectService dataObjectService;
++
++    @Autowired
++    @Qualifier("kualiConfigurationService")
++    private ConfigurationService configurationService;
++
++    protected String appUrl;
++
++    protected static final String APP_URL_TOKEN = "<<APPLICATION_URL>>";
++
++    public List<DashboardMenuItemSuggestion> getActiveMenuItems() throws Exception{
++
++        appUrl = configurationService.getPropertyValueAsString(KRADConstants.APPLICATION_URL_KEY);
++
++        Map<String, Object> criteria = new HashMap<String, Object>();
++        criteria.put("active", "Y");
++
++        QueryResults<DashboardMenuItem> menuItems = this.getDataObjectService().findMatching(DashboardMenuItem.class,
++                QueryByCriteria.Builder.andAttributes(criteria).build());
++
++        List<DashboardMenuItemSuggestion> suggestions = new ArrayList<>();
++        for (DashboardMenuItem item : menuItems.getResults()) {
++            suggestions.add(new DashboardMenuItemSuggestion(item));
++        }
++
++        return suggestions;
++    }
++
++    public class DashboardMenuItemSuggestion {
++        private String label;
++        private String value;
++        private String href;
++
++        public DashboardMenuItemSuggestion (DashboardMenuItem item) throws Exception {
++            if (item.getOspOnlyFlag().equals("Y")) {
++                this.setLabel(item.getMenuItem() + "<span class='osp-ind'>(OSP)</span>");
++            } else {
++                this.setLabel(item.getMenuItem());
++            }
++
++            this.setValue(item.getMenuItem());
++
++            String href = appUrl + item.getMenuAction().replace(APP_URL_TOKEN, URLEncoder.encode(appUrl, "UTF-8"));
++            this.setHref(href);
++        }
++
++        public String getLabel() {
++            return label;
++        }
++
++        public void setLabel(String label) {
++            this.label = label;
++        }
++
++        public String getValue() {
++            return value;
++        }
++
++        public void setValue(String value) {
++            this.value = value;
++        }
++
++        public String getHref() {
++            return href;
++        }
++
++        public void setHref(String href) {
++            this.href = href;
++        }
++    }
++
++    public DataObjectService getDataObjectService() {
++        return dataObjectService;
++    }
++
++    public void setDataObjectService(DataObjectService dataObjectService) {
++        this.dataObjectService = dataObjectService;
++    }
++}
+Index: coeus-impl/src/main/resources/org/kuali/coeus/sys/impl/SysComponentSpringBeans.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- coeus-impl/src/main/resources/org/kuali/coeus/sys/impl/SysComponentSpringBeans.xml	(date 1426561568000)
++++ coeus-impl/src/main/resources/org/kuali/coeus/sys/impl/SysComponentSpringBeans.xml	(revision )
+@@ -80,7 +80,7 @@
+     <util:list id="jpaPackagesToScan">
+         <value>org.kuali.coeus</value>
+         <value>org.kuali.kra</value>
+-        <value>edu.mit.kc.workloadbalancing</value>
++        <value>edu.mit.kc</value>
+     </util:list>
+ 
+     <util:list id="managedClassNames" />

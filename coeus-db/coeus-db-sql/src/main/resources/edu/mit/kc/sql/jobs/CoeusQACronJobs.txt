@@ -1,0 +1,6 @@
+## cron job for citi data load
+##36 7,19 * * * /home/coeus/citi/get_and_load_file.sh > /home/coeus/citi/load.log 2>&1 &
+#0 8 * * * /home/coeus/rcr/load_appnt.sh > /home/coeus/rcr/rcr_load.log 2>&1 &
+#15,30,45 8-20 * * * /home/coeus/rcr/notify.sh > /home/coeus/rcr/notify_rcr.log 2>&1 &
+#0,15,30,45 8-20 * * * /home/coeus/subnotify/notify.sh > /home/coeus/subnotify/notify.log 2>&1 &
+0,5,10,15,20,25,30,35,40,45,50,55 9-19 * * * /home/coeus/everify/notify.sh > /home/coeus/everify/notify_everify.log 2>&1 &

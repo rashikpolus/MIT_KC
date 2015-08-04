@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans.xsd">
+  <bean id="TbnPerson" parent="TbnPerson-parentBean" />
+  <bean id="TbnPerson-parentBean" abstract="true" parent="BusinessObjectEntry">
+    <property name="businessObjectClass" value="org.kuali.coeus.common.budget.framework.personnel.TbnPerson" />
+		<property name="objectLabel" value="Tbn Person" />
+    <property name="inquiryDefinition" >
+      <ref bean="TbnPerson-inquiryDefinition" />
+    </property>
+    <property name="lookupDefinition" >
+      <ref bean="TbnPerson-lookupDefinition" />
+    </property>
+    <property name="titleAttribute" value="tbnId" />
+    <property name="attributes" >
+      <list>
+        <ref bean="TbnPerson-tbnId" />
+        <ref bean="TbnPerson-jobCode" />
+        <ref bean="TbnPerson-jobCodeReference.jobTitle" />
+        <ref bean="TbnPerson-personName" />
+        <ref bean="TbnPerson-versionNumber" />
+      </list>
+    </property>
+    <property name="relationships" >
+      <list>
+        <bean parent="RelationshipDefinition">
+          <property name="objectAttributeName" value="jobCodeReference" />
+          <property name="primitiveAttributes" >
+            <list>
+              <bean parent="PrimitiveAttributeDefinition" p:sourceName="jobCode" p:targetName="jobCode"/>
+            </list>
+          </property>
+          <property name="supportAttributes" >
+            <list>
+              <bean parent="SupportAttributeDefinition" p:identifier="true" p:sourceName="jobCodeReference.jobTitle" p:targetName="jobTitle"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+<!-- Attribute Definitions -->
+
+
+  <bean id="TbnPerson-tbnId" parent="TbnPerson-tbnId-parentBean" />
+
+  <bean id="TbnPerson-tbnId-parentBean" abstract="true" parent="AttributeDefinition">
+    <property name="name" value="tbnId" />
+    <property name="forceUppercase" value="false" />
+    <property name="label" value="TBN Id" />
+    <property name="shortLabel" value="TBN Id" />
+    <property name="maxLength" value="9" />
+    <property name="validationPattern" >
+      <bean parent="NumericValidationPattern" />
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+    <property name="control" >
+      <bean parent="TextControlDefinition" p:size="9"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="9" parent="Uif-TextControl"/>
+    </property>
+    <property name="summary" value="TBN Id" />
+    <property name="description" value="TBN Id" />
+  </bean>
+
+  <bean id="TbnPerson-jobCode" parent="TbnPerson-jobCode-parentBean"/>
+  <bean id="TbnPerson-jobCode-parentBean" abstract="true"  parent="JobCode-jobCode" p:required="true"/>
+
+  <bean id="TbnPerson-jobCodeReference.jobTitle" parent="TbnPerson-jobCodeReference.jobTitle-parentBean"/>
+  <bean id="TbnPerson-jobCodeReference.jobTitle-parentBean" abstract="true" parent="JobCode-jobTitle">
+    <property name="name" value="jobCodeReference.jobTitle" />
+    <property name="label" value="Job" />
+    <property name="shortLabel" value="Job" />
+  </bean>
+
+  <bean id="TbnPerson-personName" parent="TbnPerson-personName-parentBean"/>
+  <bean id="TbnPerson-personName-parentBean" abstract="true" parent="AttributeDefinition">
+    <property name="name" value="personName" />
+    <property name="forceUppercase" value="false" />
+    <property name="label" value="Person Name" />
+    <property name="shortLabel" value="Person Name" />
+    <property name="maxLength" value="90" />
+    <property name="control" >
+      <bean parent="TextControlDefinition" p:size="40"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="40" parent="Uif-TextControl"/>
+    </property>
+    <property name="summary" value="Person Name" />
+    <property name="description" value="Person Name" />
+  </bean>
+
+  <bean id="TbnPerson-versionNumber" parent="TbnPerson-versionNumber-parentBean"/>
+  <bean id="TbnPerson-versionNumber-parentBean" abstract="true" parent="AttributeReferenceDummy-versionNumber"/>
+<!-- Business Object Inquiry Definition -->
+  <bean id="TbnPerson-inquiryDefinition" parent="TbnPerson-inquiryDefinition-parentBean" />
+  <bean id="TbnPerson-InquiryView" parent="TbnPerson-InquiryView-parentBean"/>
+  <bean id="TbnPerson-inquiryDefinition-parentBean" abstract="true" parent="InquiryDefinition">
+    <property name="title" value="To Be Named Persons" />
+    <property name="inquirySections" >
+      <list>
+        <bean parent="InquirySectionDefinition">
+          <property name="title" value="TBN Persons" />
+          <property name="numberOfColumns" value="1" />
+          <property name="inquiryFields" >
+            <list>
+              <bean parent="FieldDefinition" p:attributeName="tbnId" p:forceInquiry="true"/>
+              <bean parent="FieldDefinition" p:attributeName="personName"/>
+              <bean parent="FieldDefinition" p:attributeName="jobCodeReference.jobTitle" p:forceInquiry="true"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="TbnPerson-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView">
+    <property name="headerText" value="To Be Named Persons"/>
+    <property name="dataObjectClassName" value="org.kuali.coeus.common.budget.framework.personnel.TbnPerson"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-GridSection">
+          <property name="headerText" value="TBN Persons"/>
+          <property name="layoutManager.numberOfColumns" value="2"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="tbnId" parent="Uif-DataField"/>
+              <bean p:propertyName="personName" parent="Uif-DataField"/>
+              <bean p:propertyName="jobCodeReference.jobTitle" parent="Uif-DataField"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <!-- Business Object Lookup Definition -->
+  <bean id="TbnPerson-lookupDefinition" parent="TbnPerson-lookupDefinition-parentBean" />
+  <bean id="TbnPerson-LookupView" parent="TbnPerson-LookupView-parentBean"/>
+  <bean id="TbnPerson-lookupDefinition-parentBean" abstract="true" parent="LookupDefinition">
+    <property name="title" value="To Be Named Persons Lookup" /><property name="defaultSort" >
+      <bean parent="SortDefinition"/>
+    </property>
+	<property name="helpDefinition" >
+      <bean parent="HelpDefinition" p:parameterNamespace="KC-M" p:parameterName="toBeNamedPersonMaintenanceHelp" p:parameterDetailType="Document"/>
+    </property>        
+    <property name="lookupFields" >
+      <list>
+        <bean parent="FieldDefinition" p:attributeName="tbnId"/>
+        <bean parent="FieldDefinition" p:attributeName="personName"/>
+        <bean parent="FieldDefinition" p:attributeName="jobCode"/>
+      </list>
+    </property>
+    <property name="resultFields">
+      <list>
+        <bean parent="FieldDefinition" p:attributeName="tbnId" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="personName"/>
+        <bean parent="FieldDefinition" p:attributeName="jobCodeReference.jobTitle" p:forceInquiry="true"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="TbnPerson-LookupView-parentBean" abstract="true" parent="Uif-LookupView">
+    <property name="dataObjectClassName" value="org.kuali.coeus.common.budget.framework.personnel.TbnPerson"/>
+    <property name="headerText" value="To Be Named Persons Lookup"/>
+    <property name="criteriaFields">
+      <list>
+        <bean p:propertyName="tbnId" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="personName" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="jobCode" parent="Uif-LookupCriteriaInputField"/>
+      </list>
+    </property>
+    <property name="resultFields" >
+      <list>
+        <bean p:propertyName="tbnId" parent="Uif-DataField"/>
+        <bean p:propertyName="personName" parent="Uif-DataField"/>
+        <bean p:propertyName="jobCodeReference.jobTitle" parent="Uif-DataField"/>
+      </list>
+    </property>
+  </bean>
+</beans>

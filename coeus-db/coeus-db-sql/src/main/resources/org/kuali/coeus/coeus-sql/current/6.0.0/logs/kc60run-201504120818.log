@@ -1,0 +1,378 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Sun Apr 12 08:19:09 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+SP2-0310: unable to open file "constraints/KC_FK1_BUDGET_SUB_AWARD_ATT.sql"
+SP2-0310: unable to open file "sequences/KC_SEQ_COMMITTEE_SCHEDULE_ATTACHMENT_ID.sql"
+SP2-0310: unable to open file "dml/KC_DML_01_KRACOEUS-8027_B000.sql"
+SP2-0310: unable to open file "dml/KR_DML_01_KRACOEUS-7589_B000.sql"
+SP2-0310: unable to open file "dml/KR_DML_01_KRACOEUS-8001_B000.sql"
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+SP2-0310: unable to open file "tables/KC_TBL_BUDGET_SUB_AWARDS.sql"
+SP2-0310: unable to open file "dml/KR_DML_01_KRACOEUS-8105_B000.sql"
+SP2-0310: unable to open file "dml/KR_DML_02_KRACOEUS-8105_B000.sql"
+SP2-0310: unable to open file "dml/KR_DML_03_KCINFR-979_B000.sql"
+
+1 row updated.
+
+
+1 row created.
+
+
+21485 rows updated.
+
+alter table EPS_PROPOSAL add HIERARCHY_LAST_BUDGET_ID number(12)
+                             *
+ERROR at line 1:
+ORA-01430: column being added already exists in table
+
+
+where proposal.HIERARCHY_LAST_BUDGET_DOC_NBR = budgetDoc.DOCUMENT_NUMBER)
+      *
+ERROR at line 4:
+ORA-00904: "PROPOSAL"."HIERARCHY_LAST_BUDGET_DOC_NBR": invalid identifier
+
+
+alter table EPS_PROPOSAL drop column HIERARCHY_LAST_BUDGET_DOC_NBR
+                                     *
+ERROR at line 1:
+ORA-00904: "HIERARCHY_LAST_BUDGET_DOC_NBR": invalid identifier
+
+
+
+Commit complete.
+
+SP2-0310: unable to open file "dml/KR_DML_01_KRACOEUS-8181_B000.sql"
+SP2-0310: unable to open file "dml/KR_DML_01_KRACOEUS-8300_B000.sql"
+
+Commit complete.
+
+SP2-0310: unable to open file "dml/KC_DML_01_KRACOEUS-7014_B000.sql"
+SP2-0310: unable to open file "dml/KC_DML_01_KRACOEUS-7516_B000.sql"
+SP2-0310: unable to open file "dml/KR_DML_01_KRACOEUS-7014_B000.sql"
+
+Commit complete.
+
+ALTER TABLE KRMS_NL_TMPL_T ADD ACTV VARCHAR2(1) DEFAULT 'Y' NOT NULL
+                               *
+ERROR at line 1:
+ORA-01430: column being added already exists in table
+
+
+
+0 rows updated.
+
+
+0 rows created.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+alter table KREW_PPL_FLW_MBR_T add FRC_ACTN NUMBER(1) default 1 NOT NULL
+                                   *
+ERROR at line 1:
+ORA-01430: column being added already exists in table
+
+
+INSERT INTO KRCR_PARM_T (APPL_ID, NMSPC_CD, CMPNT_CD, PARM_NM, VAL, PARM_DESC_TXT, PARM_TYP_CD, EVAL_OPRTR_CD, OBJ_ID, VER_NBR)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+INSERT INTO KRCR_PARM_T (APPL_ID, NMSPC_CD, CMPNT_CD, PARM_NM, VAL, PARM_DESC_TXT, PARM_TYP_CD, EVAL_OPRTR_CD, OBJ_ID, VER_NBR)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+
+Commit complete.
+
+SP2-0310: unable to open file "tables/KC_TBL_AWARD_CGB.sql"
+SP2-0310: unable to open file "tables/KC_TBL_SPONSOR.sql"
+SP2-0310: unable to open file "dml/KC_DML_01_KFSMI-11381_B000.sql"
+SP2-0310: unable to open file "dml/KC_DML_01_KFSMI-11382_B000.sql"
+SP2-0310: unable to open file "dml/KC_DML_01_KFSMI-11384_B000.sql"
+SP2-0310: unable to open file "dml/KC_DML_01_KRACOEUS-7014_B000.sql"
+SP2-0310: unable to open file "dml/KC_DML_01_KRACOEUS-8442_B000.sql"
+SP2-0310: unable to open file "dml/KC_DML_01_KRACOEUS-8454_B000.sql"
+SP2-0310: unable to open file "dml/KR_DML_01_KFSMI-11381_B000.sql"
+SP2-0310: unable to open file "dml/KR_DML_01_KFSMI-11382_B000.sql"
+SP2-0310: unable to open file "dml/KR_DML_01_KFSMI-11535_B000.sql"
+SP2-0310: unable to open file "dml/KR_DML_01_KRACOEUS_8550_B000.sql"
+
+Commit complete.
+
+INSERT INTO KRCR_PARM_T(NMSPC_CD, CMPNT_CD, PARM_NM, OBJ_ID, VER_NBR, PARM_TYP_CD, VAL, PARM_DESC_TXT, EVAL_OPRTR_CD, APPL_ID) VALUES ('KC-GEN', 'All', 'DisableFrequencyValidationForNull', SYS_GUID(), '1', 'CONFG', 'Y', 'Disable Frequency	Validation for Null', 'A', 'KC')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+Sequence created.
+
+
+Sequence altered.
+
+
+Sequence altered.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+Commit complete.
+
+Insert into KRCR_PARM_T (NMSPC_CD,CMPNT_CD,PARM_NM,OBJ_ID,VER_NBR,PARM_TYP_CD,VAL,PARM_DESC_TXT,EVAL_OPRTR_CD,APPL_ID) values
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+Insert into KRCR_PARM_T (NMSPC_CD,CMPNT_CD,PARM_NM,OBJ_ID,VER_NBR,PARM_TYP_CD,VAL,PARM_DESC_TXT,EVAL_OPRTR_CD,APPL_ID) values
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+Insert into KRCR_PARM_T (NMSPC_CD,CMPNT_CD,PARM_NM,OBJ_ID,VER_NBR,PARM_TYP_CD,VAL,PARM_DESC_TXT,EVAL_OPRTR_CD,APPL_ID) values
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+Insert into KRCR_PARM_T (NMSPC_CD,CMPNT_CD,PARM_NM,OBJ_ID,VER_NBR,PARM_TYP_CD,VAL,PARM_DESC_TXT,EVAL_OPRTR_CD,APPL_ID) values
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+Insert into KRCR_PARM_T (NMSPC_CD,CMPNT_CD,PARM_NM,OBJ_ID,VER_NBR,PARM_TYP_CD,VAL,PARM_DESC_TXT,EVAL_OPRTR_CD,APPL_ID) values
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+
+Commit complete.
+
+Insert into KRCR_PARM_T (NMSPC_CD,CMPNT_CD,PARM_NM,OBJ_ID,VER_NBR,PARM_TYP_CD,VAL,PARM_DESC_TXT,EVAL_OPRTR_CD,APPL_ID) values
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+Insert into KRCR_PARM_T (NMSPC_CD,CMPNT_CD,PARM_NM,OBJ_ID,VER_NBR,PARM_TYP_CD,VAL,PARM_DESC_TXT,EVAL_OPRTR_CD,APPL_ID) values
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+Insert into KRCR_PARM_T (NMSPC_CD,CMPNT_CD,PARM_NM,OBJ_ID,VER_NBR,PARM_TYP_CD,VAL,PARM_DESC_TXT,EVAL_OPRTR_CD,APPL_ID) values
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+Insert into KRCR_PARM_T (NMSPC_CD,CMPNT_CD,PARM_NM,OBJ_ID,VER_NBR,PARM_TYP_CD,VAL,PARM_DESC_TXT,EVAL_OPRTR_CD,APPL_ID) values
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+Insert into KRCR_PARM_T (NMSPC_CD,CMPNT_CD,PARM_NM,OBJ_ID,VER_NBR,PARM_TYP_CD,VAL,PARM_DESC_TXT,EVAL_OPRTR_CD,APPL_ID) values
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+Insert into KRCR_PARM_T (NMSPC_CD,CMPNT_CD,PARM_NM,OBJ_ID,VER_NBR,PARM_TYP_CD,VAL,PARM_DESC_TXT,EVAL_OPRTR_CD,APPL_ID) values
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+Insert into KRCR_PARM_T (NMSPC_CD,CMPNT_CD,PARM_NM,OBJ_ID,VER_NBR,PARM_TYP_CD,VAL,PARM_DESC_TXT,EVAL_OPRTR_CD,APPL_ID) values
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+
+Commit complete.
+
+CREATE SEQUENCE SEQ_IP_FY_BASED_ID INCREMENT BY 1 MAXVALUE 9999 MINVALUE 1 CACHE 20
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+Sequence altered.
+
+
+Sequence altered.
+
+Insert into KRCR_PARM_T (NMSPC_CD,CMPNT_CD,PARM_NM,OBJ_ID,VER_NBR,PARM_TYP_CD,VAL,PARM_DESC_TXT,EVAL_OPRTR_CD,APPL_ID) values ('KC-PD','Document','GENERATE_IP_BASED_ON_FY',sys_guid(),1,'CONFG','Y','On enabling this parameter,IP Number will be generated based on the fiscal year.','A','KUALI')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+
+Commit complete.
+
+
+Sequence created.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+1 row updated.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Table created.
+
+
+Table created.
+
+CREATE TABLE PROPOSAL_ATTACHMENTS_DATA(
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE  SEQ_PROPOSAL_ATTACHMENT_ID
+                 *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_PROPOSAL_ATTACHMNT_DATA_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+SP2-0310: unable to open file "dml/KC_DML_01_KRACOEUS-8129_B000.sql"
+SP2-0310: unable to open file "dml/KC_DML_02_KRACOEUS-8602_B000.sql"
+SP2-0310: unable to open file "dml/KR_DML_01_KRACOEUS-8732_B000.sql"
+SP2-0310: unable to open file "dml/KR_DML_02_KRACOEUS-8716_B000.sql"
+
+Commit complete.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

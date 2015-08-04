@@ -1,0 +1,56 @@
+From 5a8152afd64213bd8031ba45324a885d1e8ee640 Mon Sep 17 00:00:00 2001
+From: Travis Schneberger <leo.herbie@gmail.com>
+Date: Mon, 1 Jun 2015 11:44:26 -0400
+Subject: [PATCH] Avoiding a NullPointerException with report tracking.
+
+---
+ .../award/paymentreports/awardreports/reporting/ReportTracking.java  | 5 +----
+ .../src/main/resources/org/kuali/kra/award/repository-award.xml      | 5 ++++-
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/award/paymentreports/awardreports/reporting/ReportTracking.java b/coeus-impl/src/main/java/org/kuali/kra/award/paymentreports/awardreports/reporting/ReportTracking.java
+index f84fed8..c7a3028 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/award/paymentreports/awardreports/reporting/ReportTracking.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/award/paymentreports/awardreports/reporting/ReportTracking.java
+@@ -388,7 +388,7 @@ public KcPerson getPiPerson() {
+ 
+     public Rolodex getPiRolodex() {
+         if (piRolodex == null && getPiRolodexId() != null) {
+-            piRolodex = (NonOrganizationalRolodex) getBusinessObjectService().findBySinglePrimaryKey(NonOrganizationalRolodex.class, getPiRolodexId());
++            piRolodex =  getBusinessObjectService().findBySinglePrimaryKey(NonOrganizationalRolodex.class, getPiRolodexId());
+         }
+         return piRolodex;
+     }
+@@ -473,8 +473,6 @@ public void setItemCount(int itemCount) {
+     /**
+      * 
+      * This method checks the fields available on the UI and if any of those fields are different than the DB version, it returns true.
+-     * @param dbReportTracking
+-     * @return
+      */
+     public boolean hasBeenUpdated(ReportTracking dbReportTracking) {
+         boolean retVal = false;
+@@ -507,7 +505,6 @@ private boolean dateEquals(Date date1, Date date2) {
+      * This method returns true if the report is in pending status, the reports regeneration type is add only.
+      * Note, that there is no way of determining if this report is based on the same frequency date as is currently set in the award,
+      * so this record MAY be generated on the next save.
+-     * @return
+      */
+     public boolean getDisplayDeleteButton() {
+         boolean retVal = false;
+diff --git a/coeus-impl/src/main/resources/org/kuali/kra/award/repository-award.xml b/coeus-impl/src/main/resources/org/kuali/kra/award/repository-award.xml
+index 395bacd..996bcafb 100644
+--- a/coeus-impl/src/main/resources/org/kuali/kra/award/repository-award.xml
++++ b/coeus-impl/src/main/resources/org/kuali/kra/award/repository-award.xml
+@@ -1577,7 +1577,10 @@
+ 		</reference-descriptor>
+ 		<reference-descriptor name="sponsor" class-ref="org.kuali.coeus.common.framework.sponsor.Sponsor" auto-retrieve="true" auto-update="none" auto-delete="none"> 
+             <foreignkey field-ref="sponsorCode" />
+-        </reference-descriptor>			
++        </reference-descriptor>	
++    	<reference-descriptor name="award" class-ref="org.kuali.kra.award.home.Award" auto-retrieve="true" auto-update="none" auto-delete="none"> 
++            <foreignkey field-ref="awardNumber"/>
++        </reference-descriptor>
+     </class-descriptor>	
+     
+     <class-descriptor class="org.kuali.kra.award.paymentreports.awardreports.reporting.service.SentReportNotification" table="AWARD_REPORT_NOTIFICATION_SENT">

@@ -1,0 +1,196 @@
+    ADD CONSTRAINT narrative_attachment_fk1
+                   *
+ERROR at line 2:
+ORA-02298: cannot validate (KCSO.NARRATIVE_ATTACHMENT_FK1) - parent keys not 
+found 
+
+
+    ADD CONSTRAINT eps_prop_person_bio_attach_fk1
+                   *
+ERROR at line 2:
+ORA-02298: cannot validate (KCSO.EPS_PROP_PERSON_BIO_ATTACH_FK1) - parent keys 
+not found 
+
+
+
+Function created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+841 rows updated.
+
+
+841 rows updated.
+
+INSERT INTO FILE_DATA (SELECT FILE_DATA_ID, SUB_AWARD_XFD_FILE FROM BUDGET_SUB_AWARDS WHERE FILE_DATA_ID IS NOT NULL)
+                                            *
+ERROR at line 1:
+ORA-00932: inconsistent datatypes: expected CHAR got BLOB 
+
+
+    ADD CONSTRAINT FK2_BUDGET_SUB_AWARDS
+                   *
+ERROR at line 2:
+ORA-02298: cannot validate (KCSO.FK2_BUDGET_SUB_AWARDS) - parent keys not found 
+
+
+    ADD CONSTRAINT FK3_BUDGET_SUB_AWARDS
+                   *
+ERROR at line 2:
+ORA-02298: cannot validate (KCSO.FK3_BUDGET_SUB_AWARDS) - parent keys not found 
+
+
+DECLARE
+*
+ERROR at line 1:
+ORA-01422: exact fetch returns more than requested number of rows 
+ORA-06512: at line 7 
+
+
+
+Table altered.
+
+
+Table altered.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+VALUES (SEQ_QUESTIONNAIRE_REF_ID.NEXTVAL,(SELECT QUESTIONNAIRE_REF_ID FROM QUESTIONNAIRE WHERE NAME = 'NSF cover page 1-6 supporting questions' AND SEQUENCE_NUMBER = 1),(SELECT max(QUESTION_REF_ID) FROM QUESTION WHERE QUESTION = 'Results from prior NSF support: Has the PI or any co-PI identified on the project received NSF funding in the past five (5) years?' AND SEQUENCE_NUMBER = 1),9,0,1,'N',null,null,'admin',sysdate,sys_guid(),1)
+                                                                                                                                                                                 *
+ERROR at line 2:
+ORA-01400: cannot insert NULL into 
+("KCSO"."QUESTIONNAIRE_QUESTIONS"."QUESTION_REF_ID_FK") 
+
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+82423 rows updated.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+13128 rows updated.
+
+
+Table altered.
+
+
+Table altered.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+Commit complete.
+

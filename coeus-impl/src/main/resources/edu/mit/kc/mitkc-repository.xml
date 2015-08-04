@@ -1,0 +1,192 @@
+<descriptor-repository version="1.0">
+	<class-descriptor class="edu.mit.kc.citi.CitiTraining" table="CITI_TRAINING">
+		<field-descriptor name="citiTrainingId" column="CITI_TRAINING_ID" jdbc-type="BIGINT" primarykey="true" sequence-name="SEQ_CITI_TRAINING_ID" autoincrement="true" />
+		<field-descriptor name="firstName" column="FIRST_NAME" jdbc-type="VARCHAR" />
+		<field-descriptor name="lastName" column="LAST_NAME" jdbc-type="VARCHAR" />
+		<field-descriptor name="email" column="EMAIL" jdbc-type="VARCHAR" />
+		<field-descriptor name="curriculum" column="CURRICULUM" jdbc-type="VARCHAR" />
+		<field-descriptor name="trainingGroup" column="TRAINING_GROUP" jdbc-type="VARCHAR" />
+		<field-descriptor name="score" column="SCORE" jdbc-type="VARCHAR" />
+		<field-descriptor name="passingScore" column="PASSING_SCORE" jdbc-type="VARCHAR" />
+		<field-descriptor name="stageNumber" column="STAGE_NUMBER" jdbc-type="VARCHAR" />
+		<field-descriptor name="stage" column="STAGE" jdbc-type="VARCHAR" />
+		<field-descriptor name="dateCompleted" column="DATE_COMPLETED" jdbc-type="TIMESTAMP" />
+		<field-descriptor name="userName" column="USER_NAME" jdbc-type="VARCHAR" />
+		<field-descriptor name="customField1" column="CUSTOM_FIELD1" jdbc-type="VARCHAR" />
+		<field-descriptor name="customField2" column="CUSTOM_FIELD2" jdbc-type="VARCHAR" />
+		<field-descriptor name="updateTimestamp" column="UPDATE_TIMESTAMP" jdbc-type="TIMESTAMP" />
+	</class-descriptor>
+	<class-descriptor class="edu.mit.kc.award.contacts.AwardPersonConfirm" table="AWARD_KEY_PERS_CONFIRM">
+    	<field-descriptor name="awardPersonConfirmId" column="AWARD_KEY_PERS_CONFIRM_ID" jdbc-type="BIGINT" primarykey="true" autoincrement="true" sequence-name="SEQ_AWARD_PERSON_CONFIRM_ID"/>
+			<field-descriptor name="awardNumber" column="AWARD_NUMBER" jdbc-type="VARCHAR" nullable="false" />  	
+    		<field-descriptor name="awardPersonId" column="AWARD_PERSON_ID" jdbc-type="BIGINT" nullable="true"/>
+    		<field-descriptor name="sequenceNumber" column="SEQUENCE_NUMBER" jdbc-type="INTEGER" nullable="false"/>
+    		<field-descriptor name="awardId" column="AWARD_ID" jdbc-type="BIGINT" nullable="false"/>    		
+    		<field-descriptor name="personId" column="PERSON_ID" jdbc-type="VARCHAR" nullable="false" />
+    	<field-descriptor name="confirmFlag" column="CONFIRM_FLAG" jdbc-type="CHAR" nullable="true" conversion="org.kuali.rice.core.framework.persistence.ojb.conversion.OjbCharBooleanConversion" />   	
+    	
+    	
+    	<field-descriptor name="updateTimestamp" column="UPDATE_TIMESTAMP" jdbc-type="TIMESTAMP" />
+		<field-descriptor name="updateUser" column="UPDATE_USER" jdbc-type="VARCHAR" />
+		<!-- OBJ_ID isn't a database defined primary key, but it does have a unique constraint.  Primary Key set to true because OJB requires a field be set as primary -->
+		<field-descriptor name="objectId" column="OBJ_ID" jdbc-type="VARCHAR"/>
+		<field-descriptor name="versionNumber" column="VER_NBR" jdbc-type="BIGINT" locking="false" />
+
+    </class-descriptor>
+    <class-descriptor class="edu.mit.kc.award.contacts.AwardPersonRemove" table="AWARD_KEY_PERS_REMOVED">
+    	<field-descriptor name="awardPersonRemoveId" column="AWARD_KEY_PERS_REMOVED_ID" jdbc-type="BIGINT" primarykey="true" autoincrement="true" sequence-name="SEQ_AWARD_PERSON_REMOVE_ID"/>
+			<field-descriptor name="awardNumber" column="AWARD_NUMBER" jdbc-type="VARCHAR" nullable="false" />  	
+    		<field-descriptor name="awardPersonId" column="AWARD_PERSON_ID" jdbc-type="BIGINT" nullable="true"/>
+    		<field-descriptor name="awardId" column="AWARD_ID" jdbc-type="BIGINT" nullable="false"/>    		
+    		<field-descriptor name="sequenceNumber" column="SEQUENCE_NUMBER" jdbc-type="INTEGER" nullable="false"/>
+    		<field-descriptor name="personId" column="PERSON_ID" jdbc-type="VARCHAR" nullable="false" />
+    	<field-descriptor name="confirmFlag" column="CONFIRM_FLAG" jdbc-type="CHAR" nullable="true" conversion="org.kuali.rice.core.framework.persistence.ojb.conversion.OjbCharBooleanConversion" />   	
+    	
+    	<field-descriptor name="updateTimestampConfirm" column="UPDATE_TIMESTAMP_CONFIRM" jdbc-type="TIMESTAMP" />
+		<field-descriptor name="updateUserConfirm" column="UPDATE_USER_CONFIRM" jdbc-type="VARCHAR" />
+  
+    	<field-descriptor name="updateTimestamp" column="UPDATE_TIMESTAMP" jdbc-type="TIMESTAMP" />
+		<field-descriptor name="updateUser" column="UPDATE_USER" jdbc-type="VARCHAR" />
+		<!-- OBJ_ID isn't a database defined primary key, but it does have a unique constraint.  Primary Key set to true because OJB requires a field be set as primary -->
+		<field-descriptor name="objectId" column="OBJ_ID" jdbc-type="VARCHAR"/>
+    	
+    	
+    	
+		<field-descriptor name="versionNumber" column="VER_NBR" jdbc-type="BIGINT" locking="false" />
+
+    </class-descriptor>
+    <class-descriptor class="edu.mit.kc.cac.Cac" table="CAC_DATA">
+	<field-descriptor name="cacDataId" column="CAC_DATA_ID" jdbc-type="BIGINT" primarykey="true" sequence-name="SEQ_CAC_DATA_ID" autoincrement="true" />
+		<field-descriptor name="approvalDate" column="APPROVAL_DATE" jdbc-type="VARCHAR" />
+		<field-descriptor name="contactEmail" column="CONTACT_EMAIL" jdbc-type="VARCHAR" />
+		<field-descriptor name="dept" column="DEPT" jdbc-type="VARCHAR" />
+		<field-descriptor name="expirationDate" column="EXPIRATION_DATE" jdbc-type="VARCHAR" />
+		<field-descriptor name="fundingAgency" column="FUNDING_AGENCY" jdbc-type="VARCHAR" />
+		<field-descriptor name="fundingAgency2" column="FUNDING_AGENCY2" jdbc-type="VARCHAR" />
+		<field-descriptor name="fundingAgency3" column="FUNDING_AGENCY3" jdbc-type="VARCHAR" />
+		<field-descriptor name="fundingAgency4" column="FUNDING_AGENCY4" jdbc-type="VARCHAR" />
+		<field-descriptor name="fundingAgency5" column="FUNDING_AGENCY5" jdbc-type="VARCHAR" />
+		<field-descriptor name="fundingAgency6" column="FUNDING_AGENCY6" jdbc-type="VARCHAR" />
+		<field-descriptor name="grantNumber" column="GRANT_NUMBER" jdbc-type="VARCHAR" />
+		<field-descriptor name="grantNumber2" column="GRANT_NUMBER2" jdbc-type="VARCHAR" />
+		<field-descriptor name="grantNumber3" column="GRANT_NUMBER3" jdbc-type="VARCHAR" />
+		<field-descriptor name="grantNumber4" column="GRANT_NUMBER4" jdbc-type="VARCHAR" />
+		<field-descriptor name="grantNumber5" column="GRANT_NUMBER5" jdbc-type="VARCHAR" />
+		<field-descriptor name="grantNumber6" column="GRANT_NUMBER6" jdbc-type="VARCHAR" />
+		<field-descriptor name="piEmail" column="PI_EMAIL" jdbc-type="VARCHAR" />
+		<field-descriptor name="piFirstName" column="PI_FIRST_NAME" jdbc-type="VARCHAR" />
+		<field-descriptor name="piLastName" column="PI_LAST_NAME" jdbc-type="VARCHAR" />
+		<field-descriptor name="previousProtocolNumber" column="PREVIOUS_PROTOCOL_NUMBER" jdbc-type="VARCHAR" />
+		<field-descriptor name="proposalType" column="PROPOSAL_TYPE" jdbc-type="VARCHAR" />
+		<field-descriptor name="protocolNumber" column="PROTOCOL_NUMBER" jdbc-type="VARCHAR" />
+		<field-descriptor name="reviewLevel" column="REVIEW_LEVEL" jdbc-type="VARCHAR" />
+		<field-descriptor name="submissionDate" column="SUBMISSION_DATE" jdbc-type="VARCHAR" />
+		<field-descriptor name="wbsIp1" column="WBS_IP_1" jdbc-type="VARCHAR" />
+		<field-descriptor name="wbsIp2" column="WBS_IP_2" jdbc-type="VARCHAR" />
+		<field-descriptor name="wbsIp3" column="WBS_IP_3" jdbc-type="VARCHAR" />
+		<field-descriptor name="wbsIp4" column="WBS_IP_4" jdbc-type="VARCHAR" />
+		<field-descriptor name="wbsIp5" column="WBS_IP_5" jdbc-type="VARCHAR" />
+		<field-descriptor name="wbsIp6" column="WBS_IP_6" jdbc-type="VARCHAR" />
+	</class-descriptor>
+    <class-descriptor class="edu.mit.kc.bo.KrmsFunctions" table="KRMS_FUNC_T">
+		<field-descriptor id="1" name="id" column="FUNC_ID" jdbc-type="VARCHAR" primarykey="true"/>
+		<field-descriptor name="namespace" column="NMSPC_CD" jdbc-type="VARCHAR"/>
+		<field-descriptor name="name" column="NM" jdbc-type="VARCHAR"/>
+		<field-descriptor name="description" column="DESC_TXT" jdbc-type="VARCHAR"/>
+		<field-descriptor name="typeId" column="TYP_ID" jdbc-type="VARCHAR"/>
+		<field-descriptor name="returnType" column="RTRN_TYP" jdbc-type="VARCHAR"/>
+		<field-descriptor name="active" column="ACTV" jdbc-type="VARCHAR"/>
+		<field-descriptor name="versionNo" column="VER_NBR" jdbc-type="VARCHAR"/>
+	
+		<collection-descriptor name="functionsParams" proxy="true" element-class-ref="edu.mit.kc.bo.KrmsFunctionsParams" collection-class="org.apache.ojb.broker.util.collections.ManageableArrayList" auto-retrieve="true" auto-update="object" auto-delete="object">
+			<inverse-foreignkey field-ref="id"/>
+		</collection-descriptor>
+	</class-descriptor>
+	<class-descriptor class="edu.mit.kc.bo.KrmsFunctionsParams" table="KRMS_FUNC_PARM_T">
+		<field-descriptor id="1" name="functionParamId" column="FUNC_PARM_ID" jdbc-type="VARCHAR" primarykey="true"/>
+		<field-descriptor name="namespace" column="NM" jdbc-type="VARCHAR"/>
+		<field-descriptor name="description" column="DESC_TXT" jdbc-type="VARCHAR"/>
+		<field-descriptor name="type" column="TYP" jdbc-type="VARCHAR"/>
+		<field-descriptor name="id" column="FUNC_ID" jdbc-type="VARCHAR"/>
+		<field-descriptor name="sequenceNo" column="SEQ_NO" jdbc-type="INTEGER"/>
+		
+		<reference-descriptor name="function" class-ref="edu.mit.kc.bo.KrmsFunctions" auto-retrieve="false" auto-update="none" auto-delete="none">
+		<foreignkey field-ref="id"/>
+	    </reference-descriptor>
+	</class-descriptor> 
+	<class-descriptor class="edu.mit.kc.bo.PiAppointmentType" table="PI_APPOINTMENT_TYPE">
+		<field-descriptor id="1" name="typeCode" column="PI_APPOINT_TYPE_CODE" jdbc-type="VARCHAR" primarykey="true"/>		
+		<field-descriptor name="description" column="DESCRIPTION" jdbc-type="VARCHAR"/>	
+	</class-descriptor>
+	
+    <class-descriptor class="edu.mit.kc.roleintegration.RoleCentralMap" table="KC_ROLE_CNTRAL_MAP">
+    <field-descriptor name="roleCentralMapid" column="ROLE_CNTRL_MAP_ID" jdbc-type="VARCHAR" primarykey="true"  autoincrement="true" sequence-name="SEQ_ROLE_CNTRL_MAP_ID"/>
+    <field-descriptor name="roleId" column="ROLE_ID" jdbc-type="VARCHAR" />
+    <field-descriptor name="roleName" column="ROLE_NM" jdbc-type="VARCHAR" />
+    <field-descriptor name="centralRoleName" column="CNTRL_ROLE_NM" jdbc-type="VARCHAR" />
+    <field-descriptor name="nameSpace" column="NMSPC_CD" jdbc-type="VARCHAR" />
+    <field-descriptor name="versionNumber" column="VER_NBR" jdbc-type="BIGINT" locking="true" />
+    <field-descriptor name="objectId" column="OBJ_ID" jdbc-type="VARCHAR" indexed="true" />
+    <field-descriptor name="updateTimestamp" column="UPDATE_TIMESTAMP" jdbc-type="TIMESTAMP" />
+    </class-descriptor> 
+    
+    
+    <class-descriptor class="edu.mit.kc.roleintegration.SyncLog" table="USER_ROLE_CNTRL_MAP_LOG">
+	    <field-descriptor name="syncLogid" column="SYNC_LOG_ID" jdbc-type="VARCHAR" primarykey="true"  autoincrement="true" sequence-name="SEQ_SYNC_LOG_ID"/>
+	    <field-descriptor name="centralRoleName" column="ROLE_NM" jdbc-type="VARCHAR" />
+	    <field-descriptor name="principleName" column="PRNCPL_NM" jdbc-type="VARCHAR" />
+	    <field-descriptor name="unitNumber" column="UNIT_NUMBER" jdbc-type="VARCHAR" />
+	    <field-descriptor name="versionNumber" column="VER_NBR" jdbc-type="BIGINT" locking="true" />
+	    <field-descriptor name="objectId" column="OBJ_ID" jdbc-type="VARCHAR" indexed="true" />
+	    <field-descriptor name="updateTimestamp" column="UPDATE_TIMESTAMP" jdbc-type="TIMESTAMP" />
+	    <field-descriptor name="updateUser" column="UPDATE_USER" jdbc-type="VARCHAR" />
+    </class-descriptor> 
+    
+    	<class-descriptor class="edu.mit.kc.bo.SharedDocumentType" table="SHARED_DOCUMENT_TYPE">
+    	<field-descriptor id="1" name="sharedDocumentTypeId" column="SHARED_DOCUMENT_TYPE_ID" jdbc-type="INTEGER" primarykey="true"/>	
+		<field-descriptor  name="moduleCode" column="COEUS_MODULE_CODE" jdbc-type="VARCHAR" />	 
+		<field-descriptor name="documentTypeCode" column="DOCUMENT_TYPE_CODE" jdbc-type="VARCHAR"  />		
+		 <field-descriptor name="updateTimestamp" column="UPDATE_TIMESTAMP" jdbc-type="TIMESTAMP" />
+		  <field-descriptor name="updateUser" column="UPDATE_USER" jdbc-type="VARCHAR" />
+		     <field-descriptor name="versionNumber" column="VER_NBR" jdbc-type="BIGINT" locking="true" />
+	    <field-descriptor name="objectId" column="OBJ_ID" jdbc-type="VARCHAR" indexed="true" />
+	    <reference-descriptor name="coeusModule" class-ref="org.kuali.coeus.common.framework.module.CoeusModule" auto-retrieve="true" auto-update="none" auto-delete="none"> 
+            <foreignkey field-ref="moduleCode"/>
+        </reference-descriptor>
+	</class-descriptor>
+    
+   <class-descriptor class="org.kuali.coeus.propdev.impl.sapfeed.SapFeedDetails" table="SAP_FEED_DETAILS">	
+	    <field-descriptor name="feedId" column="FEED_ID" jdbc-type="INTEGER" primarykey="true" autoincrement="true" sequence-name="SEQ_SAP_FEED_ID"/>
+		<field-descriptor name="awardNumber" column="AWARD_NUMBER" jdbc-type="VARCHAR"/>
+		<field-descriptor name="sequenceNumber" column="SEQUENCE_NUMBER" jdbc-type="INTEGER" />
+		<field-descriptor name="feedType" column="FEED_TYPE" jdbc-type="VARCHAR" />
+		<field-descriptor name="feedStatus" column="FEED_STATUS" jdbc-type="VARCHAR" />
+		<field-descriptor name="batchId" column="BATCH_ID" jdbc-type="VARCHAR" />
+		<field-descriptor name="tranId" column="TRANSACTION_ID" jdbc-type="VARCHAR" />
+		<field-descriptor name="sapFeedBatchId" column="SAP_FEED_BATCH_ID" jdbc-type="BIGINT" />
+		<field-descriptor name="updateTimestamp" column="UPDATE_TIMESTAMP" jdbc-type="TIMESTAMP" />
+		<field-descriptor name="updateUser" column="UPDATE_USER" jdbc-type="VARCHAR" />
+		<field-descriptor name="versionNumber" column="VER_NBR" jdbc-type="BIGINT" />
+		<field-descriptor name="objectId" column="OBJ_ID" jdbc-type="VARCHAR" />		
+	</class-descriptor>	
+	
+	<class-descriptor class="org.kuali.coeus.propdev.impl.sapfeed.TempSapSponsorDetails" table="TEMP_SAP_SPON_CD">	
+	    <field-descriptor name="sponsorCode" column="SPONSOR_CODE" jdbc-type="VARCHAR" primarykey="true" autoincrement="true" />
+		<field-descriptor name="sponsorName" column="SPONSOR_NAME" jdbc-type="VARCHAR"/>
+		<field-descriptor name="adminActivityCode" column="ADMIN_ACTIVITY_CODE" jdbc-type="VARCHAR" />
+		<field-descriptor name="updateTimestamp" column="UPDATE_TIMESTAMP" jdbc-type="TIMESTAMP" />
+		<field-descriptor name="updateUser" column="UPDATE_USER" jdbc-type="VARCHAR" />
+		<field-descriptor name="versionNumber" column="VER_NBR" jdbc-type="BIGINT" />
+		<field-descriptor name="objectId" column="OBJ_ID" jdbc-type="VARCHAR" />		
+	</class-descriptor>	
+	
+	<class-descriptor class="org.kuali.coeus.propdev.impl.sapfeed.SapFeedBatchDetails" table="SAP_FEED_BATCH_LIST">	
+	    <field-descriptor name="sapFeedBatchId" column="SAP_FEED_BATCH_ID" jdbc-type="BIGINT" primarykey="true"  />
+		<field-descriptor name="batchId" column="BATCH_ID" jdbc-type="BIGINT"/>
+		<field-descriptor name="batchFileName" column="BATCH_FILE_NAME" jdbc-type="VARCHAR" />
+		<field-descriptor name="batchTimeStamp" column="BATCH_TIMESTAMP" jdbc-type="TIMESTAMP" />
+		<field-descriptor name="noOfRecords" column="NO_OF_RECORDS" jdbc-type="BIGINT" />
+	</class-descriptor>	
+	
+	
+</descriptor-repository>

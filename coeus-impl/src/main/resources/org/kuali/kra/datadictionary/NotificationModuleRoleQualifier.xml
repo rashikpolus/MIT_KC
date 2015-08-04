@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans                            http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="NotificationModuleRoleQualifier" parent="NotificationModuleRoleQualifier-parentBean" />
+    <bean id="NotificationModuleRoleQualifier-parentBean" abstract="true" parent="BusinessObjectEntry">
+        <property name="businessObjectClass" value="org.kuali.coeus.common.notification.impl.bo.NotificationModuleRoleQualifier" />
+        <property name="objectLabel" value="Notification Module Role Qualifier" />
+        <property name="inquiryDefinition" >
+            <ref bean="NotificationModuleRoleQualifier-inquiryDefinition" />
+        </property>
+        <property name="lookupDefinition" >
+            <ref bean="NotificationModuleRoleQualifier-lookupDefinition" />
+        </property>
+        <property name="titleAttribute" value="notificationModuleRoleQualifierId" />
+        <property name="attributes" >
+            <list>
+                <ref bean="NotificationModuleRoleQualifier-notificationModuleRoleQualifierId" />
+                <ref bean="NotificationModuleRoleQualifier-notificationModuleRoleId" />
+                <ref bean="NotificationModuleRoleQualifier-qualifier" />
+            </list>
+        </property>
+    </bean>
+
+    <!-- Attribute Definitions -->
+    <bean id="NotificationModuleRoleQualifier-notificationModuleRoleQualifierId" parent="NotificationModuleRoleQualifier-notificationModuleRoleQualifierId-parentBean" />
+    <bean id="NotificationModuleRoleQualifier-notificationModuleRoleQualifierId-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="notificationModuleRoleQualifierId" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Notification Module Role Qualifier Id" />
+        <property name="shortLabel" value="Notification Module Role Qualifier Id" />
+        <property name="maxLength" value="6" />
+        <property name="validationPattern">
+            <bean parent="NumericValidationPattern"/>
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+        <property name="control">
+      <bean parent="TextControlDefinition" p:size="6"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="6" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="Notification Module Role Qualifier Id" />
+        <property name="description" value="Notification Module Role Qualifier Id" />
+    </bean>
+
+    <bean id="NotificationModuleRoleQualifier-notificationModuleRoleId" parent="NotificationModuleRoleQualifier-notificationModuleRoleId-parentBean" />
+    <bean id="NotificationModuleRoleQualifier-notificationModuleRoleId-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="notificationModuleRoleId" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Notification Module Role Id" />
+        <property name="shortLabel" value="Notification Module Role Id" />
+        <property name="maxLength" value="6" />
+        <property name="validationPattern">
+            <bean parent="NumericValidationPattern"/>
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+        <property name="control">
+      <bean parent="TextControlDefinition" p:size="6"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="6" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="Notification Module Role Id" />
+        <property name="description" value="Notification Module Role Id" />
+    </bean>
+    
+    <bean id="NotificationModuleRoleQualifier-qualifier" parent="NotificationModuleRoleQualifier-qualifier-parentBean" />
+    <bean id="NotificationModuleRoleQualifier-qualifier-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="qualifier" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Role Qualifier" />
+        <property name="shortLabel" value="Role Qualifier" />
+        <property name="required" value="true" />
+        <property name="maxLength" value="200" />
+        <property name="control" >
+      <bean parent="SelectControlDefinition" p:valuesFinderClass="org.kuali.coeus.common.notification.impl.lookup.keyvalue.NotificationModuleRoleQualifierValuesFinder" p:includeKeyInLabel="false"/>
+    </property>
+    <property name="optionsFinder">
+      <bean class="org.kuali.coeus.common.notification.impl.lookup.keyvalue.NotificationModuleRoleQualifierValuesFinder"/>
+    </property>
+    <property name="controlField">
+      <bean parent="Uif-DropdownControl"/>
+        </property>
+        <property name="summary" value="Role Qualifier" />
+        <property name="description" value="Role Qualifier" />
+    </bean>
+
+    <!-- Business Object Inquiry Definition -->
+    <bean id="NotificationModuleRoleQualifier-inquiryDefinition" parent="NotificationModuleRoleQualifier-inquiryDefinition-parentBean" />
+  <bean id="NotificationModuleRoleQualifier-InquiryView" parent="NotificationModuleRoleQualifier-InquiryView-parentBean"/>
+    <bean id="NotificationModuleRoleQualifier-inquiryDefinition-parentBean" abstract="true" parent="InquiryDefinition">
+        <property name="title" value="Valid Notification Role" />
+        <property name="inquirySections" >
+            <list>
+                <bean parent="InquirySectionDefinition">
+                    <property name="title" value="Notification Module Role Qualifier" />
+                    <property name="numberOfColumns" value="1" />
+                    <property name="inquiryFields" >
+                        <list>
+              <bean parent="FieldDefinition" p:attributeName="notificationModuleRoleQualifierId" p:forceInquiry="true"/>
+              <bean parent="FieldDefinition" p:attributeName="notificationModuleRoleId" p:forceInquiry="true"/>
+              <bean parent="FieldDefinition" p:attributeName="qualifier"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+  <bean id="NotificationModuleRoleQualifier-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView">
+    <property name="headerText" value="Valid Notification Role"/>
+    <property name="dataObjectClassName" value="org.kuali.coeus.common.notification.impl.bo.NotificationModuleRoleQualifier"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-GridSection">
+          <property name="headerText" value="Notification Module Role Qualifier"/>
+          <property name="layoutManager.numberOfColumns" value="2"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="notificationModuleRoleQualifierId" parent="Uif-DataField"/>
+              <bean p:propertyName="notificationModuleRoleId" parent="Uif-DataField"/>
+              <bean p:propertyName="qualifier" parent="Uif-DataField"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <!-- Business Object Lookup Definition -->
+    <bean id="NotificationModuleRoleQualifier-lookupDefinition" parent="NotificationModuleRoleQualifier-lookupDefinition-parentBean" />
+  <bean id="NotificationModuleRoleQualifier-LookupView" parent="NotificationModuleRoleQualifier-LookupView-parentBean"/>
+    <bean id="NotificationModuleRoleQualifier-lookupDefinition-parentBean" abstract="true" parent="LookupDefinition">
+        <property name="title" value="Valid Notification Role Lookup" /><property name="defaultSort" >
+            <bean parent="SortDefinition" />
+        </property>
+        <property name="lookupFields" >
+            <list>
+        <bean parent="FieldDefinition" p:attributeName="notificationModuleRoleQualifierId" p:forceLookup="true"/>
+        <bean parent="FieldDefinition" p:attributeName="notificationModuleRoleId" p:forceLookup="true"/>
+        <bean parent="FieldDefinition" p:attributeName="qualifier"/>
+      </list>
+    </property>
+    <property name="resultFields">
+      <list>
+        <bean parent="FieldDefinition" p:attributeName="notificationModuleRoleQualifierId" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="notificationModuleRoleId" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="qualifier"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="NotificationModuleRoleQualifier-LookupView-parentBean" abstract="true" parent="Uif-LookupView">
+    <property name="dataObjectClassName" value="org.kuali.coeus.common.notification.impl.bo.NotificationModuleRoleQualifier"/>
+    <property name="headerText" value="Valid Notification Role Lookup"/>
+    <property name="criteriaFields">
+      <list>
+        <bean p:propertyName="notificationModuleRoleQualifierId" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="notificationModuleRoleId" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="qualifier" parent="Uif-LookupCriteriaInputField"/>
+            </list>
+        </property>
+        <property name="resultFields" >
+            <list>
+        <bean p:propertyName="notificationModuleRoleQualifierId" parent="Uif-DataField"/>
+        <bean p:propertyName="notificationModuleRoleId" parent="Uif-DataField"/>
+        <bean p:propertyName="qualifier" parent="Uif-DataField"/>
+            </list>
+        </property>
+    </bean>
+    
+</beans>

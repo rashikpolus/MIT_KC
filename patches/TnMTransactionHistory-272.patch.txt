@@ -1,0 +1,2165 @@
+From 90f296b210c720b318d9eea90379c57676f3f431 Mon Sep 17 00:00:00 2001
+From: Travis Schneberger <leo.herbie@gmail.com>
+Date: Wed, 15 Apr 2015 09:02:54 -0400
+Subject: [PATCH 1/4] RESKC-275: cleanup
+
+---
+ .../impl/TimeAndMoneyHistoryServiceImpl.java       | 206 +++++-----
+ .../web/struts/action/TimeAndMoneyAction.java      | 453 ++++++++-------------
+ .../kra/timeandmoney/TimeAndMoneySpringBeans.xml   |   9 +-
+ 3 files changed, 263 insertions(+), 405 deletions(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/service/impl/TimeAndMoneyHistoryServiceImpl.java b/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/service/impl/TimeAndMoneyHistoryServiceImpl.java
+index b63d47c..092a855 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/service/impl/TimeAndMoneyHistoryServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/service/impl/TimeAndMoneyHistoryServiceImpl.java
+@@ -23,7 +23,7 @@
+ import org.apache.commons.collections4.ListUtils;
+ import org.apache.commons.lang3.StringUtils;
+ import org.kuali.coeus.sys.framework.controller.DocHandlerService;
+-import org.kuali.coeus.sys.framework.service.KcServiceLocator;
++import org.kuali.coeus.sys.framework.gv.GlobalVariableService;
+ import org.kuali.kra.award.home.Award;
+ import org.kuali.kra.award.home.AwardAmountInfo;
+ import org.kuali.kra.award.version.service.AwardVersionService;
+@@ -36,13 +36,12 @@
+ import org.kuali.kra.timeandmoney.history.TransactionType;
+ import org.kuali.kra.timeandmoney.service.TimeAndMoneyHistoryService;
+ import org.kuali.kra.timeandmoney.transactions.AwardAmountTransaction;
+-import org.kuali.rice.core.api.CoreApiServiceLocator;
++import org.kuali.rice.core.api.datetime.DateTimeService;
+ import org.kuali.rice.ken.util.NotificationConstants;
+ import org.kuali.rice.kew.api.KewApiConstants;
+ import org.kuali.rice.kew.api.exception.WorkflowException;
+ import org.kuali.rice.krad.service.BusinessObjectService;
+ import org.kuali.rice.krad.service.DocumentService;
+-import org.kuali.rice.krad.util.GlobalVariables;
+ 
+ import java.util.*;
+ 
+@@ -50,7 +49,6 @@
+ 
+ 	private static final String DATE_CHANGE_TRANSACTION_ID = "-1";
+ 	private static final String TIME_AND_MONEY_DOCUMENT_NUMBER = "timeAndMoneyDocumentNumber";
+-	private static final String AWARD_DOCUMENT = "awardDocument";
+ 	private static final String ROOT_AWARD_NUMBER = "rootAwardNumber";
+ 	private static final String SOURCE_AWARD_NUMBER = "sourceAwardNumber";
+ 	private static final String DESTINATION_AWARD_NUMBER = "destinationAwardNumber";
+@@ -61,22 +59,29 @@
+ 	private static final String DASH = "-";
+ 	private static final String DEFAULT_TAB = "Versions";
+ 	private static final String ALTERNATE_OPEN_TAB = "Parameters";
+-	public static final int INITIAL_TRANSACTION_ID = 0;
++	public static final String SEQUENCE_NUMBER = "sequenceNumber";
++	public static final String DOCUMENT_NUMBER = "documentNumber";
++	public static final String NONE = "None";
++	public static final String AWARD_NUMBER = "awardNumber";
++	public static final String ROOT_AWARD_NUMBER_VAL = "00001";
+ 
+ 	private BusinessObjectService businessObjectService;
+ 	private DocumentService documentService;
+ 	private AwardVersionService awardVersionService;
++	private DocHandlerService docHandlerService;
++	private DateTimeService dateTimeService;
++	private GlobalVariableService globalVariableService;
+ 
+-	@SuppressWarnings("unchecked")
++	
+ 	public void buildTimeAndMoneyHistoryObjects(String awardNumber, List<AwardVersionHistory> awardVersionHistoryCollection) throws WorkflowException {
+-		List<Award> awardVersionList = (List<Award>) businessObjectService.findMatchingOrderBy(Award.class, getHashMapToFindActiveAward(awardNumber), "sequenceNumber", true);
++		List<Award> awardVersionList = (List<Award>) businessObjectService.findMatchingOrderBy(Award.class, getHashMapToFindActiveAward(awardNumber), SEQUENCE_NUMBER, true);
+ 		// we want the list in reverse chronological order.
+ 		Collections.reverse(awardVersionList);
+-		List<TimeAndMoneyDocument> docs = null;
+-		Map<String, Object> fieldValues1 = new HashMap<String, Object>();
++
++		Map<String, Object> fieldValues1 = new HashMap<>();
+ 		// get the root award number.
+ 		fieldValues1.put(ROOT_AWARD_NUMBER, getRootAwardNumberForDocumentSearch(awardVersionList.get(0).getAwardNumber()));
+-		docs = (List<TimeAndMoneyDocument>) businessObjectService.findMatchingOrderBy(TimeAndMoneyDocument.class, fieldValues1, "documentNumber", true);
++		List<TimeAndMoneyDocument> docs = (List<TimeAndMoneyDocument>) businessObjectService.findMatchingOrderBy(TimeAndMoneyDocument.class, fieldValues1, DOCUMENT_NUMBER, true);
+ 		// we don't want canceled docs to show in history.
+ 		removeCanceledDocs(docs);
+ 		for (Award award : awardVersionList) {
+@@ -91,7 +96,7 @@ public void buildTimeAndMoneyHistoryObjects(String awardNumber, List<AwardVersio
+ 
+ 	public List<TimeAndMoneyDocumentHistory> getDocHistoryAndValidInfosAssociatedWithAwardVersion(List<TimeAndMoneyDocument> docs, List<AwardAmountInfo> awardAmountInfos, Award award)
+ 			throws WorkflowException {
+-		List<TimeAndMoneyDocumentHistory> timeAndMoneyDocumentHistoryList = new ArrayList<TimeAndMoneyDocumentHistory>();
++		List<TimeAndMoneyDocumentHistory> timeAndMoneyDocumentHistoryList = new ArrayList<>();
+ 		List<AwardAmountInfo> validInfos = getValidAwardAmountInfosAssociatedWithAwardVersion(awardAmountInfos, award);
+ 		List<TimeAndMoneyDocument> awardVersionDocs = getValidDocumentsCreatedForAwardVersion(docs, validInfos);
+ 		// we want the list in reverse chronological order.
+@@ -109,7 +114,7 @@ public void buildTimeAndMoneyHistoryObjects(String awardNumber, List<AwardVersio
+ 	}
+ 
+ 	protected List<AwardAmountInfoHistory> retrieveAwardAmountInfosFromPrimaryTransactions(TimeAndMoneyDocument doc, List<AwardAmountInfo> validInfos) {
+-		List<AwardAmountInfoHistory> primaryInfos = new ArrayList<AwardAmountInfoHistory>();
++		List<AwardAmountInfoHistory> primaryInfos = new ArrayList<>();
+ 
+ 		primaryInfos.addAll(captureMoneyInfos(doc.getDocumentNumber(), validInfos));
+ 		primaryInfos.addAll(captureDateInfos(doc, validInfos));
+@@ -118,7 +123,7 @@ public void buildTimeAndMoneyHistoryObjects(String awardNumber, List<AwardVersio
+ 	}
+ 
+ 	protected List<AwardAmountInfoHistory> captureMoneyInfos(String timeAndMoneyDocumentNumber, List<AwardAmountInfo> validInfos) {
+-		List<AwardAmountInfoHistory> moneyInfoHistoryList = new ArrayList<AwardAmountInfoHistory>();
++		List<AwardAmountInfoHistory> moneyInfoHistoryList = new ArrayList<>();
+ 
+ 		for (AwardAmountInfo awardAmountInfo : validInfos) {
+ 			if (awardAmountInfo.getTimeAndMoneyDocumentNumber() != null && StringUtils.equalsIgnoreCase(timeAndMoneyDocumentNumber, awardAmountInfo.getTimeAndMoneyDocumentNumber())) {
+@@ -162,15 +167,15 @@ public boolean evaluate(TransactionDetail detail) {
+ 	}
+ 
+ 	protected List<TransactionDetail> getTransactions(Long transactionId) {
+-		Map<String, Object> values = new HashMap<String, Object>();
++		Map<String, Object> values = new HashMap<>();
+ 		values.put(TRANSACTION_ID, transactionId);
+ 		return ((List<TransactionDetail>) businessObjectService.findMatchingOrderBy(TransactionDetail.class, values, TRANSACTION_DETAIL_ID, true));
+ 	}
+ 
+-	@SuppressWarnings("unchecked")
++	
+ 	protected List<AwardAmountInfoHistory> captureDateInfos(TimeAndMoneyDocument doc, List<AwardAmountInfo> validInfos) {
+-		List<AwardAmountInfoHistory> dateInfoHistoryList = new ArrayList<AwardAmountInfoHistory>();
+-		Map<String, Object> fieldValues = new HashMap<String, Object>();
++		List<AwardAmountInfoHistory> dateInfoHistoryList = new ArrayList<>();
++		Map<String, Object> fieldValues = new HashMap<>();
+ 		for (AwardAmountInfo awardAmountInfo : validInfos) {
+ 			if (!(awardAmountInfo.getTimeAndMoneyDocumentNumber() == null)) {
+ 				if (StringUtils.equalsIgnoreCase(doc.getDocumentNumber(), awardAmountInfo.getTimeAndMoneyDocumentNumber())) {
+@@ -193,10 +198,10 @@ public boolean evaluate(TransactionDetail detail) {
+ 		return dateInfoHistoryList;
+ 	}
+ 
+-	@SuppressWarnings("unchecked")
++	
+ 	protected List<AwardAmountInfoHistory> captureInitialTransactionInfo(TimeAndMoneyDocument doc, List<AwardAmountInfo> validInfos) {
+-		List<AwardAmountInfoHistory> initialInfoHistoryList = new ArrayList<AwardAmountInfoHistory>();
+-		Map<String, Object> fieldValues = new HashMap<String, Object>();
++		List<AwardAmountInfoHistory> initialInfoHistoryList = new ArrayList<>();
++		Map<String, Object> fieldValues = new HashMap<>();
+ 		for (AwardAmountInfo awardAmountInfo : validInfos) {
+ 			if (!(awardAmountInfo.getTimeAndMoneyDocumentNumber() == null)) {
+ 				if (StringUtils.equalsIgnoreCase(doc.getDocumentNumber(), awardAmountInfo.getTimeAndMoneyDocumentNumber())) {
+@@ -228,19 +233,19 @@ protected String buildNewTimeAndMoneyDescriptionLine(TimeAndMoneyDocument doc) {
+ 		if (!(aat.getNoticeDate() == null)) {
+ 			noticeDate = aat.getNoticeDate().toString();
+ 		} else {
+-			noticeDate = "None";
++			noticeDate = NONE;
+ 		}
+ 		if (!(aat.getAwardTransactionType() == null)) {
+ 			transactionTypeDescription = aat.getAwardTransactionType().getDescription();
+ 		} else {
+-			transactionTypeDescription = "None";
++			transactionTypeDescription = NONE;
+ 		}
+ 		return "Time And Money Document: " + transactionTypeDescription + ", notice date: " + noticeDate + ", updated " + getUpdateTimeAndUser(doc) + ". Comments: "
+-				+ (aat.getComments() == null ? "None" : aat.getComments());
++				+ (aat.getComments() == null ? NONE : aat.getComments());
+ 	}
+ 
+ 	protected List<AwardAmountInfo> getValidAwardAmountInfosAssociatedWithAwardVersion(List<AwardAmountInfo> awardAmountInfos, Award award) {
+-		List<AwardAmountInfo> validInfos = new ArrayList<AwardAmountInfo>();
++		List<AwardAmountInfo> validInfos = new ArrayList<>();
+ 		for (AwardAmountInfo awardAmountInfo : awardAmountInfos) {
+ 			if (!(awardAmountInfo.getOriginatingAwardVersion() == null)) {
+ 				if (awardAmountInfo.getOriginatingAwardVersion().equals(award.getSequenceNumber())) {
+@@ -252,7 +257,7 @@ protected String buildNewTimeAndMoneyDescriptionLine(TimeAndMoneyDocument doc) {
+ 	}
+ 
+ 	protected List<TimeAndMoneyDocument> getValidDocumentsCreatedForAwardVersion(List<TimeAndMoneyDocument> docs, List<AwardAmountInfo> validInfos) {
+-		List<TimeAndMoneyDocument> validDocs = new ArrayList<TimeAndMoneyDocument>();
++		List<TimeAndMoneyDocument> validDocs = new ArrayList<>();
+ 		for (TimeAndMoneyDocument doc : docs) {
+ 			if (isInValidInfosCollection(doc, validInfos)) {
+ 				validDocs.add(doc);
+@@ -275,7 +280,7 @@ protected Boolean isInValidInfosCollection(TimeAndMoneyDocument doc, List<AwardA
+ 	}
+ 
+ 	protected void removeCanceledDocs(List<TimeAndMoneyDocument> docs) {
+-		List<TimeAndMoneyDocument> tempCanceledDocs = new ArrayList<TimeAndMoneyDocument>();
++		List<TimeAndMoneyDocument> tempCanceledDocs = new ArrayList<>();
+ 		for (TimeAndMoneyDocument doc : docs) {
+ 			if (doc.getDocumentHeader().hasWorkflowDocument()) {
+ 				if (doc.getDocumentHeader().getWorkflowDocument().isCanceled()) {
+@@ -285,71 +290,35 @@ protected void removeCanceledDocs(List<TimeAndMoneyDocument> docs) {
+ 		}
+ 		docs.removeAll(tempCanceledDocs);
+ 	}
+-
+-	@SuppressWarnings("unchecked")
++	
+ 	public List<TimeAndMoneyDocument> buildTimeAndMoneyListForAwardDisplay(Award award) throws WorkflowException {
+-		Map<String, Object> fieldValues1 = new HashMap<String, Object>();
++		Map<String, Object> fieldValues1 = new HashMap<>();
+ 		// get the award number.
+ 		fieldValues1.put(ROOT_AWARD_NUMBER, award.getAwardNumber());
+-		List<TimeAndMoneyDocument> docs = (List<TimeAndMoneyDocument>) businessObjectService.findMatchingOrderBy(TimeAndMoneyDocument.class, fieldValues1, "documentNumber", true);
++		List<TimeAndMoneyDocument> docs = (List<TimeAndMoneyDocument>) businessObjectService.findMatchingOrderBy(TimeAndMoneyDocument.class, fieldValues1, DOCUMENT_NUMBER, true);
+ 		// we don't want canceled docs to show in history.
+ 		removeCanceledDocs(docs);
+ 		return docs;
+ 	}
+ 
+-	public AwardVersionService getAwardVersionService() {
+-		awardVersionService = KcServiceLocator.getService(AwardVersionService.class);
+-		return awardVersionService;
+-	}
+-
+ 	protected Map<String, String> getHashMapToFindActiveAward(String goToAwardNumber) {
+-		Map<String, String> map = new HashMap<String, String>();
+-		map.put("awardNumber", goToAwardNumber);
++		Map<String, String> map = new HashMap<>();
++		map.put(AWARD_NUMBER, goToAwardNumber);
+ 		return map;
+ 	}
+ 
+-	public void setAwardVersionService(AwardVersionService awardVersionService) {
+-		this.awardVersionService = awardVersionService;
+-	}
+-
+ 	/**
+ 	 * This method searches generates the next Award Node Number in Sequence.
+-	 * 
+-	 * @param awardNumber
+-	 * @return
+ 	 */
+ 	public String getRootAwardNumberForDocumentSearch(String awardNumber) {
+ 		String[] splitAwardNumber = awardNumber.split(DASH);
+ 		StringBuilder returnString = new StringBuilder(12);
+ 		returnString.append(splitAwardNumber[0]);
+ 		returnString.append(DASH);
+-		returnString.append("00001");
++		returnString.append(ROOT_AWARD_NUMBER_VAL);
+ 		return returnString.toString();
+ 	}
+-
+-	protected String buildAwardDescriptionLine(Award award, AwardAmountInfo awardAmountInfo, TimeAndMoneyDocument timeAndMoneyDocument) {
+-		AwardAmountTransaction aat = timeAndMoneyDocument.getAwardAmountTransactions().get(0);
+-		String noticeDate;
+-		String transactionTypeDescription;
+-		String versionNumber;
+-		if (awardAmountInfo == null || awardAmountInfo.getOriginatingAwardVersion() == null) {
+-			versionNumber = award.getSequenceNumber().toString();
+-		} else {
+-			versionNumber = awardAmountInfo.getOriginatingAwardVersion().toString();
+-		}
+-		if (!(aat.getNoticeDate() == null)) {
+-			noticeDate = aat.getNoticeDate().toString();
+-		} else {
+-			noticeDate = "None";
+-		}
+-		if (!(award.getAwardTransactionType() == null)) {
+-			transactionTypeDescription = award.getAwardTransactionType().getDescription();
+-		} else {
+-			transactionTypeDescription = "None";
+-		}
+-		return "Award Version " + versionNumber + ", " + transactionTypeDescription + ", notice date: " + noticeDate + ", updated " + getUpdateTimeAndUser(award);
+-	}
+-
++	
+ 	protected String buildNewAwardDescriptionLine(Award award) {
+ 		String noticeDate;
+ 		String transactionTypeDescription;
+@@ -360,15 +329,15 @@ protected String buildNewAwardDescriptionLine(Award award) {
+ 		if (!(award.getNoticeDate() == null)) {
+ 			noticeDate = award.getNoticeDate().toString();
+ 		} else {
+-			noticeDate = "None";
++			noticeDate = NONE;
+ 		}
+ 		if (!(award.getAwardTransactionType() == null)) {
+ 			transactionTypeDescription = award.getAwardTransactionType().getDescription();
+ 		} else {
+-			transactionTypeDescription = "None";
++			transactionTypeDescription = NONE;
+ 		}
+ 		return "Award Version " + versionNumber + ", " + transactionTypeDescription + ", notice date: " + noticeDate + ", updated " + getUpdateTimeAndUser(award) + ". Comments:"
+-				+ (award.getAwardCurrentActionComments().getComments() == null ? "None." : award.getAwardCurrentActionComments().getComments());
++				+ (award.getAwardCurrentActionComments().getComments() == null ? NONE + "." : award.getAwardCurrentActionComments().getComments());
+ 	}
+ 
+ 	protected String getUpdateTimeAndUser(Award award) {
+@@ -379,73 +348,80 @@ protected String getUpdateTimeAndUser(TimeAndMoneyDocument doc) {
+ 		String createDateStr = null;
+ 		String updateUser = null;
+ 		if (doc.getUpdateTimestamp() != null) {
+-			createDateStr = CoreApiServiceLocator.getDateTimeService().toString(doc.getUpdateTimestamp(), "MM/dd/yy");
++			createDateStr = getDateTimeService().toString(doc.getUpdateTimestamp(), "MM/dd/yy");
+ 			updateUser = doc.getUpdateUser().length() > NUMBER_30 ? doc.getUpdateUser().substring(0, NUMBER_30) : doc.getUpdateUser();
+ 		}
+ 		return createDateStr + " by " + updateUser;
+ 	}
+ 
+ 	/**
+-	 * Gets the documentService attribute.
+-	 * 
+-	 * @return Returns the documentService.
++	 * Takes a routeHeaderId for a particular document and constructs the URL to
++	 * forward to that document
++	 *
++	 * @return String
+ 	 */
++	protected String buildForwardUrl(String documentNumber) {
++		String forward = getDocHandlerService().getDocHandlerUrl(documentNumber);
++		forward = forward.replaceFirst(DEFAULT_TAB, ALTERNATE_OPEN_TAB);
++		if (forward.contains("?")) {
++			forward += "?";
++		} else {
++			forward += "&";
++		}
++		forward += KewApiConstants.DOCUMENT_ID_PARAMETER + "=" + documentNumber;
++		forward += "&" + KewApiConstants.COMMAND_PARAMETER + "=" + NotificationConstants.NOTIFICATION_DETAIL_VIEWS.DOC_SEARCH_VIEW;
++		if (globalVariableService.getUserSession().isBackdoorInUse()) {
++			forward += "&" + KewApiConstants.BACKDOOR_ID_PARAMETER + "=" + globalVariableService.getUserSession().getPrincipalName();
++		}
++
++		return "<a href=\"" + forward + "\"target=\"_blank\">" + documentNumber + "</a>";
++	}
++
+ 	public DocumentService getDocumentService() {
+ 		return documentService;
+ 	}
+ 
+-	/**
+-	 * Sets the documentService attribute value.
+-	 * 
+-	 * @param documentService
+-	 *            The documentService to set.
+-	 */
+ 	public void setDocumentService(DocumentService documentService) {
+ 		this.documentService = documentService;
+ 	}
+ 
+-	/**
+-	 * Gets the businessObjectService attribute.
+-	 * 
+-	 * @return Returns the businessObjectService.
+-	 */
+ 	public BusinessObjectService getBusinessObjectService() {
+ 		return businessObjectService;
+ 	}
+ 
+-	/**
+-	 * Sets the businessObjectService attribute value.
+-	 * 
+-	 * @param businessObjectService
+-	 *            The businessObjectService to set.
+-	 */
+ 	public void setBusinessObjectService(BusinessObjectService businessObjectService) {
+ 		this.businessObjectService = businessObjectService;
+ 	}
+ 
+-	/**
+-	 * Takes a routeHeaderId for a particular document and constructs the URL to
+-	 * forward to that document
+-	 *
+-	 * @return String
+-	 */
+-	protected String buildForwardUrl(String documentNumber) {
+-		DocHandlerService researchDocumentService = KcServiceLocator.getService(DocHandlerService.class);
+-		String forward = researchDocumentService.getDocHandlerUrl(documentNumber);
+-		forward = forward.replaceFirst(DEFAULT_TAB, ALTERNATE_OPEN_TAB);
+-		if (forward.indexOf("?") == -1) {
+-			forward += "?";
+-		} else {
+-			forward += "&";
+-		}
+-		forward += KewApiConstants.DOCUMENT_ID_PARAMETER + "=" + documentNumber;
+-		forward += "&" + KewApiConstants.COMMAND_PARAMETER + "=" + NotificationConstants.NOTIFICATION_DETAIL_VIEWS.DOC_SEARCH_VIEW;
+-		if (GlobalVariables.getUserSession().isBackdoorInUse()) {
+-			forward += "&" + KewApiConstants.BACKDOOR_ID_PARAMETER + "=" + GlobalVariables.getUserSession().getPrincipalName();
+-		}
++	public AwardVersionService getAwardVersionService() {
++		return awardVersionService;
++	}
++
++	public void setAwardVersionService(AwardVersionService awardVersionService) {
++		this.awardVersionService = awardVersionService;
++	}
+ 
+-		String returnVal = "<a href=\"" + forward + "\"target=\"_blank\">" + documentNumber + "</a>";
+-		return returnVal;
++	public DocHandlerService getDocHandlerService() {
++		return docHandlerService;
+ 	}
+ 
++	public void setDocHandlerService(DocHandlerService docHandlerService) {
++		this.docHandlerService = docHandlerService;
++	}
++
++	public GlobalVariableService getGlobalVariableService() {
++		return globalVariableService;
++	}
++
++	public void setGlobalVariableService(GlobalVariableService globalVariableService) {
++		this.globalVariableService = globalVariableService;
++	}
++
++	public DateTimeService getDateTimeService() {
++		return dateTimeService;
++	}
++
++	public void setDateTimeService(DateTimeService dateTimeService) {
++		this.dateTimeService = dateTimeService;
++	}
+ }
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/web/struts/action/TimeAndMoneyAction.java b/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/web/struts/action/TimeAndMoneyAction.java
+index d85293e..7dedcdd 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/web/struts/action/TimeAndMoneyAction.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/web/struts/action/TimeAndMoneyAction.java
+@@ -49,7 +49,6 @@
+ import org.kuali.kra.timeandmoney.transactions.TransactionRuleImpl;
+ import org.kuali.coeus.sys.api.model.ScaleTwoDecimal;
+ import org.kuali.rice.coreservice.framework.parameter.ParameterConstants;
+-import org.kuali.rice.coreservice.framework.parameter.ParameterService;
+ import org.kuali.rice.kew.api.KewApiConstants;
+ import org.kuali.rice.kew.api.exception.WorkflowException;
+ import org.kuali.rice.kim.api.identity.Person;
+@@ -59,8 +58,7 @@
+ import org.kuali.rice.kns.service.KNSServiceLocator;
+ import org.kuali.rice.kns.web.struts.form.KualiDocumentFormBase;
+ import org.kuali.rice.krad.document.Document;
+-import org.kuali.rice.krad.service.BusinessObjectService;
+-import org.kuali.rice.krad.service.DocumentService;
++import org.kuali.rice.krad.service.SequenceAccessorService;
+ import org.kuali.rice.krad.util.GlobalVariables;
+ import org.kuali.rice.krad.util.KRADConstants;
+ 
+@@ -73,44 +71,51 @@
+ import java.util.Map.Entry;
+ 
+ public class TimeAndMoneyAction extends KcTransactionalDocumentActionBase {
+-    
++
+     private static final String OBLIGATED_START_COMMENT = "Obligated Start";
+     private static final String OBLIGATED_END_COMMENT = "Obligated End";
+     private static final String PROJECT_END_COMMENT = "Project End";
+     private static final Integer TEN = 10;
+-    BusinessObjectService businessObjectService;
+-    AwardVersionService awardVersionService;
+-    private ParameterService parameterService;
+-    TransactionRuleImpl transactionRuleImpl;
++    public static final String AWARD_NUMBER = "awardNumber";
++    public static final String TIME_AND_MONEY_DOCUMENT = "TimeAndMoneyDocument";
++    public static final String DIRECT_INDIRECT_ENABLED = "1";
++    public static final String AWARD_AMOUNT_INFOS = "awardAmountInfos";
++    public static final String SINGLE_NODE_MONEY_TRANSACTION_COMMENT = "Single Node Money Transaction";
++
++    private AwardVersionService awardVersionService;
++    private TransactionRuleImpl transactionRuleImpl;
+     private ActivePendingTransactionsService activePendingTransactionsService;
+     private TimeAndMoneyVersionService timeAndMoneyVersionService;
++    private SequenceAccessorService sequenceAccessorService;
++    private KcWorkflowService kcWorkflowService;
++    private ReportTrackingService reportTrackingService;
++    private AwardHierarchyService awardHierarchyService;
++    private AwardAmountInfoService awardAmountInfoService;
++    private TimeAndMoneyHistoryService timeAndMoneyHistoryService;
++    private TimeAndMoneyActionSummaryService timeAndMoneyActionSummaryService;
+     
+     @Override
+     public ActionForward save(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+-        ActionForward forward = mapping.findForward(Constants.MAPPING_BASIC);
+         captureDateChangeTransactions(form);
+         captureSingleNodeMoneyTransactions(mapping, form, request, response);
+-        forward = super.save(mapping, form, request, response);
+-        return forward;
++        return super.save(mapping, form, request, response);
+     }
+     
+     private void captureSingleNodeMoneyTransactions(ActionMapping mapping, ActionForm form, HttpServletRequest request, 
+             HttpServletResponse response) throws Exception {
+         TimeAndMoneyForm timeAndMoneyForm = (TimeAndMoneyForm) form;
+         TimeAndMoneyDocument timeAndMoneyDocument = timeAndMoneyForm.getTimeAndMoneyDocument();
+-        AwardAmountInfoService awardAmountInfoService = KcServiceLocator.getService(AwardAmountInfoService.class);
+-        List<TransactionDetail> moneyTransactionDetailItems = new ArrayList<TransactionDetail>();
++        List<TransactionDetail> moneyTransactionDetailItems = new ArrayList<>();
+         updateAwardAmountTransactions(timeAndMoneyDocument);
+         // Capture amount changes in hierarchy view
+         if (timeAndMoneyDocument.getAwardHierarchyNodes().size() == 1) {
+             for(Entry<String, AwardHierarchyNode> awardHierarchyNode : timeAndMoneyDocument.getAwardHierarchyNodes().entrySet()){
+-                //Award award = aptService.getWorkingAwardVersion(awardHierarchyNode.getValue().getAwardNumber());
+                 Award award = getAwardVersionService().getWorkingAwardVersion(awardHierarchyNode.getValue().getAwardNumber());
+-                AwardAmountInfo aai = awardAmountInfoService.fetchAwardAmountInfoWithHighestTransactionId(award.getAwardAmountInfos());
+-                boolean refreshNeeded = inspectAndCaptureAmountChanges(timeAndMoneyForm, aai, award, timeAndMoneyDocument, awardHierarchyNode.getValue(), moneyTransactionDetailItems);
++                AwardAmountInfo aai = getAwardAmountInfoService().fetchAwardAmountInfoWithHighestTransactionId(award.getAwardAmountInfos());
++                boolean refreshNeeded = inspectAndCaptureAmountChanges(timeAndMoneyForm, aai, award, timeAndMoneyDocument, awardHierarchyNode.getValue());
+                 getBusinessObjectService().save(award);
+                 getBusinessObjectService().save(moneyTransactionDetailItems);
+-                timeAndMoneyDocument.getAward().refreshReferenceObject("awardAmountInfos");
++                timeAndMoneyDocument.getAward().refreshReferenceObject(AWARD_AMOUNT_INFOS);
+                 if (refreshNeeded) {
+                     refreshView(mapping, timeAndMoneyForm, request, response);
+                 }
+@@ -119,21 +124,21 @@ private void captureSingleNodeMoneyTransactions(ActionMapping mapping, ActionFor
+     }
+     
+     private boolean inspectAndCaptureAmountChanges(TimeAndMoneyForm timeAndMoneyForm, AwardAmountInfo aai, Award award, TimeAndMoneyDocument timeAndMoneyDocument, 
+-                                                            AwardHierarchyNode awardHierarchyNode,  List<TransactionDetail> moneyTransactionDetailItems) {
++                                                            AwardHierarchyNode awardHierarchyNode) {
+         if(isDirectIndirectViewEnabled()){
+-            return createAndValidateEnabledViewTransaction(timeAndMoneyForm, aai, award, timeAndMoneyDocument, awardHierarchyNode, moneyTransactionDetailItems);
++            return createAndValidateEnabledViewTransaction(timeAndMoneyForm, aai, award, timeAndMoneyDocument, awardHierarchyNode);
+         } else {
+-            return createAndValidateDisabledViewTransaction(timeAndMoneyForm, aai, award, timeAndMoneyDocument, awardHierarchyNode, moneyTransactionDetailItems);
++            return createAndValidateDisabledViewTransaction(timeAndMoneyForm, aai, award, timeAndMoneyDocument, awardHierarchyNode);
+         }
+     }
+     
+     private boolean createAndValidateEnabledViewTransaction(TimeAndMoneyForm timeAndMoneyForm, AwardAmountInfo aai, Award award, 
+-                                                           TimeAndMoneyDocument timeAndMoneyDocument, AwardHierarchyNode ahn, List<TransactionDetail> moneyTransactionDetailItems) {
++                                                           TimeAndMoneyDocument timeAndMoneyDocument, AwardHierarchyNode ahn) {
+         boolean result = false;  // assume no change to totals
+         AwardHierarchyNode awardHierarchyNode = timeAndMoneyForm.getAwardHierarchyNodeItems().get(1);
+         transactionRuleImpl = new TransactionRuleImpl();
+         PendingTransaction pendingTransaction = new PendingTransaction();
+-        pendingTransaction.setComments("Single Node Money Transaction");
++        pendingTransaction.setComments(SINGLE_NODE_MONEY_TRANSACTION_COMMENT);
+         // total up "current values" from transactions against current values
+         ScaleTwoDecimal currentObligatedDirect = aai.getObligatedTotalDirect();
+         ScaleTwoDecimal currentObligatedIndirect = aai.getObligatedTotalIndirect();
+@@ -162,34 +167,31 @@ private boolean createAndValidateEnabledViewTransaction(TimeAndMoneyForm timeAnd
+             ScaleTwoDecimal anticipatedChangeDirect = awardHierarchyNode.getAnticipatedTotalDirect().subtract(currentAnticipatedDirect);
+             ScaleTwoDecimal anticipatedChangeIndirect = awardHierarchyNode.getAnticipatedTotalIndirect().subtract(currentAnticipatedIndirect);
+             if(transactionRuleImpl.processParameterEnabledRules(awardHierarchyNode, aai, timeAndMoneyDocument)){
+-                List<Award> awardItems = new ArrayList<Award>();
+-                awardItems.add(award);
+-            
+-                if (obligatedChangeDirect.isGreaterThan(new ScaleTwoDecimal(0))) {
++                if (obligatedChangeDirect.isGreaterThan(ScaleTwoDecimal.ZERO)) {
+                     pendingTransaction.setSourceAwardNumber(Constants.AWARD_HIERARCHY_DEFAULT_PARENT_OF_ROOT);
+                     pendingTransaction.setDestinationAwardNumber(award.getAwardNumber());
+-                }else if (obligatedChangeDirect.isLessThan(new ScaleTwoDecimal(0))){
++                }else if (obligatedChangeDirect.isLessThan(ScaleTwoDecimal.ZERO)){
+                     pendingTransaction.setSourceAwardNumber(award.getAwardNumber());
+                     pendingTransaction.setDestinationAwardNumber(Constants.AWARD_HIERARCHY_DEFAULT_PARENT_OF_ROOT);
+                 }
+-                if (obligatedChangeIndirect.isGreaterThan(new ScaleTwoDecimal(0))) {
++                if (obligatedChangeIndirect.isGreaterThan(ScaleTwoDecimal.ZERO)) {
+                     pendingTransaction.setSourceAwardNumber(Constants.AWARD_HIERARCHY_DEFAULT_PARENT_OF_ROOT);
+                     pendingTransaction.setDestinationAwardNumber(award.getAwardNumber());
+-                }else if (obligatedChangeIndirect.isLessThan(new ScaleTwoDecimal(0))){
++                }else if (obligatedChangeIndirect.isLessThan(ScaleTwoDecimal.ZERO)){
+                     pendingTransaction.setSourceAwardNumber(award.getAwardNumber());
+                     pendingTransaction.setDestinationAwardNumber(Constants.AWARD_HIERARCHY_DEFAULT_PARENT_OF_ROOT);
+                 }
+-                if (anticipatedChangeDirect.isGreaterThan(new ScaleTwoDecimal(0))) {
++                if (anticipatedChangeDirect.isGreaterThan(ScaleTwoDecimal.ZERO)) {
+                     pendingTransaction.setSourceAwardNumber(Constants.AWARD_HIERARCHY_DEFAULT_PARENT_OF_ROOT);
+                     pendingTransaction.setDestinationAwardNumber(award.getAwardNumber());
+-                }else if (anticipatedChangeDirect.isLessThan(new ScaleTwoDecimal(0))){
++                }else if (anticipatedChangeDirect.isLessThan(ScaleTwoDecimal.ZERO)){
+                     pendingTransaction.setSourceAwardNumber(award.getAwardNumber());
+                     pendingTransaction.setDestinationAwardNumber(Constants.AWARD_HIERARCHY_DEFAULT_PARENT_OF_ROOT);
+                 }
+-                if (anticipatedChangeIndirect.isGreaterThan(new ScaleTwoDecimal(0))) {
++                if (anticipatedChangeIndirect.isGreaterThan(ScaleTwoDecimal.ZERO)) {
+                     pendingTransaction.setSourceAwardNumber(Constants.AWARD_HIERARCHY_DEFAULT_PARENT_OF_ROOT);
+                     pendingTransaction.setDestinationAwardNumber(award.getAwardNumber());
+-                }else if (anticipatedChangeIndirect.isLessThan(new ScaleTwoDecimal(0))){
++                }else if (anticipatedChangeIndirect.isLessThan(ScaleTwoDecimal.ZERO)){
+                     pendingTransaction.setSourceAwardNumber(award.getAwardNumber());
+                     pendingTransaction.setDestinationAwardNumber(Constants.AWARD_HIERARCHY_DEFAULT_PARENT_OF_ROOT);
+                 }
+@@ -225,12 +227,12 @@ private boolean createAndValidateEnabledViewTransaction(TimeAndMoneyForm timeAnd
+     }
+     
+     private boolean createAndValidateDisabledViewTransaction(TimeAndMoneyForm timeAndMoneyForm, AwardAmountInfo aai, Award award,
+-                                                            TimeAndMoneyDocument timeAndMoneyDocument, AwardHierarchyNode ahn, List<TransactionDetail> moneyTransactionDetailItems) {
++                                                            TimeAndMoneyDocument timeAndMoneyDocument, AwardHierarchyNode ahn) {
+         boolean result = false;  // assume no change to totals
+         AwardHierarchyNode awardHierarchyNode = timeAndMoneyForm.getAwardHierarchyNodeItems().get(timeAndMoneyForm.getAwardHierarchyNodeItems().size() - 1);
+         transactionRuleImpl = new TransactionRuleImpl();
+         PendingTransaction pendingTransaction = new PendingTransaction();
+-        pendingTransaction.setComments("Single Node Money Transaction");
++        pendingTransaction.setComments(SINGLE_NODE_MONEY_TRANSACTION_COMMENT);
+         pendingTransaction.setSingleNodeTransaction(true);
+         // total up "current values" from transactions against current values
+         ScaleTwoDecimal currentObligated = aai.getAmountObligatedToDate();
+@@ -257,20 +259,17 @@ private boolean createAndValidateDisabledViewTransaction(TimeAndMoneyForm timeAn
+             ScaleTwoDecimal anticipatedChange = awardHierarchyNode.getAnticipatedTotalAmount().subtract(currentAnticipated);
+ 
+             if(transactionRuleImpl.processParameterDisabledRules(awardHierarchyNode, aai, timeAndMoneyDocument)){
+-                List<Award> awardItems = new ArrayList<Award>();
+-                awardItems.add(award);
+-            
+-                if (obligatedChange.isGreaterThan(new ScaleTwoDecimal(0))) {
++                if (obligatedChange.isGreaterThan(ScaleTwoDecimal.ZERO)) {
+                     pendingTransaction.setSourceAwardNumber(Constants.AWARD_HIERARCHY_DEFAULT_PARENT_OF_ROOT);
+                     pendingTransaction.setDestinationAwardNumber(award.getAwardNumber());
+-                }else if (obligatedChange.isLessThan(new ScaleTwoDecimal(0))){
++                }else if (obligatedChange.isLessThan(ScaleTwoDecimal.ZERO)){
+                     pendingTransaction.setSourceAwardNumber(award.getAwardNumber());
+                     pendingTransaction.setDestinationAwardNumber(Constants.AWARD_HIERARCHY_DEFAULT_PARENT_OF_ROOT);
+                 }
+-                if (anticipatedChange.isGreaterThan(new ScaleTwoDecimal(0))) {
++                if (anticipatedChange.isGreaterThan(ScaleTwoDecimal.ZERO)) {
+                     pendingTransaction.setSourceAwardNumber(Constants.AWARD_HIERARCHY_DEFAULT_PARENT_OF_ROOT);
+                     pendingTransaction.setDestinationAwardNumber(award.getAwardNumber());
+-                }else if (anticipatedChange.isLessThan(new ScaleTwoDecimal(0))){
++                }else if (anticipatedChange.isLessThan(ScaleTwoDecimal.ZERO)){
+                     pendingTransaction.setSourceAwardNumber(award.getAwardNumber());
+                     pendingTransaction.setDestinationAwardNumber(Constants.AWARD_HIERARCHY_DEFAULT_PARENT_OF_ROOT);
+                 }
+@@ -299,9 +298,7 @@ private boolean createAndValidateDisabledViewTransaction(TimeAndMoneyForm timeAn
+     private void captureDateChangeTransactions(ActionForm form) throws WorkflowException {
+         TimeAndMoneyForm timeAndMoneyForm = (TimeAndMoneyForm) form;
+         TimeAndMoneyDocument timeAndMoneyDocument = timeAndMoneyForm.getTimeAndMoneyDocument();
+-        AwardAmountInfoService awardAmountInfoService = KcServiceLocator.getService(AwardAmountInfoService.class);
+-        List<AwardAmountInfo> awardAmountInfoObjects = new ArrayList<AwardAmountInfo>();
+-        DocumentService documentService = KcServiceLocator.getService(DocumentService.class);
++        List<AwardAmountInfo> awardAmountInfoObjects = new ArrayList<>();
+         //save rules have not been applied yet so there needs to be a null check on transaction type code before testing the value.
+         boolean isNoCostExtension;
+         if (timeAndMoneyDocument.getAwardAmountTransactions().get(0).getTransactionTypeCode() == null) {
+@@ -312,29 +309,28 @@ private void captureDateChangeTransactions(ActionForm form) throws WorkflowExcep
+         //if Dates have changed in a node in hierarchy view and the Transaction Type is a No Cost Extension,
+         //we need to record this as a transaction in history.
+         //build the transaction and add to this list for persistence later.
+-        List<TransactionDetail> dateChangeTransactionDetailItems = new ArrayList<TransactionDetail>();
++        List<TransactionDetail> dateChangeTransactionDetailItems = new ArrayList<>();
+         
+         updateDocumentFromSession(timeAndMoneyDocument);//not sure if I need to do this.
+         updateAwardAmountTransactions(timeAndMoneyDocument);
+         for(Entry<String, AwardHierarchyNode> awardHierarchyNode : timeAndMoneyDocument.getAwardHierarchyNodes().entrySet()){
+-            //Award award = aptService.getWorkingAwardVersion(awardHierarchyNode.getValue().getAwardNumber()); 
+             Award award = getAwardVersionService().getWorkingAwardVersion(awardHierarchyNode.getValue().getAwardNumber());
+             int index = findAwardHierarchyNodeIndex(awardHierarchyNode);
+-            AwardAmountInfo aai = awardAmountInfoService.fetchAwardAmountInfoWithHighestTransactionId(award.getAwardAmountInfos());
++            AwardAmountInfo aai = getAwardAmountInfoService().fetchAwardAmountInfoWithHighestTransactionId(award.getAwardAmountInfos());
+             boolean needToSaveAward = false;
+             needToSaveAward |= inspectAndCaptureCurrentFundEffectiveDateChanges(timeAndMoneyForm, isNoCostExtension, aai, index, award, timeAndMoneyDocument, awardHierarchyNode, dateChangeTransactionDetailItems);
+-            aai = awardAmountInfoService.fetchAwardAmountInfoWithHighestTransactionId(award.getAwardAmountInfos());//get new award amount info if date change transactions have been created.
++            aai = getAwardAmountInfoService().fetchAwardAmountInfoWithHighestTransactionId(award.getAwardAmountInfos());//get new award amount info if date change transactions have been created.
+             needToSaveAward |= inspectAndCaptureObligationExpirationDateChanges(timeAndMoneyForm, isNoCostExtension, aai, index, award, timeAndMoneyDocument, awardHierarchyNode, dateChangeTransactionDetailItems);
+-            aai = awardAmountInfoService.fetchAwardAmountInfoWithHighestTransactionId(award.getAwardAmountInfos());//get new award amount info if date change transactions have been created.
++            aai = getAwardAmountInfoService().fetchAwardAmountInfoWithHighestTransactionId(award.getAwardAmountInfos());//get new award amount info if date change transactions have been created.
+             needToSaveAward |= inspectAndCaptureFinalExpirationDateChanges(timeAndMoneyForm, isNoCostExtension, aai, index, award, timeAndMoneyDocument, awardHierarchyNode, dateChangeTransactionDetailItems);
+             //capture any changes of DirectFandADistributions, and add them to the Award working version for persistence.
+             if(award.getAwardNumber().equals(timeAndMoneyDocument.getAward().getAwardNumber())) {
+                 //must use documentService to save the award document. businessObjectService.save() builds deletion award list on T&M doc and we
+                 //need it to be wired up on AwardDocument so that any deletes from collection will be caught and persisted correctly.
+-                AwardDocument awardDocument = (AwardDocument) documentService.getByDocumentHeaderId(award.getAwardDocument().getDocumentNumber());
++                AwardDocument awardDocument = (AwardDocument) getDocumentService().getByDocumentHeaderId(award.getAwardDocument().getDocumentNumber());
+                 if (mustSetFandADistributions(awardDocument.getAward().getAwardDirectFandADistributions(),timeAndMoneyDocument.getAward().getAwardDirectFandADistributions())) {
+                     awardDocument.getAward().setAwardDirectFandADistributions(timeAndMoneyDocument.getAward().getAwardDirectFandADistributions());
+-                    documentService.saveDocument(awardDocument);
++                    getDocumentService().saveDocument(awardDocument);
+                     needToSaveAward = true;
+                 }
+             }
+@@ -348,12 +344,12 @@ private void captureDateChangeTransactions(ActionForm form) throws WorkflowExcep
+         getBusinessObjectService().save(timeAndMoneyDocument.getAwardAmountTransactions());
+         //save all transaction details from No Cost extension date changes.
+         getBusinessObjectService().save(dateChangeTransactionDetailItems);
+-        timeAndMoneyDocument.getAward().refreshReferenceObject("awardAmountInfos");//don't think I need to do this.
++        timeAndMoneyDocument.getAward().refreshReferenceObject(AWARD_AMOUNT_INFOS);//don't think I need to do this.
+     }
+         
+     /**
+-     *Date changes in hierarchy view are captured here.  If the transaction is a No Cost Extension, we report the transaction
+-     *details for display in history tab.
++     * Date changes in hierarchy view are captured here.  If the transaction is a No Cost Extension, we report the transaction
++     * details for display in history tab.
+      */
+     protected boolean inspectAndCaptureCurrentFundEffectiveDateChanges(TimeAndMoneyForm timeAndMoneyForm, Boolean isNoCostExtension, AwardAmountInfo aai, Integer index,
+                                                         Award award, TimeAndMoneyDocument timeAndMoneyDocument, Entry<String, AwardHierarchyNode> awardHierarchyNode,
+@@ -374,8 +370,8 @@ protected boolean inspectAndCaptureCurrentFundEffectiveDateChanges(TimeAndMoneyF
+                         aai.setCurrentFundEffectiveDate(currentEffectiveDate);
+                         awardHierarchyNode.getValue().setCurrentFundEffectiveDate(currentEffectiveDate);
+                         award.getAwardAmountInfos().add(aai);
+-                        addTransactionDetails(aai.getAwardNumber(), aai.getAwardNumber(), aai.getSequenceNumber(), timeAndMoneyDocument.getAwardNumber(),
+-                                                timeAndMoneyDocument.getDocumentNumber(), OBLIGATED_START_COMMENT, dateChangeTransactionDetailItems);
++                        addTransactionDetailsForDateChanges(aai.getAwardNumber(), aai.getAwardNumber(), aai.getSequenceNumber(), timeAndMoneyDocument.getAwardNumber(),
++                                timeAndMoneyDocument.getDocumentNumber(), OBLIGATED_START_COMMENT, dateChangeTransactionDetailItems);
+             } else {
+                     AwardAmountInfo tempAai = getNewAwardAmountInfoForDateChangeTransaction(aai, award, timeAndMoneyDocument.getDocumentNumber());
+                     needToSave = true;
+@@ -401,8 +397,8 @@ protected boolean inspectAndCaptureCurrentFundEffectiveDateChanges(TimeAndMoneyF
+     }
+     
+     /**
+-     *Date changes in hierarchy view are captured here.  If the transaction is a No Cost Extension, we report the transaction
+-     *details for display in history tab.
++     * Date changes in hierarchy view are captured here.  If the transaction is a No Cost Extension, we report the transaction
++     * details for display in history tab.
+      */
+     protected boolean inspectAndCaptureObligationExpirationDateChanges(TimeAndMoneyForm timeAndMoneyForm, Boolean isNoCostExtension, AwardAmountInfo aai, Integer index,
+                                                         Award award, TimeAndMoneyDocument timeAndMoneyDocument, Entry<String, AwardHierarchyNode> awardHierarchyNode,
+@@ -417,15 +413,14 @@ protected boolean inspectAndCaptureObligationExpirationDateChanges(TimeAndMoneyF
+             // previousObligationExpirationDate is null
+             if (isNoCostExtension && (previousObligationExpirationDate == null || 
+                     currentObligationExpirationDate.after(previousObligationExpirationDate))) {
+-                        AwardAmountInfo tempAai = getNewAwardAmountInfoForDateChangeTransaction(aai, award, timeAndMoneyDocument.getDocumentNumber());
+-                        aai = tempAai;
++                        aai = getNewAwardAmountInfoForDateChangeTransaction(aai, award, timeAndMoneyDocument.getDocumentNumber());
+                         aai.setObligationExpirationDate(currentObligationExpirationDate);
+                         awardHierarchyNode.getValue().setObligationExpirationDate(currentObligationExpirationDate);
+                         award.getAwardAmountInfos().add(aai);
+-                        addTransactionDetails(aai.getAwardNumber(), aai.getAwardNumber(), aai.getSequenceNumber(), timeAndMoneyDocument.getAwardNumber(),
+-                                                    timeAndMoneyDocument.getDocumentNumber(), OBLIGATED_END_COMMENT, dateChangeTransactionDetailItems);
+-            }else {AwardAmountInfo tempAai = getNewAwardAmountInfoForDateChangeTransaction(aai, award, timeAndMoneyDocument.getDocumentNumber());
+-                    aai = tempAai;
++                        addTransactionDetailsForDateChanges(aai.getAwardNumber(), aai.getAwardNumber(), aai.getSequenceNumber(), timeAndMoneyDocument.getAwardNumber(),
++                                timeAndMoneyDocument.getDocumentNumber(), OBLIGATED_END_COMMENT, dateChangeTransactionDetailItems);
++            }else {
++                    aai = getNewAwardAmountInfoForDateChangeTransaction(aai, award, timeAndMoneyDocument.getDocumentNumber());
+                     aai.setObligationExpirationDate(currentObligationExpirationDate);
+                     awardHierarchyNode.getValue().setObligationExpirationDate(currentObligationExpirationDate);
+                     award.getAwardAmountInfos().add(aai);
+@@ -450,8 +445,8 @@ protected boolean inspectAndCaptureObligationExpirationDateChanges(TimeAndMoneyF
+     }
+     
+     /**
+-     *Date changes in hierarchy view are captured here.  If the transaction is a No Cost Extension, we report the transaction
+-     *details for display in history tab.
++     * Date changes in hierarchy view are captured here.  If the transaction is a No Cost Extension, we report the transaction
++     * details for display in history tab.
+      */
+     protected boolean inspectAndCaptureFinalExpirationDateChanges(TimeAndMoneyForm timeAndMoneyForm, Boolean isNoCostExtension, AwardAmountInfo aai, Integer index,
+                                                         Award award, TimeAndMoneyDocument timeAndMoneyDocument, Entry<String, AwardHierarchyNode> awardHierarchyNode,
+@@ -463,15 +458,14 @@ protected boolean inspectAndCaptureFinalExpirationDateChanges(TimeAndMoneyForm t
+                 && !timeAndMoneyForm.getAwardHierarchyNodeItems().get(index).getFinalExpirationDate().equals(aai.getFinalExpirationDate())){ 
+           if (isNoCostExtension && 
+                   timeAndMoneyForm.getAwardHierarchyNodeItems().get(index).getFinalExpirationDate().after(aai.getFinalExpirationDate())) {
+-                      AwardAmountInfo tempAai = getNewAwardAmountInfoForDateChangeTransaction(aai, award, timeAndMoneyDocument.getDocumentNumber());
+-                      aai = tempAai;
++                    aai = getNewAwardAmountInfoForDateChangeTransaction(aai, award, timeAndMoneyDocument.getDocumentNumber());
+                       aai.setFinalExpirationDate(timeAndMoneyForm.getAwardHierarchyNodeItems().get(index).getFinalExpirationDate());
+                       awardHierarchyNode.getValue().setFinalExpirationDate(timeAndMoneyForm.getAwardHierarchyNodeItems().get(index).getFinalExpirationDate());
+                       award.getAwardAmountInfos().add(aai);
+-                      addTransactionDetails(aai.getAwardNumber(), aai.getAwardNumber(), aai.getSequenceNumber(), timeAndMoneyDocument.getAwardNumber(),
+-                                              timeAndMoneyDocument.getDocumentNumber(), PROJECT_END_COMMENT, dateChangeTransactionDetailItems);
+-          }else {AwardAmountInfo tempAai = getNewAwardAmountInfoForDateChangeTransaction(aai, award, timeAndMoneyDocument.getDocumentNumber());
+-                  aai = tempAai;
++                      addTransactionDetailsForDateChanges(aai.getAwardNumber(), aai.getAwardNumber(), aai.getSequenceNumber(), timeAndMoneyDocument.getAwardNumber(),
++                              timeAndMoneyDocument.getDocumentNumber(), PROJECT_END_COMMENT, dateChangeTransactionDetailItems);
++          }else {
++              aai = getNewAwardAmountInfoForDateChangeTransaction(aai, award, timeAndMoneyDocument.getDocumentNumber());
+                   aai.setFinalExpirationDate(timeAndMoneyForm.getAwardHierarchyNodeItems().get(index).getFinalExpirationDate());
+                   awardHierarchyNode.getValue().setFinalExpirationDate(timeAndMoneyForm.getAwardHierarchyNodeItems().get(index).getFinalExpirationDate());
+                   award.getAwardAmountInfos().add(aai);
+@@ -514,27 +508,16 @@ private boolean mustSetFandADistributions(List<AwardDirectFandADistribution> awa
+      }
+     
+     /*
+-     * 
+      * This method creates a transactionDetail object and adds it to the list for persistence later.
+-     * 
+-     * @param sourceAwardNumber
+-     * @param destinationAwardNumber
+-     * @param sequenceNumber
+-     * @param pendingTransaction
+-     * @param currentAwardNumber
+-     * @param documentNumber
+-     * @param transactionDetailItems
+      */
+-    protected void addTransactionDetails(String sourceAwardNumber, String destinationAwardNumber, Integer sequenceNumber, String currentAwardNumber, String documentNumber, 
+-            String commentsString, List<TransactionDetail> transactionDetailItems){
++    protected void addTransactionDetailsForDateChanges(String sourceAwardNumber, String destinationAwardNumber, Integer sequenceNumber, String currentAwardNumber, String documentNumber,
++                                                       String commentsString, List<TransactionDetail> transactionDetailItems){
+         TransactionDetail transactionDetail = new TransactionDetail();
+         transactionDetail.setSourceAwardNumber(sourceAwardNumber);
+         transactionDetail.setSequenceNumber(sequenceNumber);
+         transactionDetail.setDestinationAwardNumber(destinationAwardNumber);
+-        //transactionDetail.setAnticipatedAmount(pendingTransaction.getAnticipatedAmount());
+-        //transactionDetail.setObligatedAmount(pendingTransaction.getObligatedAmount());
+         transactionDetail.setAwardNumber(currentAwardNumber);
+-        transactionDetail.setTransactionId(new Long(-1));
++        transactionDetail.setTransactionId(-1L);
+         transactionDetail.setTimeAndMoneyDocumentNumber(documentNumber);
+         transactionDetail.setComments(commentsString);
+         transactionDetailItems.add(transactionDetail);
+@@ -564,10 +547,10 @@ private AwardAmountInfo getNewAwardAmountInfoForDateChangeTransaction(AwardAmoun
+         newAwardAmountInfo.setAnticipatedTotalAmount(awardAmountInfo.getAnticipatedTotalAmount());
+         newAwardAmountInfo.setAnticipatedTotalDirect(awardAmountInfo.getAnticipatedTotalDirect());
+         newAwardAmountInfo.setAnticipatedTotalIndirect(awardAmountInfo.getAnticipatedTotalIndirect());
+-        newAwardAmountInfo.setObligatedChangeDirect(new ScaleTwoDecimal(0));
+-        newAwardAmountInfo.setObligatedChangeIndirect(new ScaleTwoDecimal(0));
+-        newAwardAmountInfo.setAnticipatedChangeDirect(new ScaleTwoDecimal(0));
+-        newAwardAmountInfo.setAnticipatedChangeIndirect(new ScaleTwoDecimal(0));
++        newAwardAmountInfo.setObligatedChangeDirect(ScaleTwoDecimal.ZERO);
++        newAwardAmountInfo.setObligatedChangeIndirect(ScaleTwoDecimal.ZERO);
++        newAwardAmountInfo.setAnticipatedChangeDirect(ScaleTwoDecimal.ZERO);
++        newAwardAmountInfo.setAnticipatedChangeIndirect(ScaleTwoDecimal.ZERO);
+         newAwardAmountInfo.setOriginatingAwardVersion(award.getSequenceNumber());
+ 
+         return newAwardAmountInfo;
+@@ -595,8 +578,7 @@ private void updateAwardAmountTransactions(TimeAndMoneyDocument timeAndMoneyDocu
+ 
+     private int findAwardHierarchyNodeIndex(Entry<String, AwardHierarchyNode> awardHierarchyNode) {
+         String i = awardHierarchyNode.getValue().getAwardNumber().replaceAll("\\d*\\-0*", "");
+-        int index = Integer.parseInt(i);
+-        return index;
++        return Integer.parseInt(i);
+     }
+     
+     /*
+@@ -608,13 +590,12 @@ public ActionForward route(ActionMapping mapping, ActionForm form, HttpServletRe
+         ActionForward actionForward;
+         save(mapping, form, request, response);
+         TimeAndMoneyForm timeAndMoneyForm = (TimeAndMoneyForm) form;
+-        TimeAndMoneyDocument timeAndMoneyDocument = timeAndMoneyForm.getTimeAndMoneyDocument();
+         actionForward = super.route(mapping, form, request, response);  
+         // save report tracking items
+         saveReportTrackingItems(timeAndMoneyForm);
+         
+         String routeHeaderId = timeAndMoneyForm.getDocument().getDocumentNumber();
+-        String returnLocation = buildActionUrl(routeHeaderId, Constants.MAPPING_AWARD_TIME_AND_MONEY_PAGE, "TimeAndMoneyDocument");
++        String returnLocation = buildActionUrl(routeHeaderId, Constants.MAPPING_AWARD_TIME_AND_MONEY_PAGE, TIME_AND_MONEY_DOCUMENT);
+         
+         ActionForward basicForward = mapping.findForward(KRADConstants.MAPPING_PORTAL);
+         ActionForward holdingPageForward = mapping.findForward(Constants.MAPPING_HOLDING_PAGE);
+@@ -643,21 +624,17 @@ public ActionForward blanketApprove(ActionMapping mapping, ActionForm form, Http
+ 
+         String routeHeaderId = timeAndMoneyForm.getDocument().getDocumentNumber();
+         
+-        String returnLocation = buildActionUrl(routeHeaderId, Constants.MAPPING_AWARD_TIME_AND_MONEY_PAGE, "TimeAndMoneyDocument");
++        String returnLocation = buildActionUrl(routeHeaderId, Constants.MAPPING_AWARD_TIME_AND_MONEY_PAGE, TIME_AND_MONEY_DOCUMENT);
+         ActionForward basicForward = mapping.findForward(KRADConstants.MAPPING_PORTAL);
+         ActionForward holdingPageForward = mapping.findForward(Constants.MAPPING_HOLDING_PAGE);
+         return routeToHoldingPage(basicForward, actionForward, holdingPageForward, returnLocation);
+     }
+     
+-    
+-    
+-
+     /**
+      * must remove all award amount infos corresponding to this document.  Date changes create and add new Award Amount Info.  Pending Transactions
+      * do not create new Award Amount Info until the document is routed or blanket approved.
+      * @see org.kuali.rice.kns.web.struts.action.KualiDocumentActionBase#cancel(org.apache.struts.action.ActionMapping, org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+      */
+-    @SuppressWarnings("unchecked")
+     @Override
+     public ActionForward cancel(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
+             throws Exception {
+@@ -668,9 +645,8 @@ public ActionForward cancel(ActionMapping mapping, ActionForm form, HttpServletR
+         Map<String, AwardHierarchy> awardHierarchyItems = timeAndMoneyDocument.getAwardHierarchyItems();
+         for (Map.Entry<String, AwardHierarchy> awardHierarchyEntry : awardHierarchyItems.entrySet()) {
+             AwardHierarchy awardHierarchy = awardHierarchyEntry.getValue();
+-            //Award award = getWorkingAwardVersion(awardHierarchy.getAwardNumber());
+             Award award = getAwardVersionService().getWorkingAwardVersion(awardHierarchy.getAwardNumber());
+-            List<AwardAmountInfo> deleteCollection = new ArrayList<AwardAmountInfo>();
++            List<AwardAmountInfo> deleteCollection = new ArrayList<>();
+             for (AwardAmountInfo awardAmountInfo : award.getAwardAmountInfos()) {
+                 if(!(awardAmountInfo.getTimeAndMoneyDocumentNumber() == null)) {
+                     if(awardAmountInfo.getTimeAndMoneyDocumentNumber().equals(timeAndMoneyDocument.getDocumentNumber())) {
+@@ -689,14 +665,7 @@ public ActionForward cancel(ActionMapping mapping, ActionForm form, HttpServletR
+     /**
+      * 
+      * This method refreshes the view depending on various view options like either active or pending view or dates only, totals and 
+-     * distributed/distributable. 
+-     * 
+-     * @param mapping
+-     * @param form
+-     * @param request
+-     * @param response
+-     * @return
+-     * @throws Exception
++     * distributed/distributable.
+      */
+     public ActionForward refreshView(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+         TimeAndMoneyForm timeAndMoneyForm = (TimeAndMoneyForm) form;
+@@ -704,16 +673,15 @@ public ActionForward refreshView(ActionMapping mapping, ActionForm form, HttpSer
+         //perform this logic if pending view
+         if(StringUtils.equalsIgnoreCase(timeAndMoneyForm.getCurrentOrPendingView(), TimeAndMoneyForm.PENDING)){
+             
+-            Map<String, AwardAmountTransaction> awardAmountTransactionItems = new HashMap<String, AwardAmountTransaction>();
++            Map<String, AwardAmountTransaction> awardAmountTransactionItems = new HashMap<>();
+             List<Award> awardItems = new ArrayList<Award>();
+-            List<TransactionDetail> transactionDetailItems = new ArrayList<TransactionDetail>();
++            List<TransactionDetail> transactionDetailItems = new ArrayList<>();
+             
+             updateDocumentFromSession(doc);
+ 
+             //added refreshFlag boolean to service method. If doing a refresh, we don't want to reset the processed flag.  Only when T&M doc is routed for approval.
+             getActivePendingTransactionsService().processTransactions(doc, doc.getAwardAmountTransactions().get(0), awardAmountTransactionItems, awardItems, transactionDetailItems, true);
+             GlobalVariables.getUserSession().addObject(GlobalVariables.getUserSession().getKualiSessionId()+Constants.TIME_AND_MONEY_DOCUMENT_STRING_FOR_SESSION, doc);
+-            //doc.refreshReferenceObject(PENDING_TRANSACTIONS_ATTRIBUTE_NAME);
+         //perform this logic if active view
+         } else if(StringUtils.equalsIgnoreCase(timeAndMoneyForm.getCurrentOrPendingView(), TimeAndMoneyForm.CURRENT)){
+             timeAndMoneyForm.setOrder(new ArrayList<String>());
+@@ -750,19 +718,14 @@ private Award getCurrentAward(TimeAndMoneyDocument timeAndMoneyDocument) {
+         
+         return tmpAward;
+     }
+-    
+-   
+-    
++
+     @Override
+     public ActionForward docHandler(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+         TimeAndMoneyForm timeAndMoneyForm = (TimeAndMoneyForm) form;
+         TimeAndMoneyDocument timeAndMoneyDocument = timeAndMoneyForm.getTimeAndMoneyDocument();
+-        String command = timeAndMoneyForm.getCommand();
+ 
+         ActionForward forward = handleDocument(mapping, form, request, response, timeAndMoneyForm);
+-//        if ("timeAndMoney".equals(command)) {
+-//            forward = home(mapping, timeAndMoneyForm, request, response);
+-//        }
++
+         timeAndMoneyForm.initializeFormOrDocumentBasedOnCommand();        
+         String rootAwardNumber = timeAndMoneyForm.getTimeAndMoneyDocument().getRootAwardNumber();
+                 
+@@ -787,24 +750,7 @@ public ActionForward docHandler(ActionMapping mapping, ActionForm form, HttpServ
+ 
+         return forward;
+     }
+-         
+-    
+-    /*
+-     * This method retrieves AwardHierarchyService
+-     */
+-    protected AwardHierarchyService getAwardHierarchyService(){        
+-        return (AwardHierarchyService) KcServiceLocator.getService(AwardHierarchyService.class);
+-    }
+-    
+-    /**
+-     * @param mapping
+-     * @param form
+-     * @param request
+-     * @param response
+-     * @param awardForm
+-     * @return
+-     * @throws Exception
+-     */
++
+     public ActionForward handleDocument(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+                                   HttpServletResponse response, TimeAndMoneyForm timeAndMoneyForm) throws Exception {
+         String command = timeAndMoneyForm.getCommand();
+@@ -830,17 +776,6 @@ public ActionForward handleDocument(ActionMapping mapping, ActionForm form, Http
+         return forward;
+     }
+     
+-    /**
+-     * 
+-     * This method adds a new transaction.
+-     * 
+-     * @param mapping
+-     * @param form
+-     * @param request
+-     * @param response
+-     * @return
+-     * @throws Exception
+-     */
+     public ActionForward addTransaction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+         captureDateChangeTransactions(form);
+         TimeAndMoneyForm timeAndMoneyForm = (TimeAndMoneyForm) form;
+@@ -851,16 +786,7 @@ public ActionForward addTransaction(ActionMapping mapping, ActionForm form, Http
+         return mapping.findForward(Constants.MAPPING_BASIC);        
+     }
+     
+-    /**
+-     * 
+-     * This method adds a deletes a transaction.
+-     * @param mapping
+-     * @param form
+-     * @param request
+-     * @param response
+-     * @return
+-     * @throws Exception
+-     */
++
+     public ActionForward deleteTransaction(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+         captureDateChangeTransactions(form);
+         ((TimeAndMoneyForm) form).getTransactionBean().deletePendingTransactionItem(getLineToDelete(request));
+@@ -869,15 +795,7 @@ public ActionForward deleteTransaction(ActionMapping mapping, ActionForm form, H
+     }
+     
+     /**
+-     * 
+      * This method switches the award for history, summary and Action Summary panels.
+-     * 
+-     * @param mapping
+-     * @param form
+-     * @param request
+-     * @param response
+-     * @return
+-     * @throws Exception
+      */
+     public ActionForward switchAward(ActionMapping mapping, ActionForm form , HttpServletRequest request, HttpServletResponse response) throws Exception {
+         
+@@ -891,16 +809,9 @@ public ActionForward switchAward(ActionMapping mapping, ActionForm form , HttpSe
+ 
+     /*
+      * This method populates Summary, Action Summary and History panels for selected award.
+-     *  
+-     * @param timeAndMoneyForm
+-     * @param timeAndMoneyForm
+-     * @param goToAwardNumber
+-     * @throws LookupException
+-     * @throws SQLException
+      */
+     private void populateOtherPanels(AwardAmountTransaction newAwardAmountTransaction, TimeAndMoneyForm timeAndMoneyForm, String goToAwardNumber)
+             throws LookupException, SQLException, WorkflowException {
+-        //Award award = getWorkingAwardVersion(goToAwardNumber);
+         Award award = getAwardVersionService().getWorkingAwardVersion(goToAwardNumber);
+         if (award == null) {
+             GlobalVariables.getMessageMap().putError("goToAwardNumber", "error.timeandmoney.invalidawardnumber", goToAwardNumber);
+@@ -910,51 +821,24 @@ private void populateOtherPanels(AwardAmountTransaction newAwardAmountTransactio
+         timeAndMoneyDocument.setAwardNumber(award.getAwardNumber());
+         timeAndMoneyDocument.setAward(award);
+ 
+-        TimeAndMoneyHistoryService tamhs = KcServiceLocator.getService(TimeAndMoneyHistoryService.class);
+-                
+         timeAndMoneyDocument.getAwardVersionHistoryList().clear();
+-        tamhs.buildTimeAndMoneyHistoryObjects(award.getAwardNumber(), timeAndMoneyDocument.getAwardVersionHistoryList());
+-        TimeAndMoneyActionSummaryService tamass = KcServiceLocator.getService(TimeAndMoneyActionSummaryService.class);
++        getTimeAndMoneyHistoryService().buildTimeAndMoneyHistoryObjects(award.getAwardNumber(), timeAndMoneyDocument.getAwardVersionHistoryList());
+         timeAndMoneyDocument.getTimeAndMoneyActionSummaryItems().clear();
+-        tamass.populateActionSummary(timeAndMoneyDocument.getTimeAndMoneyActionSummaryItems(), goToAwardNumber);
++        getTimeAndMoneyActionSummaryService().populateActionSummary(timeAndMoneyDocument.getTimeAndMoneyActionSummaryItems(), goToAwardNumber);
+         
+         timeAndMoneyDocument.setNewAwardAmountTransaction(newAwardAmountTransaction);
+     }
+     
+     /**
+      * This method tests if the award is new by checking the size of AwardDirectFandADistributions on the Award.
+-     * @param awardForm
+-     * @return
+      */
+     public boolean isNewAward(TimeAndMoneyForm timeAndMoneyForm) {
+         return timeAndMoneyForm.getTimeAndMoneyDocument().getAward().getAwardDirectFandADistributions().size() == 0;
+     }
+-    
+-    /**
+-     * Gets the businessObjectService attribute. 
+-     * @return Returns the businessObjectService.
+-     */
+-    public AwardVersionService getAwardVersionService() {
+-        awardVersionService = KcServiceLocator.getService(AwardVersionService.class);
+-        return awardVersionService;
+-    }
+ 
+-    /*
+-     * Retrieves an ActivePendingTransactionsService.
+-     */
+-    protected ActivePendingTransactionsService getActivePendingTransactionsService(){
+-        if (activePendingTransactionsService == null) {
+-            activePendingTransactionsService = KcServiceLocator.getService(ActivePendingTransactionsService.class);
+-        }
+-        return activePendingTransactionsService;
+-    }
+-    
+     /**
+      * 
+-     * This method builds the string for the ActionForward 
+-     * @param forwardPath
+-     * @param docIdRequestParameter
+-     * @return
++     * This method builds the string for the ActionForward
+      */
+     public String buildForwardStringForActionListCommand(String forwardPath, String docIdRequestParameter){
+         StringBuilder sb = new StringBuilder();
+@@ -981,13 +865,7 @@ public ActionForward submit(){
+     
+     /**
+      * 
+-     * This method adds a new AwardDirectFandADistribution to the list.  
+-     * @param mapping
+-     * @param form
+-     * @param request
+-     * @param response
+-     * @return
+-     * @throws Exception
++     * This method adds a new AwardDirectFandADistribution to the list.
+      */
+     public ActionForward addAwardDirectFandADistribution(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+             HttpServletResponse response) throws Exception {
+@@ -1000,13 +878,7 @@ public ActionForward addAwardDirectFandADistribution(ActionMapping mapping, Acti
+     
+     /**
+      * 
+-     * This method removes an AwardDirectFandADistribution from the list. 
+-     * @param mapping
+-     * @param form
+-     * @param request
+-     * @param response
+-     * @return
+-     * @throws Exception
++     * This method removes an AwardDirectFandADistribution from the list.
+      */
+     public ActionForward deleteAwardDirectFandADistribution(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+             HttpServletResponse response) throws Exception {
+@@ -1019,13 +891,6 @@ public ActionForward deleteAwardDirectFandADistribution(ActionMapping mapping, A
+     
+     /**
+      * This method is used to recalculate the Total amounts in the Direct F and A Distribution panel.
+-     * 
+-     * @param mapping
+-     * @param form
+-     * @param request
+-     * @param response
+-     * @return mapping forward
+-     * @throws Exception
+      */
+     public ActionForward timeAndMoney(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+             HttpServletResponse response) throws Exception {
+@@ -1035,52 +900,22 @@ public ActionForward timeAndMoney(ActionMapping mapping, ActionForm form, HttpSe
+     
+     /**
+      * This method is used to recalculate the Total amounts in the Direct F and A Distribution panel.
+-     * 
+-     * @param mapping
+-     * @param form
+-     * @param request
+-     * @param response
+-     * @return mapping forward
+-     * @throws Exception
+      */
+     public ActionForward recalculateDirectFandADistributionTotals(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+             HttpServletResponse response) throws Exception {
+        
+         return mapping.findForward(Constants.MAPPING_BASIC);
+     }
+-    
+-    /**
+-     * Gets the businessObjectService attribute. 
+-     * @return Returns the businessObjectService.
+-     */
+-    public BusinessObjectService getBusinessObjectService() {
+-        businessObjectService = KcServiceLocator.getService(BusinessObjectService.class);
+-        return businessObjectService;
+-    }
+-    
+-    public ActionForward reload(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
+-    throws Exception {
+-
+-        ActionForward forward = super.reload(mapping, form, request, response);
+ 
+-        return forward;
+-    }
+-    
+     /**
+      * 
+-     * This method retrieves the awardDocument from the session and redirects the user to the appropriate Award
+-     * @param mapping
+-     * @param form
+-     * @param request
+-     * @param response
+-     * @return
+-     * @throws Exception
++     * This method retrieves the awardDocument from the session and redirects the user to the appropriate Award.
+      */
+     public ActionForward returnToAward(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+         
+         TimeAndMoneyForm timeAndMoneyForm = (TimeAndMoneyForm) form;
+         TimeAndMoneyDocument timeAndMoneyDocument = timeAndMoneyForm.getTimeAndMoneyDocument();
+-        if(!getKraWorkflowService().isInWorkflow(timeAndMoneyDocument)){
++        if(!getKcWorkflowService().isInWorkflow(timeAndMoneyDocument)){
+             this.save(mapping, form, request, response);
+         }
+         String awardDocumentNumber = (String) GlobalVariables.getUserSession().retrieveObject(Constants.AWARD_DOCUMENT_STRING_FOR_SESSION + "-" + timeAndMoneyDocument.getDocumentNumber());
+@@ -1096,48 +931,27 @@ public ActionForward returnToAward(ActionMapping mapping, ActionForm form, HttpS
+         return new ActionForward(forward, true);
+     }
+     
+-    protected KcWorkflowService getKraWorkflowService() {
+-        return KcServiceLocator.getService(KcWorkflowService.class);
+-    }
+-    
+-    /**
+-     * Looks up and returns the ParameterService.
+-     * @return the parameter service. 
+-     */
+-    protected ParameterService getParameterService() {
+-        if (this.parameterService == null) {
+-            this.parameterService = KcServiceLocator.getService(ParameterService.class);
+-        }
+-        return this.parameterService;
+-    }
+-    
+     public boolean isDirectIndirectViewEnabled() {
+-        boolean returnValue = false;
+         String directIndirectEnabledValue = getParameterService().getParameterValueAsString(Constants.PARAMETER_MODULE_AWARD, ParameterConstants.DOCUMENT_COMPONENT, "ENABLE_AWD_ANT_OBL_DIRECT_INDIRECT_COST");
+-        if(directIndirectEnabledValue.equals("1")) {
+-            returnValue = true;
+-        }
+-        return returnValue;
++        return DIRECT_INDIRECT_ENABLED.equals(directIndirectEnabledValue);
+     }
+-    
+-    @SuppressWarnings("unchecked")
++
+     public ActionForward goToNextAward(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+         TimeAndMoneyForm timeAndMoneyForm = (TimeAndMoneyForm) form;
+-        Map<String, String> map = new HashMap<String,String>();
++        Map<String, String> map = new HashMap<>();
+         String nextAwardNumber = timeAndMoneyForm.getNextNodeMap().get(timeAndMoneyForm.getAwardForSummaryPanelDisplay().getAwardNumber());
+-        map.put("awardNumber", nextAwardNumber);
++        map.put(AWARD_NUMBER, nextAwardNumber);
+         Award nextAward = ((List<Award>)getBusinessObjectService().findMatching(Award.class, map)).get(0);
+         timeAndMoneyForm.setAwardForSummaryPanelDisplay(nextAward);
+         return mapping.findForward(Constants.MAPPING_BASIC);
+     }
+         
+-    @SuppressWarnings("unchecked")
+     public ActionForward goToPreviousAward(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+         TimeAndMoneyForm timeAndMoneyForm = (TimeAndMoneyForm) form;
+-        Map<String, String> map = new HashMap<String,String>();
++        Map<String, String> map = new HashMap<>();
+         String previousAwardNumber = timeAndMoneyForm.getPreviousNodeMap().get(timeAndMoneyForm.getAwardForSummaryPanelDisplay().getAwardNumber());
+-        map.put("awardNumber", previousAwardNumber);
+-        Award previousAward = ((List<Award>)businessObjectService.findMatching(Award.class, map)).get(0);
++        map.put(AWARD_NUMBER, previousAwardNumber);
++        Award previousAward = ((List<Award>)getBusinessObjectService().findMatching(Award.class, map)).get(0);
+         timeAndMoneyForm.setAwardForSummaryPanelDisplay(previousAward);
+         return mapping.findForward(Constants.MAPPING_BASIC);
+     }
+@@ -1152,8 +966,7 @@ public ActionForward editOrVersion(ActionMapping mapping, ActionForm form, HttpS
+         String forwardString = buildForwardUrl(routeHeaderId);
+         return new ActionForward(forwardString, true);
+     }
+-    
+-    @SuppressWarnings("unchecked")
++
+     @Override
+     // Overriding this because KraTransactionalDocumentActionBase assumes the authorizer is of type KcDocumentAuthorizerBase
+     protected void populateAuthorizationFields(KualiDocumentFormBase formBase) {
+@@ -1169,7 +982,7 @@ protected void populateAuthorizationFields(KualiDocumentFormBase formBase) {
+                 documentActions = getPessimisticLockService().getDocumentActions(document, user, documentActions);
+             }
+             
+-            Set<String> editModes = new HashSet<String>();
++            Set<String> editModes = new HashSet<>();
+             if (!documentAuthorizer.canOpen(document, user)) {
+                 editModes.add(AuthorizationConstants.EditMode.UNVIEWABLE);
+             } else if (documentActions.contains(KRADConstants.KUALI_ACTION_CAN_EDIT)) {
+@@ -1214,9 +1027,71 @@ public void setTimeAndMoneyVersionService(TimeAndMoneyVersionService timeAndMone
+         this.timeAndMoneyVersionService = timeAndMoneyVersionService;
+     }
+ 
++    public SequenceAccessorService getSequenceAccessorService() {
++        if (sequenceAccessorService == null) {
++            sequenceAccessorService = KcServiceLocator.getService(SequenceAccessorService.class);
++        }
++        return sequenceAccessorService;
++    }
++
++    public void setSequenceAccessorService(SequenceAccessorService sequenceAccessorService) {
++        this.sequenceAccessorService = sequenceAccessorService;
++    }
++
++    public AwardVersionService getAwardVersionService() {
++        if(awardVersionService == null) {
++            awardVersionService = KcServiceLocator.getService(AwardVersionService.class);
++        }
++        return awardVersionService;
++    }
++
++    protected ActivePendingTransactionsService getActivePendingTransactionsService(){
++        if (activePendingTransactionsService == null) {
++            activePendingTransactionsService = KcServiceLocator.getService(ActivePendingTransactionsService.class);
++        }
++        return activePendingTransactionsService;
++    }
++
++    protected KcWorkflowService getKcWorkflowService() {
++        if (kcWorkflowService == null) {
++            kcWorkflowService = KcServiceLocator.getService(KcWorkflowService.class);
++        }
++        return kcWorkflowService;
++    }
++
+     public ReportTrackingService getReportTrackingService() {
+-        return KcServiceLocator.getService(ReportTrackingService.class);
++        if (reportTrackingService == null) {
++            reportTrackingService = KcServiceLocator.getService(ReportTrackingService.class);
++        }
++        return reportTrackingService;
++    }
++
++    protected AwardHierarchyService getAwardHierarchyService(){
++        if (awardHierarchyService == null) {
++            awardHierarchyService = KcServiceLocator.getService(AwardHierarchyService.class);
++        }
++        return awardHierarchyService;
++    }
++
++    public AwardAmountInfoService getAwardAmountInfoService() {
++        if (awardAmountInfoService == null) {
++            awardAmountInfoService = KcServiceLocator.getService(AwardAmountInfoService.class);
++        }
++        return awardAmountInfoService;
+     }
+ 
++    public TimeAndMoneyHistoryService getTimeAndMoneyHistoryService() {
++        if (timeAndMoneyHistoryService == null) {
++            timeAndMoneyHistoryService = KcServiceLocator.getService(TimeAndMoneyHistoryService.class);
++        }
++        return timeAndMoneyHistoryService;
++    }
++
++    public TimeAndMoneyActionSummaryService getTimeAndMoneyActionSummaryService() {
++        if (timeAndMoneyActionSummaryService == null) {
++            timeAndMoneyActionSummaryService = KcServiceLocator.getService(TimeAndMoneyActionSummaryService.class);
++        }
++        return timeAndMoneyActionSummaryService;
++    }
+ }
+ 
+diff --git a/coeus-impl/src/main/resources/org/kuali/kra/timeandmoney/TimeAndMoneySpringBeans.xml b/coeus-impl/src/main/resources/org/kuali/kra/timeandmoney/TimeAndMoneySpringBeans.xml
+index 89d2b42..1a81d95 100644
+--- a/coeus-impl/src/main/resources/org/kuali/kra/timeandmoney/TimeAndMoneySpringBeans.xml
++++ b/coeus-impl/src/main/resources/org/kuali/kra/timeandmoney/TimeAndMoneySpringBeans.xml
+@@ -20,6 +20,7 @@
+ <beans xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:context="http://www.springframework.org/schema/context"
++       xmlns:p="http://www.springframework.org/schema/p"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans
+                            http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                            http://www.springframework.org/schema/context
+@@ -27,6 +28,9 @@
+ 
+     <context:annotation-config />
+ 
++    <bean id="grlImporter" abstract="true" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean" p:singleton="true" p:mustExist="true" />
++    <bean id="docHandlerService" p:serviceName="docHandlerService" parent="grlImporter" />
++
+     <bean id="timeAndMoneyModuleConfiguration" parent="timeAndMoneyModuleConfiguration-parentBean" />
+     <bean id="timeAndMoneyModuleConfiguration-parentBean" class="org.kuali.rice.krad.bo.ModuleConfiguration" abstract="true">
+     	<property name="namespaceCode" value="KC-T" />
+@@ -76,7 +80,10 @@
+     <bean id="timeAndMoneyHistoryService" class="org.kuali.kra.timeandmoney.service.impl.TimeAndMoneyHistoryServiceImpl">
+     	<property name="businessObjectService" ref="businessObjectService" />
+ 		<property name="documentService" ref="documentService" />
+-		<property name="awardVersionService" ref="awardVersionService" />    
++		<property name="awardVersionService" ref="awardVersionService" />
++        <property name="dateTimeService" ref="dateTimeService" />
++        <property name="docHandlerService" ref="docHandlerService" />
++        <property name="globalVariableService" ref="globalVariableService" />
+     </bean>
+     
+     <bean id="awardFnaDistributionService" class="org.kuali.kra.timeandmoney.service.impl.AwardFnaDistributionServiceImpl">
+
+From 89271da4bc2bdc7ced2643f05b5d46200dbebc66 Mon Sep 17 00:00:00 2001
+From: Travis Schneberger <leo.herbie@gmail.com>
+Date: Wed, 15 Apr 2015 15:42:18 -0400
+Subject: [PATCH 2/4] RESKC-275: make award date change transactions show up
+ with a transaction id in the various history views and transaction print
+ dropdown menus
+
+---
+ .../sql/mysql/kc/bootstrap/V602_012__RESKC-275.sql | 57 ++++++++++++++++++++
+ .../lookup/AwardTransactionLookupServiceImpl.java  |  3 +-
+ .../kra/timeandmoney/AwardAmountInfoHistory.java   | 62 ++++++----------------
+ .../history/TransactionDetailType.java             |  2 +-
+ .../impl/TimeAndMoneyHistoryServiceImpl.java       | 26 +++++----
+ .../web/struts/action/TimeAndMoneyAction.java      | 43 ++++++++-------
+ .../main/webapp/WEB-INF/jsp/award/AwardHistory.jsp |  6 ++-
+ .../tags/timeandmoney/timeAndMoneyHistory.tag      | 17 +++---
+ .../tags/timeandmoney/transactionDetails.tag       | 13 +----
+ 9 files changed, 124 insertions(+), 105 deletions(-)
+ create mode 100644 coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/mysql/kc/bootstrap/V602_012__RESKC-275.sql
+
+diff --git a/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/mysql/kc/bootstrap/V602_012__RESKC-275.sql b/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/mysql/kc/bootstrap/V602_012__RESKC-275.sql
+new file mode 100644
+index 0000000..03fba45
+--- /dev/null
++++ b/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/mysql/kc/bootstrap/V602_012__RESKC-275.sql
+@@ -0,0 +1,57 @@
++--
++-- Kuali Coeus, a comprehensive research administration system for higher education.
++--
++-- Copyright 2005-2015 Kuali, Inc.
++--
++-- This program is free software: you can redistribute it and/or modify
++-- it under the terms of the GNU Affero General Public License as
++-- published by the Free Software Foundation, either version 3 of the
++-- License, or (at your option) any later version.
++--
++-- This program is distributed in the hope that it will be useful,
++-- but WITHOUT ANY WARRANTY; without even the implied warranty of
++-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++-- GNU Affero General Public License for more details.
++--
++-- You should have received a copy of the GNU Affero General Public License
++-- along with this program.  If not, see <http://www.gnu.org/licenses/>.
++--
++
++DELIMITER /
++
++DROP PROCEDURE IF EXISTS p
++/
++CREATE PROCEDURE p()
++BEGIN
++  DECLARE DONE INT DEFAULT FALSE;
++  DECLARE TRANS_DETAIL_ID decimal(10,0);
++  DECLARE TNM_DOC_NUMBER varchar(40);
++  DECLARE NEXT_TRANS_ID bigint(19);
++
++  DECLARE TRANS_DETAIL_CUR CURSOR FOR SELECT TRANSACTION_DETAIL_ID, TNM_DOCUMENT_NUMBER FROM TRANSACTION_DETAILS WHERE TRANSACTION_ID = '-1';
++  DECLARE CONTINUE HANDLER FOR NOT FOUND SET DONE = TRUE;
++
++  OPEN TRANS_DETAIL_CUR;
++
++  read_loop: LOOP
++    FETCH TRANS_DETAIL_CUR INTO TRANS_DETAIL_ID, TNM_DOC_NUMBER;
++    IF DONE THEN
++      LEAVE read_loop;
++    END IF;
++
++    INSERT INTO SEQ_TRANSACTION_ID VALUES (null);
++    SELECT MAX(ID) + 1 INTO NEXT_TRANS_ID FROM SEQ_TRANSACTION_ID;
++
++    UPDATE TRANSACTION_DETAILS SET TRANSACTION_DETAIL_TYPE = 'DATE', TRANSACTION_ID = NEXT_TRANS_ID WHERE TRANSACTION_DETAIL_ID = TRANS_DETAIL_ID;
++    UPDATE AWARD_AMOUNT_INFO SET TRANSACTION_ID = NEXT_TRANS_ID WHERE TNM_DOCUMENT_NUMBER = TNM_DOC_NUMBER AND TRANSACTION_ID IS NULL;
++  END LOOP;
++
++  CLOSE TRANS_DETAIL_CUR;
++END
++/
++CALL p()
++/
++DROP PROCEDURE IF EXISTS p
++/
++
++DELIMITER ;
+\ No newline at end of file
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/award/lookup/AwardTransactionLookupServiceImpl.java b/coeus-impl/src/main/java/org/kuali/kra/award/lookup/AwardTransactionLookupServiceImpl.java
+index ab6797c..726fe6e 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/award/lookup/AwardTransactionLookupServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/award/lookup/AwardTransactionLookupServiceImpl.java
+@@ -65,8 +65,9 @@
+                     }
+                 }
+             }
+-            Award currentAward = getAwardVersion(awardNumber, sequenceNumber);
+             transactionIds.removeAll(excludedTransactionIds);
++
++            Award currentAward = getAwardVersion(awardNumber, sequenceNumber);
+             Map<Integer, String> retval = new TreeMap<Integer, String>(new Comparator<Integer>(){
+                 public int compare(Integer o1, Integer o2) {
+                     //sort in descending order instead of ascending
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/AwardAmountInfoHistory.java b/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/AwardAmountInfoHistory.java
+index c4a3416..bcfa2fa 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/AwardAmountInfoHistory.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/AwardAmountInfoHistory.java
+@@ -28,90 +28,63 @@
+ 
+ public class AwardAmountInfoHistory implements Serializable {
+ 
+-
+     private static final long serialVersionUID = -3741486339602358742L;
+     
+     private AwardAmountInfo awardAmountInfo;
+     private String transactionType;
+     private String dateFieldChanged;
++    private TransactionDetail dateDetail;
+     private TransactionDetail primaryDetail;
+     private List<TransactionDetail> intermediateDetails;
+     
+     public AwardAmountInfoHistory() {
+         intermediateDetails = new ArrayList<TransactionDetail>();
+     }
+-    
+-    /**
+-     * Gets the awardAmountInfo attribute. 
+-     * @return Returns the awardAmountInfo.
+-     */
++
+     public AwardAmountInfo getAwardAmountInfo() {
+         return awardAmountInfo;
+     }
+-    /**
+-     * Sets the awardAmountInfo attribute value.
+-     * @param awardAmountInfo The awardAmountInfo to set.
+-     */
++
+     public void setAwardAmountInfo(AwardAmountInfo awardAmountInfo) {
+         this.awardAmountInfo = awardAmountInfo;
+     }
+-    /**
+-     * Gets the transactionType attribute. 
+-     * @return Returns the transactionType.
+-     */
++
+     public String getTransactionType() {
+         return transactionType;
+     }
+-    /**
+-     * Sets the transactionType attribute value.
+-     * @param transactionType The transactionType to set.
+-     */
++
+     public void setTransactionType(String transactionType) {
+         this.transactionType = transactionType;
+     }
+-    /**
+-     * Gets the dateFieldChanged attribute. 
+-     * @return Returns the dateFieldChanged.
+-     */
++
+     public String getDateFieldChanged() {
+         return dateFieldChanged;
+     }
+-    /**
+-     * Sets the dateFieldChanged attribute value.
+-     * @param dateFieldChanged The dateFieldChanged to set.
+-     */
++
+     public void setDateFieldChanged(String dateFieldChanged) {
+         this.dateFieldChanged = dateFieldChanged;
+     }
+ 
+-    /**
+-     * Gets the primaryDetail attribute. 
+-     * @return Returns the primaryDetail.
+-     */
++    public TransactionDetail getDateDetail() {
++        return dateDetail;
++    }
++
++    public void setDateDetail(TransactionDetail dateDetail) {
++        this.dateDetail = dateDetail;
++    }
++
+     public TransactionDetail getPrimaryDetail() {
+         return primaryDetail;
+     }
+ 
+-    /**
+-     * Sets the primaryDetail attribute value.
+-     * @param primaryDetail The primaryDetail to set.
+-     */
+     public void setPrimaryDetail(TransactionDetail primaryDetail) {
+         this.primaryDetail = primaryDetail;
+     }
+ 
+-    /**
+-     * Gets the intermediateDetails attribute. 
+-     * @return Returns the intermediateDetails.
+-     */
+     public List<TransactionDetail> getIntermediateDetails() {
+         return intermediateDetails;
+     }
+ 
+-    /**
+-     * Sets the intermediateDetails attribute value.
+-     * @param intermediateDetails The intermediateDetails to set.
+-     */
+     public void setIntermediateDetails(List<TransactionDetail> intermediateDetails) {
+         this.intermediateDetails = intermediateDetails;
+     }
+@@ -120,9 +93,4 @@ public String getTransactionDetailTableSize() {
+         int returnValue = intermediateDetails.size() + 1;
+         return Integer.toString(returnValue);
+     }
+-    
+-    
+-    
+-    
+-    
+ }
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/history/TransactionDetailType.java b/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/history/TransactionDetailType.java
+index 04ba4e5..74447ac 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/history/TransactionDetailType.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/history/TransactionDetailType.java
+@@ -22,5 +22,5 @@
+  * This class holds all types of transaction details.
+  */
+ public enum TransactionDetailType {
+-    PRIMARY, INTERMEDIATE
++    PRIMARY, INTERMEDIATE, DATE
+ }
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/service/impl/TimeAndMoneyHistoryServiceImpl.java b/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/service/impl/TimeAndMoneyHistoryServiceImpl.java
+index 092a855..5fd0289 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/service/impl/TimeAndMoneyHistoryServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/service/impl/TimeAndMoneyHistoryServiceImpl.java
+@@ -47,7 +47,6 @@
+ 
+ public class TimeAndMoneyHistoryServiceImpl implements TimeAndMoneyHistoryService {
+ 
+-	private static final String DATE_CHANGE_TRANSACTION_ID = "-1";
+ 	private static final String TIME_AND_MONEY_DOCUMENT_NUMBER = "timeAndMoneyDocumentNumber";
+ 	private static final String ROOT_AWARD_NUMBER = "rootAwardNumber";
+ 	private static final String SOURCE_AWARD_NUMBER = "sourceAwardNumber";
+@@ -172,25 +171,24 @@ public boolean evaluate(TransactionDetail detail) {
+ 		return ((List<TransactionDetail>) businessObjectService.findMatchingOrderBy(TransactionDetail.class, values, TRANSACTION_DETAIL_ID, true));
+ 	}
+ 
+-	
++
+ 	protected List<AwardAmountInfoHistory> captureDateInfos(TimeAndMoneyDocument doc, List<AwardAmountInfo> validInfos) {
+ 		List<AwardAmountInfoHistory> dateInfoHistoryList = new ArrayList<>();
+ 		Map<String, Object> fieldValues = new HashMap<>();
+ 		for (AwardAmountInfo awardAmountInfo : validInfos) {
+ 			if (!(awardAmountInfo.getTimeAndMoneyDocumentNumber() == null)) {
+ 				if (StringUtils.equalsIgnoreCase(doc.getDocumentNumber(), awardAmountInfo.getTimeAndMoneyDocumentNumber())) {
+-					if (awardAmountInfo.getTransactionId() == null) {
+-						fieldValues.put(SOURCE_AWARD_NUMBER, awardAmountInfo.getAwardNumber());
+-						fieldValues.put(TRANSACTION_ID, DATE_CHANGE_TRANSACTION_ID);
+-						fieldValues.put(TIME_AND_MONEY_DOCUMENT_NUMBER, awardAmountInfo.getTimeAndMoneyDocumentNumber());
+-						List<TransactionDetail> dateTransactionDetails = ((List<TransactionDetail>) businessObjectService.findMatchingOrderBy(TransactionDetail.class, fieldValues,
+-								SOURCE_AWARD_NUMBER, true));
+-						if (dateTransactionDetails.size() > 0) {
+-							AwardAmountInfoHistory awardAmountInfoHistory = new AwardAmountInfoHistory();
+-							awardAmountInfoHistory.setAwardAmountInfo(awardAmountInfo);
+-							awardAmountInfoHistory.setTransactionType(TransactionType.DATE.toString());
+-							dateInfoHistoryList.add(awardAmountInfoHistory);
+-						}
++					fieldValues.put(SOURCE_AWARD_NUMBER, awardAmountInfo.getAwardNumber());
++					fieldValues.put(TRANSACTION_DETAIL_TYPE, TransactionDetailType.DATE.toString());
++					fieldValues.put(TIME_AND_MONEY_DOCUMENT_NUMBER, awardAmountInfo.getTimeAndMoneyDocumentNumber());
++					fieldValues.put(TRANSACTION_ID, awardAmountInfo.getTransactionId());
++					Collection<TransactionDetail> dateTransactionDetails = businessObjectService.findMatching(TransactionDetail.class, fieldValues);
++					if (!dateTransactionDetails.isEmpty()) {
++						AwardAmountInfoHistory awardAmountInfoHistory = new AwardAmountInfoHistory();
++						awardAmountInfoHistory.setAwardAmountInfo(awardAmountInfo);
++						awardAmountInfoHistory.setTransactionType(TransactionType.DATE.toString());
++						awardAmountInfoHistory.setDateDetail(dateTransactionDetails.iterator().next());
++						dateInfoHistoryList.add(awardAmountInfoHistory);
+ 					}
+ 				}
+ 			}
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/web/struts/action/TimeAndMoneyAction.java b/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/web/struts/action/TimeAndMoneyAction.java
+index 7dedcdd..ee2908b 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/web/struts/action/TimeAndMoneyAction.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/web/struts/action/TimeAndMoneyAction.java
+@@ -40,6 +40,7 @@
+ import org.kuali.kra.timeandmoney.TimeAndMoneyForm;
+ import org.kuali.kra.timeandmoney.document.TimeAndMoneyDocument;
+ import org.kuali.kra.timeandmoney.history.TransactionDetail;
++import org.kuali.kra.timeandmoney.history.TransactionDetailType;
+ import org.kuali.kra.timeandmoney.service.ActivePendingTransactionsService;
+ import org.kuali.kra.timeandmoney.service.TimeAndMoneyActionSummaryService;
+ import org.kuali.kra.timeandmoney.service.TimeAndMoneyHistoryService;
+@@ -81,6 +82,7 @@
+     public static final String DIRECT_INDIRECT_ENABLED = "1";
+     public static final String AWARD_AMOUNT_INFOS = "awardAmountInfos";
+     public static final String SINGLE_NODE_MONEY_TRANSACTION_COMMENT = "Single Node Money Transaction";
++    public static final String TRANSACTION_SEQUENCE = "SEQ_TRANSACTION_ID";
+ 
+     private AwardVersionService awardVersionService;
+     private TransactionRuleImpl transactionRuleImpl;
+@@ -298,7 +300,6 @@ private boolean createAndValidateDisabledViewTransaction(TimeAndMoneyForm timeAn
+     private void captureDateChangeTransactions(ActionForm form) throws WorkflowException {
+         TimeAndMoneyForm timeAndMoneyForm = (TimeAndMoneyForm) form;
+         TimeAndMoneyDocument timeAndMoneyDocument = timeAndMoneyForm.getTimeAndMoneyDocument();
+-        List<AwardAmountInfo> awardAmountInfoObjects = new ArrayList<>();
+         //save rules have not been applied yet so there needs to be a null check on transaction type code before testing the value.
+         boolean isNoCostExtension;
+         if (timeAndMoneyDocument.getAwardAmountTransactions().get(0).getTransactionTypeCode() == null) {
+@@ -339,8 +340,6 @@ private void captureDateChangeTransactions(ActionForm form) throws WorkflowExcep
+             }
+         }
+         //we want to apply save rules to doc before we save any captured changes.
+-        //The save on awardAmountInfoObjects should always be after the save on entire award object otherwise awardAmountInfoObjects changes get overwritten.
+-        getBusinessObjectService().save(awardAmountInfoObjects);
+         getBusinessObjectService().save(timeAndMoneyDocument.getAwardAmountTransactions());
+         //save all transaction details from No Cost extension date changes.
+         getBusinessObjectService().save(dateChangeTransactionDetailItems);
+@@ -370,8 +369,10 @@ protected boolean inspectAndCaptureCurrentFundEffectiveDateChanges(TimeAndMoneyF
+                         aai.setCurrentFundEffectiveDate(currentEffectiveDate);
+                         awardHierarchyNode.getValue().setCurrentFundEffectiveDate(currentEffectiveDate);
+                         award.getAwardAmountInfos().add(aai);
+-                        addTransactionDetailsForDateChanges(aai.getAwardNumber(), aai.getAwardNumber(), aai.getSequenceNumber(), timeAndMoneyDocument.getAwardNumber(),
+-                                timeAndMoneyDocument.getDocumentNumber(), OBLIGATED_START_COMMENT, dateChangeTransactionDetailItems);
++                TransactionDetail transactionDetail = createTransDetailForDateChanges(aai.getAwardNumber(), aai.getAwardNumber(), aai.getSequenceNumber(), timeAndMoneyDocument.getAwardNumber(),
++                        timeAndMoneyDocument.getDocumentNumber(), OBLIGATED_START_COMMENT);
++                aai.setTransactionId(transactionDetail.getTransactionId());
++                dateChangeTransactionDetailItems.add(transactionDetail);
+             } else {
+                     AwardAmountInfo tempAai = getNewAwardAmountInfoForDateChangeTransaction(aai, award, timeAndMoneyDocument.getDocumentNumber());
+                     needToSave = true;
+@@ -417,8 +418,10 @@ protected boolean inspectAndCaptureObligationExpirationDateChanges(TimeAndMoneyF
+                         aai.setObligationExpirationDate(currentObligationExpirationDate);
+                         awardHierarchyNode.getValue().setObligationExpirationDate(currentObligationExpirationDate);
+                         award.getAwardAmountInfos().add(aai);
+-                        addTransactionDetailsForDateChanges(aai.getAwardNumber(), aai.getAwardNumber(), aai.getSequenceNumber(), timeAndMoneyDocument.getAwardNumber(),
+-                                timeAndMoneyDocument.getDocumentNumber(), OBLIGATED_END_COMMENT, dateChangeTransactionDetailItems);
++                TransactionDetail transactionDetail = createTransDetailForDateChanges(aai.getAwardNumber(), aai.getAwardNumber(), aai.getSequenceNumber(), timeAndMoneyDocument.getAwardNumber(),
++                        timeAndMoneyDocument.getDocumentNumber(), OBLIGATED_END_COMMENT);
++                aai.setTransactionId(transactionDetail.getTransactionId());
++                dateChangeTransactionDetailItems.add(transactionDetail);
+             }else {
+                     aai = getNewAwardAmountInfoForDateChangeTransaction(aai, award, timeAndMoneyDocument.getDocumentNumber());
+                     aai.setObligationExpirationDate(currentObligationExpirationDate);
+@@ -460,10 +463,12 @@ protected boolean inspectAndCaptureFinalExpirationDateChanges(TimeAndMoneyForm t
+                   timeAndMoneyForm.getAwardHierarchyNodeItems().get(index).getFinalExpirationDate().after(aai.getFinalExpirationDate())) {
+                     aai = getNewAwardAmountInfoForDateChangeTransaction(aai, award, timeAndMoneyDocument.getDocumentNumber());
+                       aai.setFinalExpirationDate(timeAndMoneyForm.getAwardHierarchyNodeItems().get(index).getFinalExpirationDate());
+-                      awardHierarchyNode.getValue().setFinalExpirationDate(timeAndMoneyForm.getAwardHierarchyNodeItems().get(index).getFinalExpirationDate());
+-                      award.getAwardAmountInfos().add(aai);
+-                      addTransactionDetailsForDateChanges(aai.getAwardNumber(), aai.getAwardNumber(), aai.getSequenceNumber(), timeAndMoneyDocument.getAwardNumber(),
+-                              timeAndMoneyDocument.getDocumentNumber(), PROJECT_END_COMMENT, dateChangeTransactionDetailItems);
++              awardHierarchyNode.getValue().setFinalExpirationDate(timeAndMoneyForm.getAwardHierarchyNodeItems().get(index).getFinalExpirationDate());
++              award.getAwardAmountInfos().add(aai);
++              TransactionDetail transactionDetail = createTransDetailForDateChanges(aai.getAwardNumber(), aai.getAwardNumber(), aai.getSequenceNumber(), timeAndMoneyDocument.getAwardNumber(),
++                      timeAndMoneyDocument.getDocumentNumber(), PROJECT_END_COMMENT);
++              aai.setTransactionId(transactionDetail.getTransactionId());
++              dateChangeTransactionDetailItems.add(transactionDetail);
+           }else {
+               aai = getNewAwardAmountInfoForDateChangeTransaction(aai, award, timeAndMoneyDocument.getDocumentNumber());
+                   aai.setFinalExpirationDate(timeAndMoneyForm.getAwardHierarchyNodeItems().get(index).getFinalExpirationDate());
+@@ -506,21 +511,19 @@ private boolean mustSetFandADistributions(List<AwardDirectFandADistribution> awa
+          }
+          return needToSave;
+      }
+-    
+-    /*
+-     * This method creates a transactionDetail object and adds it to the list for persistence later.
+-     */
+-    protected void addTransactionDetailsForDateChanges(String sourceAwardNumber, String destinationAwardNumber, Integer sequenceNumber, String currentAwardNumber, String documentNumber,
+-                                                       String commentsString, List<TransactionDetail> transactionDetailItems){
++
++    protected TransactionDetail createTransDetailForDateChanges(String sourceAwardNumber, String destinationAwardNumber, Integer sequenceNumber, String currentAwardNumber, String documentNumber,
++                                                       String commentsString){
+         TransactionDetail transactionDetail = new TransactionDetail();
+         transactionDetail.setSourceAwardNumber(sourceAwardNumber);
+         transactionDetail.setSequenceNumber(sequenceNumber);
+         transactionDetail.setDestinationAwardNumber(destinationAwardNumber);
+         transactionDetail.setAwardNumber(currentAwardNumber);
+-        transactionDetail.setTransactionId(-1L);
++        transactionDetail.setTransactionDetailType(TransactionDetailType.DATE.toString());
++        transactionDetail.setTransactionId(getSequenceAccessorService().getNextAvailableSequenceNumber(TRANSACTION_SEQUENCE));
+         transactionDetail.setTimeAndMoneyDocumentNumber(documentNumber);
+         transactionDetail.setComments(commentsString);
+-        transactionDetailItems.add(transactionDetail);
++        return transactionDetail;
+     }
+     
+     /*
+@@ -674,7 +677,7 @@ public ActionForward refreshView(ActionMapping mapping, ActionForm form, HttpSer
+         if(StringUtils.equalsIgnoreCase(timeAndMoneyForm.getCurrentOrPendingView(), TimeAndMoneyForm.PENDING)){
+             
+             Map<String, AwardAmountTransaction> awardAmountTransactionItems = new HashMap<>();
+-            List<Award> awardItems = new ArrayList<Award>();
++            List<Award> awardItems = new ArrayList<>();
+             List<TransactionDetail> transactionDetailItems = new ArrayList<>();
+             
+             updateDocumentFromSession(doc);
+diff --git a/coeus-webapp/src/main/webapp/WEB-INF/jsp/award/AwardHistory.jsp b/coeus-webapp/src/main/webapp/WEB-INF/jsp/award/AwardHistory.jsp
+index 9e8cbc9..e56f9a1 100644
+--- a/coeus-webapp/src/main/webapp/WEB-INF/jsp/award/AwardHistory.jsp
++++ b/coeus-webapp/src/main/webapp/WEB-INF/jsp/award/AwardHistory.jsp
+@@ -170,10 +170,12 @@
+ 						        			<c:out value="${awardAmountInfoHistory.primaryDetail.transactionId}" />
+ 							        	</c:when>
+ 							        	<c:when test="${awardAmountInfoHistory.transactionType == 'DATE'}">
+-							        		<c:out value="No Cost Extension" />
++											<c:out value="Transaction ID: " />
++											<c:out value="${awardAmountInfoHistory.dateDetail.transactionId}" />
+ 							        	</c:when>
+ 							        	<c:when test="${awardAmountInfoHistory.transactionType == 'SINGLENODEMONEYTRANSACTION'}">
+-							        		<c:out value="Single Node Money Transaction" />
++											<c:out value="Transaction ID: " />
++											<c:out value="${awardAmountInfoHistory.primaryDetail.transactionId}" />
+ 							        	</c:when>
+ 						    	    	<c:otherwise>
+ 						        			<c:out value="Initial Transaction" />
+diff --git a/coeus-webapp/src/main/webapp/WEB-INF/tags/timeandmoney/timeAndMoneyHistory.tag b/coeus-webapp/src/main/webapp/WEB-INF/tags/timeandmoney/timeAndMoneyHistory.tag
+index d2bbccc..0afbe57 100644
+--- a/coeus-webapp/src/main/webapp/WEB-INF/tags/timeandmoney/timeAndMoneyHistory.tag
++++ b/coeus-webapp/src/main/webapp/WEB-INF/tags/timeandmoney/timeAndMoneyHistory.tag
+@@ -169,7 +169,7 @@
+ 					</td>    
+ 				</tr>
+ 			</c:if>
+-			<c:forEach var="timeAndMoneyDocumentHistory" items="${awardVersionHistory.timeAndMoneyDocumentHistoryList}" varStatus="status"> 
++			<c:forEach var="timeAndMoneyDocumentHistory" items="${awardVersionHistory.timeAndMoneyDocumentHistoryList}" varStatus="status">
+ 				<tr>
+ 				<td  align="left" valign="left" class="infoline" rowspan="1">
+ 		          	<div align="center">
+@@ -189,28 +189,27 @@
+                 	</div>
+ 				</td>
+ 				</tr>
+-				<c:forEach var="awardAmountInfoHistory" items="${timeAndMoneyDocumentHistory.validAwardAmountInfoHistoryList}" varStatus="status"> 
++				<c:forEach var="awardAmountInfoHistory" items="${timeAndMoneyDocumentHistory.validAwardAmountInfoHistoryList}" varStatus="status">
+ 					<tr>
+ 						<td align="center" valign="middle" rowspan="2" >
+ 							<div align="center" >
+ 						        <c:choose>
+ 						        	<c:when test="${awardAmountInfoHistory.transactionType == 'MONEY'}">
+-						      			<c:out value="Transaction ID: " />
+-						        		<c:out value="${awardAmountInfoHistory.primaryDetail.transactionId}" />
++						      			Transaction ID: ${awardAmountInfoHistory.primaryDetail.transactionId}
+ 						        	</c:when>
+ 						        	<c:when test="${awardAmountInfoHistory.transactionType == 'DATE'}">
+-						        		<c:out value="No Cost Extension" />
++										Transaction ID: ${awardAmountInfoHistory.dateDetail.transactionId}
+ 						        	</c:when>
+ 						        	<c:when test="${awardAmountInfoHistory.transactionType == 'SINGLENODEMONEYTRANSACTION'}">
+-						        		<c:out value="Single Node Money Transaction" />
++										Transaction ID: ${awardAmountInfoHistory.primaryDetail.transactionId}
+ 						        	</c:when>
+ 						        	<c:otherwise>
+-						        		<c:out value="Initial Transaction" />
++						        		Initial Transaction
+ 						        	</c:otherwise>
+ 						        </c:choose>
+ 						     </div>	
+ 						</td>
+-						
++
+ 				<c:choose>
+ 	        		<c:when test="${KualiForm.directIndirectViewEnabled == '1'}">
+ 						<th>
+@@ -387,7 +386,7 @@
+ 			        			</div>
+ 			        			</td>		
+ 		        			</tr>
+-		        		</c:if>	
++		        		</c:if>
+ 				</c:forEach>
+ 			</c:forEach>
+         </c:forEach> 
+diff --git a/coeus-webapp/src/main/webapp/WEB-INF/tags/timeandmoney/transactionDetails.tag b/coeus-webapp/src/main/webapp/WEB-INF/tags/timeandmoney/transactionDetails.tag
+index 5eb2047..1a6cec7 100644
+--- a/coeus-webapp/src/main/webapp/WEB-INF/tags/timeandmoney/transactionDetails.tag
++++ b/coeus-webapp/src/main/webapp/WEB-INF/tags/timeandmoney/transactionDetails.tag
+@@ -20,17 +20,8 @@
+ <%@ attribute name="awardAmountInfoHistory" description="awardAmountInfoHistory" required="true" type="org.kuali.kra.timeandmoney.AwardAmountInfoHistory"%>
+ 
+ <c:set var="transactionDetailAttributes" value="${DataDictionary.TransactionDetail.attributes}" />
+-
+- <c:choose>
+-       	<c:when test="${awardAmountInfoHistory.transactionType == 'SINGLENODEMONEYTRANSACTION'}">
+-     		<c:set var="tabTitleAttribute" value="Single Node Transaction ID:" />
+-     		<c:set var="idValue" value="${awardAmountInfoHistory.primaryDetail.transactionDetailId}" />
+-       	</c:when>
+-       	<c:otherwise>
+-       		<c:set var="tabTitleAttribute" value="Transaction Details ID:" />
+-     		<c:set var="idValue" value="${awardAmountInfoHistory.primaryDetail.transactionDetailId}" />
+-       	</c:otherwise>
+- </c:choose>
++<c:set var="tabTitleAttribute" value="Transaction ID:" />
++<c:set var="idValue" value="${awardAmountInfoHistory.primaryDetail.transactionDetailId}" />
+ 
+ <kul:innerTab parentTab="History" defaultOpen="false" tabTitle="Transaction Details/${tabTitleAttribute} ${idValue}" tabErrorKey="" >
+ 	<table border="0" cellpadding="0" cellspacing="0" summary="">
+
+From 090ce7405cf9ce13a1efe4704b84b456e0d88f23 Mon Sep 17 00:00:00 2001
+From: Travis Schneberger <leo.herbie@gmail.com>
+Date: Fri, 24 Apr 2015 10:18:51 -0400
+Subject: [PATCH 3/4] RESKC-275: code review comments
+
+---
+ .../impl/TimeAndMoneyHistoryServiceImpl.java       | 13 +++---
+ .../web/struts/action/TimeAndMoneyAction.java      | 47 ++++++++++------------
+ 2 files changed, 29 insertions(+), 31 deletions(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/service/impl/TimeAndMoneyHistoryServiceImpl.java b/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/service/impl/TimeAndMoneyHistoryServiceImpl.java
+index 5fd0289..7dfa775 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/service/impl/TimeAndMoneyHistoryServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/service/impl/TimeAndMoneyHistoryServiceImpl.java
+@@ -58,11 +58,12 @@
+ 	private static final String DASH = "-";
+ 	private static final String DEFAULT_TAB = "Versions";
+ 	private static final String ALTERNATE_OPEN_TAB = "Parameters";
+-	public static final String SEQUENCE_NUMBER = "sequenceNumber";
+-	public static final String DOCUMENT_NUMBER = "documentNumber";
+-	public static final String NONE = "None";
+-	public static final String AWARD_NUMBER = "awardNumber";
+-	public static final String ROOT_AWARD_NUMBER_VAL = "00001";
++	private static final String SEQUENCE_NUMBER = "sequenceNumber";
++	private static final String DOCUMENT_NUMBER = "documentNumber";
++	private static final String NONE = "None";
++	private static final String AWARD_NUMBER = "awardNumber";
++	private static final String ROOT_AWARD_NUMBER_VAL = "00001";
++	private static final String MM_DD_YY_FORMAT = "MM/dd/yy";
+ 
+ 	private BusinessObjectService businessObjectService;
+ 	private DocumentService documentService;
+@@ -346,7 +347,7 @@ protected String getUpdateTimeAndUser(TimeAndMoneyDocument doc) {
+ 		String createDateStr = null;
+ 		String updateUser = null;
+ 		if (doc.getUpdateTimestamp() != null) {
+-			createDateStr = getDateTimeService().toString(doc.getUpdateTimestamp(), "MM/dd/yy");
++			createDateStr = getDateTimeService().toString(doc.getUpdateTimestamp(), MM_DD_YY_FORMAT);
+ 			updateUser = doc.getUpdateUser().length() > NUMBER_30 ? doc.getUpdateUser().substring(0, NUMBER_30) : doc.getUpdateUser();
+ 		}
+ 		return createDateStr + " by " + updateUser;
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/web/struts/action/TimeAndMoneyAction.java b/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/web/struts/action/TimeAndMoneyAction.java
+index ee2908b..a0d4d0c 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/web/struts/action/TimeAndMoneyAction.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/web/struts/action/TimeAndMoneyAction.java
+@@ -451,29 +451,29 @@ protected boolean inspectAndCaptureObligationExpirationDateChanges(TimeAndMoneyF
+      * Date changes in hierarchy view are captured here.  If the transaction is a No Cost Extension, we report the transaction
+      * details for display in history tab.
+      */
+-    protected boolean inspectAndCaptureFinalExpirationDateChanges(TimeAndMoneyForm timeAndMoneyForm, Boolean isNoCostExtension, AwardAmountInfo aai, Integer index,
++    protected boolean inspectAndCaptureFinalExpirationDateChanges(TimeAndMoneyForm timeAndMoneyForm, Boolean isNoCostExtension, AwardAmountInfo awardAmountInfo, Integer index,
+                                                         Award award, TimeAndMoneyDocument timeAndMoneyDocument, Entry<String, AwardHierarchyNode> awardHierarchyNode,
+                                                         List<TransactionDetail> dateChangeTransactionDetailItems) {
+        
+         boolean needToSave = false;
+         if(timeAndMoneyForm.getAwardHierarchyNodeItems().get(index).isPopulatedFromClient()
+                 && timeAndMoneyForm.getAwardHierarchyNodeItems().get(index).getFinalExpirationDate()!=null 
+-                && !timeAndMoneyForm.getAwardHierarchyNodeItems().get(index).getFinalExpirationDate().equals(aai.getFinalExpirationDate())){ 
++                && !timeAndMoneyForm.getAwardHierarchyNodeItems().get(index).getFinalExpirationDate().equals(awardAmountInfo.getFinalExpirationDate())){
+           if (isNoCostExtension && 
+-                  timeAndMoneyForm.getAwardHierarchyNodeItems().get(index).getFinalExpirationDate().after(aai.getFinalExpirationDate())) {
+-                    aai = getNewAwardAmountInfoForDateChangeTransaction(aai, award, timeAndMoneyDocument.getDocumentNumber());
+-                      aai.setFinalExpirationDate(timeAndMoneyForm.getAwardHierarchyNodeItems().get(index).getFinalExpirationDate());
++                  timeAndMoneyForm.getAwardHierarchyNodeItems().get(index).getFinalExpirationDate().after(awardAmountInfo.getFinalExpirationDate())) {
++                    awardAmountInfo = getNewAwardAmountInfoForDateChangeTransaction(awardAmountInfo, award, timeAndMoneyDocument.getDocumentNumber());
++                      awardAmountInfo.setFinalExpirationDate(timeAndMoneyForm.getAwardHierarchyNodeItems().get(index).getFinalExpirationDate());
+               awardHierarchyNode.getValue().setFinalExpirationDate(timeAndMoneyForm.getAwardHierarchyNodeItems().get(index).getFinalExpirationDate());
+-              award.getAwardAmountInfos().add(aai);
+-              TransactionDetail transactionDetail = createTransDetailForDateChanges(aai.getAwardNumber(), aai.getAwardNumber(), aai.getSequenceNumber(), timeAndMoneyDocument.getAwardNumber(),
++              award.getAwardAmountInfos().add(awardAmountInfo);
++              TransactionDetail transactionDetail = createTransDetailForDateChanges(awardAmountInfo.getAwardNumber(), awardAmountInfo.getAwardNumber(), awardAmountInfo.getSequenceNumber(), timeAndMoneyDocument.getAwardNumber(),
+                       timeAndMoneyDocument.getDocumentNumber(), PROJECT_END_COMMENT);
+-              aai.setTransactionId(transactionDetail.getTransactionId());
++              awardAmountInfo.setTransactionId(transactionDetail.getTransactionId());
+               dateChangeTransactionDetailItems.add(transactionDetail);
+           }else {
+-              aai = getNewAwardAmountInfoForDateChangeTransaction(aai, award, timeAndMoneyDocument.getDocumentNumber());
+-                  aai.setFinalExpirationDate(timeAndMoneyForm.getAwardHierarchyNodeItems().get(index).getFinalExpirationDate());
++              awardAmountInfo = getNewAwardAmountInfoForDateChangeTransaction(awardAmountInfo, award, timeAndMoneyDocument.getDocumentNumber());
++                  awardAmountInfo.setFinalExpirationDate(timeAndMoneyForm.getAwardHierarchyNodeItems().get(index).getFinalExpirationDate());
+                   awardHierarchyNode.getValue().setFinalExpirationDate(timeAndMoneyForm.getAwardHierarchyNodeItems().get(index).getFinalExpirationDate());
+-                  award.getAwardAmountInfos().add(aai);
++                  award.getAwardAmountInfos().add(awardAmountInfo);
+           }
+           needToSave = true;
+       } else if (timeAndMoneyForm.getAwardHierarchyNodeItems().get(index).isPopulatedFromClient()
+@@ -486,7 +486,7 @@ protected boolean inspectAndCaptureFinalExpirationDateChanges(TimeAndMoneyForm t
+       //in save rules.
+       if(timeAndMoneyForm.getAwardHierarchyNodeItems().get(index).getCurrentFundEffectiveDate()!=null && 
+               timeAndMoneyForm.getAwardHierarchyNodeItems().get(index).getFinalExpirationDate() != null &&
+-              timeAndMoneyForm.getAwardHierarchyNodeItems().get(index).getFinalExpirationDate().equals(aai.getFinalExpirationDate()) &&
++              timeAndMoneyForm.getAwardHierarchyNodeItems().get(index).getFinalExpirationDate().equals(awardAmountInfo.getFinalExpirationDate()) &&
+               !timeAndMoneyForm.getAwardHierarchyNodeItems().get(index).getFinalExpirationDate().equals(awardHierarchyNode.getValue().getFinalExpirationDate())) {
+           awardHierarchyNode.getValue().setFinalExpirationDate(timeAndMoneyForm.getAwardHierarchyNodeItems().get(index).getFinalExpirationDate());
+       }
+@@ -580,8 +580,8 @@ private void updateAwardAmountTransactions(TimeAndMoneyDocument timeAndMoneyDocu
+     }
+ 
+     private int findAwardHierarchyNodeIndex(Entry<String, AwardHierarchyNode> awardHierarchyNode) {
+-        String i = awardHierarchyNode.getValue().getAwardNumber().replaceAll("\\d*\\-0*", "");
+-        return Integer.parseInt(i);
++        final String nodeIndex = awardHierarchyNode.getValue().getAwardNumber().replaceAll("\\d*\\-0*", "");
++        return Integer.parseInt(nodeIndex);
+     }
+     
+     /*
+@@ -941,21 +941,18 @@ public boolean isDirectIndirectViewEnabled() {
+ 
+     public ActionForward goToNextAward(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+         TimeAndMoneyForm timeAndMoneyForm = (TimeAndMoneyForm) form;
+-        Map<String, String> map = new HashMap<>();
+-        String nextAwardNumber = timeAndMoneyForm.getNextNodeMap().get(timeAndMoneyForm.getAwardForSummaryPanelDisplay().getAwardNumber());
+-        map.put(AWARD_NUMBER, nextAwardNumber);
+-        Award nextAward = ((List<Award>)getBusinessObjectService().findMatching(Award.class, map)).get(0);
+-        timeAndMoneyForm.setAwardForSummaryPanelDisplay(nextAward);
+-        return mapping.findForward(Constants.MAPPING_BASIC);
++        return goToAward(mapping, timeAndMoneyForm, timeAndMoneyForm.getNextNodeMap().get(timeAndMoneyForm.getAwardForSummaryPanelDisplay().getAwardNumber()));
++
+     }
+         
+     public ActionForward goToPreviousAward(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+         TimeAndMoneyForm timeAndMoneyForm = (TimeAndMoneyForm) form;
+-        Map<String, String> map = new HashMap<>();
+-        String previousAwardNumber = timeAndMoneyForm.getPreviousNodeMap().get(timeAndMoneyForm.getAwardForSummaryPanelDisplay().getAwardNumber());
+-        map.put(AWARD_NUMBER, previousAwardNumber);
+-        Award previousAward = ((List<Award>)getBusinessObjectService().findMatching(Award.class, map)).get(0);
+-        timeAndMoneyForm.setAwardForSummaryPanelDisplay(previousAward);
++        return goToAward(mapping, timeAndMoneyForm, timeAndMoneyForm.getPreviousNodeMap().get(timeAndMoneyForm.getAwardForSummaryPanelDisplay().getAwardNumber()));
++    }
++
++    private ActionForward goToAward(ActionMapping mapping, TimeAndMoneyForm timeAndMoneyForm, String awardNumber) throws Exception {
++        Award awardForSummary = ((List<Award>)getBusinessObjectService().findMatching(Award.class, Collections.singletonMap(AWARD_NUMBER, awardNumber))).get(0);
++        timeAndMoneyForm.setAwardForSummaryPanelDisplay(awardForSummary);
+         return mapping.findForward(Constants.MAPPING_BASIC);
+     }
+     
+
+From 497023f9082dd4fc2a659d04c17674cbe267e1a2 Mon Sep 17 00:00:00 2001
+From: Travis Schneberger <leo.herbie@gmail.com>
+Date: Fri, 24 Apr 2015 10:57:40 -0400
+Subject: [PATCH 4/4] RESKC-275: resequencing sql scripts, adding oracle script
+
+---
+ .../mysql/kc/bootstrap/V1505_002__RESKC-275.sql    | 57 ++++++++++++++++++++++
+ .../sql/mysql/kc/bootstrap/V602_012__RESKC-275.sql | 57 ----------------------
+ .../oracle/kc/bootstrap/V1505_002__RESKC-275.sql   | 44 +++++++++++++++++
+ 3 files changed, 101 insertions(+), 57 deletions(-)
+ create mode 100644 coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/mysql/kc/bootstrap/V1505_002__RESKC-275.sql
+ delete mode 100644 coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/mysql/kc/bootstrap/V602_012__RESKC-275.sql
+ create mode 100644 coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/oracle/kc/bootstrap/V1505_002__RESKC-275.sql
+
+diff --git a/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/mysql/kc/bootstrap/V1505_002__RESKC-275.sql b/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/mysql/kc/bootstrap/V1505_002__RESKC-275.sql
+new file mode 100644
+index 0000000..03fba45
+--- /dev/null
++++ b/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/mysql/kc/bootstrap/V1505_002__RESKC-275.sql
+@@ -0,0 +1,57 @@
++--
++-- Kuali Coeus, a comprehensive research administration system for higher education.
++--
++-- Copyright 2005-2015 Kuali, Inc.
++--
++-- This program is free software: you can redistribute it and/or modify
++-- it under the terms of the GNU Affero General Public License as
++-- published by the Free Software Foundation, either version 3 of the
++-- License, or (at your option) any later version.
++--
++-- This program is distributed in the hope that it will be useful,
++-- but WITHOUT ANY WARRANTY; without even the implied warranty of
++-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++-- GNU Affero General Public License for more details.
++--
++-- You should have received a copy of the GNU Affero General Public License
++-- along with this program.  If not, see <http://www.gnu.org/licenses/>.
++--
++
++DELIMITER /
++
++DROP PROCEDURE IF EXISTS p
++/
++CREATE PROCEDURE p()
++BEGIN
++  DECLARE DONE INT DEFAULT FALSE;
++  DECLARE TRANS_DETAIL_ID decimal(10,0);
++  DECLARE TNM_DOC_NUMBER varchar(40);
++  DECLARE NEXT_TRANS_ID bigint(19);
++
++  DECLARE TRANS_DETAIL_CUR CURSOR FOR SELECT TRANSACTION_DETAIL_ID, TNM_DOCUMENT_NUMBER FROM TRANSACTION_DETAILS WHERE TRANSACTION_ID = '-1';
++  DECLARE CONTINUE HANDLER FOR NOT FOUND SET DONE = TRUE;
++
++  OPEN TRANS_DETAIL_CUR;
++
++  read_loop: LOOP
++    FETCH TRANS_DETAIL_CUR INTO TRANS_DETAIL_ID, TNM_DOC_NUMBER;
++    IF DONE THEN
++      LEAVE read_loop;
++    END IF;
++
++    INSERT INTO SEQ_TRANSACTION_ID VALUES (null);
++    SELECT MAX(ID) + 1 INTO NEXT_TRANS_ID FROM SEQ_TRANSACTION_ID;
++
++    UPDATE TRANSACTION_DETAILS SET TRANSACTION_DETAIL_TYPE = 'DATE', TRANSACTION_ID = NEXT_TRANS_ID WHERE TRANSACTION_DETAIL_ID = TRANS_DETAIL_ID;
++    UPDATE AWARD_AMOUNT_INFO SET TRANSACTION_ID = NEXT_TRANS_ID WHERE TNM_DOCUMENT_NUMBER = TNM_DOC_NUMBER AND TRANSACTION_ID IS NULL;
++  END LOOP;
++
++  CLOSE TRANS_DETAIL_CUR;
++END
++/
++CALL p()
++/
++DROP PROCEDURE IF EXISTS p
++/
++
++DELIMITER ;
+\ No newline at end of file
+diff --git a/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/mysql/kc/bootstrap/V602_012__RESKC-275.sql b/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/mysql/kc/bootstrap/V602_012__RESKC-275.sql
+deleted file mode 100644
+index 03fba45..0000000
+--- a/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/mysql/kc/bootstrap/V602_012__RESKC-275.sql
++++ /dev/null
+@@ -1,57 +0,0 @@
+---
+--- Kuali Coeus, a comprehensive research administration system for higher education.
+---
+--- Copyright 2005-2015 Kuali, Inc.
+---
+--- This program is free software: you can redistribute it and/or modify
+--- it under the terms of the GNU Affero General Public License as
+--- published by the Free Software Foundation, either version 3 of the
+--- License, or (at your option) any later version.
+---
+--- This program is distributed in the hope that it will be useful,
+--- but WITHOUT ANY WARRANTY; without even the implied warranty of
+--- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+--- GNU Affero General Public License for more details.
+---
+--- You should have received a copy of the GNU Affero General Public License
+--- along with this program.  If not, see <http://www.gnu.org/licenses/>.
+---
+-
+-DELIMITER /
+-
+-DROP PROCEDURE IF EXISTS p
+-/
+-CREATE PROCEDURE p()
+-BEGIN
+-  DECLARE DONE INT DEFAULT FALSE;
+-  DECLARE TRANS_DETAIL_ID decimal(10,0);
+-  DECLARE TNM_DOC_NUMBER varchar(40);
+-  DECLARE NEXT_TRANS_ID bigint(19);
+-
+-  DECLARE TRANS_DETAIL_CUR CURSOR FOR SELECT TRANSACTION_DETAIL_ID, TNM_DOCUMENT_NUMBER FROM TRANSACTION_DETAILS WHERE TRANSACTION_ID = '-1';
+-  DECLARE CONTINUE HANDLER FOR NOT FOUND SET DONE = TRUE;
+-
+-  OPEN TRANS_DETAIL_CUR;
+-
+-  read_loop: LOOP
+-    FETCH TRANS_DETAIL_CUR INTO TRANS_DETAIL_ID, TNM_DOC_NUMBER;
+-    IF DONE THEN
+-      LEAVE read_loop;
+-    END IF;
+-
+-    INSERT INTO SEQ_TRANSACTION_ID VALUES (null);
+-    SELECT MAX(ID) + 1 INTO NEXT_TRANS_ID FROM SEQ_TRANSACTION_ID;
+-
+-    UPDATE TRANSACTION_DETAILS SET TRANSACTION_DETAIL_TYPE = 'DATE', TRANSACTION_ID = NEXT_TRANS_ID WHERE TRANSACTION_DETAIL_ID = TRANS_DETAIL_ID;
+-    UPDATE AWARD_AMOUNT_INFO SET TRANSACTION_ID = NEXT_TRANS_ID WHERE TNM_DOCUMENT_NUMBER = TNM_DOC_NUMBER AND TRANSACTION_ID IS NULL;
+-  END LOOP;
+-
+-  CLOSE TRANS_DETAIL_CUR;
+-END
+-/
+-CALL p()
+-/
+-DROP PROCEDURE IF EXISTS p
+-/
+-
+-DELIMITER ;
+\ No newline at end of file
+diff --git a/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/oracle/kc/bootstrap/V1505_002__RESKC-275.sql b/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/oracle/kc/bootstrap/V1505_002__RESKC-275.sql
+new file mode 100644
+index 0000000..b05df38
+--- /dev/null
++++ b/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/oracle/kc/bootstrap/V1505_002__RESKC-275.sql
+@@ -0,0 +1,44 @@
++--
++-- Kuali Coeus, a comprehensive research administration system for higher education.
++--
++-- Copyright 2005-2015 Kuali, Inc.
++--
++-- This program is free software: you can redistribute it and/or modify
++-- it under the terms of the GNU Affero General Public License as
++-- published by the Free Software Foundation, either version 3 of the
++-- License, or (at your option) any later version.
++--
++-- This program is distributed in the hope that it will be useful,
++-- but WITHOUT ANY WARRANTY; without even the implied warranty of
++-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++-- GNU Affero General Public License for more details.
++--
++-- You should have received a copy of the GNU Affero General Public License
++-- along with this program.  If not, see <http://www.gnu.org/licenses/>.
++--
++
++DECLARE
++
++  TRANS_DETAIL_ID NUMBER(10);
++  TNM_DOC_NUMBER varchar2(40);
++  NEXT_TRANS_ID NUMBER(10);
++
++  CURSOR TRANS_DETAIL_CUR IS SELECT TRANSACTION_DETAIL_ID, TNM_DOCUMENT_NUMBER FROM TRANSACTION_DETAILS WHERE TRANSACTION_ID = '-1';
++
++BEGIN
++
++  OPEN TRANS_DETAIL_CUR;
++
++  LOOP
++    FETCH TRANS_DETAIL_CUR INTO TRANS_DETAIL_ID, TNM_DOC_NUMBER;
++    EXIT WHEN TRANS_DETAIL_CUR%NOTFOUND;
++
++    SELECT SEQ_TRANSACTION_ID.NEXTVAL INTO NEXT_TRANS_ID FROM DUAL;
++
++    UPDATE TRANSACTION_DETAILS SET TRANSACTION_DETAIL_TYPE = 'DATE', TRANSACTION_ID = NEXT_TRANS_ID WHERE TRANSACTION_DETAIL_ID = TRANS_DETAIL_ID;
++    UPDATE AWARD_AMOUNT_INFO SET TRANSACTION_ID = NEXT_TRANS_ID WHERE TNM_DOCUMENT_NUMBER = TNM_DOC_NUMBER AND TRANSACTION_ID IS NULL;
++  END LOOP;
++
++  CLOSE TRANS_DETAIL_CUR;
++END;
++/

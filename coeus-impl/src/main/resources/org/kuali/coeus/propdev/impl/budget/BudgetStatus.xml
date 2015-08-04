@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans.xsd">
+  <bean id="BudgetStatus" parent="BudgetStatus-parentBean" />
+  <bean id="BudgetStatus-parentBean" abstract="true" parent="BusinessObjectEntry">
+    <property name="businessObjectClass" value="org.kuali.coeus.propdev.impl.budget.BudgetStatus" />
+		<property name="objectLabel" value="Budget Status" />
+    <property name="inquiryDefinition" >
+      <ref bean="BudgetStatus-inquiryDefinition" />
+    </property>
+    <property name="lookupDefinition" >
+      <ref bean="BudgetStatus-lookupDefinition" />
+    </property>
+    <property name="titleAttribute" value="budgetStatusCode" />
+    <property name="helpDefinition" >
+      <bean parent="HelpDefinition" p:parameterNamespace="KC-B" p:parameterName="budgetStatusHelpUrl" p:parameterDetailType="Document"/>
+    </property>
+    <property name="attributes" >
+      <list>
+        <ref bean="BudgetStatus-budgetStatusCode" />
+        <ref bean="BudgetStatus-description" />
+        <ref bean="BudgetStatus-versionNumber" />
+      </list>
+    </property>
+  </bean>
+
+<!-- Attribute Definitions -->
+
+
+  <bean id="BudgetStatus-budgetStatusCode" parent="BudgetStatus-budgetStatusCode-parentBean" />
+
+  <bean id="BudgetStatus-budgetStatusCode-parentBean" abstract="true" parent="AttributeDefinition">
+    <property name="name" value="budgetStatusCode" />
+    <property name="forceUppercase" value="false" />
+    <property name="label" value="Budget Status Code" />
+    <property name="shortLabel" value="Status" />
+    <property name="maxLength" value="3" />
+    <property name="validationPattern" >
+      <bean parent="AlphaNumericValidationPattern" />
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AlphaNumericPatternConstraint"/>
+    </property>
+    <property name="control" >
+      <bean parent="TextControlDefinition" p:size="6"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="6" parent="Uif-TextControl"/>
+    </property>
+    <property name="summary" value="Budget Status Code" />
+    <property name="description" value="Budget Status Code" />
+  </bean>
+
+  <bean id="BudgetStatus-description" parent="BudgetStatus-description-parentBean"/>
+  <bean id="BudgetStatus-description-parentBean" abstract="true" parent="KraAttributeReferenceDummy-description"/>
+  <bean id="BudgetStatus-versionNumber" parent="BudgetStatus-versionNumber-parentBean" />
+  <bean id="BudgetStatus-versionNumber-parentBean" abstract="true" parent="AttributeReferenceDummy-versionNumber"/>
+<!-- Business Object Inquiry Definition -->
+  <bean id="BudgetStatus-inquiryDefinition" parent="BudgetStatus-inquiryDefinition-parentBean" />
+  <bean id="BudgetStatus-InquiryView" parent="BudgetStatus-InquiryView-parentBean"/>
+  <bean id="BudgetStatus-inquiryDefinition-parentBean" abstract="true" parent="InquiryDefinition">
+    <property name="title" value="Budget Status" />
+    <property name="inquirySections" >
+      <list>
+        <bean parent="InquirySectionDefinition">
+          <property name="title" value="Budget Status" />
+          <property name="numberOfColumns" value="1" />
+          <property name="inquiryFields" >
+            <list>
+              <bean parent="FieldDefinition" p:attributeName="budgetStatusCode" p:forceInquiry="true"/>
+              <bean parent="FieldDefinition" p:attributeName="description"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="BudgetStatus-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView">
+    <property name="headerText" value="Budget Status"/>
+    <property name="dataObjectClassName" value="org.kuali.coeus.propdev.impl.budget.BudgetStatus"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-GridSection">
+          <property name="headerText" value="Budget Status"/>
+          <property name="layoutManager.numberOfColumns" value="2"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="budgetStatusCode" parent="Uif-DataField"/>
+              <bean p:propertyName="description" parent="Uif-DataField"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <!-- Business Object Lookup Definition -->
+  <bean id="BudgetStatus-lookupDefinition" parent="BudgetStatus-lookupDefinition-parentBean" />
+  <bean id="BudgetStatus-LookupView" parent="BudgetStatus-LookupView-parentBean"/>
+  <bean id="BudgetStatus-lookupDefinition-parentBean" abstract="true" parent="LookupDefinition">
+    <property name="title" value="Budget Status Lookup" /><property name="defaultSort" >
+      <bean parent="SortDefinition"/>
+    </property>
+     <property name="helpDefinition" >
+      <bean parent="HelpDefinition" p:parameterNamespace="KC-M" p:parameterName="budgetStatusMaintenanceHelp" p:parameterDetailType="Document"/>
+    </property>
+    <property name="lookupFields" >
+      <list>
+        <bean parent="FieldDefinition" p:attributeName="budgetStatusCode"/>
+        <bean parent="FieldDefinition" p:attributeName="description"/>
+      </list>
+    </property>
+    <property name="resultFields">
+      <list>
+        <bean parent="FieldDefinition" p:attributeName="budgetStatusCode" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="description"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="BudgetStatus-LookupView-parentBean" abstract="true" parent="Uif-LookupView">
+    <property name="dataObjectClassName" value="org.kuali.coeus.propdev.impl.budget.BudgetStatus"/>
+    <property name="headerText" value="Budget Status Lookup"/>
+    <property name="criteriaFields">
+      <list>
+        <bean p:propertyName="budgetStatusCode" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="description" parent="Uif-LookupCriteriaInputField"/>
+      </list>
+    </property>
+    <property name="resultFields" >
+      <list>
+        <bean p:propertyName="budgetStatusCode" parent="Uif-DataField"/>
+        <bean p:propertyName="description" parent="Uif-DataField"/>
+      </list>
+    </property>
+  </bean>
+</beans>

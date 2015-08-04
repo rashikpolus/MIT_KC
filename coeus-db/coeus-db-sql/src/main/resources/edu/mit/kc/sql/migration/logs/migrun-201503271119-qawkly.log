@@ -1,0 +1,123 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Fri Mar 27 11:19:26 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+SP2-0103: Nothing in SQL buffer to run.
+
+1 row updated.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+0 rows updated.
+
+UPDATE SAP_BUDGET_FEED SET COST_ELEMENT = '422125' WHERE COST_ELEMENT = 'PCLOSE'
+       *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+1 row updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+UPDATE SAP_BUDGET_FEED SET COST_ELEMENT = '422131' WHERE COST_ELEMENT = 'PINCRT'
+       *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+1 row updated.
+
+
+4 rows updated.
+
+
+0 rows updated.
+
+UPDATE SAP_BUDGET_FEED SET COST_ELEMENT = '422141' WHERE COST_ELEMENT = 'PCARRY'
+       *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+279 rows updated.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+SP2-0310: unable to open file "sap/ddl_dml_sap_budget_feed.sql"
+SP2-0310: unable to open file "sap/fn_generate_rolodex_feed.sql"
+SP2-0310: unable to open file "sap/fn_generate_sponsor_feed.sql"
+SP2-0310: unable to open file "sap/fn_generate_sap_feed.sql"
+SP2-0310: unable to open file "sap/kc_sap_feed_pkg.sql"
+SP2-0310: unable to open file "sap/fn_spool_awd_budget_batch.sql"
+SP2-0310: unable to open file "sap/fn_generate_sap_budget_feed.sql"
+SP2-0310: unable to open file "sap/fn_generate_master_sap_feed.sql"
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

@@ -1,0 +1,78 @@
+From 0a7c381178303321d9753e3c9436ea94ae5b81c7 Mon Sep 17 00:00:00 2001
+From: Gayathri <gathreya@email.arizona.edu>
+Date: Fri, 22 May 2015 09:29:50 -0700
+Subject: [PATCH] RESKC-468: fix award budget issues Award budget documents
+ seem to be attached to a particular sequence of the award and when new award
+ sequences are created you can no longer view the budget created on an earlier
+ sequence. Such as today account 2388937. When this happens users are also
+ able to create new budget versions in the new award sequence regardless of
+ the status of the earlier budget version. So now account 2388937 has two
+ budget documents 1440820 and 1439251. Which again, shouldn't affect our work
+ or SAP but I don't think this is how we want this to work. Award budget
+ totals when editing / versioning an award are not right either.
+
+---
+ .../src/main/java/org/kuali/kra/award/document/AwardDocument.java     | 4 ++++
+ .../src/main/java/org/kuali/kra/award/home/AwardServiceImpl.java      | 2 +-
+ .../org/kuali/kra/award/web/struts/action/AwardBudgetsAction.java     | 4 +++-
+ .../src/main/webapp/WEB-INF/jsp/award/AwardBudgetVersions.jsp         | 4 ++--
+ 4 files changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/award/document/AwardDocument.java b/coeus-impl/src/main/java/org/kuali/kra/award/document/AwardDocument.java
+index 4e433a5..9526e28 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/award/document/AwardDocument.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/award/document/AwardDocument.java
+@@ -449,6 +449,10 @@ public Award getBudgetParent() {
+         return getAward();
+     }
+ 
++    public Budget getBudgetDocumentVersion(int selectedLine) {
++        return ((Award)getBudgetParent()).getAllAwardBudgets().get(selectedLine);
++    }
++
+     public Task getParentAuthZTask(String taskName) {
+         return new AwardTask(taskName,getAward());
+     }
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/award/home/AwardServiceImpl.java b/coeus-impl/src/main/java/org/kuali/kra/award/home/AwardServiceImpl.java
+index dfc1003..c9982c3 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/award/home/AwardServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/award/home/AwardServiceImpl.java
+@@ -77,7 +77,7 @@ public void setBusinessObjectService(BusinessObjectService businessObjectService
+ 
+     public AwardDocument createNewAwardVersion(AwardDocument awardDocument) throws VersionException, WorkflowException {
+         Award newVersion = getVersioningService().createNewVersion(awardDocument.getAward());
+-        
++        newVersion.setBudgets(new ArrayList<>());
+         for (AwardAttachment attach : newVersion.getAwardAttachments()) {
+             AwardAttachment orignalAttachment = findMatchingAwardAttachment(awardDocument.getAward().getAwardAttachments(), attach.getFileId());
+             attach.setUpdateUser(orignalAttachment.getUpdateUser());
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/award/web/struts/action/AwardBudgetsAction.java b/coeus-impl/src/main/java/org/kuali/kra/award/web/struts/action/AwardBudgetsAction.java
+index 2b5c9a8..bd4c70a 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/award/web/struts/action/AwardBudgetsAction.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/award/web/struts/action/AwardBudgetsAction.java
+@@ -125,7 +125,9 @@ public ActionForward addBudgetVersion(ActionMapping mapping, ActionForm form, Ht
+                     awardForm.setNewBudgetVersionName("");
+                 }
+             }
+-        
++        // set to null so that this list is reloaded from db when
++        // new version is added.
++        awardDoc.getAward().setAllAwardBudgets(null);
+         return actionForward;
+     }
+     
+diff --git a/coeus-webapp/src/main/webapp/WEB-INF/jsp/award/AwardBudgetVersions.jsp b/coeus-webapp/src/main/webapp/WEB-INF/jsp/award/AwardBudgetVersions.jsp
+index aed624a..18b6cec 100644
+--- a/coeus-webapp/src/main/webapp/WEB-INF/jsp/award/AwardBudgetVersions.jsp
++++ b/coeus-webapp/src/main/webapp/WEB-INF/jsp/award/AwardBudgetVersions.jsp
+@@ -126,8 +126,8 @@
+ </kul:tabTop>
+   	
+   	<kra-b:budgetVersions 
+-  		budgetDocumentVersions="${KualiForm.document.award.budgets}" 
+-  		pathToVersions="document.award.budgets"
++  		budgetDocumentVersions="${KualiForm.document.award.allAwardBudgets}"
++  		pathToVersions="document.award.allAwardBudgets"
+   		errorKey="document.budgetDocumentVersion*,
+   					document.award.budget*"
+   		requestedStartDateInitial="${KualiForm.document.award.beginDate}"

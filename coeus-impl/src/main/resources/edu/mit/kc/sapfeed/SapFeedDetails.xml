@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean id="SapFeedDetails" parent="SapFeedDetails-parentBean" />
+	<bean id="SapFeedDetails-parentBean" abstract="true"
+		parent="BusinessObjectEntry">
+		<property name="businessObjectClass"
+			value="org.kuali.coeus.propdev.impl.sapfeed.SapFeedDetails" />
+		<property name="objectLabel" value="SAP Feed Details" />
+		<property name="lookupDefinition">
+			<ref bean="SapFeedDetails-lookupDefinition" />
+		</property>
+		<property name="attributes">
+			<list>
+				<ref bean="SapFeedDetails-feedId" />
+				<ref bean="SapFeedDetails-awardNumber" />
+				<ref bean="SapFeedDetails-sequenceNumber" />
+				<ref bean="SapFeedDetails-feedType" />
+				<ref bean="SapFeedDetails-feedStatus" />
+				<ref bean="SapFeedDetails-batchId" />
+				<ref bean="SapFeedDetails-tranId" />
+				<ref bean="SapFeedDetails-updateTimestamp" />
+				<ref bean="SapFeedDetails-updateUser" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- Attribute Definitions -->
+	<bean id="SapFeedDetails-feedId" parent="SapFeedDetails-feedId-parentBean" />
+	<bean id="SapFeedDetails-feedId-parentBean" abstract="true"
+		parent="AttributeDefinition" p:name="feedId" p:forceUppercase="false"
+		p:label="Feed Id" p:shortLabel="Feed Id" p:summary="Feed Id"
+		p:description="Feed Id">
+		<property name="validationPattern">
+			<bean parent="NumericValidationPattern" />
+		</property>
+		<property name="validCharactersConstraint">
+			<bean parent="NumericPatternConstraint" />
+		</property>
+		<property name="control">
+			<bean parent="TextControlDefinition" p:size="8" />
+		</property>
+		<property name="controlField">
+			<bean parent="Uif-TextControl" p:size="14" />
+		</property>
+	</bean>
+
+	<bean id="SapFeedDetails-awardNumber" parent="SapFeedDetails-awardNumber-parentBean" />
+	<bean id="SapFeedDetails-awardNumber-parentBean" parent="AttributeDefinition"
+		abstract="true" p:name="awardNumber" p:forceUppercase="false" p:label="Award Number"
+		p:shortLabel="Award Number" p:summary="Award Number" p:description="Award Number">
+		<property name="validationPattern">
+			<bean parent="AnyCharacterValidationPattern" />
+		</property>
+		<property name="validCharactersConstraint">
+			<bean parent="AnyCharacterPatternConstraint" />
+		</property>
+
+		<property name="control">
+			<bean parent="TextControlDefinition" p:size="8" />
+		</property>
+		<property name="controlField">
+			<bean parent="Uif-TextControl" p:size="14" />
+		</property>
+	</bean>
+
+	<bean id="SapFeedDetails-sequenceNumber" parent="SapFeedDetails-sequenceNumber-parentBean" />
+	<bean id="SapFeedDetails-sequenceNumber-parentBean" parent="AttributeDefinition"
+		abstract="true" p:name="sequenceNumber" p:forceUppercase="true"
+		p:label="Sequence Number" p:shortLabel="Sequence Number" p:summary="Sequence Number"
+		p:description="Sequence Number">
+		<property name="validationPattern">
+			<bean parent="NumericValidationPattern" />
+		</property>
+		<property name="validCharactersConstraint">
+			<bean parent="NumericPatternConstraint" />
+		</property>
+		<property name="control">
+			<bean parent="TextControlDefinition" p:size="8" />
+		</property>
+		<property name="controlField">
+			<bean parent="Uif-TextControl" p:size="14" />
+		</property>
+	</bean>
+
+	<bean id="SapFeedDetails-feedType" parent="SapFeedDetails-feedType-parentBean" />
+	<bean id="SapFeedDetails-feedType-parentBean" parent="AttributeDefinition"
+		abstract="true" p:name="feedType" p:forceUppercase="false" p:label="Feed Type"
+		p:shortLabel="Feed Type" p:summary="Feed Type" p:description="Feed Type">
+		<property name="validationPattern">
+			<bean parent="AnyCharacterValidationPattern" />
+		</property>
+		<property name="validCharactersConstraint">
+			<bean parent="AnyCharacterPatternConstraint" />
+		</property>
+		<property name="control">
+			<bean parent="TextControlDefinition" p:size="8" />
+		</property>
+		<property name="controlField">
+			<bean parent="Uif-TextControl" p:size="14" />
+		</property>
+	</bean>
+
+	<bean id="SapFeedDetails-feedStatus" parent="SapFeedDetails-feedStatus-parentBean" />
+	<bean id="SapFeedDetails-feedStatus-parentBean" parent="AttributeDefinition"
+		abstract="true" p:name="feedStatus" p:forceUppercase="false" p:label="Feed Status"
+		p:shortLabel="Feed Status" p:summary="Feed Status" p:description="Feed Status">
+		<property name="validationPattern">
+			<bean parent="AnyCharacterValidationPattern" />
+		</property>
+		<property name="validCharactersConstraint">
+			<bean parent="AnyCharacterPatternConstraint" />
+		</property>
+		<property name="control">
+			<bean parent="TextControlDefinition" p:size="8" />
+		</property>
+		<property name="controlField">
+			<bean parent="Uif-TextControl" p:size="14" />
+		</property>
+	</bean>
+
+	<bean id="SapFeedDetails-batchId" parent="SapFeedDetails-batchId-parentBean" />
+	<bean id="SapFeedDetails-batchId-parentBean" abstract="true"
+		parent="AttributeDefinition" p:name="batchId" p:forceUppercase="false"
+		p:label="Batch Id" p:shortLabel="Batch Id" p:summary="Batch Id"
+		p:description="Batch Id">
+		<property name="validationPattern">
+			<bean parent="AnyCharacterValidationPattern" />
+		</property>
+		<property name="validCharactersConstraint">
+			<bean parent="AnyCharacterPatternConstraint" />
+		</property>
+		<property name="control">
+			<bean parent="TextControlDefinition" p:size="8" />
+		</property>
+		<property name="controlField">
+			<bean parent="Uif-TextControl" p:size="14" />
+		</property>
+	</bean>
+
+	<bean id="SapFeedDetails-tranId" parent="SapFeedDetails-tranId-parentBean" />
+	<bean id="SapFeedDetails-tranId-parentBean" abstract="true"
+		parent="AttributeDefinition" p:name="tranId" p:forceUppercase="false"
+		p:label="Transaction Id" p:shortLabel="Tran Id" p:summary="Transaction Id"
+		p:description="Transaction Id">
+		<property name="validationPattern">
+			<bean parent="AnyCharacterValidationPattern" />
+		</property>
+		<property name="validCharactersConstraint">
+			<bean parent="AnyCharacterPatternConstraint" />
+		</property>
+		<property name="control">
+			<bean parent="TextControlDefinition" p:size="8" />
+		</property>
+		<property name="controlField">
+			<bean parent="Uif-TextControl" p:size="14" />
+		</property>
+	</bean>
+
+	<bean id="SapFeedDetails-updateTimestamp" parent="SapFeedDetails-updateTimestamp-parentBean" />
+	<bean id="SapFeedDetails-updateTimestamp-parentBean" abstract="true"
+		parent="KraAttributeReferenceDummy-updateTimestamp">
+		<property name="name" value="updateTimestamp" />
+		<property name="label" value="Date" />
+		<property name="shortLabel" value="Date" />
+	</bean>
+
+	<bean id="SapFeedDetails-updateUser" parent="SapFeedDetails-updateUser-parentBean" />
+
+	<bean id="SapFeedDetails-updateUser-parentBean" abstract="true"
+		parent="AttributeDefinition">
+		<property name="name" value="updateUser" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="User" />
+		<property name="shortLabel" value="User" />
+		<property name="maxLength" value="60" />
+		<property name="validationPattern">
+			<bean parent="AnyCharacterValidationPattern" />
+		</property>
+		<property name="validCharactersConstraint">
+			<bean parent="AnyCharacterPatternConstraint" />
+		</property>
+		<property name="control">
+			<bean parent="TextControlDefinition" p:size="10" />
+		</property>
+		<property name="controlField">
+			<bean p:size="14" parent="Uif-TextControl" />
+		</property>
+		<property name="summary" value="User who uploads the document" />
+		<property name="description" value="User who uploads the document" />
+	</bean>
+
+	<!-- Lookup Definition -->
+	<bean id="SapFeedDetails-lookupDefinition" parent="SapFeedDetails-lookupDefinition-parentBean" />
+	<bean id="SapFeedDetails-LookupView" parent="SapFeedDetails-LookupView-parentBean" />
+	<bean id="SapFeedDetails-lookupDefinition-parentBean" abstract="true"
+		parent="LookupDefinition">
+		<property name="title" value="Feed Search" />
+		<property name="defaultSort">
+			<bean parent="SortDefinition" />
+		</property>
+		<property name="lookupFields">
+			<list>
+				<bean parent="FieldDefinition" p:attributeName="awardNumber" />
+				<bean parent="FieldDefinition" p:attributeName="feedType" />
+				<bean parent="FieldDefinition" p:attributeName="feedStatus" />
+				<bean parent="FieldDefinition" p:attributeName="batchId" />
+			</list>
+		</property>
+		<property name="resultFields">
+			<list>
+				<bean parent="FieldDefinition" p:attributeName="feedId" />
+				<bean parent="FieldDefinition" p:attributeName="awardNumber" />
+				<bean parent="FieldDefinition" p:attributeName="sequenceNumber" />
+				<bean parent="FieldDefinition" p:attributeName="feedType" />
+				<bean parent="FieldDefinition" p:attributeName="feedStatus" />
+				<bean parent="FieldDefinition" p:attributeName="batchId" />
+				<bean parent="FieldDefinition" p:attributeName="tranId" />
+				<bean parent="FieldDefinition" p:attributeName="updateTimestamp" />
+				<bean parent="FieldDefinition" p:attributeName="updateUser" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="SapFeedDetails-LookupView-parentBean" abstract="true"
+		parent="Uif-LookupView">
+		<property name="dataObjectClassName"
+			value="org.kuali.coeus.propdev.impl.sapfeed.SapFeedDetails" />
+		<property name="headerText" value="Feed Search" />
+		<property name="criteriaFields">
+			<list>
+				<bean p:propertyName="awardNumber" parent="Uif-LookupCriteriaInputField" />
+				<bean p:propertyName="feedType" parent="Uif-LookupCriteriaInputField" />
+				<bean p:propertyName="feedStatus" parent="Uif-LookupCriteriaInputField" />
+				<bean p:propertyName="batchId" parent="Uif-LookupCriteriaInputField" />
+			</list>
+		</property>
+		<property name="resultFields">
+			<list>
+				<bean p:propertyName="feedId" parent="Uif-DataField" />
+				<bean p:propertyName="awardNumber" parent="Uif-DataField" />
+				<bean p:propertyName="sequenceNumber" parent="Uif-DataField" />
+				<bean p:propertyName="feedType" parent="Uif-DataField" />
+				<bean p:propertyName="feedStatus" parent="Uif-DataField" />
+				<bean p:propertyName="batchId" parent="Uif-DataField" />
+				<bean p:propertyName="tranId" parent="Uif-DataField" />
+				<bean p:propertyName="updateTimestamp" parent="Uif-DataField" />
+				<bean p:propertyName="updateUser" parent="Uif-DataField" />
+			</list>
+		</property>
+	</bean>
+</beans>
+	

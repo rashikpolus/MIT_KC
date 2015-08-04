@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean id="ProtocolReferenceBean" parent="ProtocolReferenceBean-parentBean" />
+	<bean id="ProtocolReferenceBean-parentBean" abstract="true" parent="BusinessObjectEntry">
+		<property name="businessObjectClass" value="org.kuali.kra.irb.protocol.reference.ProtocolReferenceBean" />
+		<property name="objectLabel" value="Protocol Reference" />
+		<property name="titleAttribute" value="protocolId" />
+		<property name="attributes" >
+			<list>
+				<ref bean="ProtocolReferenceBean-protocolReferenceId" />
+				<ref bean="ProtocolReferenceBean-protocolReferenceNumber" />
+				<ref bean="ProtocolReferenceBean-protocolReferenceTypeCode" />
+				<ref bean="ProtocolReferenceBean-referenceKey" />
+				<ref bean="ProtocolReferenceBean-applicationDate" />
+				<ref bean="ProtocolReferenceBean-approvalDate" />
+				<ref bean="ProtocolReferenceBean-comments" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- Attribute Definitions -->
+
+	<bean id="ProtocolReferenceBean-protocolReferenceId" parent="ProtocolReferenceBean-protocolReferenceId-parentBean" />
+	<bean id="ProtocolReferenceBean-protocolReferenceId-parentBean" abstract="true" parent="AttributeDefinition" >
+		<property name="name" value="protocolReferenceId" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="Protocol Reference Id" />
+		<property name="shortLabel" value="Protocol Reference Id" />
+		<property name="maxLength" value="22" />
+		<property name="validationPattern" >
+			<bean parent="NumericValidationPattern" />
+		</property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+		<property name="control" >
+      <bean parent="TextControlDefinition" p:size="10"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="10" parent="Uif-TextControl"/>
+		</property>
+		<property name="summary" value="Protocol Reference Id" />
+		<property name="description" value="Protocol Reference Id" />
+	</bean>
+
+	<bean id="ProtocolReferenceBean-protocolReferenceNumber" parent="ProtocolReferenceBean-protocolReferenceNumber-parentBean" />
+	<bean id="ProtocolReferenceBean-protocolReferenceNumber-parentBean" abstract="true" parent="AttributeDefinition" >
+		<property name="name" value="protocolReferenceNumber" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="Protocol Reference Number" />
+		<property name="shortLabel" value="Protocol Reference Number" />
+		<property name="maxLength" value="22" />
+		<property name="validationPattern" >
+			<bean parent="NumericValidationPattern" />
+		</property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+		<property name="control" >
+      <bean parent="TextControlDefinition" p:size="10"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="10" parent="Uif-TextControl"/>
+		</property>
+		<property name="summary" value="Protocol Reference Number" />
+		<property name="description" value="Protocol Reference Number" />
+	</bean>
+
+	<bean id="ProtocolReferenceBean-protocolReferenceTypeCode" parent="ProtocolReferenceBean-protocolReferenceTypeCode-parentBean" />
+	<bean id="ProtocolReferenceBean-protocolReferenceTypeCode-parentBean" abstract="true" parent="AttributeDefinition" >
+		<property name="name" value="protocolReferenceTypeCode" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="Protocol Reference Type Code" />
+		<property name="shortLabel" value="Type" />
+		<property name="maxLength" value="3" />
+		<property name="validationPattern" >
+			<bean parent="NumericValidationPattern" />
+		</property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+		<property name="control" >
+      <bean parent="SelectControlDefinition" p:valuesFinderClass="org.kuali.kra.irb.protocol.ProtocolReferenceTypeValuesFinder" p:includeKeyInLabel="false"/>
+    </property>
+    <property name="optionsFinder">
+      <bean class="org.kuali.kra.irb.protocol.ProtocolReferenceTypeValuesFinder"/>
+    </property>
+    <property name="controlField">
+      <bean parent="Uif-DropdownControl"/>
+ 		</property>	
+        <property name="required" value="true" />	 
+		<property name="summary" value="Protocol Reference Type Code" />
+		<property name="description" value="Protocol Reference Type Code" />
+	</bean>
+
+	<bean id="ProtocolReferenceBean-referenceKey" parent="ProtocolReferenceBean-referenceKey-parentBean" />
+	<bean id="ProtocolReferenceBean-referenceKey-parentBean" abstract="true" parent="AttributeDefinition" >
+		<property name="name" value="referenceKey" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="Reference Key" />
+		<property name="shortLabel" value="Other Identifier" />
+		<property name="maxLength" value="50" />
+		<property name="validationPattern" >
+      <bean parent="AnyCharacterValidationPattern" p:allowWhitespace="true"/>
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AnyCharacterPatternConstraint">
+        <property name="allowWhitespace" value="true"/>
+      </bean>
+		</property>
+		<property name="control" >
+      <bean parent="TextControlDefinition" p:size="50"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="50" parent="Uif-TextControl"/>
+		</property>
+		<property name="required" value="true" />
+		<property name="summary" value="Reference Key" />
+		<property name="description" value="Reference Key" />
+	</bean>
+
+	<bean id="ProtocolReferenceBean-applicationDate" parent="ProtocolReferenceBean-applicationDate-parentBean" />
+	<bean id="ProtocolReferenceBean-applicationDate-parentBean" abstract="true" parent="KraAttributeReferenceDummy-genericDate" >
+		<property name="name" value="applicationDate" />
+		<property name="label" value="Application Date" />
+		<property name="shortLabel" value="Application Date" />
+		<property name="summary" value="Application Date" />
+		<property name="description" value="Application Date" />
+	</bean>
+
+	<bean id="ProtocolReferenceBean-approvalDate" parent="ProtocolReferenceBean-approvalDate-parentBean" />
+	<bean id="ProtocolReferenceBean-approvalDate-parentBean" abstract="true" parent="KraAttributeReferenceDummy-genericDate" >
+		<property name="name" value="approvalDate" />
+		<property name="label" value="Approval Date" />
+		<property name="shortLabel" value="Approval Date" />
+		<property name="summary" value="Approval Date" />
+		<property name="description" value="Approval Date" />
+	</bean>
+
+	<bean id="ProtocolReferenceBean-comments" parent="ProtocolReferenceBean-comments-parentBean" />
+	<bean id="ProtocolReferenceBean-comments-parentBean" abstract="true" parent="AttributeDefinition" >
+		<property name="name" value="comments" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="Comments" />
+		<property name="shortLabel" value="Comments" />
+		<property name="maxLength" value="400" />
+		<property name="validationPattern" >
+      <bean parent="AnyCharacterValidationPattern" p:allowWhitespace="true"/>
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AnyCharacterPatternConstraint">
+        <property name="allowWhitespace" value="true"/>
+      </bean>
+		</property>
+		<property name="control" >
+      <bean parent="TextareaControlDefinition" p:rows="3" p:cols="100"/>
+    </property>
+    <property name="controlField">
+      <bean p:rows="3" p:cols="100" parent="Uif-TextAreaControl"/>
+		</property>
+		<property name="summary" value="Comments" />
+		<property name="description" value="Comments" />
+	</bean>
+</beans>

@@ -1,0 +1,67 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Wed Feb 18 22:22:44 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+
+'RUNNINGDDLSNAPSHOT'
+--------------------
+running ddl snapshot
+
+CREATE TABLE KC_ROLE_CNTRAL_MAP(
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+PRIMARY KEY (ROLE_CNTRL_MAP_ID)
+*
+ERROR at line 3:
+ORA-02260: table can have only one primary key
+
+
+FOREIGN KEY (ROLE_ID)
+*
+ERROR at line 3:
+ORA-02275: such a referential constraint already exists in the table
+
+
+CREATE TABLE USER_ROLE_CNTRL_MAP_LOG(
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+PRIMARY KEY (SYNC_LOG_ID)
+*
+ERROR at line 3:
+ORA-02260: table can have only one primary key
+
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+'RUNNINGDMLSNAPSHOT'
+--------------------
+running dml snapshot
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

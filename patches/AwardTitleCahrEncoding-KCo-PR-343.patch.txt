@@ -1,0 +1,127 @@
+From feb6e0869f5dd368b6f2067b53f7e355757c47a4 Mon Sep 17 00:00:00 2001
+From: Gayathri <gathreya@email.arizona.edu>
+Date: Tue, 5 May 2015 09:53:42 -0700
+Subject: [PATCH] =?UTF-8?q?RESKC-270:Fix=20character=20encoding=20in=20the?=
+ =?UTF-8?q?=20app.=20Create=20or=20edit=20award=20In=20a=20Word=20document?=
+ =?UTF-8?q?,=20type=20in:=20'single=20quote'=20"double=20quote"=20long?=
+ =?UTF-8?q?=E2=80=94dash=20Cut=20that=20from=20Word=20and=20past=20in=20Aw?=
+ =?UTF-8?q?ard=20Title=20Try=20to=20save=20it.=20Result:=20"Errors=20found?=
+ =?UTF-8?q?=20in=20this=20Section:=20The=20Award=20Title=20(Title)=20may?=
+ =?UTF-8?q?=20only=20consist=20of=20visible=20characters,=20spaces,=20or?=
+ =?UTF-8?q?=20tabs."=20And=20Award=20title=20is=20changed=20to:=20=C3=A2?=
+ =?UTF-8?q?=E2=82=AC=CB=9Csingle=C3=A2=E2=82=AC=E2=84=A2=20=C3=A2=E2=82=AC?=
+ =?UTF-8?q?=C5=93double=C3=A2=E2=82=AC=C2=9D=20long=C3=A2=E2=82=AC?=
+ =?UTF-8?q?=E2=80=9Ddash=20And=20if=20the=20user=20keeps=20saving,=20the?=
+ =?UTF-8?q?=20system=20keeps=20transforming=20the=20characters=20until=20t?=
+ =?UTF-8?q?he=20maximum=20allowed=20characters=20are=20reached=20and=20an?=
+ =?UTF-8?q?=20STE=20occurs:=20org.springframework.jdbc.UncategorizedSQLExc?=
+ =?UTF-8?q?eption:=20OJB=20operation;=20uncategorized=20SQLException=20for?=
+ =?UTF-8?q?=20SQL=20[];=20SQL=20state=20[72000];=20error=20code=20[12899];?=
+ =?UTF-8?q?=20ORA-12899:=20value=20too=20large=20for=20column=20"KCSO"."AW?=
+ =?UTF-8?q?ARD"."TITLE"=20(actual:=20250,=20maximum:=20200)=20Expected=20R?=
+ =?UTF-8?q?esult=20is=20that=20KC=20accepts=20'single=20quote'=20"double?=
+ =?UTF-8?q?=20quote"=20long=E2=80=94dash.=20Unless=20there=20is=20some=20t?=
+ =?UTF-8?q?echnical=20reason=20that=20KC=20cannot=20accept=20(or=20transfo?=
+ =?UTF-8?q?rm=20and=20accept)=20these=20characters,=20based=20on=20how=20w?=
+ =?UTF-8?q?e=20are=20handling=20unicode.?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ .../org/kuali/kra/datadictionary/Award.xml         | 52 +++++++++++-----------
+ coeus-webapp/src/main/webapp/WEB-INF/web.xml       | 18 ++++++++
+ 2 files changed, 44 insertions(+), 26 deletions(-)
+
+diff --git a/coeus-impl/src/main/resources/org/kuali/kra/datadictionary/Award.xml b/coeus-impl/src/main/resources/org/kuali/kra/datadictionary/Award.xml
+index d0b6dc5..b97a9f8 100644
+--- a/coeus-impl/src/main/resources/org/kuali/kra/datadictionary/Award.xml
++++ b/coeus-impl/src/main/resources/org/kuali/kra/datadictionary/Award.xml
+@@ -457,32 +457,32 @@
+   </bean>
+    -->
+   <bean id="Award-activityTypeCode" parent="DevelopmentProposal-activityTypeCode-parentBean" />
+-  <bean id="Award-title" parent="Award-title-parentBean" />
+-  <bean id="Award-title-parentBean" abstract="true" parent="AttributeDefinition">
+-    <property name="name" value="title" />
+-    <property name="forceUppercase" value="false" />
+-    <property name="label" value="Award Title" />
+-    <property name="shortLabel" value="Title" />
+-    <property name="maxLength" value="200" />
+-    <property name="validationPattern" >
+-      <bean parent="AnyCharacterValidationPattern" p:allowWhitespace="true"/>
+-    </property>
+-    <property name="validCharactersConstraint">
+-      <bean parent="AnyCharacterPatternConstraint">
+-        <property name="allowWhitespace" value="true"/>
+-      </bean>
+-    </property>
+-    <property name="required" value="true" />
+-    <property name="control" >
+-      <bean parent="TextareaControlDefinition" p:rows="3" p:cols="80"/>
+-    </property>
+-    <property name="controlField">
+-      <bean p:rows="3" p:cols="80" parent="Uif-TextAreaControl"/>
+-    </property>
+-    <property name="summary" value="The title of the propsal." />
+-    <property name="description" value="The proposed title of the project." />
+-  </bean>
+-  
++
++    <bean id="Award-title" parent="Award-title-parentBean" />
++    <bean id="Award-title-parentBean" abstract="true" parent="AttributeDefinition">
++        <property name="name" value="title" />
++        <property name="forceUppercase" value="false" />
++        <property name="label" value="Award Title" />
++        <property name="shortLabel" value="Title" />
++        <property name="maxLength" value="200" />
++        <property name="validationPattern" >
++            <bean parent="UTF8AnyCharacterValidationPattern" p:allowWhitespace="true"/>
++        </property>
++        <property name="validCharactersConstraint">
++            <bean parent="UTF8AnyCharacterPatternConstraint">
++                <property name="allowWhitespace" value="true"/>
++            </bean>
++        </property>
++        <property name="control">
++            <bean parent="TextareaControlDefinition" p:rows="3" p:cols="80" />
++        </property>
++        <property name="controlField">
++            <bean p:rows="3" p:cols="80" parent="Uif-TextAreaControl"/>
++        </property>
++        <property name="summary" value="The title of the propsal." />
++        <property name="description" value="The proposed title of the project." />
++    </bean>
++
+   <bean id="Award-statusCode" parent="Award-statusCode-parentBean" />
+   <bean id="Award-statusCode-parentBean" abstract="true" parent="AttributeDefinition">
+     <property name="name" value="statusCode" />
+diff --git a/coeus-webapp/src/main/webapp/WEB-INF/web.xml b/coeus-webapp/src/main/webapp/WEB-INF/web.xml
+index a89ad00..2efa8c4 100644
+--- a/coeus-webapp/src/main/webapp/WEB-INF/web.xml
++++ b/coeus-webapp/src/main/webapp/WEB-INF/web.xml
+@@ -43,6 +43,24 @@
+     </context-param>
+ 
+     <filter>
++        <filter-name>CharacterEncodingFilter</filter-name>
++        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
++        <init-param>
++            <param-name>encoding</param-name>
++            <param-value>UTF-8</param-value>
++        </init-param>
++        <init-param>
++            <param-name>forceEncoding</param-name>
++            <param-value>TRUE</param-value>
++        </init-param>
++    </filter>
++
++    <filter-mapping>
++        <filter-name>CharacterEncodingFilter</filter-name>
++        <url-pattern>/*</url-pattern>
++    </filter-mapping>
++
++    <filter>
+         <filter-name>HttpRequestLogger</filter-name>
+         <filter-class>org.kuali.rice.core.RequestLoggingFilter</filter-class>
+     </filter>

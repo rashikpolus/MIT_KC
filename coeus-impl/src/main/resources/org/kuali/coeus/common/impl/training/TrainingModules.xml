@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans.xsd">
+  <bean id="TrainingModules" parent="TrainingModules-parentBean" />
+  <bean id="TrainingModules-parentBean" abstract="true" parent="BusinessObjectEntry">
+    <property name="businessObjectClass" value="org.kuali.coeus.common.training.TrainingModules" />
+		<property name="objectLabel" value="TrainingModules" />
+    <property name="inquiryDefinition" >
+      <ref bean="TrainingModules-inquiryDefinition" />
+    </property>
+    <property name="lookupDefinition" >
+      <ref bean="TrainingModules-lookupDefinition" />
+    </property>
+    <property name="titleAttribute" value="trainingModulesId" />
+    <property name="attributes" >
+      <list>
+        <ref bean="TrainingModules-TrainingModulesId" />
+        <ref bean="TrainingModules-trainingCode" />
+        <ref bean="TrainingModules-moduleCode" />
+        <ref bean="TrainingModules-subModuleCode" /> 
+        <ref bean="TrainingModules-description" />
+        <ref bean="TrainingModules-versionNumber" />
+       </list>
+    </property>
+  </bean>
+
+<!-- Attribute Definitions -->
+
+
+  <bean id="TrainingModules-TrainingModulesId" parent="TrainingModules-TrainingModulesId-parentBean" />
+
+  <bean id="TrainingModules-TrainingModulesId-parentBean" abstract="true" parent="AttributeDefinition">
+    <property name="name" value="trainingModulesId" />
+    <property name="forceUppercase" value="false" />
+    <property name="label" value="Training Modules Id" />
+    <property name="shortLabel" value="Training Modules Id" />
+    <property name="maxLength" value="12" />
+    <property name="validationPattern" >
+      <bean parent="NumericValidationPattern" />
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+    <property name="control" >
+      <bean parent="TextControlDefinition" p:size="12"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="12" parent="Uif-TextControl"/>
+    </property>
+    <property name="summary" value="Training Modules Id" />
+    <property name="description" value="Training Modules Id" />
+  </bean>
+  
+  <bean id="TrainingModules-trainingCode" parent="TrainingModules-trainingCode-parentBean" />
+  <bean id="TrainingModules-trainingCode-parentBean" abstract="true" parent="AttributeDefinition">
+    <property name="name" value="trainingCode" />
+    <property name="forceUppercase" value="false" />
+    <property name="label" value="Training Code" />
+    <property name="shortLabel" value="Training Code" />
+    <property name="maxLength" value="8" />
+    <property name="validationPattern" >
+      <bean parent="AnyCharacterValidationPattern" />
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AnyCharacterPatternConstraint"/>
+    </property>
+    <property name="control" >
+      <bean parent="TextControlDefinition" p:size="8"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="8" parent="Uif-TextControl"/>
+    </property>
+    <property name="summary" value="Training Code" />
+    <property name="description" value="Training Code" />
+  </bean>
+  
+  <bean id="TrainingModules-moduleCode" parent="TrainingModules-moduleCode-parentBean" />
+  <bean id="TrainingModules-moduleCode-parentBean" abstract="true" parent="AttributeDefinition">
+    <property name="name" value="moduleCode" />
+    <property name="forceUppercase" value="false" />
+    <property name="label" value="Module Code" />
+    <property name="shortLabel" value="Module Code" />
+    <property name="maxLength" value="8" />
+    <property name="validationPattern" >
+      <bean parent="AnyCharacterValidationPattern" />
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AnyCharacterPatternConstraint"/>
+    </property>
+    <property name="control" >
+      <bean parent="TextControlDefinition" p:size="8"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="8" parent="Uif-TextControl"/>
+    </property>
+    <property name="summary" value="Module Code" />
+    <property name="description" value="Module Code" />
+  </bean>
+  
+  <bean id="TrainingModules-subModuleCode" parent="TrainingModules-subModuleCode-parentBean" />
+  <bean id="TrainingModules-subModuleCode-parentBean" abstract="true" parent="AttributeDefinition">
+    <property name="name" value="subModuleCode" />
+    <property name="forceUppercase" value="false" />
+    <property name="label" value="Submodule Code" />
+    <property name="shortLabel" value="Submodule Code" />
+    <property name="maxLength" value="8" />
+    <property name="validationPattern" >
+      <bean parent="AnyCharacterValidationPattern" />
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AnyCharacterPatternConstraint"/>
+    </property>
+    <property name="control" >
+      <bean parent="TextControlDefinition" p:size="8"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="8" parent="Uif-TextControl"/>
+    </property>
+    <property name="summary" value="Submodule Code" />
+    <property name="description" value="Submodule Code" />
+  </bean>  
+  
+  <bean id="TrainingModules-description" parent="TrainingModules-description-parentBean" />
+  <bean id="TrainingModules-description-parentBean" abstract="true" parent="AttributeDefinition">
+    <property name="name" value="description" />
+    <property name="forceUppercase" value="false" />
+    <property name="label" value="Description" />
+    <property name="shortLabel" value="Description" />
+    <property name="maxLength" value="100" />
+    <property name="validationPattern" >
+      <bean parent="AnyCharacterValidationPattern" p:allowWhitespace="true"/>
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AnyCharacterPatternConstraint">
+        <property name="allowWhitespace" value="true"/>
+      </bean>
+    </property>
+    <property name="control" >
+      <bean parent="TextControlDefinition" p:size="60"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="60" parent="Uif-TextControl"/>
+    </property>
+    <property name="summary" value="Description" />
+    <property name="description" value="Description" />
+  </bean>
+  
+  <bean id="TrainingModules-versionNumber" parent="TrainingModules-versionNumber-parentBean" />
+  <bean id="TrainingModules-versionNumber-parentBean" abstract="true" parent="AttributeReferenceDummy-versionNumber"/>
+<!-- Business Object Inquiry Definition -->
+  <bean id="TrainingModules-inquiryDefinition" parent="TrainingModules-inquiryDefinition-parentBean" />
+  <bean id="TrainingModules-InquiryView" parent="TrainingModules-InquiryView-parentBean"/>
+  <bean id="TrainingModules-inquiryDefinition-parentBean" abstract="true" parent="InquiryDefinition">
+    <property name="title" value="Training Modules" />
+    <property name="inquirySections" >
+      <list>
+        <bean parent="InquirySectionDefinition">
+          <property name="title" value="Training Modules" />
+          <property name="numberOfColumns" value="1" />
+          <property name="inquiryFields" >
+            <list>
+              <bean parent="FieldDefinition" p:attributeName="trainingModulesId"/>
+              <bean parent="FieldDefinition" p:attributeName="trainingCode"/>
+              <bean parent="FieldDefinition" p:attributeName="moduleCode"/>
+              <bean parent="FieldDefinition" p:attributeName="subModuleCode"/>
+              <bean parent="FieldDefinition" p:attributeName="description"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+              
+  <bean id="TrainingModules-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView">
+    <property name="headerText" value="Training Modules"/>
+    <property name="dataObjectClassName" value="org.kuali.coeus.common.training.TrainingModules"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-GridSection">
+          <property name="headerText" value="Training Modules"/>
+          <property name="layoutManager.numberOfColumns" value="2"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="trainingModulesId" parent="Uif-DataField"/>
+              <bean p:propertyName="trainingCode" parent="Uif-DataField"/>
+              <bean p:propertyName="moduleCode" parent="Uif-DataField"/>
+              <bean p:propertyName="subModuleCode" parent="Uif-DataField"/>
+              <bean p:propertyName="description" parent="Uif-DataField"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+<!-- Business Object Lookup Definition -->
+  <bean id="TrainingModules-lookupDefinition" parent="TrainingModules-lookupDefinition-parentBean" />
+  <bean id="TrainingModules-LookupView" parent="TrainingModules-LookupView-parentBean"/>
+  <bean id="TrainingModules-lookupDefinition-parentBean" abstract="true" parent="LookupDefinition">
+    <property name="title" value="Training Modules Lookup" /><property name="defaultSort" >
+      <bean parent="SortDefinition"/>
+    </property>
+    <property name="lookupFields" >
+      <list>
+        <bean parent="FieldDefinition" p:attributeName="trainingModulesId"/>
+        <bean parent="FieldDefinition" p:attributeName="trainingCode"/>
+        <bean parent="FieldDefinition" p:attributeName="moduleCode"/>
+        <bean parent="FieldDefinition" p:attributeName="subModuleCode"/>
+      </list>
+    </property>
+    <property name="resultFields">
+      <list>
+        <bean parent="FieldDefinition" p:attributeName="trainingModulesId"/>
+        <bean parent="FieldDefinition" p:attributeName="trainingCode"/>
+        <bean parent="FieldDefinition" p:attributeName="moduleCode"/>
+        <bean parent="FieldDefinition" p:attributeName="subModuleCode"/>
+        <bean parent="FieldDefinition" p:attributeName="description"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="TrainingModules-LookupView-parentBean" abstract="true" parent="Uif-LookupView">
+    <property name="dataObjectClassName" value="org.kuali.coeus.common.training.TrainingModules"/>
+    <property name="headerText" value="Training Modules Lookup"/>
+    <property name="criteriaFields">
+      <list>
+        <bean p:propertyName="trainingModulesId" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="trainingCode" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="moduleCode" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="subModuleCode" parent="Uif-LookupCriteriaInputField"/>
+      </list>
+    </property>
+    <property name="resultFields" >
+      <list>
+        <bean p:propertyName="trainingModulesId" parent="Uif-DataField"/>
+        <bean p:propertyName="trainingCode" parent="Uif-DataField"/>
+        <bean p:propertyName="moduleCode" parent="Uif-DataField"/>
+        <bean p:propertyName="subModuleCode" parent="Uif-DataField"/>
+        <bean p:propertyName="description" parent="Uif-DataField"/>
+      </list>
+    </property>
+  </bean>
+</beans>

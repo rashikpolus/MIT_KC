@@ -1,0 +1,59 @@
+From e631f92ffd8a16f693eed90f1496cebf404f790f Mon Sep 17 00:00:00 2001
+From: Gayathri <gathreya@email.arizona.edu>
+Date: Wed, 27 May 2015 12:15:32 -0700
+Subject: [PATCH] RESKC-479: Fixing report amounts for awards. steps to
+ reproduce: 1: Central Admin >click link for Current & Pending to open window
+ 2 click show. Print reports 3. click icon for Person Search in Current Report
+ or Pending Report (result will populate both fields) 4. Enter search
+ criteria, to locate a person with current awards (jtester in kualico) 5 click
+ search 6. select the person from the list and click return value 7. click
+ [initiate report] for Current - view results on screen Expected results: A
+ single row for each award maintained as "current" displaying the obligated
+ amount from the award. Actual result: Some awards are showing double the
+ amount obligated. In Kualico, some other multiple of the current obligated is
+ appearing.
+
+---
+ .../coeus/common/framework/print/CurrentReportBean.java   |  2 +-
+ .../src/main/java/org/kuali/kra/award/home/Award.java     | 15 ---------------
+ 2 files changed, 1 insertion(+), 16 deletions(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/common/framework/print/CurrentReportBean.java b/coeus-impl/src/main/java/org/kuali/coeus/common/framework/print/CurrentReportBean.java
+index 9b6d234..0f08633 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/common/framework/print/CurrentReportBean.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/common/framework/print/CurrentReportBean.java
+@@ -115,7 +115,7 @@ public CurrentReportBean(AwardPerson awardPerson) {
+         this.sponsorName = award.getSponsorName();
+         this.sponsorAwardNumber = award.getSponsorAwardNumber();
+         this.awardTitle = award.getTitle();
+-        this.awardAmount = award.calculateObligatedDistributedAmountTotal();
++        this.awardAmount = award.getObligatedTotal();
+         this.projectStartDate = award.getAwardEffectiveDate();
+         this.projectEndDate = award.findLatestFinalExpirationDate();
+         parameterService = KcServiceLocator.getService(ParameterService.class);
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/award/home/Award.java b/coeus-impl/src/main/java/org/kuali/kra/award/home/Award.java
+index 49b6c26..cc6cd2a 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/award/home/Award.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/award/home/Award.java
+@@ -2234,21 +2234,6 @@ public String getHierarchyStatus() {
+     }
+ 
+     /**
+-     * This method gets the obligated, distributable amount for the Award.
+-     * This may be replacable with the Award TimeAndMoney obligatedAmount value, but
+-     * at the time of its creation, TimeAndMoney wasn't complete
+-     * @return
+-     */
+-    public ScaleTwoDecimal calculateObligatedDistributedAmountTotal() {
+-        ScaleTwoDecimal sum = ScaleTwoDecimal.ZERO;
+-        for (AwardAmountInfo amountInfo : getAwardAmountInfos()) {
+-            ScaleTwoDecimal obligatedDistributableAmount = amountInfo.getObliDistributableAmount();
+-            sum = sum.add(obligatedDistributableAmount != null ? obligatedDistributableAmount : ScaleTwoDecimal.ZERO);
+-        }
+-        return sum;
+-    }
+-
+-    /**
+      * This method finds the latest final expiration date from the collection of AmnoutInfos
+      * @return The latest final expiration date from the collection of AmnoutInfos. If there are no AmoutInfos, 1/1/1900 is returned
+      */

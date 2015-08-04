@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean id="ProtocolRiskLevel" parent="ProtocolRiskLevel-parentBean" />
+	<bean id="ProtocolRiskLevel-parentBean" abstract="true" parent="BusinessObjectEntry">
+		<property name="businessObjectClass" value="org.kuali.kra.irb.actions.risklevel.ProtocolRiskLevel" />
+		<property name="objectLabel" value="Protocol Risk Level" />
+		<property name="inquiryDefinition" >
+			<ref bean="ProtocolRiskLevel-inquiryDefinition" />
+		</property>
+		<property name="lookupDefinition" >
+			<ref bean="ProtocolRiskLevel-lookupDefinition" />
+		</property>
+		<property name="titleAttribute" value="protocolRiskLevelId" />
+		<property name="attributes" >
+			<list>
+				<ref bean="ProtocolRiskLevel-protocolRiskLevelId" />
+				<ref bean="ProtocolRiskLevel-protocolId" />
+				<ref bean="ProtocolRiskLevel-protocolNumber" />
+				<ref bean="ProtocolRiskLevel-sequenceNumber" />
+				<ref bean="ProtocolRiskLevel-riskLevelCode" />
+				<ref bean="ProtocolRiskLevel-comments" />
+				<ref bean="ProtocolRiskLevel-dateAssigned" />
+				<ref bean="ProtocolRiskLevel-dateInactivated" />
+				<ref bean="ProtocolRiskLevel-status" />
+				<ref bean="ProtocolRiskLevel-versionNumber" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- Attribute Definitions -->
+	<bean id="ProtocolRiskLevel-protocolRiskLevelId" parent="ProtocolRiskLevel-protocolRiskLevelId-parentBean" />
+	<bean id="ProtocolRiskLevel-protocolRiskLevelId-parentBean" abstract="true" parent="AttributeDefinition" >
+		<property name="name" value="protocolRiskLevelId" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="Protocol Risk Levels Id" />
+		<property name="shortLabel" value="Protocol Risk Levels Id" />
+		<property name="maxLength" value="22" />
+		<property name="validationPattern" >
+			<bean parent="NumericValidationPattern" />
+		</property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+		<property name="control" >
+      <bean parent="TextControlDefinition" p:size="10"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="10" parent="Uif-TextControl"/>
+		</property>
+		<property name="summary" value="Protocol Risk Levels Id" />
+		<property name="description" value="Protocol Risk Levels Id" />
+	</bean>
+
+	<bean id="ProtocolRiskLevel-protocolId" parent="ProtocolRiskLevel-protocolId-parentBean" />
+	<bean id="ProtocolRiskLevel-protocolId-parentBean" abstract="true" parent="AttributeDefinition" >
+		<property name="name" value="protocolId" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="Protocol Id" />
+		<property name="shortLabel" value="Protocol Id" />
+		<property name="maxLength" value="22" />
+		<property name="validationPattern" >
+			<bean parent="NumericValidationPattern" />
+		</property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+		<property name="control" >
+      <bean parent="TextControlDefinition" p:size="10"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="10" parent="Uif-TextControl"/>
+		</property>
+		<property name="summary" value="Protocol Id" />
+		<property name="description" value="Protocol Id" />
+	</bean>
+
+	<bean id="ProtocolRiskLevel-protocolNumber" parent="ProtocolRiskLevel-protocolNumber-parentBean" />
+	<bean id="ProtocolRiskLevel-protocolNumber-parentBean" abstract="true" parent="AttributeDefinition" >
+		<property name="name" value="protocolNumber" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="Protocol Number" />
+		<property name="shortLabel" value="Protocol Number" />
+		<property name="maxLength" value="20" />
+		<property name="validationPattern" >
+			<bean parent="AlphaNumericValidationPattern" />
+		</property>
+    <property name="validCharactersConstraint">
+      <bean parent="AlphaNumericPatternConstraint"/>
+    </property>
+		<property name="control" >
+      <bean parent="TextControlDefinition" p:size="10"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="10" parent="Uif-TextControl"/>
+		</property>
+		<property name="summary" value="Protocol Number" />
+		<property name="description" value="Protocol Number" />
+	</bean>
+
+	<bean id="ProtocolRiskLevel-sequenceNumber" parent="ProtocolRiskLevel-sequenceNumber-parentBean" />
+	<bean id="ProtocolRiskLevel-sequenceNumber-parentBean" abstract="true" parent="AttributeDefinition" >
+		<property name="name" value="sequenceNumber" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="Sequence Number" />
+		<property name="shortLabel" value="Sequence Number" />
+		<property name="maxLength" value="22" />
+		<property name="validationPattern" >
+			<bean parent="NumericValidationPattern" />
+		</property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+		<property name="control" >
+      <bean parent="TextControlDefinition" p:size="10"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="10" parent="Uif-TextControl"/>
+		</property>
+		<property name="summary" value="Sequence Number" />
+		<property name="description" value="Sequence Number" />
+	</bean>
+
+	<bean id="ProtocolRiskLevel-riskLevelCode" parent="ProtocolRiskLevel-riskLevelCode-parentBean" />
+	<bean id="ProtocolRiskLevel-riskLevelCode-parentBean" abstract="true" parent="AttributeDefinition" >
+		<property name="name" value="riskLevelCode" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="Risk Level" />
+		<property name="shortLabel" value="Risk Level" />
+		<property name="maxLength" value="3" />
+		<property name="validationPattern" >
+			<bean parent="NumericValidationPattern" />
+		</property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+		<property name="required" value="true" />
+		<property name="control" >
+      <bean parent="SelectControlDefinition" p:businessObjectClass="org.kuali.kra.bo.RiskLevel" p:valuesFinderClass="org.kuali.coeus.sys.framework.keyvalue.ExtendedPersistableBusinessObjectValuesFinder" p:includeKeyInLabel="false" p:includeBlankRow="false" p:keyAttribute="riskLevelCode" p:labelAttribute="description"/>
+    </property>
+    <property name="optionsFinder">
+      <bean class="org.kuali.coeus.sys.framework.keyvalue.ExtendedPersistableBusinessObjectValuesFinder">
+        <property name="businessObjectClass" value="org.kuali.kra.bo.RiskLevel"/>
+        <property name="includeKeyInDescription" value="false"/>
+        <property name="includeBlankRow" value="false"/>
+        <property name="keyAttributeName" value="riskLevelCode"/>
+        <property name="labelAttributeName" value="description"/>
+      </bean>
+    </property>
+    <property name="controlField">
+      <bean parent="Uif-DropdownControl"/>
+        </property>
+		<property name="summary" value="Risk Level Code" />
+		<property name="description" value="Risk Level Code" />
+	</bean>
+
+	<bean id="ProtocolRiskLevel-comments" parent="ProtocolRiskLevel-comments-parentBean" />
+	<bean id="ProtocolRiskLevel-comments-parentBean" abstract="true" parent="AttributeDefinition" >
+		<property name="name" value="comments" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="Comments" />
+		<property name="shortLabel" value="Comments" />
+		<property name="maxLength" value="2000" />
+	    <property name="validationPattern" >
+      <bean parent="AnyCharacterValidationPattern" p:allowWhitespace="true"/>
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AnyCharacterPatternConstraint">
+        <property name="allowWhitespace" value="true"/>
+      </bean>
+	    </property>
+		<property name="control" >
+      <bean parent="TextareaControlDefinition" p:rows="3" p:cols="40"/>
+    </property>
+    <property name="controlField">
+      <bean p:rows="3" p:cols="40" parent="Uif-TextAreaControl"/>
+		</property>
+		<property name="summary" value="Comments" />
+		<property name="description" value="Comments" />
+	</bean>
+
+	<bean id="ProtocolRiskLevel-dateAssigned" parent="ProtocolRiskLevel-dateAssigned-parentBean" />
+	<bean id="ProtocolRiskLevel-dateAssigned-parentBean" abstract="true" parent="KraAttributeReferenceDummy-genericDate" >
+		<property name="required" value="true" />
+		<property name="name" value="dateAssigned" />
+		<property name="label" value="Date Assigned" />
+		<property name="shortLabel" value="Date Assigned" />
+		<property name="summary" value="Date Assigned" />
+		<property name="description" value="Date Assigned" />
+	</bean>
+
+	<bean id="ProtocolRiskLevel-dateInactivated" parent="ProtocolRiskLevel-dateInactivated-parentBean" />
+	<bean id="ProtocolRiskLevel-dateInactivated-parentBean" abstract="true" parent="KraAttributeReferenceDummy-genericDate" >
+		<property name="name" value="dateInactivated" />
+		<property name="label" value="Date Inactivated" />
+		<property name="shortLabel" value="Date Inactivated" />
+		<property name="summary" value="Date Inactivated" />
+		<property name="description" value="Date Inactivated" />
+	</bean>
+
+	<bean id="ProtocolRiskLevel-status" parent="ProtocolRiskLevel-status-parentBean" />
+	<bean id="ProtocolRiskLevel-status-parentBean" abstract="true" parent="AttributeDefinition">
+		<property name="name" value="status" />
+		<property name="label" value="Status" />
+		<property name="maxLength" value="1" />
+		<property name="required" value="true" />
+        <property name="control" >
+      <bean parent="SelectControlDefinition" p:valuesFinderClass="org.kuali.kra.irb.actions.StatusValuesFinder" p:includeKeyInLabel="false"/>
+    </property>
+    <property name="optionsFinder">
+      <bean class="org.kuali.kra.irb.actions.StatusValuesFinder"/>
+    </property>
+    <property name="controlField">
+      <bean parent="Uif-DropdownControl"/>
+        </property>
+		<property name="shortLabel" value="Status" />
+		<property name="summary" value="Status" />
+		<property name="description" value="Status" />
+	</bean>
+
+	<bean id="ProtocolRiskLevel-versionNumber" parent="ProtocolRiskLevel-versionNumber-parentBean" />
+  <bean id="ProtocolRiskLevel-versionNumber-parentBean" abstract="true" parent="AttributeReferenceDummy-versionNumber"/>
+	<!-- Business Object Inquiry Definition -->
+	<bean id="ProtocolRiskLevel-inquiryDefinition" parent="ProtocolRiskLevel-inquiryDefinition-parentBean" />
+  <bean id="ProtocolRiskLevel-InquiryView" parent="ProtocolRiskLevel-InquiryView-parentBean"/>
+	<bean id="ProtocolRiskLevel-inquiryDefinition-parentBean" abstract="true" parent="InquiryDefinition">
+		<property name="title" value="Protocol Risk Level Id" />
+		<property name="inquirySections" >
+			<list>
+				<bean parent="InquirySectionDefinition">
+					<property name="title" value="Protocol Risk Level Id" />
+					<property name="numberOfColumns" value="1" />
+					<property name="inquiryFields" >
+						<list>
+              <bean parent="FieldDefinition" p:attributeName="protocolRiskLevelId" p:forceInquiry="true"/>
+              <bean parent="FieldDefinition" p:attributeName="protocolId"/>
+              <bean parent="FieldDefinition" p:attributeName="protocolNumber"/>
+              <bean parent="FieldDefinition" p:attributeName="sequenceNumber"/>
+              <bean parent="FieldDefinition" p:attributeName="riskLevelCode"/>
+              <bean parent="FieldDefinition" p:attributeName="comments"/>
+              <bean parent="FieldDefinition" p:attributeName="dateAssigned"/>
+              <bean parent="FieldDefinition" p:attributeName="dateInactivated"/>
+              <bean parent="FieldDefinition" p:attributeName="status"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="ProtocolRiskLevel-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView">
+    <property name="headerText" value="Protocol Risk Level Id"/>
+    <property name="dataObjectClassName" value="org.kuali.kra.irb.actions.risklevel.ProtocolRiskLevel"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-GridSection">
+          <property name="headerText" value="Protocol Risk Level Id"/>
+          <property name="layoutManager.numberOfColumns" value="2"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="protocolRiskLevelId" parent="Uif-DataField"/>
+              <bean p:propertyName="protocolId" parent="Uif-DataField"/>
+              <bean p:propertyName="protocolNumber" parent="Uif-DataField"/>
+              <bean p:propertyName="sequenceNumber" parent="Uif-DataField"/>
+              <bean p:propertyName="riskLevelCode" parent="Uif-DataField"/>
+              <bean p:propertyName="comments" parent="Uif-DataField"/>
+              <bean p:propertyName="dateAssigned" parent="Uif-DataField"/>
+              <bean p:propertyName="dateInactivated" parent="Uif-DataField"/>
+              <bean p:propertyName="status" parent="Uif-DataField"/>
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<!-- Business Object Lookup Definition -->
+	<bean id="ProtocolRiskLevel-lookupDefinition" parent="ProtocolRiskLevel-lookupDefinition-parentBean" />
+  <bean id="ProtocolRiskLevel-LookupView" parent="ProtocolRiskLevel-LookupView-parentBean"/>
+	<bean id="ProtocolRiskLevel-lookupDefinition-parentBean" abstract="true" parent="LookupDefinition">
+		<property name="title" value="Protocol Risk Levels Lookup" /><property name="defaultSort" >
+      <bean parent="SortDefinition"/>
+		</property>
+		<property name="lookupFields" >
+			<list>
+        <bean parent="FieldDefinition" p:attributeName="protocolRiskLevelId" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="protocolId"/>
+        <bean parent="FieldDefinition" p:attributeName="protocolNumber"/>
+        <bean parent="FieldDefinition" p:attributeName="sequenceNumber"/>
+        <bean parent="FieldDefinition" p:attributeName="riskLevelCode"/>
+        <bean parent="FieldDefinition" p:attributeName="comments"/>
+        <bean parent="FieldDefinition" p:attributeName="dateAssigned"/>
+        <bean parent="FieldDefinition" p:attributeName="dateInactivated"/>
+        <bean parent="FieldDefinition" p:attributeName="status"/>
+      </list>
+    </property>
+    <property name="resultFields">
+      <list>
+        <bean parent="FieldDefinition" p:attributeName="protocolRiskLevelId" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="protocolId"/>
+        <bean parent="FieldDefinition" p:attributeName="protocolNumber"/>
+        <bean parent="FieldDefinition" p:attributeName="sequenceNumber"/>
+        <bean parent="FieldDefinition" p:attributeName="riskLevelCode"/>
+        <bean parent="FieldDefinition" p:attributeName="comments"/>
+        <bean parent="FieldDefinition" p:attributeName="dateAssigned"/>
+        <bean parent="FieldDefinition" p:attributeName="dateInactivated"/>
+        <bean parent="FieldDefinition" p:attributeName="status"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="ProtocolRiskLevel-LookupView-parentBean" abstract="true" parent="Uif-LookupView">
+    <property name="dataObjectClassName" value="org.kuali.kra.irb.actions.risklevel.ProtocolRiskLevel"/>
+    <property name="headerText" value="Protocol Risk Levels Lookup"/>
+    <property name="criteriaFields">
+      <list>
+        <bean p:propertyName="protocolRiskLevelId" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="protocolId" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="protocolNumber" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="sequenceNumber" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="riskLevelCode" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="comments" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="dateAssigned" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="dateInactivated" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="status" parent="Uif-LookupCriteriaInputField"/>
+			</list>
+		</property>
+		<property name="resultFields" >
+			<list>
+        <bean p:propertyName="protocolRiskLevelId" parent="Uif-DataField"/>
+        <bean p:propertyName="protocolId" parent="Uif-DataField"/>
+        <bean p:propertyName="protocolNumber" parent="Uif-DataField"/>
+        <bean p:propertyName="sequenceNumber" parent="Uif-DataField"/>
+        <bean p:propertyName="riskLevelCode" parent="Uif-DataField"/>
+        <bean p:propertyName="comments" parent="Uif-DataField"/>
+        <bean p:propertyName="dateAssigned" parent="Uif-DataField"/>
+        <bean p:propertyName="dateInactivated" parent="Uif-DataField"/>
+        <bean p:propertyName="status" parent="Uif-DataField"/>
+			</list>
+		</property>
+	</bean>
+</beans>

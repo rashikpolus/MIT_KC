@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<!-- Proposal Details Page -->
+	<bean id="PropDev-DetailsPage" parent="PropDev-DetailsPage-parentBean" />
+	<bean id="PropDev-DetailsPage-parentBean" parent="PropDev-DocumentPage">
+		<property name="items">
+			<list>
+				<bean parent="PropDev-DetailsPage-Section" p:order="10" />
+			</list>
+		</property>
+		<property name="header.headerText" value="Proposal Details" />
+		<property name="header.lowerGroup">
+			<bean parent="Uif-VerticalBoxGroup">
+				<property name="items">
+					<list>
+						<bean parent="Uif-Message" p:messageText="[p]* indicates required fields[/p]"
+							p:cssClasses="text-muted" />
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+
+	<!-- Proposal Details Section -->
+	<bean id="PropDev-DetailsPage-Section" parent="PropDev-DetailsPage-Section-parentBean" />
+	<bean id="PropDev-DetailsPage-Section-parentBean" abstract="true"
+		parent="PropDev-DefaultDetails-Section" p:fieldBindingObjectPath="document.developmentProposal">
+		<property name="items">
+			<list>
+                <bean parent="Uif-InputField" p:propertyName="proposalTypeCode"
+                      p:enableAutoQuickfinder="false"
+                      p:order="10" />
+                <bean parent="PropDev-DetailsPage-OwnedByUnitNumberField" p:enableAutoQuickfinder="false" p:readOnly="true" p:order="20"/>
+                <bean parent="Uif-InputField" p:propertyName="activityTypeCode"
+                      p:enableAutoQuickfinder="false"
+                      p:order="30" />
+                <bean parent="PropDev-DetailsPage-ProjectDatesField"
+                      p:order="40" />
+                <bean parent="Uif-InputField" p:propertyName="title"
+                      p:order="50" />
+                <bean parent="PropDev-DetailsPage-SponsorField" p:onChangeScript="submitForm('refresh');"
+                      p:order="60" >
+                    <property name="quickfinder">
+                        <bean parent="Uif-QuickFinder"
+                              p:hideCriteriaOnSearch="true" />
+                    </property>
+                </bean>
+				<bean parent="PropDev-DetailsPage-PrimeSponsorField" p:order="70"  />
+				<bean parent="PropDev-DetailsPage-CurrentAwardNumberField"
+					p:order="80" />
+				<bean parent="PropDev-DetailsPage-ContinuedFromField" p:order="90" />
+				<bean parent="PropDev-DetailsPage-Keywords" p:order="100"/>
+			</list>
+		</property>
+	</bean>
+	<bean id="PropDev-DetailsPage-Keywords" parent="PropDev-DetailsPage-Keywords-parentBean"/>
+	<bean id="PropDev-DetailsPage-Keywords-parentBean" abstract="true" parent="Uif-InputField"
+		p:propertyName="propScienceKeywords" p:label="Keywords" p:render="@{#ViewHelper.isDetailsPageKeywordsEnabled()}">
+		<property name="control">
+			<bean parent="Uif-AdvancedMultiSelectControl">
+				<property name="templateOptions">
+					<map merge="true">
+						<entry key="&quot;position&quot;" value="{&quot;my&quot;:&quot;left bottom&quot;, &quot;at&quot;:&quot;left top&quot;}"/>
+					</map>
+				</property>
+			</bean>
+		</property>
+		<property name="optionsFinder">
+			<bean
+				class="org.kuali.rice.krad.keyvalues.PersistableBusinessObjectValuesFinder" 
+				p:businessObjectClass="org.kuali.coeus.common.framework.keyword.ScienceKeyword"
+				p:keyAttributeName="code"
+				p:labelAttributeName="description"/>
+		</property>
+	</bean>
+
+	<bean id="PropDev-DetailsPage-ProjectDatesField" parent="PropDev-DetailsPage-ProjectDatesField-parentBean" />
+	<bean id="PropDev-DetailsPage-ProjectDatesField-parentBean"
+		abstract="true" parent="Uif-CssGridFieldGroup" p:label="Project Dates" 
+		p:required="true">
+		<property name="items">
+			<list>
+				<bean parent="Uif-InputField" p:propertyName="requestedStartDateInitial"
+					p:colSpan="3" p:fieldLabel.render="false">
+					<property name="control">
+						<bean parent="Uif-DateControlOnFocus" p:watermarkText="mm/dd/yyyy" />
+					</property>
+					<property name="postInputAddons">
+						<list>																		
+							<bean parent="Uif-Message" p:additionalCssClasses="input-range-msg" p:messageText="to"  />
+						</list>
+					</property>
+				</bean>
+				<bean parent="Uif-InputField" p:propertyName="requestedEndDateInitial"
+					p:colSpan="2" p:fieldLabel.render="false">
+					<property name="control">
+						<bean parent="Uif-DateControlOnFocus" p:watermarkText="mm/dd/yyyy" />
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="PropDev-DefaultDetails-Section" parent="PropDev-DefaultDetails-Section-parentBean" />
+	<bean id="PropDev-DefaultDetails-Section-parentBean" abstract="true"
+		parent="Uif-CssGridSection-1FieldLabelColumn"
+		p:fieldBindingObjectPath="document.developmentProposal">
+		<property name="items">
+			<list>
+				<bean parent="Uif-InputField" p:propertyName="proposalTypeCode" 		
+					p:enableAutoQuickfinder="false"
+					p:order="10" />
+ 				<bean parent="PropDev-DetailsPage-OwnedByUnitNumberField" 
+					p:enableAutoQuickfinder="false"
+ 					p:order="20"/>
+				<bean parent="Uif-InputField" p:propertyName="activityTypeCode" 
+					p:enableAutoQuickfinder="false"
+					p:order="30" />
+				<bean parent="PropDev-DetailsPage-ProjectDatesField" 
+					p:order="40" />
+				<bean parent="Uif-InputField" p:propertyName="title"
+					p:order="50" />
+				<bean parent="PropDev-DetailsPage-SponsorField"
+					p:order="60" />
+			</list>
+		</property>
+
+	</bean>
+
+    <bean id="PropDev-DetailsPage-SponsorField" parent="PropDev-DetailsPage-SponsorField-parentBean" />
+    <bean id="PropDev-DetailsPage-SponsorField-parentBean" abstract="true"
+          parent="PropDev-DetailsPage-SponsorField-Defaults" p:propertyName="sponsorCode"
+          p:readOnlyDisplayReplacement="@{document.developmentProposal.sponsorCode} &amp;nbsp;-&amp;nbsp; @{document.developmentProposal.sponsor?.sponsorName?:'&amp;nbsp;'}"
+          p:instructionalMessage.messageText="@{document.developmentProposal.sponsor?.sponsorName?:'&amp;nbsp;'}">
+        <property name="quickfinder">
+            <bean parent="PropDev-DetailsPage-SponsorQuickFinder"
+                  p:lookupParameters="sponsorCode:sponsorCode"
+                  p:fieldConversions="sponsorCode:sponsorCode">
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="PropDev-DetailsPage-PrimeSponsorField" parent="PropDev-DetailsPage-PrimeSponsorField-parentBean" />
+    <bean id="PropDev-DetailsPage-PrimeSponsorField-parentBean"
+          abstract="true" parent="PropDev-DetailsPage-SponsorField-Defaults"
+          p:propertyName="primeSponsorCode"
+          p:readOnlyDisplayReplacement="@{document.developmentProposal.primeSponsorCode} &amp;nbsp; @{document.developmentProposal.primeSponsor?.sponsorName?:'&amp;nbsp;'}"
+          p:instructionalMessage.messageText="@{document.developmentProposal.primeSponsor?.sponsorName?:'&amp;nbsp;'}">
+        <property name="quickfinder">
+            <bean parent="PropDev-DetailsPage-SponsorQuickFinder"
+                  p:lookupParameters="primeSponsorCode:sponsorCode"
+                  p:fieldConversions="sponsorCode:primeSponsorCode">
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="PropDev-DetailsPage-SponsorQuickFinder" parent="PropDev-DetailsPage-SponsorQuickFinder-parentBean" />
+    <bean id="PropDev-DetailsPage-SponsorQuickFinder-parentBean" parent="Uif-QuickFinderByScript"
+          p:hideCriteriaOnSearch="true"
+          p:dataObjectClassName="org.kuali.coeus.common.framework.sponsor.Sponsor"/>
+
+    <bean id="PropDev-DetailsPage-SponsorField-Defaults" abstract="true"
+		parent="PropDev-DetailsPage-SponsorField-Defaults-parentBean" />
+	<bean id="PropDev-DetailsPage-SponsorField-Defaults-parentBean"
+		abstract="true" parent="Uif-InputField"
+		p:additionalCssClasses="transparentField">
+        <property name="quickfinder">
+			<bean parent="Uif-QuickFinder" p:returnByScript="true"
+				p:hideCriteriaOnSearch="true" />
+		</property>
+		<property name="suggest">
+			<bean parent="Uif-Suggest" p:render="true"
+				p:additionalPropertiesToReturn="sponsorName">
+				<property name="templateOptions">
+					<map>
+						<entry key="minLength" value="1" />
+						<entry key="delay" value="1" />
+						<entry key="html" value="true" />
+						<entry key="select"
+							value="function(event, ui) { Kc.PropDev.sponsorSuggestSelect(event, ui); return false; }" />
+					</map>
+				</property>
+				<property name="suggestQuery">
+					<bean parent="Uif-AttributeQueryConfig" p:queryMethodInvokerConfig.targetObject="#{#getService('proposalDevelopmentViewHelperService')}" p:queryMethodToCall="performSponsorFieldSuggest" />
+				</property>
+			</bean>
+		</property>
+		<property name="instructionalMessage">
+			<bean parent="Uif-Message"
+				p:messageText="@{document.developmentProposal.sponsor?.sponsorName?:'&amp;nbsp;'}"
+				p:additionalCssClasses="informationalText,belowInputField,form-control,input-sm,uif-textControl,has-helper"
+				 />
+		</property>
+		<property name="control">
+			<bean parent="Uif-TextControl"
+                  p:maxLength="200"
+				p:onBlurScript="Kc.PropDev.updateSponsorName(jQuery(this).val(), jQuery(this).parents('.uif-inputField:first').find('.informationalText'));" />
+		</property>
+	</bean>
+
+	<bean id="PropDev-DetailsPage-CurrentAwardNumberField" parent="PropDev-DetailsPage-CurrentAwardNumberField-parentBean" />
+	<bean id="PropDev-DetailsPage-CurrentAwardNumberField-parentBean"
+		abstract="true" parent="Uif-InputField" p:propertyName="currentAwardNumber"
+		p:progressiveRender="@{#fp.proposalTypeCode != '1'}">
+		<property name="quickfinder">
+			<bean parent="Uif-QuickFinder" p:dataObjectClassName="org.kuali.kra.award.home.Award"
+				p:fieldConversions="awardNumber:currentAwardNumber"
+				p:lookupParameters="currentAwardNumber:awardNumber"
+				p:returnByScript="true" p:hideCriteriaOnSearch="true" />
+		</property>
+	</bean>
+
+	<bean id="PropDev-DetailsPage-OwnedByUnitNumberField" parent="PropDev-DetailsPage-OwnedByUnitNumberField-parentBean" />
+	<bean id="PropDev-DetailsPage-OwnedByUnitNumberField-parentBean"
+		abstract="true" parent="Uif-InputField" p:propertyName="ownedByUnitNumber" >
+		<property name="control">
+			<bean parent="Uif-DropdownControl"/>
+		</property>
+		<property name="optionsFinder">
+			<bean class="org.kuali.coeus.propdev.impl.basic.LeadUnitValuesFinder" p:addBlankOption="false"/>
+		</property>
+        </bean>
+
+	<bean id="PropDev-DetailsPage-ContinuedFromField" parent="PropDev-DetailsPage-ContinuedFromField-parentBean" />
+	<bean id="PropDev-DetailsPage-ContinuedFromField-parentBean"
+		abstract="true" parent="Uif-InputField" p:propertyName="continuedFrom"
+		p:progressiveRender="@{#fp.proposalTypeCode != '1'}">
+		<property name="quickfinder">
+			<bean parent="Uif-QuickFinder"
+				p:dataObjectClassName="org.kuali.kra.institutionalproposal.home.InstitutionalProposal"
+				p:fieldConversions="proposalNumber:continuedFrom"
+				p:lookupParameters="continuedFrom:proposalNumber" p:returnByScript="true"
+				p:hideCriteriaOnSearch="true" />
+		</property>
+	</bean>
+
+</beans>

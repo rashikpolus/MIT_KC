@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<import resource="classpath*:Correspondent.xml"/>
+    <bean id="UnitCorrespondent" parent="UnitCorrespondent-parentBean" />
+    <bean id="UnitCorrespondent-parentBean" abstract="true" parent="BusinessObjectEntry">
+        <property name="businessObjectClass" value="org.kuali.coeus.common.framework.unit.crrspndnt.UnitCorrespondent" />
+		<property name="objectLabel" value="Unit Correspondent" />
+        <property name="inquiryDefinition" >
+            <ref bean="UnitCorrespondent-inquiryDefinition" />
+        </property>
+        <property name="lookupDefinition" >
+            <ref bean="UnitCorrespondent-lookupDefinition" />
+        </property>
+        <property name="attributes" >
+            <list>
+                <ref bean="UnitCorrespondent-personId" />
+                <ref bean="UnitCorrespondent-person.fullName" />
+                <ref bean="UnitCorrespondent-person.userName" />
+                <ref bean="UnitCorrespondent-unitNumber" />
+                <ref bean="UnitCorrespondent-correspondentTypeCode" />
+                <ref bean="UnitCorrespondent-correspondentType.description" />
+                <ref bean="UnitCorrespondent-nonEmployeeFlag" />
+                <ref bean="UnitCorrespondent-description" />
+                <ref bean="UnitCorrespondent-versionNumber" />
+            </list>
+        </property>
+    </bean>
+
+    <!-- Attribute Definitions -->
+    <bean id="UnitCorrespondent-personId" parent="UnitCorrespondent-personId-parentBean"/>
+  <bean id="UnitCorrespondent-personId-parentBean" abstract="true" parent="Correspondent-personId"/>
+   	<bean id="UnitCorrespondent-person.fullName" parent="UnitCorrespondent-person.fullName-parentBean" />
+  <bean id="UnitCorrespondent-person.fullName-parentBean" abstract="true" parent="Correspondent-person.fullName"/>
+    <bean id="UnitCorrespondent-person.userName" parent="UnitCorrespondent-person.userName-parentBean" />
+  <bean id="UnitCorrespondent-person.userName-parentBean" abstract="true" parent="Correspondent-person.userName"/>
+    <bean id="UnitCorrespondent-unitNumber" parent="UnitCorrespondent-unitNumber-parentBean" />
+    <bean id="UnitCorrespondent-unitNumber-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="unitNumber" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Unit Number" />
+        <property name="shortLabel" value="Unit Number" />
+        <property name="maxLength" value="8" />
+        <property name="validationPattern" >
+            <bean parent="AnyCharacterValidationPattern" />
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AnyCharacterPatternConstraint"/>
+    </property>
+        <property name="control" >
+      <bean parent="TextControlDefinition" p:size="10"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="10" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="Unit Number" />
+        <property name="description" value="Unit Number" />
+    </bean>
+    
+    <bean id="UnitCorrespondent-correspondentTypeCode" parent="UnitCorrespondent-correspondentTypeCode-parentBean"/>
+  <bean id="UnitCorrespondent-correspondentTypeCode-parentBean" abstract="true" parent="Correspondent-correspondentTypeCode"/>
+    <bean id="UnitCorrespondent-correspondentType.description" parent="UnitCorrespondent-correspondentType.description-parentBean" />
+  <bean id="UnitCorrespondent-correspondentType.description-parentBean" abstract="true" parent="Correspondent-correspondentType.description"/>
+    <bean id="UnitCorrespondent-nonEmployeeFlag" parent="UnitCorrespondent-nonEmployeeFlag-parentBean"/>
+  <bean id="UnitCorrespondent-nonEmployeeFlag-parentBean" abstract="true" parent="Correspondent-nonEmployeeFlag"/>
+    <bean id="UnitCorrespondent-description" parent="UnitCorrespondent-description-parentBean" />
+  <bean id="UnitCorrespondent-description-parentBean" abstract="true" parent="Correspondent-description"/>
+    <bean id="UnitCorrespondent-versionNumber" parent="UnitCorrespondent-versionNumber-parentBean" />
+  <bean id="UnitCorrespondent-versionNumber-parentBean" abstract="true" parent="Correspondent-versionNumber"/>
+    <!-- Business Object Inquiry Definition -->
+    <bean id="UnitCorrespondent-inquiryDefinition" parent="UnitCorrespondent-inquiryDefinition-parentBean" />
+  <bean id="UnitCorrespondent-InquiryView" parent="UnitCorrespondent-InquiryView-parentBean"/>
+    <bean id="UnitCorrespondent-inquiryDefinition-parentBean" abstract="true" parent="InquiryDefinition">
+        <property name="title" value="Unit Correspondent Id" />
+        <property name="inquirySections" >
+            <list>
+                <bean parent="InquirySectionDefinition">
+                    <property name="title" value="Unit Correspondent Id" />
+                    <property name="numberOfColumns" value="1" />
+                    <property name="inquiryFields" >
+                        <list>
+              <bean parent="FieldDefinition" p:attributeName="person.fullName" p:forceInquiry="true"/>
+              <bean parent="FieldDefinition" p:attributeName="unitNumber"/>
+              <bean parent="FieldDefinition" p:attributeName="correspondentType.description"/>
+              <bean parent="FieldDefinition" p:attributeName="nonEmployeeFlag"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="UnitCorrespondent-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView">
+    <property name="headerText" value="Unit Correspondent Id"/>
+    <property name="dataObjectClassName" value="org.kuali.coeus.common.framework.unit.crrspndnt.UnitCorrespondent"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-GridSection">
+          <property name="headerText" value="Unit Correspondent Id"/>
+          <property name="layoutManager.numberOfColumns" value="2"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="person.fullName" parent="Uif-DataField"/>
+              <bean p:propertyName="unitNumber" parent="Uif-DataField"/>
+              <bean p:propertyName="correspondentType.description" parent="Uif-DataField"/>
+              <bean p:propertyName="nonEmployeeFlag" parent="Uif-DataField"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Business Object Lookup Definition -->
+    <bean id="UnitCorrespondent-lookupDefinition" parent="UnitCorrespondent-lookupDefinition-parentBean" />
+  <bean id="UnitCorrespondent-LookupView" parent="UnitCorrespondent-LookupView-parentBean"/>
+    <bean id="UnitCorrespondent-lookupDefinition-parentBean" abstract="true" parent="Correspondent-lookupDefinition">
+        <property name="title" value="Unit Correspondent Lookup" />
+	    <property name="lookupableID" value="unitCorrespondentLookupable" /><property name="defaultSort" >
+      <bean parent="SortDefinition"/>
+        </property>
+        <property name="lookupFields" >
+            <list merge="true">
+        <bean parent="FieldDefinition" p:attributeName="person.userName"/>
+        <bean parent="FieldDefinition" p:attributeName="unitNumber"/>
+        <bean parent="FieldDefinition" p:attributeName="correspondentTypeCode"/>
+        <bean parent="FieldDefinition" p:attributeName="nonEmployeeFlag"/>
+            </list>
+        </property>
+        <property name="resultFields" >
+            <list merge="true">
+        <bean parent="FieldDefinition" p:attributeName="person.fullName"/>
+        <bean parent="FieldDefinition" p:attributeName="unitNumber" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="correspondentTypeCode" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="description" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="nonEmployeeFlag"/>
+            </list>
+        </property>
+    </bean>
+
+  <bean id="UnitCorrespondent-LookupView-parentBean" abstract="true" parent="Correspondent-LookupView">
+    <property name="dataObjectClassName" value="org.kuali.coeus.common.framework.unit.crrspndnt.UnitCorrespondent"/>
+    <property name="headerText" value="Unit Correspondent Lookup"/>
+    <property name="criteriaFields">
+      <list>
+        <bean p:propertyName="person.userName" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="unitNumber" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="correspondentTypeCode" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="nonEmployeeFlag" parent="Uif-LookupCriteriaInputField"/>
+      </list>
+    </property>
+    <property name="resultFields">
+      <list>
+        <bean p:propertyName="person.fullName" parent="Uif-DataField"/>
+        <bean p:propertyName="unitNumber" parent="Uif-DataField"/>
+        <bean p:propertyName="correspondentTypeCode" parent="Uif-DataField"/>
+        <bean p:propertyName="description" parent="Uif-DataField"/>
+        <bean p:propertyName="nonEmployeeFlag" parent="Uif-DataField"/>
+      </list>
+    </property>
+  </bean>
+
+</beans>

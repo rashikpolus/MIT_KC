@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="ProtocolAttachmentType" parent="ProtocolAttachmentType-parentBean"/>
+    <bean abstract="true" id="ProtocolAttachmentType-parentBean" parent="BusinessObjectEntry">
+        <property name="businessObjectClass" value="org.kuali.kra.irb.noteattachment.ProtocolAttachmentType"/>
+		<property name="objectLabel" value="Protocol Attachment Type"/>
+        <property name="inquiryDefinition">
+            <ref bean="ProtocolAttachmentType-inquiryDefinition"/>
+        </property>
+        <property name="lookupDefinition">
+            <ref bean="ProtocolAttachmentType-lookupDefinition"/>
+        </property>
+        <property name="titleAttribute" value="code"/>
+        <property name="attributes">
+            <list>
+                <ref bean="ProtocolAttachmentType-code"/>
+                <ref bean="ProtocolAttachmentType-description"/>
+                <ref bean="ProtocolAttachmentType-versionNumber"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Attribute Definitions -->
+    <bean id="ProtocolAttachmentType-code" parent="ProtocolAttachmentType-code-parentBean"/>
+    <bean abstract="true" id="ProtocolAttachmentType-code-parentBean" parent="AttributeDefinition">
+        <property name="name" value="code"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="label" value="Code"/>
+        <property name="shortLabel" value="Code"/>
+        <property name="maxLength" value="3"/>
+        <property name="required" value="true"/>
+        <property name="validationPattern">
+            <bean parent="NumericValidationPattern"/>
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+        <property name="control">
+            <bean p:size="5" parent="TextControlDefinition"/>
+        </property>
+    <property name="controlField">
+      <bean p:size="5" parent="Uif-TextControl"/>
+    </property>
+        <property name="summary" value="Code"/>
+        <property name="description" value="Code"/>
+    </bean>
+    
+    <bean id="ProtocolAttachmentType-description" parent="ProtocolAttachmentType-description-parentBean"/>
+    <bean abstract="true" id="ProtocolAttachmentType-description-parentBean" parent="KraAttributeReferenceDummy-description">
+    	<property name="required" value="true"/>
+    <property name="maxLength" value="300"/>
+  </bean>
+
+    <bean id="ProtocolAttachmentType-versionNumber" parent="ProtocolAttachmentType-versionNumber-parentBean"/>
+    <bean abstract="true" id="ProtocolAttachmentType-versionNumber-parentBean" parent="AttributeReferenceDummy-versionNumber"/>
+    <!-- Business Object Inquiry Definition -->
+    <bean id="ProtocolAttachmentType-inquiryDefinition" parent="ProtocolAttachmentType-inquiryDefinition-parentBean"/>
+  <bean id="ProtocolAttachmentType-InquiryView" parent="ProtocolAttachmentType-InquiryView-parentBean"/>
+    <bean abstract="true" id="ProtocolAttachmentType-inquiryDefinition-parentBean" parent="InquiryDefinition">
+        <property name="title" value="Code"/>
+        <property name="inquirySections">
+            <list>
+                <bean parent="InquirySectionDefinition">
+                    <property name="title" value="Code"/>
+                    <property name="numberOfColumns" value="1"/>
+                    <property name="inquiryFields">
+                        <list>
+                            <bean p:attributeName="code" p:forceInquiry="true" parent="FieldDefinition"/>
+                            <bean p:attributeName="description" parent="FieldDefinition"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+  <bean id="ProtocolAttachmentType-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView">
+    <property name="headerText" value="Code"/>
+    <property name="dataObjectClassName" value="org.kuali.kra.irb.noteattachment.ProtocolAttachmentType"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-GridSection">
+          <property name="headerText" value="Code"/>
+          <property name="layoutManager.numberOfColumns" value="2"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="code" parent="Uif-DataField"/>
+              <bean p:propertyName="description" parent="Uif-DataField"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+    <!-- Business Object Lookup Definition -->
+    <bean id="ProtocolAttachmentType-lookupDefinition" parent="ProtocolAttachmentType-lookupDefinition-parentBean"/>
+  <bean id="ProtocolAttachmentType-LookupView" parent="ProtocolAttachmentType-LookupView-parentBean"/>
+    <bean abstract="true" id="ProtocolAttachmentType-lookupDefinition-parentBean" parent="LookupDefinition">
+        <property name="title" value="Protocol Attachment Type Lookup"/><property name="defaultSort">
+      <bean parent="SortDefinition"/>
+        </property>
+        <property name="lookupFields">
+            <list>
+                <bean p:attributeName="code" p:forceInquiry="true" parent="FieldDefinition"/>
+                <bean p:attributeName="description" parent="FieldDefinition"/>
+            </list>
+        </property>
+        <property name="resultFields">
+            <list>
+                <bean p:attributeName="code" p:forceInquiry="true" parent="FieldDefinition"/>
+                <bean p:attributeName="description" parent="FieldDefinition"/>
+            </list>
+        </property>
+    </bean>
+
+  <bean id="ProtocolAttachmentType-LookupView-parentBean" abstract="true" parent="Uif-LookupView">
+    <property name="dataObjectClassName" value="org.kuali.kra.irb.noteattachment.ProtocolAttachmentType"/>
+    <property name="headerText" value="Protocol Attachment Type Lookup"/>
+    <property name="criteriaFields">
+      <list>
+        <bean p:propertyName="code" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="description" parent="Uif-LookupCriteriaInputField"/>
+      </list>
+    </property>
+    <property name="resultFields">
+      <list>
+        <bean p:propertyName="code" parent="Uif-DataField"/>
+        <bean p:propertyName="description" parent="Uif-DataField"/>
+      </list>
+    </property>
+  </bean>
+
+</beans>

@@ -1,0 +1,161 @@
+From b6734a4345c6c7e08675860d3995a308c67bc54e Mon Sep 17 00:00:00 2001
+From: blackcathacker <douglas.pace@gmail.com>
+Date: Fri, 22 May 2015 14:36:31 -0700
+Subject: [PATCH] RESKC-468:Fix award budget versioning issues
+
+When versioning awards the budgets need to stay with the original award, but new awards need to display all budgets. Additionally the budget creation process wasn't looking at the correct list of budgets and only the current awards budgets which meant it could easily ignore previously posted budgets.
+---
+ .../kra/award/budget/AwardBudgetServiceImpl.java   |  3 ++-
+ .../kuali/kra/award/document/AwardDocument.java    |  2 +-
+ .../main/java/org/kuali/kra/award/home/Award.java  | 24 +++++++++++-----------
+ .../org/kuali/kra/award/home/AwardServiceImpl.java |  2 +-
+ .../web/struts/action/AwardBudgetsAction.java      |  3 ---
+ .../org/kuali/kra/award/repository-award.xml       |  2 +-
+ .../WEB-INF/jsp/award/AwardBudgetVersions.jsp      |  4 ++--
+ 7 files changed, 19 insertions(+), 21 deletions(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/award/budget/AwardBudgetServiceImpl.java b/coeus-impl/src/main/java/org/kuali/kra/award/budget/AwardBudgetServiceImpl.java
+index fc44700..c4a5680 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/award/budget/AwardBudgetServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/award/budget/AwardBudgetServiceImpl.java
+@@ -447,6 +447,7 @@ public Budget getNewBudgetVersion(BudgetParentDocument parentBudgetDocument, Str
+                 if (budget.getBudgetPeriods().isEmpty() && budget.getStartDate() != null) {
+ 	            budget.setBudgetPeriods(getBudgetSummaryService().generateBudgetPeriods(budget));
+ 	        }
++			awardDocument.getAward().getCurrentVersionBudgets().add(budget);
+ 			awardDocument.getAward().getBudgets().add(budget);
+             try {
+                 budgetDocument = (AwardBudgetDocument) documentService.saveDocument(budgetDocument);
+@@ -904,7 +905,7 @@ protected AwardBudgetExt getNewestBudgetByStatus(Award award, List<String> statu
+         List<VersionHistory> versions = getVersionHistoryService().loadVersionHistory(Award.class, award.getAwardNumber());
+         for (VersionHistory version : versions) {
+             if (version.getSequenceOwnerSequenceNumber() <= award.getSequenceNumber() && !(version.getSequenceOwner() == null) && !(((Award) version.getSequenceOwner()).getAwardDocument() == null)) {
+-                result.addAll(((Award) version.getSequenceOwner()).getBudgets());
++                result.addAll(((Award) version.getSequenceOwner()).getCurrentVersionBudgets());
+             }
+         }
+         List<AwardBudgetExt> listResult = new ArrayList<AwardBudgetExt>(result);
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/award/document/AwardDocument.java b/coeus-impl/src/main/java/org/kuali/kra/award/document/AwardDocument.java
+index 9526e28..6a9d40b 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/award/document/AwardDocument.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/award/document/AwardDocument.java
+@@ -450,7 +450,7 @@ public Award getBudgetParent() {
+     }
+ 
+     public Budget getBudgetDocumentVersion(int selectedLine) {
+-        return ((Award)getBudgetParent()).getAllAwardBudgets().get(selectedLine);
++        return ((Award)getBudgetParent()).getBudgets().get(selectedLine);
+     }
+ 
+     public Task getParentAuthZTask(String taskName) {
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/award/home/Award.java b/coeus-impl/src/main/java/org/kuali/kra/award/home/Award.java
+index 89da8a6..49b6c26 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/award/home/Award.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/award/home/Award.java
+@@ -1436,7 +1436,7 @@ protected void initializeCollections() {
+         syncChanges = new ArrayList<AwardSyncChange>();
+         syncStatuses = new ArrayList<AwardSyncStatus>();
+         subAwardList = new ArrayList<SubAward>();
+-        budgets = new ArrayList<AwardBudgetExt>();
++        currentVersionBudgets = new ArrayList<AwardBudgetExt>();
+     }
+ 
+     public void initializeAwardAmountInfoObjects() {
+@@ -2763,31 +2763,31 @@ public boolean isProposalBudget() {
+ 	public Budget getNewBudget() {
+ 		return new AwardBudgetExt();
+ 	}
++    private List<AwardBudgetExt> currentVersionBudgets;
+     private List<AwardBudgetExt> budgets;
+-    private List<AwardBudgetExt> allAwardBudgets;
+ 
+ 	@Override
+ 	public Integer getNextBudgetVersionNumber() {
+ 		return getAwardDocument().getNextBudgetVersionNumber();
+ 	}
+ 
+-	public List<AwardBudgetExt> getAllAwardBudgets() {
+-		if (allAwardBudgets == null || allAwardBudgets.isEmpty()) {
+-			allAwardBudgets = KcServiceLocator.getService(AwardBudgetService.class).getAllBudgetsForAward(this);
++	public List<AwardBudgetExt> getBudgets() {
++		if (budgets == null || budgets.isEmpty()) {
++			budgets = KcServiceLocator.getService(AwardBudgetService.class).getAllBudgetsForAward(this);
+ 		}
+-		return allAwardBudgets;
++		return budgets;
+ 	}
+ 
+-	public void setAllAwardBudgets(List<AwardBudgetExt> budgets) {
+-		this.allAwardBudgets = budgets;
++	public void setBudgets(List<AwardBudgetExt> budgets) {
++		this.budgets = budgets;
+ 	}
+ 
+-	public List<AwardBudgetExt> getBudgets() {
+-		return budgets;
++	public List<AwardBudgetExt> getCurrentVersionBudgets() {
++		return currentVersionBudgets;
+ 	}
+ 
+-	public void setBudgets(List<AwardBudgetExt> budgets) {
+-		this.budgets = budgets;
++	public void setCurrentVersionBudgets(List<AwardBudgetExt> budgets) {
++		this.currentVersionBudgets = budgets;
+ 	}
+ 
+     public AwardComment getAdditionalFormsDescriptionComment() {
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/award/home/AwardServiceImpl.java b/coeus-impl/src/main/java/org/kuali/kra/award/home/AwardServiceImpl.java
+index ab66de2..1c13989 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/award/home/AwardServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/award/home/AwardServiceImpl.java
+@@ -73,7 +73,7 @@ public Award getAward(String awardId) {
+     @Override
+     public AwardDocument createNewAwardVersion(AwardDocument awardDocument) throws VersionException, WorkflowException {
+         Award newVersion = getVersioningService().createNewVersion(awardDocument.getAward());
+-        newVersion.setBudgets(new ArrayList<AwardBudgetExt>());
++        newVersion.setCurrentVersionBudgets(new ArrayList<AwardBudgetExt>());
+         for (AwardAttachment attach : newVersion.getAwardAttachments()) {
+             AwardAttachment orignalAttachment = findMatchingAwardAttachment(awardDocument.getAward().getAwardAttachments(), attach.getFileId());
+             attach.setUpdateUser(orignalAttachment.getUpdateUser());
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/award/web/struts/action/AwardBudgetsAction.java b/coeus-impl/src/main/java/org/kuali/kra/award/web/struts/action/AwardBudgetsAction.java
+index bd4c70a..ffb1975 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/award/web/struts/action/AwardBudgetsAction.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/award/web/struts/action/AwardBudgetsAction.java
+@@ -125,9 +125,6 @@ public ActionForward addBudgetVersion(ActionMapping mapping, ActionForm form, Ht
+                     awardForm.setNewBudgetVersionName("");
+                 }
+             }
+-        // set to null so that this list is reloaded from db when
+-        // new version is added.
+-        awardDoc.getAward().setAllAwardBudgets(null);
+         return actionForward;
+     }
+     
+diff --git a/coeus-impl/src/main/resources/org/kuali/kra/award/repository-award.xml b/coeus-impl/src/main/resources/org/kuali/kra/award/repository-award.xml
+index e32e4c2..395bacd 100644
+--- a/coeus-impl/src/main/resources/org/kuali/kra/award/repository-award.xml
++++ b/coeus-impl/src/main/resources/org/kuali/kra/award/repository-award.xml
+@@ -249,7 +249,7 @@
+             <foreignkey field-id-ref="1" />
+             <foreignkey field-id-ref="2" />
+         </reference-descriptor>
+-        <collection-descriptor name="budgets" proxy="true" element-class-ref="org.kuali.kra.award.budget.AwardBudgetExt" collection-class="org.apache.ojb.broker.util.collections.ManageableArrayList" auto-retrieve="true" auto-update="object" auto-delete="object">
++        <collection-descriptor name="currentVersionBudgets" proxy="true" element-class-ref="org.kuali.kra.award.budget.AwardBudgetExt" collection-class="org.apache.ojb.broker.util.collections.ManageableArrayList" auto-retrieve="true" auto-update="object" auto-delete="object">
+             <inverse-foreignkey field-ref="awardId"/>
+         </collection-descriptor>
+ 		<collection-descriptor name="awardCgbList" element-class-ref="org.kuali.kra.award.cgb.AwardCgb" collection-class="org.apache.ojb.broker.util.collections.ManageableArrayList" auto-retrieve="true" auto-update="object" auto-delete="object">
+diff --git a/coeus-webapp/src/main/webapp/WEB-INF/jsp/award/AwardBudgetVersions.jsp b/coeus-webapp/src/main/webapp/WEB-INF/jsp/award/AwardBudgetVersions.jsp
+index 18b6cec..77295aa 100644
+--- a/coeus-webapp/src/main/webapp/WEB-INF/jsp/award/AwardBudgetVersions.jsp
++++ b/coeus-webapp/src/main/webapp/WEB-INF/jsp/award/AwardBudgetVersions.jsp
+@@ -126,8 +126,8 @@
+ </kul:tabTop>
+   	
+   	<kra-b:budgetVersions 
+-  		budgetDocumentVersions="${KualiForm.document.award.allAwardBudgets}"
+-  		pathToVersions="document.award.allAwardBudgets"
++  		budgetDocumentVersions="${KualiForm.document.award.budgets}"
++  		pathToVersions="document.award.budgets"
+   		errorKey="document.budgetDocumentVersion*,
+   					document.award.budget*"
+   		requestedStartDateInitial="${KualiForm.document.award.beginDate}"

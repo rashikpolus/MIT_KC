@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+  <bean id="OrganizationMaintenanceDocument-EditOrganization" parent="MIT-OrganizationMaintenanceDocument-EditOrganization-parentBean"/>
+  <bean id="MIT-OrganizationMaintenanceDocument-EditOrganization-parentBean" parent="OrganizationMaintenanceDocument-EditOrganization-parentBean">
+   <property name="maintainableItems">
+      <list>
+        <bean parent="MaintainableFieldDefinition" p:name="organizationId" p:required="true"/>
+        <bean parent="MaintainableFieldDefinition" p:name="organizationName" p:required="true"/>
+        <bean parent="MaintainableFieldDefinition" p:name="contactAddressId" p:required="true"/>
+        <bean parent="MaintainableFieldDefinition" p:name="address"/>
+        <bean parent="MaintainableFieldDefinition" p:name="cableAddress"/>
+        <bean parent="MaintainableFieldDefinition" p:name="telexNumber"/>
+        <bean parent="MaintainableFieldDefinition" p:name="county"/>
+        <bean parent="MaintainableFieldDefinition" p:name="congressionalDistrict"/>
+        <bean parent="MaintainableFieldDefinition" p:name="incorporatedIn"/>
+        <bean parent="MaintainableFieldDefinition" p:name="incorporatedDate"/>
+        <bean parent="MaintainableFieldDefinition" p:name="numberOfEmployees"/>
+        <bean parent="MaintainableFieldDefinition" p:name="irsTaxExemption"/>
+        <bean parent="MaintainableFieldDefinition" p:name="federalEmployerId"/>
+        <bean parent="MaintainableFieldDefinition" p:name="stateTaxExemptNum"/>
+        <bean parent="MaintainableFieldDefinition" p:name="agencySymbol"/>
+        <bean parent="MaintainableFieldDefinition" p:name="comGovEntityCode"/>
+        <bean parent="MaintainableFieldDefinition" p:name="vendorCode"/>
+        <bean parent="MaintainableFieldDefinition" p:name="stateEmployeeClaim"/>
+        <bean parent="MaintainableFieldDefinition" p:name="dunsNumber"/>
+        <bean parent="MaintainableFieldDefinition" p:name="dunsPlusFourNumber"/>
+        <bean parent="MaintainableFieldDefinition" p:name="dodacNumber"/>
+        <bean parent="MaintainableFieldDefinition" p:name="cageNumber"/>
+        <bean parent="MaintainableFieldDefinition" p:name="humanSubAssurance"/>
+        <bean parent="MaintainableFieldDefinition" p:name="animalWelfareAssurance"/>
+        <bean parent="MaintainableFieldDefinition" p:name="scienceMisconductComplDate"/>
+        <bean parent="MaintainableFieldDefinition" p:name="phsAccount"/>
+        <bean parent="MaintainableFieldDefinition" p:name="nsfInstitutionalCode"/>
+        <bean parent="MaintainableFieldDefinition" p:name="indirectCostRateAgreement"/>
+        <bean parent="MaintainableFieldDefinition" p:name="cognizantAuditor"/>
+        <bean parent="MaintainableFieldDefinition" p:name="onrResidentRep"/>
+      </list>
+    </property>
+  </bean>
+  
+</beans>
+  

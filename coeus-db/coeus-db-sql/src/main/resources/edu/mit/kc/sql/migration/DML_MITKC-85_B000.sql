@@ -1,0 +1,4 @@
+update PROPOSAL_IDC_RATE set ON_CAMPUS_FLAG = 'Y' Where ON_CAMPUS_FLAG = 'N'
+/
+update PROPOSAL_IDC_RATE set ON_CAMPUS_FLAG = 'N' Where ON_CAMPUS_FLAG = 'F'
+/

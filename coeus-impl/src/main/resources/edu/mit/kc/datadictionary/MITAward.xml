@@ -1,0 +1,300 @@
+<!-- created for MITKC-104/103 -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">      
+        
+        <bean id="Award" parent="MIT-Award-parentBean" />
+  <bean id="MIT-Award-parentBean"  parent="Award-parentBean">
+  	<property name="attributes" >
+      <list>
+        <ref bean="Award-preAwardAuthorizedAmount" />
+        <ref bean="Award-preAwardEffectiveDate" />
+        <ref bean="Award-preAwardInstitutionalAuthorizedAmount" />
+        <ref bean="Award-preAwardInstitutionalEffectiveDate" />
+        <ref bean="Award-sequenceNumber" />
+        <ref bean="Award-specialEbRateOnCampus" />
+        <ref bean="Award-specialEbRateOffCampus" />
+        <ref bean="Award-subPlanFlag" />
+        <ref bean="Award-procurementPriorityCode" />
+        <ref bean="Award-basisOfPaymentCode" />
+        <ref bean="Award-methodOfPaymentCode" />
+        <ref bean="Award-documentFundingId" />
+        <ref bean="Award-activityTypeCode" />
+        <ref bean="Award-title" />
+        <ref bean="Award-statusCode" />
+        <ref bean="Award-statusDescription" />
+        <ref bean="Award-sponsorCode" />
+        <ref bean="Award-primeSponsorCode" />
+        <ref bean="Award-nsfCode" />
+		<ref bean="Award-awardNumber" />
+        <ref bean="Award-sponsorName" />
+        <ref bean="Award-awardId" />
+        <ref bean="Award-accountNumber" />
+        <ref bean="Award-sponsorAwardNumber" />
+        <ref bean="Award-modificationNumber" />
+        <ref bean="Award-cfdaNumber" />
+        <ref bean="Award-beginDate" />
+        <ref bean="Award-awardEffectiveDate" />
+        <ref bean="Award-projectEndDate" />
+        <ref bean="Award-awardExecutionDate" />
+        <ref bean="Award-accountTypeCode" />
+        <ref bean="Award-awardTypeCode" />
+        <ref bean="Award-obligatedTotal" />
+        <ref bean="Award-anticipatedTotal" />
+        <ref bean="Award-templateCode" />
+        <ref bean="Award-principalInvestigatorName" />
+        <ref bean="Award-leadUnit.unitName" />
+        <ref bean="Award-unitNumber" />
+        <ref bean="Award-ospAdministratorName" />
+        <ref bean="Award-archiveLocation" />
+        <ref bean="Award-closeoutDate" />
+        <ref bean="Award-awardTransactionTypeCode" />
+        <ref bean="Award-noticeDate" />
+        <ref bean="Award-updateTimestamp" />
+        <ref bean="Award-docIdStatus" />
+        <ref bean="Award-awardIdAccount" />        
+        <ref bean="Award-lookupOspAdministratorName" />  
+        <ref bean="Award-awardUnitContacts.awardContactId" /> 
+        <ref bean="Award-projectPersons.fullName" />     
+        <ref bean="Award-projectPersons.awardContactId" />    
+        <ref bean="Award-financialAccountDocumentNumber" /> 
+        <ref bean="Award-financialAccountCreationDate" />
+        <ref bean="Award-financialChartOfAccountsCode" />
+        <ref bean="Award-awardDocument.documentNumber" />
+        <ref bean="Award-awardStatus.description" /> 
+        <ref bean="Award-awardAmountInfo.obligationExpirationDate" />
+        <ref bean="Award-awardAmountInfo.amountObligatedToDate" />
+        <ref bean="Award-sponsor.sponsorName" />
+        <ref bean="Award-awardAmountInfo.obliDistributableAmount" />
+        <ref bean="Award-awardAmountInfo.antDistributableAmount" />
+        <ref bean="Award-awardAmountInfo.finalExpirationDate" />
+      </list>
+    </property>
+     <property name="relationships">
+	      <list>
+		     <bean parent="RelationshipDefinition">
+			    <property name="objectAttributeName" value="investigator" />
+			      <property name="primitiveAttributes">
+				    <list>
+					    <bean parent="PrimitiveAttributeDefinition" p:sourceName="projectPersons.fullName"
+						      p:targetName="fullName" />
+				     </list>
+			       </property>
+		        </bean>
+		        <bean parent="RelationshipDefinition">
+				    <property name="objectAttributeName" value="ospAdministrator" />
+				    <property name="primitiveAttributes">
+				    	<list>
+							<bean parent="PrimitiveAttributeDefinition" p:sourceName="lookupOspAdministratorName"
+							      p:targetName="fullName" />
+					    </list>
+				    </property>
+		        </bean>
+	        </list>
+        </property>
+  </bean> 
+  <bean id="Award-awardAmountInfo.amountObligatedToDate" parent="MIT-Award-awardAmountInfo.amountObligatedToDate-parentBean" />
+    <bean id="MIT-Award-awardAmountInfo.amountObligatedToDate-parentBean" abstract="true" parent="Award-awardAmountInfo.amountObligatedToDate-parentBean">
+        <property name="label" value="Obligated Amount" />
+        <property name="shortLabel" value="Obligated Amount" />
+    </bean>  
+    
+   
+  <bean id="Award-awardEffectiveDate" parent="MIT-Award-awardEffectiveDate-parentBean" />
+  <bean id="MIT-Award-awardEffectiveDate-parentBean" parent="Award-awardEffectiveDate-parentBean">
+    <property name="label" value="Award Effective Date" />
+    <property name="shortLabel" value="Award Effective Date" />
+  </bean>
+  
+  <bean id="Award-anticipatedTotal" parent="MIT-Award-anticipatedTotal-parentBean" />
+  <bean id="MIT-Award-anticipatedTotal-parentBean" parent="Award-anticipatedTotal-parentBean">
+    <property name="label" value="Anticipated Total Amount" />
+    <property name="shortLabel" value="Anticipated Total Amount" />
+  </bean> 
+    
+   <bean id="Award-awardAmountInfo.obliDistributableAmount" parent="Award-awardAmountInfo.obliDistributableAmount-parentBean" />
+    <bean id="Award-awardAmountInfo.obliDistributableAmount-parentBean" abstract="true" parent="AwardAmountInfo-obliDistributableAmount">
+        <property name="name" value="awardAmountInfo.obliDistributableAmount" />
+        <property name="label" value="Obligated Dist Amount" />
+        <property name="shortLabel" value="Obligated Dist Amount" />
+        <property name="required" value="false" />    
+    </bean>
+    
+    <bean id="Award-awardAmountInfo.antDistributableAmount" parent="Award-awardAmountInfo.antDistributableAmount-parentBean" />
+    <bean id="Award-awardAmountInfo.antDistributableAmount-parentBean" abstract="true" parent="AwardAmountInfo-antDistributableAmount">
+        <property name="name" value="awardAmountInfo.antDistributableAmount" />
+        <property name="label" value="Anticipated  Dist Amount" />
+        <property name="shortLabel" value="Anticipated  Dist Amount" />
+        <property name="required" value="false" />    
+    </bean>
+    
+    <bean id="Award-awardAmountInfo.finalExpirationDate" parent="Award-awardAmountInfo.finalExpirationDate-parentBean" />
+    <bean id="Award-awardAmountInfo.finalExpirationDate-parentBean" abstract="true" parent="AwardAmountInfo-finalExpirationDate">
+        <property name="name" value="awardAmountInfo.finalExpirationDate" />
+        <property name="label" value="Final Expiration Date" />
+        <property name="shortLabel" value="Final Expiration Date" />
+        <property name="required" value="false" />    
+    </bean>
+   	<bean id="Award-title" parent="Award-title-parentBean" />
+  	<bean id="Award-title-parentBean" abstract="true" parent="AttributeDefinition">
+    <property name="name" value="title" />
+    <property name="forceUppercase" value="false" />
+    <property name="label" value="Award Title" />
+    <property name="shortLabel" value="Title" />
+    <property name="maxLength" value="200" />
+    <property name="required" value="true" />
+    <property name="control" >
+      <bean parent="TextareaControlDefinition"
+            p:rows="3"
+            p:cols="80" />
+    </property>
+    <property name="summary" value="The title of the propsal." />
+    <property name="description" value="The proposed title of the project." />
+  </bean>
+  
+   <bean id="Award-statusCode" parent="Award-statusCode-parentBean" />
+  
+  <bean id="Award-statusCode-parentBean" abstract="true" parent="AttributeDefinition">
+    <property name="name" value="statusCode" />
+    <property name="forceUppercase" value="false" />
+    <property name="label" value="Award Status" />
+    <property name="shortLabel" value="Award Status" />
+    <property name="maxLength" value="3" />
+    <property name="validationPattern" >
+      <bean parent="AlphaNumericValidationPattern" />
+    </property>
+    <property name="required" value="true" />
+    <property name="control" >
+      <bean parent="SelectControlDefinition"
+            p:businessObjectClass="org.kuali.kra.award.home.AwardStatus"
+            p:valuesFinderClass="org.kuali.kra.lookup.keyvalue.MitAwardStatusValuesFinder"
+            p:includeKeyInLabel="false"
+            p:includeBlankRow="true"
+            p:keyAttribute="statusCode"
+            p:labelAttribute="description" />
+    </property>
+    <property name="summary" value="Award Status" />
+    <property name="description" value="Award Status" />
+  </bean>
+   <bean id="Award-accountTypeCode" parent="Award-accountTypeCode-parentBean" />
+  
+  <bean id="Award-accountTypeCode-parentBean" abstract="true" parent="AttributeDefinition">
+    <property name="name" value="accountTypeCode" />
+    <property name="forceUppercase" value="false" />
+    <property name="label" value="Account Type" />
+    <property name="shortLabel" value="Account Type" />
+    <property name="maxLength" value="3" />
+    <property name="validationPattern" >
+      <bean parent="NumericValidationPattern" />
+    </property>
+    <property name="required" value="false" />
+    <property name="control" >
+      <bean parent="SelectControlDefinition"
+            p:businessObjectClass="org.kuali.kra.bo.AccountType"
+            p:valuesFinderClass="org.kuali.kra.lookup.keyvalue.MitAwardAccountTypeValuesFinder"
+            p:includeKeyInLabel="false"
+            p:includeBlankRow="false"
+            p:keyAttribute="accountTypeCode"
+            p:labelAttribute="description" />
+    </property>
+    <property name="summary" value="Account Type" />
+    <property name="description" value="Account Type" />
+  </bean>
+  <bean id="Award-cfdaNumber" parent="Award-cfdaNumber-parentBean" />
+  <bean id="Award-cfdaNumber-parentBean" abstract="true" parent="AttributeDefinition">
+    <property name="name" value="cfdaNumber" />
+    <property name="forceUppercase" value="false" />
+    <property name="label" value="CFDA Number" />
+    <property name="shortLabel" value="CFDA Number" />
+    <property name="maxLength" value="7" />    
+    <property name="required" value="false" />
+    <property name="control" >
+      <bean parent="TextControlDefinition" p:size="20"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="20" parent="Uif-TextControl"/>
+    </property>
+    <property name="summary" value="The CFDA Number for this Award." />
+    <property name="description" value="A unique identifier for the sponsor and the funding opportunity announcement.  AKA &quot;Catalogue of Federal Domestic Assistance Number.&quot; The format for this CFDA Number is XX.XXX" />
+  </bean> 
+  <bean id="Award-inquiryDefinition" parent="Award-inquiryDefinition-parentBean" />
+  <bean id="Award-InquiryView" parent="Award-InquiryView-parentBean"/>
+  <bean id="Award-inquiryDefinition-parentBean" abstract="true" parent="InquiryDefinition">
+    <property name="title" value="Award" />
+    <property name="inquirySections" >
+      <list>
+        <bean parent="InquirySectionDefinition">
+          <property name="title" value="Award" />
+          <property name="numberOfColumns" value="1" />
+          <property name="inquiryFields" >
+            <list>
+			  	<bean p:attributeName="awardId" p:forceInquiry="true" parent="FieldDefinition" />
+			    <bean p:attributeName="sponsorAwardNumber" parent="FieldDefinition" />
+			    <bean p:attributeName="awardNumber" parent="FieldDefinition" />
+			    <bean p:attributeName="accountNumber" parent="FieldDefinition" />
+			    <bean p:attributeName="statusCode" parent="FieldDefinition" />
+			    <bean p:attributeName="sponsorCode" parent="FieldDefinition" />
+			    <bean p:attributeName="title" parent="FieldDefinition" />
+			    <bean p:attributeName="projectPersons.fullName" parent="FieldDefinition" />
+			    <bean p:attributeName="unitNumber" parent="FieldDefinition" />
+			    <bean p:attributeName="leadUnit.unitName" parent="FieldDefinition" />
+			    <bean p:attributeName="ospAdministratorName" parent="FieldDefinition" />
+			    <bean p:attributeName="archiveLocation" parent="FieldDefinition" />
+			    <bean p:attributeName="closeoutDate" parent="FieldDefinition" />
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+    <property name="inquirableClass" value="org.kuali.kra.award.AwardInquirable" />
+  </bean>
+	
+    <bean id="MIT2-Award-lookupDefinition-parentBean" parent="Award-lookupDefinition-parentBean">
+    <property name="lookupableID" value="mitAwardLookupable" />
+    <property name="lookupFields" >
+		  <list>
+            <bean p:attributeName="awardNumber" parent="FieldDefinition" />
+		  	<bean p:attributeName="sponsorAwardNumber" parent="FieldDefinition" />
+		    <bean p:attributeName="accountNumber" parent="FieldDefinition" />
+		    <bean p:attributeName="statusCode" parent="FieldDefinition" />
+		    <bean p:attributeName="sponsorCode" parent="FieldDefinition" />
+		    <bean p:attributeName="sponsor.sponsorName" parent="FieldDefinition" />
+		    <bean p:attributeName="title" parent="FieldDefinition" />
+			<bean p:attributeName="projectPersons.fullName" p:noDirectInquiry="true" parent="FieldDefinition" />
+		    <bean p:attributeName="unitNumber" parent="FieldDefinition" />
+		    <bean p:attributeName="leadUnit.unitName" parent="FieldDefinition" />
+		    <bean p:attributeName="lookupOspAdministratorName" p:noDirectInquiry="true" parent="FieldDefinition" />
+		    <bean p:attributeName="awardUnitContacts.awardContactId" parent="FieldDefinition" p:hidden="true" />
+		    <bean p:attributeName="archiveLocation" parent="FieldDefinition" />
+		    <bean p:attributeName="closeoutDate" parent="FieldDefinition" />
+		  	<bean p:attributeName="projectPersons.awardContactId" parent="FieldDefinition" p:hidden="true"  />
+		  	<bean p:attributeName="subPlanFlag" parent="FieldDefinition" p:hidden="true"  />
+		  </list>
+		</property>
+		<property name="resultFields" >
+		  <list>
+		    <bean p:attributeName="awardNumber" parent="FieldDefinition" />
+		    <bean p:attributeName="sponsorAwardNumber" parent="FieldDefinition" />
+		    <bean p:attributeName="unitNumber" parent="FieldDefinition" />
+		    <bean p:attributeName="leadUnit.unitName" parent="FieldDefinition" />
+		    <bean p:attributeName="accountNumber" parent="FieldDefinition" />
+			<bean p:attributeName="statusDescription" parent="FieldDefinition" />	    
+			<bean p:attributeName="title" parent="FieldDefinition" />
+			<bean p:attributeName="sponsorCode" parent="FieldDefinition" />
+			<bean p:attributeName="sponsorName" parent="FieldDefinition" />
+			<bean p:attributeName="principalInvestigatorName" parent="FieldDefinition" />
+			<bean p:attributeName="ospAdministratorName" parent="FieldDefinition" />
+			<bean p:attributeName="awardAmountInfo.amountObligatedToDate" parent="FieldDefinition" />
+			<bean p:attributeName="anticipatedTotal" parent="FieldDefinition" />
+			<bean p:attributeName="awardAmountInfo.obliDistributableAmount" parent="FieldDefinition" />
+			<bean p:attributeName="awardAmountInfo.antDistributableAmount" parent="FieldDefinition" />
+			<bean p:attributeName="awardEffectiveDate" parent="FieldDefinition" />
+			<bean p:attributeName="awardAmountInfo.obligationExpirationDate" parent="FieldDefinition" /> 
+			<bean p:attributeName="awardAmountInfo.finalExpirationDate" parent="FieldDefinition" />
+			<bean p:attributeName="archiveLocation" parent="FieldDefinition" />
+		    <bean p:attributeName="closeoutDate" parent="FieldDefinition" />
+		  </list>
+		</property>
+	 </bean>
+    </beans>

@@ -1,0 +1,35 @@
+From ac7f7f10d76d54315eede9c3ceca0857db2563d7 Mon Sep 17 00:00:00 2001
+From: Gayathri <gathreya@email.arizona.edu>
+Date: Thu, 9 Apr 2015 15:03:09 -0700
+Subject: [PATCH] RESKC-256: Fixing context serialization
+
+---
+ .../main/java/org/kuali/rice/krms/impl/repository/ContextBo.java  | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/rice-middleware/krms/impl/src/main/java/org/kuali/rice/krms/impl/repository/ContextBo.java b/rice-middleware/krms/impl/src/main/java/org/kuali/rice/krms/impl/repository/ContextBo.java
+index 69a6038..02e20d4 100644
+--- a/rice-middleware/krms/impl/src/main/java/org/kuali/rice/krms/impl/repository/ContextBo.java
++++ b/rice-middleware/krms/impl/src/main/java/org/kuali/rice/krms/impl/repository/ContextBo.java
+@@ -15,6 +15,8 @@
+  */
+ package org.kuali.rice.krms.impl.repository;
+ 
++import java.io.IOException;
++import java.io.ObjectOutputStream;
+ import java.io.Serializable;
+ import java.util.ArrayList;
+ import java.util.HashMap;
+@@ -188,6 +190,12 @@ public static ContextBo from(ContextDefinition im) {
+         return bo;
+     }
+ 
++    private void writeObject(ObjectOutputStream stream) throws IOException, ClassNotFoundException {
++                agendas.size();
++                attributeBos.size();
++                stream.defaultWriteObject();
++    }
++
+     @Override
+     public String getId() {
+         return id;

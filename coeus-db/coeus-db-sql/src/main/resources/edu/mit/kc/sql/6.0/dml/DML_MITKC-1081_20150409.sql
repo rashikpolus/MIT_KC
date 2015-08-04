@@ -1,0 +1,3 @@
+INSERT INTO KRIM_ROLE_T (ROLE_ID, OBJ_ID, VER_NBR, ROLE_NM, NMSPC_CD, DESC_TXT, KIM_TYP_ID, ACTV_IND, LAST_UPDT_DT) 
+VALUES (KRIM_ROLE_PERM_ID_S.NEXTVAL, SYS_GUID(), 1, 'Committee Administrator', 'KC-COMMITTEE', 'Committee Administrator for Committee', '1', 'Y', SYSDATE)
+/

@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean id="SapFeedBatchDetails" parent="SapFeedBatchDetails-parentBean" />
+	<bean id="SapFeedBatchDetails-parentBean" abstract="true"
+		parent="BusinessObjectEntry">
+		<property name="businessObjectClass"
+			value="org.kuali.coeus.propdev.impl.sapfeed.SapFeedBatchDetails" />
+		<property name="objectLabel" value="SAP Feed Batch Details" />
+		<property name="lookupDefinition">
+			<ref bean="SapFeedBatchDetails-lookupDefinition" />
+		</property>
+		<property name="attributes">
+			<list>
+				<ref bean="SapFeedBatchDetails-sapFeedBatchId" />
+				<ref bean="SapFeedBatchDetails-batchId" />
+				<ref bean="SapFeedBatchDetails-batchFileName" />
+				<ref bean="SapFeedBatchDetails-batchTimeStamp" />
+				<ref bean="SapFeedBatchDetails-noOfRecords" />
+				<ref bean="SapFeedBatchDetails-updateTimestamp" />
+				<ref bean="SapFeedBatchDetails-updateUser" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- Attribute Definitions -->
+	<bean id="SapFeedBatchDetails-sapFeedBatchId" parent="SapFeedBatchDetails-sapFeedBatchId-parentBean" />
+	<bean id="SapFeedBatchDetails-sapFeedBatchId-parentBean" abstract="true"
+		parent="AttributeDefinition" p:name="sapFeedBatchId" p:forceUppercase="false"
+		p:label="Sap Feed Batch Id" p:shortLabel="Sap Feed Batch Id"
+		p:summary="Sap Feed Batch Id" p:description="Sap Feed Batch Id">
+		<property name="validationPattern">
+			<bean parent="NumericValidationPattern" />
+		</property>
+		<property name="validCharactersConstraint">
+			<bean parent="NumericPatternConstraint" />
+		</property>
+		<property name="control">
+			<bean parent="TextControlDefinition" p:size="8" />
+		</property>
+		<property name="controlField">
+			<bean parent="Uif-TextControl" p:size="14" />
+		</property>
+	</bean>
+
+	<bean id="SapFeedBatchDetails-batchId" parent="SapFeedBatchDetails-batchId-parentBean" />
+	<bean id="SapFeedBatchDetails-batchId-parentBean" parent="AttributeDefinition"
+		abstract="true" p:name="batchId" p:forceUppercase="false" p:label="Batch Id"
+		p:shortLabel="Batch Id" p:summary="Batch Id" p:description="Batch Id">
+		<property name="validationPattern">
+			<bean parent="NumericValidationPattern" />
+		</property>
+		<property name="validCharactersConstraint">
+			<bean parent="NumericPatternConstraint" />
+		</property>
+		<property name="control">
+			<bean parent="TextControlDefinition" p:size="8" />
+		</property>
+		<property name="controlField">
+			<bean parent="Uif-TextControl" p:size="14" />
+		</property>
+	</bean>
+
+	<bean id="SapFeedBatchDetails-batchFileName" parent="SapFeedBatchDetails-batchFileName-parentBean" />
+	<bean id="SapFeedBatchDetails-batchFileName-parentBean" parent="AttributeDefinition"
+		abstract="true" p:name="batchFileName" p:forceUppercase="true"
+		p:label="BatchFile Name" p:shortLabel="BatchFile Name" p:summary="BatchFile Name"
+		p:description="BatchFile Name">
+		<property name="validationPattern">
+			<bean parent="AnyCharacterValidationPattern" />
+		</property>
+		<property name="validCharactersConstraint">
+			<bean parent="AnyCharacterPatternConstraint" />
+		</property>
+		<property name="control">
+			<bean parent="TextControlDefinition" p:size="8" />
+		</property>
+		<property name="controlField">
+			<bean parent="Uif-TextControl" p:size="14" />
+		</property>
+	</bean>
+
+	<bean id="SapFeedBatchDetails-batchTimeStamp" parent="SapFeedBatchDetails-batchTimeStamp-parentBean" />
+	<bean id="SapFeedBatchDetails-batchTimeStamp-parentBean" parent="AttributeReferenceDummy-genericTimestamp"
+		abstract="true" p:name="batchTimeStamp" p:forceUppercase="false"
+		p:label="Batch Date" p:shortLabel="Batch Date" p:summary="Batch Date"
+		p:description="Batch Date">
+
+
+	</bean>
+
+	<bean id="SapFeedBatchDetails-noOfRecords" parent="SapFeedBatchDetails-noOfRecords-parentBean" />
+	<bean id="SapFeedBatchDetails-noOfRecords-parentBean" parent="AttributeDefinition"
+		abstract="true" p:name="noOfRecords" p:forceUppercase="false" p:label="No of Records"
+		p:shortLabel="No of Records" p:summary="No of Records" p:description="No of Records">
+		<property name="validationPattern">
+			<bean parent="NumericValidationPattern" />
+		</property>
+		<property name="validCharactersConstraint">
+			<bean parent="NumericPatternConstraint" />
+		</property>
+		<property name="control">
+			<bean parent="TextControlDefinition" p:size="8" />
+		</property>
+		<property name="controlField">
+			<bean parent="Uif-TextControl" p:size="14" />
+		</property>
+	</bean>
+
+
+
+	<bean id="SapFeedBatchDetails-updateTimestamp" parent="SapFeedBatchDetails-updateTimestamp-parentBean" />
+	<bean id="SapFeedBatchDetails-updateTimestamp-parentBean"
+		abstract="true" parent="KraAttributeReferenceDummy-updateTimestamp">
+		<property name="name" value="updateTimestamp" />
+		<property name="label" value="Date" />
+		<property name="shortLabel" value="Date" />
+	</bean>
+
+	<bean id="SapFeedBatchDetails-updateUser" parent="SapFeedBatchDetails-updateUser-parentBean" />
+
+	<bean id="SapFeedBatchDetails-updateUser-parentBean" abstract="true"
+		parent="AttributeDefinition">
+		<property name="name" value="updateUser" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="User" />
+		<property name="shortLabel" value="User" />
+		<property name="maxLength" value="60" />
+		<property name="validationPattern">
+			<bean parent="AnyCharacterValidationPattern" />
+		</property>
+		<property name="validCharactersConstraint">
+			<bean parent="AnyCharacterPatternConstraint" />
+		</property>
+		<property name="control">
+			<bean parent="TextControlDefinition" p:size="10" />
+		</property>
+		<property name="controlField">
+			<bean p:size="14" parent="Uif-TextControl" />
+		</property>
+		<property name="summary" value="User who uploads the document" />
+		<property name="description" value="User who uploads the document" />
+	</bean>
+
+	<!-- Lookup Definition -->
+	<bean id="SapFeedBatchDetails-lookupDefinition" parent="SapFeedBatchDetails-lookupDefinition-parentBean" />
+	<bean id="SapFeedBatchDetails-LookupView" parent="SapFeedBatchDetails-LookupView-parentBean" />
+	<bean id="SapFeedBatchDetails-lookupDefinition-parentBean"
+		abstract="true" parent="LookupDefinition">
+		<property name="title" value="SAP Feed Batch Search" />
+		<property name="defaultSort">
+			<bean parent="SortDefinition" />
+		</property>
+		<property name="lookupFields">
+			<list>
+				<bean parent="FieldDefinition" p:attributeName="batchId" />
+				<bean parent="FieldDefinition" p:attributeName="batchFileName" />
+				<bean parent="FieldDefinition" p:attributeName="batchTimeStamp" />
+
+			</list>
+		</property>
+		<property name="resultFields">
+			<list>
+				<bean parent="FieldDefinition" p:attributeName="sapFeedBatchId" />
+				<bean parent="FieldDefinition" p:attributeName="batchId" />
+				<bean parent="FieldDefinition" p:attributeName="batchFileName" />
+				<bean parent="FieldDefinition" p:attributeName="batchTimeStamp" />
+				<bean parent="FieldDefinition" p:attributeName="noOfRecords" />
+				<bean parent="FieldDefinition" p:attributeName="updateTimestamp" />
+				<bean parent="FieldDefinition" p:attributeName="updateUser" />
+
+			</list>
+		</property>
+	</bean>
+
+	<bean id="SapFeedBatchDetails-LookupView-parentBean" abstract="true"
+		parent="Uif-LookupView">
+		<property name="dataObjectClassName"
+			value="org.kuali.coeus.propdev.impl.sapfeed.SapFeedBatchDetails" />
+		<property name="headerText" value="SAP Feed Batch Search" />
+		<property name="criteriaFields">
+			<list>
+				<bean p:propertyName="batchId" parent="Uif-LookupCriteriaInputField" />
+				<bean p:propertyName="batchFileName" parent="Uif-LookupCriteriaInputField" />
+				<bean p:propertyName="batchTimeStamp" parent="Uif-LookupCriteriaInputField" />
+
+			</list>
+		</property>
+		<property name="resultFields">
+			<list>
+				<bean p:propertyName="sapFeedBatchId" parent="Uif-DataField" />
+				<bean p:propertyName="batchId" parent="Uif-DataField" />
+				<bean p:propertyName="batchFileName" parent="Uif-DataField" />
+				<bean p:propertyName="batchTimeStamp" parent="Uif-DataField" />
+				<bean p:propertyName="noOfRecords" parent="Uif-DataField" />
+				<bean p:propertyName="updateTimestamp" parent="Uif-DataField" />
+				<bean p:propertyName="updateUser" parent="Uif-DataField" />
+			</list>
+		</property>
+	</bean>
+</beans>
+	

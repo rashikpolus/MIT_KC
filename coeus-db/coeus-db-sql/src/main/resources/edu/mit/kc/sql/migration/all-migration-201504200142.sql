@@ -1,0 +1,10 @@
+@../feed/sap/fn_spool_batch.sql
+@../feed/sap/fn_generate_rolodex_feed.sql
+@../feed/piexpenditure/load_dashboard_exp.sql
+@DML_MITKC-1449_04172015.sql
+@DML_MITKC-1190_04092015.sql
+@DML_MITKC-1381_04172015.sql
+@DML_MITKC-805_04172015.sql
+commit;
+exit
+/

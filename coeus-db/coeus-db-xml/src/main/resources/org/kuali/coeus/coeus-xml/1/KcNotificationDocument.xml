@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<data xmlns="ns:workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="ns:workflow resource:WorkflowData">
+	<documentTypes xmlns="ns:workflow/DocumentType" xsi:schemaLocation="ns:workflow/DocumentType resource:DocumentType">
+		<documentType>
+			<name>KcNotificationDocument</name>
+			<description>This is the default document type that will be associated with all KC notifications, i.e. notifications sent out via the KC notification service.</description>
+			<label>KC Notification</label>
+			<parent>KualiNotification</parent>
+			<security>
+        		<securityAttribute name="KcNotificationDocumentSecurityAttribute"/>
+    		</security>
+		</documentType>
+	</documentTypes>
+	
+	<ruleAttributes xmlns="ns:workflow/RuleAttribute"
+		xsi:schemaLocation="ns:workflow/RuleAttribute resource:RuleAttribute">
+		<ruleAttribute>
+   			<name>KcNotificationDocumentSecurityAttribute</name>
+   			<className>{http://kc.kuali.org/core/v5_0}kcNotificationDocumentSecurityTypeService</className>
+   			<label>KC Notification Document Security Attribute</label>
+   			<description>KC Notification Document Security Attribute</description>
+   			<type>DocumentSecurityAttribute</type>
+   			<applicationId>KC</applicationId>
+ 		</ruleAttribute>
+ 	</ruleAttributes>
+ 	
+</data>

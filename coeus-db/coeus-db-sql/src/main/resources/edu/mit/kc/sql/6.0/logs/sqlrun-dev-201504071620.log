@@ -1,0 +1,67 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Tue Apr 7 16:20:47 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+SP2-0103: Nothing in SQL buffer to run.
+
+'RUNNINGDDLSNAPSHOT'
+--------------------
+running ddl snapshot
+
+
+'RUNNINGDDLSNAPSHOT'
+--------------------
+running ddl snapshot
+
+
+'RUNNINGDMLSNAPSHOT'
+--------------------
+running dml snapshot
+
+
+1 row created.
+
+insert into KC_KRMS_TERM_FUN_PARAM(KC_KRMS_TERM_FUN_PARAM_ID,KC_KRMS_TERM_FUNCTION_ID,PARAM_NAME,PARAM_TYPE,PARAM_ORDER,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.PK_KC_KRMS_TERM_FUN_PARAM) violated
+
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

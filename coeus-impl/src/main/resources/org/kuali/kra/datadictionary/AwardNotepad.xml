@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="AwardNotepad" parent="AwardNotepad-parentBean" />
+    <bean id="AwardNotepad-parentBean" abstract="true" parent="BusinessObjectEntry">
+        <property name="businessObjectClass" value="org.kuali.kra.award.notesandattachments.notes.AwardNotepad" />
+		<property name="objectLabel" value="Award Notepad" />
+        <property name="inquiryDefinition" >
+            <ref bean="AwardNotepad-inquiryDefinition" />
+        </property>
+        <property name="lookupDefinition" >
+            <ref bean="AwardNotepad-lookupDefinition" />
+        </property>
+        <property name="titleAttribute" value="awardNotepadId" />
+        <property name="attributes" >
+            <list>
+                <ref bean="AwardNotepad-awardNotepadId" />
+                <ref bean="AwardNotepad-awardNumber" />
+                <ref bean="AwardNotepad-entryNumber" />
+                <ref bean="AwardNotepad-comments" />
+                <ref bean="AwardNotepad-noteTopic" />
+                <ref bean="AwardNotepad-restrictedView" />
+                <ref bean="AwardNotepad-versionNumber" />
+                <ref bean="AwardNotepad-updateUser" />
+				<ref bean="AwardNotepad-updateTimestamp" />
+                <ref bean="AwardNotepad-createUser" />
+				<ref bean="AwardNotepad-createTimestamp" />
+            </list>
+        </property>
+    </bean>
+
+    <!-- Attribute Definitions -->
+    <bean id="AwardNotepad-awardNotepadId" parent="AwardNotepad-awardNotepadId-parentBean" />
+    <bean id="AwardNotepad-awardNotepadId-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="awardNotepadId" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Award Notepad Id" />
+        <property name="shortLabel" value="Award Notepad Id" />
+        <property name="maxLength" value="22" />
+        <property name="validationPattern" >
+            <bean parent="NumericValidationPattern" />
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+        <property name="control" >
+      <bean parent="TextControlDefinition" p:size="10"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="10" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="Award Notepad Id" />
+        <property name="description" value="Award Notepad Id" />
+    </bean>
+
+    <bean id="AwardNotepad-awardNumber" parent="AwardNotepad-awardNumber-parentBean" />
+  <bean id="AwardNotepad-awardNumber-parentBean" abstract="true" parent="Award-awardNumber"/>
+    <bean id="AwardNotepad-entryNumber" parent="AwardNotepad-entryNumber-parentBean" />
+    <bean id="AwardNotepad-entryNumber-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="entryNumber" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Entry Number" />
+        <property name="shortLabel" value="Entry Number" />
+        <property name="maxLength" value="22" />
+        <property name="validationPattern" >
+            <bean parent="NumericValidationPattern" />
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+        <property name="control" >
+      <bean parent="TextControlDefinition" p:size="10"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="10" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="Entry Number" />
+        <property name="description" value="Entry Number" />
+    </bean>
+    
+     <bean id="AwardNotepad-noteTopic" parent="AwardNotepad-noteTopic-parentBean" />
+    <bean id="AwardNotepad-noteTopic-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="noteTopic" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Note Topic" />
+        <property name="shortLabel" value="Note Topic" />
+        <property name="maxLength" value="60" />
+        <property name="required" value="true" />
+        <property name="validationPattern" >
+      <bean parent="AnyCharacterValidationPattern" p:allowWhitespace="true"/>
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AnyCharacterPatternConstraint">
+        <property name="allowWhitespace" value="true"/>
+      </bean>
+    	</property>
+        <property name="control" >
+      <bean parent="TextControlDefinition" p:size="25"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="25" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="Comments" />
+        <property name="description" value="Comments" />
+    </bean>
+
+    <bean id="AwardNotepad-comments" parent="AwardNotepad-comments-parentBean" />
+    <bean id="AwardNotepad-comments-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="comments" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Comments" />
+        <property name="shortLabel" value="Note Text" />
+        <property name="maxLength" value="4000" />
+         <property name="validationPattern" >
+      <bean parent="AnyCharacterValidationPattern" p:allowWhitespace="true"/>
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AnyCharacterPatternConstraint">
+        <property name="allowWhitespace" value="true"/>
+      </bean>
+    	</property>
+        <property name="control" >
+      <bean parent="TextareaControlDefinition" p:rows="3" p:cols="100"/>
+    </property>
+    <property name="controlField">
+      <bean p:rows="3" p:cols="100" parent="Uif-TextAreaControl"/>
+        </property>
+        <property name="summary" value="Comments" />
+        <property name="description" value="Comments" />
+    </bean>
+    
+    <bean id="AwardNotepad-createTimestamp" parent="AwardNotepad-createTimestamp-parentBean" />
+    <bean id="AwardNotepad-createTimestamp-parentBean" abstract="true" parent="KraAttributeReferenceDummy-genericDate" >
+        <property name="name" value="createTimestamp" />
+        <property name="label" value="Posted Timestamp" />
+        <property name="shortLabel" value="Posted Timestamp" />
+        <property name="summary" value="Posted Timestamp" />
+        <property name="description" value="Posted Timestamp" />
+    </bean>
+
+    <bean id="AwardNotepad-restrictedView" parent="AwardNotepad-restrictedView-parentBean" />
+    <bean id="AwardNotepad-restrictedView-parentBean" abstract="true" parent="AttributeReferenceDummy-genericBoolean" >
+        <property name="name" value="restrictedView" />
+        <property name="label" value="Restricted View" />
+        <property name="shortLabel" value="Restricted?" />
+        <property name="summary" value="Restricted View" />
+        <property name="description" value="Restricted View" />
+    </bean>
+    
+    <bean id="AwardNotepad-createUser" parent="AwardNotepad-createUser-parentBean" />
+	<bean id="AwardNotepad-createUser-parentBean" abstract="true" parent="KraAttributeReferenceDummy-updateUser" >
+		<property name="name" value="createUser" />
+		<property name="label" value="Created By" />
+		<property name="shortLabel" value="Created By" />
+	</bean>
+	
+    <bean id="AwardNotepad-updateUser" parent="AwardNotepad-updateUser-parentBean" />
+	<bean id="AwardNotepad-updateUser-parentBean" abstract="true" parent="KraAttributeReferenceDummy-updateUser" >
+		<property name="name" value="updateUser" />
+		<property name="label" value="Updated By" />
+		<property name="shortLabel" value="Updated By" />
+	</bean>
+	
+	<bean id="AwardNotepad-updateTimestamp" parent="AwardNotepad-updateTimestamp-parentBean" />
+	<bean id="AwardNotepad-updateTimestamp-parentBean" abstract="true" parent="KraAttributeReferenceDummy-updateTimestamp" >
+		<property name="name" value="updateTimestamp" />
+		<property name="label" value="Last Update" />
+		<property name="shortLabel" value="Posted Timestamp" />
+	</bean>
+
+    <bean id="AwardNotepad-versionNumber" parent="AwardNotepad-versionNumber-parentBean" />
+  <bean id="AwardNotepad-versionNumber-parentBean" abstract="true" parent="AttributeReferenceDummy-versionNumber"/>
+    <!-- Business Object Inquiry Definition -->
+    <bean id="AwardNotepad-inquiryDefinition" parent="AwardNotepad-inquiryDefinition-parentBean" />
+  <bean id="AwardNotepad-InquiryView" parent="AwardNotepad-InquiryView-parentBean"/>
+    <bean id="AwardNotepad-inquiryDefinition-parentBean" abstract="true" parent="InquiryDefinition">
+        <property name="title" value="Award Notepad Id" />
+        <property name="inquirySections" >
+            <list>
+                <bean parent="InquirySectionDefinition">
+                    <property name="title" value="Award Notepad Id" />
+                    <property name="numberOfColumns" value="1" />
+                    <property name="inquiryFields" >
+                        <list>
+              <bean parent="FieldDefinition" p:attributeName="awardNotepadId" p:forceInquiry="true"/>
+              <bean parent="FieldDefinition" p:attributeName="awardNumber"/>
+              <bean parent="FieldDefinition" p:attributeName="entryNumber"/>
+              <bean parent="FieldDefinition" p:attributeName="comments"/>
+              <bean parent="FieldDefinition" p:attributeName="restrictedView"/>
+              <bean parent="FieldDefinition" p:attributeName="createTimestamp"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="AwardNotepad-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView">
+    <property name="headerText" value="Award Notepad Id"/>
+    <property name="dataObjectClassName" value="org.kuali.kra.award.notesandattachments.notes.AwardNotepad"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-GridSection">
+          <property name="headerText" value="Award Notepad Id"/>
+          <property name="layoutManager.numberOfColumns" value="2"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="awardNotepadId" parent="Uif-DataField"/>
+              <bean p:propertyName="awardNumber" parent="Uif-DataField"/>
+              <bean p:propertyName="entryNumber" parent="Uif-DataField"/>
+              <bean p:propertyName="comments" parent="Uif-DataField"/>
+              <bean p:propertyName="restrictedView" parent="Uif-DataField"/>
+              <bean p:propertyName="createTimestamp" parent="Uif-DataField"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Business Object Lookup Definition -->
+    <bean id="AwardNotepad-lookupDefinition" parent="AwardNotepad-lookupDefinition-parentBean" />
+  <bean id="AwardNotepad-LookupView" parent="AwardNotepad-LookupView-parentBean"/>
+    <bean id="AwardNotepad-lookupDefinition-parentBean" abstract="true" parent="LookupDefinition">
+        <property name="title" value="Award Notepad Lookup" /><property name="defaultSort" >
+      <bean parent="SortDefinition"/>
+        </property>
+        <property name="lookupFields" >
+            <list>
+        <bean parent="FieldDefinition" p:attributeName="awardNotepadId" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="awardNumber"/>
+        <bean parent="FieldDefinition" p:attributeName="entryNumber"/>
+        <bean parent="FieldDefinition" p:attributeName="comments"/>
+        <bean parent="FieldDefinition" p:attributeName="restrictedView"/>
+        <bean parent="FieldDefinition" p:attributeName="createTimestamp"/>
+            </list>
+        </property>
+        <property name="resultFields" >
+            <list>
+        <bean parent="FieldDefinition" p:attributeName="awardNotepadId" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="awardNumber"/>
+        <bean parent="FieldDefinition" p:attributeName="entryNumber"/>
+        <bean parent="FieldDefinition" p:attributeName="comments"/>
+        <bean parent="FieldDefinition" p:attributeName="restrictedView"/>
+        <bean parent="FieldDefinition" p:attributeName="createTimestamp"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="AwardNotepad-LookupView-parentBean" abstract="true" parent="Uif-LookupView">
+    <property name="dataObjectClassName" value="org.kuali.kra.award.notesandattachments.notes.AwardNotepad"/>
+    <property name="headerText" value="Award Notepad Lookup"/>
+    <property name="criteriaFields">
+      <list>
+        <bean p:propertyName="awardNotepadId" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="awardNumber" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="entryNumber" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="comments" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="restrictedView" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="createTimestamp" parent="Uif-LookupCriteriaInputField"/>
+      </list>
+    </property>
+    <property name="resultFields">
+      <list>
+        <bean p:propertyName="awardNotepadId" parent="Uif-DataField"/>
+        <bean p:propertyName="awardNumber" parent="Uif-DataField"/>
+        <bean p:propertyName="entryNumber" parent="Uif-DataField"/>
+        <bean p:propertyName="comments" parent="Uif-DataField"/>
+        <bean p:propertyName="restrictedView" parent="Uif-DataField"/>
+        <bean p:propertyName="createTimestamp" parent="Uif-DataField"/>
+      </list>
+    </property>
+  </bean>
+
+</beans>

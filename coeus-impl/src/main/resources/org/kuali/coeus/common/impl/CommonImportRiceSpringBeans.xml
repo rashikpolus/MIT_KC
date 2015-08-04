@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/util
+                           http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <bean id="grlImporter" abstract="true" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean" p:singleton="true" p:mustExist="true" />
+
+    <bean id="parameterService" parent="grlImporter" p:serviceName="parameterService" />
+    <bean id="countryService" parent="grlImporter" p:serviceName="countryService" />
+    <bean id="dataObjectService" parent="grlImporter" p:serviceName="dataObjectService" />
+    <bean id="businessObjectDictionaryService" parent="grlImporter" p:serviceName="businessObjectDictionaryService" />
+    <bean id="dataDictionaryService" parent="grlImporter" p:serviceName="dataDictionaryService" />
+    <bean id="businessObjectService" parent="grlImporter" p:serviceName="businessObjectService" />
+    <bean id="identityService" parent="grlImporter" p:serviceName="identityService" />
+    <bean id="lookupResultsService" parent="grlImporter" p:serviceName="lookupResultsService" />
+    <bean id="mailSender" parent="grlImporter" p:serviceName="mailSender" />
+    <bean id="kualiConfigurationService" parent="grlImporter" p:serviceName="kualiConfigurationService" />
+    <bean id="dbPlatform" parent="grlImporter" p:serviceName="dbPlatform" />
+    <bean id="stateService" parent="grlImporter" p:serviceName="stateService" />
+    <bean id="persistenceStructureService" parent="grlImporter" p:serviceName="persistenceStructureService" />
+    <bean id="encryptionService" parent="grlImporter" p:serviceName="encryptionService" />
+    <bean id="lookupService" parent="grlImporter" p:serviceName="lookupService" />
+    <bean id="businessObjectMetaDataService" parent="grlImporter" p:serviceName="businessObjectMetaDataService" />
+    <bean id="sequenceAccessorService" parent="grlImporter" p:serviceName="sequenceAccessorService" />
+    <bean id="dateTimeService" parent="grlImporter" p:serviceName="dateTimeService" />
+    <bean id="rice.ksb.serviceBus" parent="grlImporter" p:serviceName="rice.ksb.serviceBus" />
+    <bean id="documentService" parent="grlImporter" p:serviceName="documentService" />
+    <bean id="functionRepositoryService" parent="grlImporter" p:serviceName="functionRepositoryService" />
+    <bean id="maintenanceDocumentDictionaryService" parent="grlImporter" p:serviceName="maintenanceDocumentDictionaryService" />
+    <bean id="pessimisticLockService" parent="grlImporter" p:serviceName="pessimisticLockService" />
+    <bean id="lookupDao" parent="grlImporter" p:serviceName="lookupDao" />
+    <bean id="xmlObjectSerializerService" parent="grlImporter" p:serviceName="xmlObjectSerializerService" />
+    <bean id="routeHeaderService" parent="grlImporter" p:serviceName="routeHeaderService" />
+    <bean id="lookupableHelperService" parent="grlImporter" p:serviceName="lookupableHelperService" />
+    <bean id="repositoryToEngineTranslator" parent="grlImporter" p:serviceName="repositoryToEngineTranslator" />
+    <bean id="ruleRepositoryService" parent="grlImporter" p:serviceName="ruleRepositoryService" />
+    <bean id="rice.krms.engine" parent="grlImporter" p:serviceName="rice.krms.engine" />
+    <bean id="krmsTypeRepositoryService" parent="grlImporter" p:serviceName="krmsTypeRepositoryService" />
+    <bean id="krmsLocalCacheManager" parent="grlImporter" p:serviceName="krmsLocalCacheManager" />
+    <bean id="legacyDataAdapter" parent="grlImporter" p:serviceName="legacyDataAdapter" />
+    <bean id="permissionService" parent="grlImporter" p:serviceName="kimPermissionService" />
+    <bean id="roleService" parent="grlImporter" p:serviceName="kimRoleService" />
+    <bean id="kimTypeInfoService" parent="grlImporter" p:serviceName="kimTypeInfoService" />
+    <bean id="kradApplicationDataSource" parent="grlImporter" p:serviceName="kradApplicationDataSource"/>
+    <bean id="documentTypeService" parent="grlImporter" p:serviceName="rice.kew.documentTypeService" />
+
+    <bean id="ccImporter" abstract="true" class="org.kuali.coeus.sys.framework.service.ConfigContextConfigObjectFactoryBean" p:singleton="true" p:mustExist="true" />
+
+    <bean id="dataSource" parent="ccImporter" p:objectName="datasource" />
+    <bean id="transactionManager" parent="ccImporter" p:objectName="KC_TRANSACTION_MANAGER" />
+</beans>

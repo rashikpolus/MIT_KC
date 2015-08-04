@@ -1,0 +1,607 @@
+From a15fc1881b9d22be5da065cd6e1bf430ab9c4179 Mon Sep 17 00:00:00 2001
+From: Joe Williams <jwillia@iastate.edu>
+Date: Fri, 10 Apr 2015 12:38:06 -0500
+Subject: [PATCH] RESKC-318:remove narrative locking region
+
+---
+ .../ProposalDevelopmentAttachmentController.java   | 11 +--
+ .../ProposalDevelopmentDocumentAuthorizer.java     |  4 +-
+ .../ProposalDevelopmentDocumentViewAuthorizer.java | 58 ++-----------
+ .../impl/budget/core/ProposalBudgetView.java       | 34 ++++----
+ .../core/ProposalDevelopmentControllerBase.java    | 97 ++--------------------
+ .../impl/core/ProposalDevelopmentDocument.java     |  7 +-
+ .../core/ProposalDevelopmentViewHelperService.java |  3 +-
+ .../ProposalDevelopmentViewHelperServiceImpl.java  | 39 ---------
+ .../propdev/impl/core/ProposalDocumentView.java    | 12 +--
+ .../authorization/KraAuthorizationConstants.java   |  1 -
+ .../impl/budget/core/ProposalBudgetPage.xml        |  4 +-
+ .../coeus/propdev/impl/core/ProposalCommon.xml     |  4 +-
+ .../coeus/propdev/impl/core/ProposalSubmitPage.xml |  8 +-
+ .../impl/docperm/ProposalPermissionsPage.xml       |  2 +-
+ .../propdev/impl/person/ProposalPersonnelPage.xml  |  2 +-
+ 15 files changed, 58 insertions(+), 228 deletions(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalDevelopmentAttachmentController.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalDevelopmentAttachmentController.java
+index 76f6b93..2143c5d 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalDevelopmentAttachmentController.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalDevelopmentAttachmentController.java
+@@ -82,11 +82,6 @@
+     @Qualifier("personService")
+     private PersonService personService;
+ 
+-    @Transactional @RequestMapping(value = "/proposalDevelopment", params={"methodToCall=save", "pageId=PropDev-AttachmentsPage"})
+-    public ModelAndView saveAttachments(@ModelAttribute("KualiForm") ProposalDevelopmentDocumentForm form) throws Exception {
+-       return super.narrativePageSave(form, form.isCanEditView());
+-    }
+-
+     @Transactional @RequestMapping(value = "/proposalDevelopment", params="methodToCall=addFileUploadLine")
+     public ModelAndView addFileUploadLine(@ModelAttribute("KualiForm") ProposalDevelopmentDocumentForm form, BindingResult result,
+                                           MultipartHttpServletRequest request, HttpServletResponse response) throws Exception {
+@@ -338,7 +333,7 @@ public ModelAndView saveNarrative(@ModelAttribute("KualiForm") ProposalDevelopme
+                 getKcNotificationService().sendNotification(context);
+             }
+         }
+-        return super.narrativePageSave(form,true);
++        return super.save(form);
+     }
+ 
+     @Transactional @RequestMapping(value = "/proposalDevelopment", params="methodToCall=sendNarrativeChangeNotification")
+@@ -372,7 +367,7 @@ public ModelAndView saveBiography(@ModelAttribute("KualiForm") ProposalDevelopme
+             form.setUpdateComponentId(ProposalDevelopmentConstants.KradConstants.PROP_DEV_ATTACHMENTS_PAGE_PERSONNEL_DETAILS);
+             form.setAjaxReturnType(UifConstants.AjaxReturnTypes.UPDATECOMPONENT.getKey());
+         }
+-        return super.narrativePageSave(form, true);
++        return super.save(form);
+     }
+ 
+     @Transactional @RequestMapping(value = "/proposalDevelopment", params="methodToCall=saveInstituteAttachment")
+@@ -388,7 +383,7 @@ public ModelAndView saveInstituteAttachment(@ModelAttribute("KualiForm") Proposa
+         }
+         form.getDevelopmentProposal().getInstituteAttachments().set(selectedLineIndex,narrative);
+         form.getProposalDevelopmentAttachmentHelper().reset();
+-        return super.narrativePageSave(form, true);
++        return super.save(form);
+     }
+ 
+     @Transactional @RequestMapping(value = "/proposalDevelopment", params="methodToCall=saveAbstract")
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/auth/ProposalDevelopmentDocumentAuthorizer.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/auth/ProposalDevelopmentDocumentAuthorizer.java
+index bd2e37b..4e0f6b8 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/auth/ProposalDevelopmentDocumentAuthorizer.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/auth/ProposalDevelopmentDocumentAuthorizer.java
+@@ -409,7 +409,7 @@ public boolean hasCertificationPermissions(ProposalDevelopmentDocument document,
+ 
+     protected boolean canSaveCertification(ProposalDevelopmentDocument document, Person user) {
+         for(ProposalPerson person : document.getDevelopmentProposal().getProposalPersons()) {
+-            if (hasCertificationPermissions(document, user, person)) {
++            if (hasCertificationPermissions(document, user, person) && document.getDocumentHeader().getWorkflowDocument().isEnroute()) {
+                 return true;
+             }
+         }
+@@ -557,7 +557,7 @@ protected boolean isAuthorizedToAddNarrative(Document document, Person user) {
+     protected boolean isAuthorizedToReplaceNarrative(Document document, Person user) {
+         final ProposalDevelopmentDocument pdDocument = ((ProposalDevelopmentDocument) document); 
+         boolean hasPermission = false;
+-        if (!pdDocument.getDevelopmentProposal().getSubmitFlag()) {
++        if (!pdDocument.getDevelopmentProposal().getSubmitFlag() && pdDocument.getDocumentHeader().getWorkflowDocument().isEnroute()) {
+             hasPermission = getModifyNarrativePermission(pdDocument, user) || isAuthorizedToAlterProposalData(document, user);
+         }      
+         return hasPermission;
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/auth/ProposalDevelopmentDocumentViewAuthorizer.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/auth/ProposalDevelopmentDocumentViewAuthorizer.java
+index 4e48977..20996a4 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/auth/ProposalDevelopmentDocumentViewAuthorizer.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/auth/ProposalDevelopmentDocumentViewAuthorizer.java
+@@ -24,10 +24,7 @@
+ import org.kuali.coeus.common.framework.auth.KcKradTransactionalDocumentViewAuthorizerBase;
+ import org.kuali.coeus.propdev.impl.core.*;
+ import org.kuali.coeus.propdev.impl.person.ProposalPerson;
+-import org.kuali.coeus.sys.framework.service.KcServiceLocator;
+-import org.kuali.coeus.sys.impl.lock.KcPessimisticLockService;
+ import org.kuali.kra.authorization.KraAuthorizationConstants;
+-import org.kuali.kra.infrastructure.Constants;
+ import org.kuali.rice.kim.api.identity.Person;
+ import org.kuali.rice.krad.document.Document;
+ import org.kuali.rice.krad.document.authorization.PessimisticLock;
+@@ -37,8 +34,6 @@
+ import org.kuali.rice.krad.uif.view.ViewModel;
+ import org.kuali.rice.krad.util.KRADConstants;
+ import org.kuali.rice.krad.web.form.DocumentFormBase;
+-import org.springframework.beans.factory.annotation.Autowired;
+-import org.springframework.beans.factory.annotation.Qualifier;
+ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+ import org.springframework.context.annotation.Scope;
+ import org.springframework.stereotype.Service;
+@@ -47,10 +42,6 @@
+ @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+ public class ProposalDevelopmentDocumentViewAuthorizer extends KcKradTransactionalDocumentViewAuthorizerBase {
+ 
+-    @Autowired
+-    @Qualifier("kcPessimisticLockService")
+-    private KcPessimisticLockService kcPessimisticLockService;
+-
+     @Override
+     public boolean canViewGroup(View view, ViewModel model, Group group, String groupId, Person user) {
+         boolean success = super.canViewGroup(view, model, group, groupId, user);
+@@ -140,52 +131,19 @@ public boolean canEditGroup(View view, ViewModel model, Group group, String grou
+ 
+     @Override
+     public boolean canEditView(View view, ViewModel model, Person user) {
+-       ProposalDevelopmentDocumentForm pdForm = ((ProposalDevelopmentDocumentForm)model);
+-       ProposalDevelopmentViewHelperService pdViewService = (ProposalDevelopmentViewHelperService) pdForm.getViewHelperService();
+-       pdViewService.setupLockRegions((ProposalDevelopmentDocumentForm) model);
+-       boolean canEdit = super.canEditView(view, model, user) && userHasLock(user, pdForm);
+-       establishNarrativeLockForAccessPage(pdForm, user, canEdit);
+-       return canEdit;
++       return super.canEditView(view, model, user) && userHasLock(user, model);
+     }
+ 
+-    protected void establishNarrativeLockForAccessPage(ProposalDevelopmentDocumentForm form, Person user, boolean canEdit) {
+-        if (StringUtils.equals(form.getPageId(), Constants.PROP_DEV_PERMISSIONS_PAGE) &&
+-                getKcPessimisticLockService().isPessimisticLockNeeded(form.getProposalDevelopmentDocument(), user, canEdit, form.getDevelopmentProposal().getProposalNumber() + "-" + KraAuthorizationConstants.LOCK_DESCRIPTOR_NARRATIVES)) {
+-            PessimisticLock pessimisticLock = getPessimisticLockService().generateNewLock(form.getDocument().getDocumentNumber(),form.getDevelopmentProposal().getProposalNumber() + "-" + KraAuthorizationConstants.LOCK_DESCRIPTOR_NARRATIVES, user);
+-            form.getDocument().addPessimisticLock(pessimisticLock);
+-        }
+-    }
+-
+-    public boolean userHasLock(Person user, ProposalDevelopmentDocumentForm form) {
+-        boolean retVal = false;
+-        String pageRegion = ((ProposalDevelopmentViewHelperServiceImpl)form.getViewHelperService()).getLockRegionFromPage(form.getPageId());
+-        boolean isNarrativeLocked = false;
++    public boolean userHasLock(Person user, ViewModel model) {
++        ProposalDevelopmentDocumentForm form = ((ProposalDevelopmentDocumentForm)model);
+         for (PessimisticLock lock : form.getDocument().getPessimisticLocks()) {
+-            if (lock.getLockDescriptor() == null) {
+                 if (lock.isOwnedByUser(user)) {
+-                    retVal = true;
+-                }
+-            } else {
+-                final String lockRegion = StringUtils.split(lock.getLockDescriptor(), "-")[1];
+-                if (StringUtils.equals(lockRegion,KraAuthorizationConstants.LOCK_DESCRIPTOR_NARRATIVES) && !lock.isOwnedByUser(user)) {
+-                    isNarrativeLocked = true;
+-                }
+-                if (lock.isOwnedByUser(user) && lockRegion.equals(pageRegion)) {
+-                    retVal = true;
+-                }
++                    final String lockRegion = StringUtils.split(lock.getLockDescriptor(), "-")[1];
++                    if (lock.isOwnedByUser(user) && lockRegion.equals(KraAuthorizationConstants.LOCK_DESCRIPTOR_PROPOSAL)) {
++                       return true;
++                    }
+             }
+         }
+-        if (StringUtils.equals(form.getPageId(),Constants.PROP_DEV_PERMISSIONS_PAGE) && isNarrativeLocked) {
+-            retVal = false;
+-        }
+-        return retVal;
+-    }
+-
+-    public KcPessimisticLockService getKcPessimisticLockService() {
+-        return kcPessimisticLockService;
+-    }
+-
+-    public void setKcPessimisticLockService(KcPessimisticLockService kcPessimisticLockService) {
+-        this.kcPessimisticLockService = kcPessimisticLockService;
++        return false;
+     }
+ }
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/budget/core/ProposalBudgetView.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/budget/core/ProposalBudgetView.java
+index 21eda91..23ed3e2 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/budget/core/ProposalBudgetView.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/budget/core/ProposalBudgetView.java
+@@ -49,27 +49,25 @@ public void performFinalize(Object model, LifecycleElement parent) {
+     }
+ 
+     protected void generatePessimisticLockMessages(ProposalBudgetForm form) {
+-    	if(!form.isViewOnly()) {
+-            Document document = form.getBudget().getDevelopmentProposal().getDocument();
+-            Person user = GlobalVariables.getUserSession().getPerson();
+-            int budgetVersion = form.getBudget().getBudgetVersionNumber();
+-            for (PessimisticLock lock : document.getPessimisticLocks()) {
+-                if (!lock.isOwnedByUser(user) && getProposalBudgetLockService().doesBudgetVersionMatchDescriptor(lock.getLockDescriptor(),budgetVersion)) {
+-                    String lockDescriptor = StringUtils.defaultIfBlank(lock.getLockDescriptor(), "full");
+-                    String lockOwner = lock.getOwnedByUser().getName();
+-                    String lockTime = RiceConstants.getDefaultTimeFormat().format(lock.getGeneratedTimestamp());
+-                    String lockDate = RiceConstants.getDefaultDateFormat().format(lock.getGeneratedTimestamp());
++        Document document = form.getBudget().getDevelopmentProposal().getDocument();
++        Person user = GlobalVariables.getUserSession().getPerson();
++        int budgetVersion = form.getBudget().getBudgetVersionNumber();
++        for (PessimisticLock lock : document.getPessimisticLocks()) {
++            if (!lock.isOwnedByUser(user) && getProposalBudgetLockService().doesBudgetVersionMatchDescriptor(lock.getLockDescriptor(), budgetVersion)) {
++                String lockDescriptor = StringUtils.defaultIfBlank(lock.getLockDescriptor(), "full");
++                String lockOwner = lock.getOwnedByUser().getName();
++                String lockTime = RiceConstants.getDefaultTimeFormat().format(lock.getGeneratedTimestamp());
++                String lockDate = RiceConstants.getDefaultDateFormat().format(lock.getGeneratedTimestamp());
+ 
+-                    if (!getParameterService().getParameterValueAsBoolean("KC-GEN", "All", PessimisticLockConstants.ALLOW_CLEAR_PESSIMISTIC_LOCK_PARM)) {
+-                        GlobalVariables.getMessageMap().putError(KRADConstants.GLOBAL_ERRORS,
+-                                ERROR_TRANSACTIONAL_LOCKED, lockDescriptor, lockOwner, lockTime, lockDate);
+-                    } else {
+-                        GlobalVariables.getMessageMap().putError(KRADConstants.GLOBAL_ERRORS,
+-                                KC_ERROR_TRANSACTIONAL_LOCKED, lockDescriptor, lockOwner, lockTime, lockDate, lock.getId().toString());
+-                    }
++                if (!getParameterService().getParameterValueAsBoolean("KC-GEN", "All", PessimisticLockConstants.ALLOW_CLEAR_PESSIMISTIC_LOCK_PARM)) {
++                    GlobalVariables.getMessageMap().putError(KRADConstants.GLOBAL_ERRORS,
++                            ERROR_TRANSACTIONAL_LOCKED, lockDescriptor, lockOwner, lockTime, lockDate);
++                } else {
++                    GlobalVariables.getMessageMap().putError(KRADConstants.GLOBAL_ERRORS,
++                            KC_ERROR_TRANSACTIONAL_LOCKED, lockDescriptor, lockOwner, lockTime, lockDate, lock.getId().toString());
+                 }
+             }
+-    	}
++        }
+     }
+ 
+     public ParameterService getParameterService() {
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentControllerBase.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentControllerBase.java
+index 7acde03..4e1a1b7 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentControllerBase.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentControllerBase.java
+@@ -52,9 +52,7 @@
+ import org.kuali.rice.core.api.exception.RiceRuntimeException;
+ import org.kuali.rice.core.api.util.RiceKeyConstants;
+ import org.kuali.rice.coreservice.framework.parameter.ParameterService;
+-import org.kuali.rice.kim.api.identity.Person;
+ import org.kuali.rice.krad.data.DataObjectService;
+-import org.kuali.rice.krad.document.Document;
+ import org.kuali.rice.krad.document.DocumentBase;
+ import org.kuali.rice.krad.document.TransactionalDocumentControllerService;
+ import org.kuali.rice.krad.exception.ValidationException;
+@@ -261,7 +259,7 @@ public ModelAndView save(ProposalDevelopmentDocumentForm form) throws Exception
+              getAuditHelper().auditConditionally(form);
+          }
+ 
+-         
++
+          populateAdHocRecipients(form.getProposalDevelopmentDocument());
+ 
+          if (StringUtils.equalsIgnoreCase(form.getPageId(), Constants.CREDIT_ALLOCATION_PAGE)) {
+@@ -355,107 +353,24 @@ protected ModelAndView navigate(ProposalDevelopmentDocumentForm form, BindingRes
+          }
+          populateAdHocRecipients(form.getProposalDevelopmentDocument());
+          String navigateToPageId = form.getActionParamaterValue(UifParameters.NAVIGATE_TO_PAGE_ID);
+-         boolean canEdit = form.isCanEditView();
+          if (isNavigateToDeliveryInfoPage(navigateToPageId)) {
+              if (form.getDevelopmentProposal().getS2sOpportunity() != null) {
+                  getGlobalVariableService().getMessageMap().putInfo(ProposalDevelopmentConstants.KradConstants.DELIVERY_INFO_PAGE, KeyConstants.DELIVERY_INFO_NOT_NEEDED);
+              }
+          }
+-
+-         if (isNavigateAwayFromAttachment(navigateToPageId, form.getPageId())) {
+-             prepareLocks(form);
+-             return narrativePageSave(form, canEdit);
+-         } else if (isNavigateToAttachments(navigateToPageId) ||
+-                  isNavigateAwayFromAccess(navigateToPageId,form.getPageId()) ||
+-                  isNavigateToAccess(navigateToPageId)) {
+-             prepareLocks(form);
++         if (form.isCanEditView()) {
++             return save(form);
++         } else {
++             return getNavigationControllerService().navigate(form);
+          }
+-         return proposalDevelopmentPageSave(form, canEdit);
+-     }
+-
+-    protected void prepareLocks(ProposalDevelopmentDocumentForm form) {
+-        releasePessimisticLocks(form);
+-        form.setEvaluateFlagsAndModes(true);
+-        form.setCanEditView(null);
+-    }
+-
+-    protected ModelAndView proposalDevelopmentPageSave(ProposalDevelopmentDocumentForm form, boolean canEdit) throws Exception {
+-        ProposalDevelopmentDocument document = (ProposalDevelopmentDocument) getDocumentService().getByDocumentHeaderId(form.getDocument().getDocumentNumber());
+-        if (canEdit) {
+-            //when saving on page in the proposal development locking region we don't want to over write attachments that
+-            //may have been alter concurrently.  So we retrieve the latest proposal data from the db, and replace the attachment
+-            //collections with the values from the db.
+-            if (!StringUtils.equals(form.getPageId(),Constants.PROP_DEV_PERMISSIONS_PAGE)) {
+-                form.getDevelopmentProposal().setNarratives(document.getDevelopmentProposal().getNarratives());
+-                form.getDevelopmentProposal().setInstituteAttachments(document.getDevelopmentProposal().getInstituteAttachments());
+-                form.getDevelopmentProposal().setPropPersonBios(document.getDevelopmentProposal().getPropPersonBios());
+-                form.getDevelopmentProposal().setProposalAbstracts(document.getDevelopmentProposal().getProposalAbstracts());
+-                form.getDocument().setNotes(document.getNotes());
+-
+-                form.getDocument().setDocumentHeader(document.getDocumentHeader());
+-            }
+-            return save(form);
+-        } else {
+-            form.setDocument(document);
+-            return getNavigationControllerService().navigate(form);
+-        }
+-    }
+ 
+-    protected ModelAndView narrativePageSave(ProposalDevelopmentDocumentForm form, boolean canEdit) throws Exception {
+-        ProposalDevelopmentDocument document = (ProposalDevelopmentDocument) getDocumentService().getByDocumentHeaderId(form.getDocument().getDocumentNumber());
+-        if (canEdit) {
+-            if ((new ProposalDevelopmentDocumentRule().processAttachmentRules(form.getProposalDevelopmentDocument()))
+-                    && (new ProposalDevelopmentDocumentRule().processPersonnelAttachmentDuplicates(form.getProposalDevelopmentDocument()))) {
+-            	document.getDevelopmentProposal().setNarratives(form.getDevelopmentProposal().getNarratives());
+-                document.getDevelopmentProposal().setInstituteAttachments(form.getDevelopmentProposal().getInstituteAttachments());
+-                document.getDevelopmentProposal().setPropPersonBios(form.getDevelopmentProposal().getPropPersonBios());
+-                document.getDevelopmentProposal().setProposalAbstracts(form.getDevelopmentProposal().getProposalAbstracts());
+-                document.setNotes(form.getDocument().getNotes());
+-                form.setDocument(document);
+-                return save(form);
+-            } else {
+-                form.setCanEditView(canEdit);
+-                return getModelAndViewService().getModelAndView(form);
+-            }
+-
+-        } else {
+-            form.setDocument(document);
+-            return getNavigationControllerService().navigate(form);
+-        }
+-    }
+-
+-    protected boolean isNavigateToAttachments(String navigateToPageId) {
+-        return StringUtils.equals(navigateToPageId,ProposalDevelopmentDataValidationConstants.ATTACHMENT_PAGE_ID);
+-    }
+-
+-    protected boolean isNavigateToAccess(String navigateToPageId) {
+-        return StringUtils.equals(navigateToPageId,Constants.PROP_DEV_PERMISSIONS_PAGE);
+-    }
+-
+-    protected boolean isNavigateAwayFromAccess(String navigateToPageId, String pageId) {
+-        return StringUtils.equals(pageId,Constants.PROP_DEV_PERMISSIONS_PAGE) &&
+-                !StringUtils.equals(navigateToPageId,Constants.PROP_DEV_PERMISSIONS_PAGE);
+-    }
+-
+-    protected boolean isNavigateAwayFromAttachment(String navigateToPageId, String pageId) {
+-        return StringUtils.equals(pageId,ProposalDevelopmentDataValidationConstants.ATTACHMENT_PAGE_ID) &&
+-                !StringUtils.equals(navigateToPageId,ProposalDevelopmentDataValidationConstants.ATTACHMENT_PAGE_ID);
+      }
+ 
++
+     protected boolean isNavigateToDeliveryInfoPage(String navigateToPageId) {
+         return StringUtils.equals(navigateToPageId, ProposalDevelopmentConstants.KradConstants.DELIVERY_INFO_PAGE);
+     }
+ 
+-    protected void releasePessimisticLocks(DocumentFormBase form) {
+-        Document document = form.getDocument();
+-
+-        if (!document.getPessimisticLocks().isEmpty()) {
+-            Person user = getGlobalVariableService().getUserSession().getPerson();
+-            document.refreshPessimisticLocks();
+-            getPessimisticLockService().releaseAllLocksForUser(document.getPessimisticLocks(), user);
+-        }
+-    }
+-    
+     public void addEditableCollectionLine(ProposalDevelopmentDocumentForm form, String selectedCollectionPath){
+         if(form.getEditableCollectionLines().containsKey(selectedCollectionPath)) {
+             updateEditableCollectionLines(form, selectedCollectionPath);
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentDocument.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentDocument.java
+index 38d39b3..32b1eba 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentDocument.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentDocument.java
+@@ -31,6 +31,7 @@
+ import org.kuali.coeus.common.framework.auth.perm.Permissionable;
+ import org.kuali.coeus.sys.framework.service.KcServiceLocator;
+ import org.kuali.coeus.sys.framework.workflow.KcDocumentRejectionService;
++import org.kuali.kra.authorization.KraAuthorizationConstants;
+ import org.kuali.kra.bo.RolePersons;
+ import org.kuali.coeus.common.budget.framework.core.Budget;
+ import org.kuali.coeus.common.budget.framework.core.BudgetParentDocument;
+@@ -72,7 +73,6 @@
+ import org.kuali.rice.krad.workflow.KualiDocumentXmlMaterializer;
+ import org.kuali.rice.krad.workflow.KualiTransactionalDocumentInformation;
+ import org.kuali.rice.krms.api.engine.Facts;
+-import org.springframework.util.CollectionUtils;
+ 
+ import javax.persistence.*;
+ import java.util.ArrayList;
+@@ -620,4 +620,9 @@ public DocumentHeaderService getDocumentHeaderService() {
+     void setDocumentHeaderService(DocumentHeaderService documentHeaderService) {
+         this.documentHeaderService = documentHeaderService;
+     }
++
++    @Override
++    public String getCustomLockDescriptor(Person user) {
++        return this.getDocumentBoNumber() + "-" + KraAuthorizationConstants.LOCK_DESCRIPTOR_PROPOSAL;
++    }
+ }
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentViewHelperService.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentViewHelperService.java
+index cfc0a69..e8cbca4 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentViewHelperService.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentViewHelperService.java
+@@ -20,7 +20,6 @@
+ 
+ public interface ProposalDevelopmentViewHelperService {
+ 	
+-	public boolean requiresResubmissionPrompt(DevelopmentProposal developmentProposal, String resubmissionOption);
+-    public void setupLockRegions(ProposalDevelopmentDocumentForm form);
++	boolean requiresResubmissionPrompt(DevelopmentProposal developmentProposal, String resubmissionOption);
+ 
+ }
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentViewHelperServiceImpl.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentViewHelperServiceImpl.java
+index 98783e8..b185287 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentViewHelperServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentViewHelperServiceImpl.java
+@@ -955,45 +955,6 @@ public boolean isShowModularBudgetQuestion(String sponsorCode) {
+         return getSponsorHierarchyService().isSponsorNihMultiplePi(sponsorCode);
+     }
+ 
+-    // Returns piece that should be locked for this form
+-    protected String getLockRegion(ProposalDevelopmentDocumentForm form) {
+-        //default lock region
+-        String lockRegion = KraAuthorizationConstants.LOCK_DESCRIPTOR_PROPOSAL;
+-        if (isNarrativeAction(form)) {
+-            lockRegion = KraAuthorizationConstants.LOCK_DESCRIPTOR_NARRATIVES;
+-        }
+-
+-        return lockRegion;
+-    }
+-
+-    // Checks whether the action associated with this form instance maps to the Narrative page
+-    private boolean isNarrativeAction(ProposalDevelopmentDocumentForm form) {
+-        boolean isNarrativeAction = false;
+-        String navigateTo = form.getActionParamaterValue(UifParameters.NAVIGATE_TO_PAGE_ID);
+-        if (StringUtils.equals(form.getPageId(), ProposalDevelopmentDataValidationConstants.ATTACHMENT_PAGE_ID)
+-                && StringUtils.isEmpty(navigateTo)) {
+-            isNarrativeAction = true;
+-        } else if (StringUtils.isNotEmpty(navigateTo) && navigateTo.equalsIgnoreCase(ProposalDevelopmentDataValidationConstants.ATTACHMENT_PAGE_ID)) {
+-            isNarrativeAction = true;
+-        }
+-
+-        return isNarrativeAction;
+-
+-    }
+-
+-    public void setupLockRegions(ProposalDevelopmentDocumentForm form) {
+-        String lockRegion = getLockRegion(form);
+-        GlobalVariables.getUserSession().addObject(KraAuthorizationConstants.ACTIVE_LOCK_REGION, (Object)lockRegion);
+-    }
+-
+-    public String getLockRegionFromPage(String pageId) {
+-        String pageRegion = KraAuthorizationConstants.LOCK_DESCRIPTOR_PROPOSAL;
+-        if (StringUtils.equals(pageId, ProposalDevelopmentDataValidationConstants.ATTACHMENT_PAGE_ID)) {
+-            pageRegion = KraAuthorizationConstants.LOCK_DESCRIPTOR_NARRATIVES;
+-        }
+-        return pageRegion;
+-    }
+-    
+     public boolean syncRequiresEndDateExtension(DevelopmentProposal proposal) {
+     	DevelopmentProposal hierarchyProposal = getProposalHierarchyService().getDevelopmentProposal(proposal.getHierarchyParentProposalNumber());
+     	return getProposalHierarchyService().needToExtendProjectDate(hierarchyProposal, proposal);
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDocumentView.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDocumentView.java
+index b746243..0de9248 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDocumentView.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDocumentView.java
+@@ -35,27 +35,27 @@
+ 
+ public class ProposalDocumentView extends KcTransactionalDocumentView {
+     private static final String KC_ERROR_TRANSACTIONAL_LOCKED = "kc.error.transactional.locked";
++    public static final String FULL = "full";
+ 
+ 
+     @Override
+     protected void generatePessimisticLockMessages(TransactionalDocumentFormBase form) {
+     	ProposalDevelopmentDocumentForm proposalDevelopmentDocumentForm = (ProposalDevelopmentDocumentForm)form;
+     	if(!proposalDevelopmentDocumentForm.isViewOnly()) {
+-            String pageRegion = ((ProposalDevelopmentViewHelperServiceImpl)form.getViewHelperService()).getLockRegionFromPage(form.getPageId());
+             Document document = form.getDocument();
++            String pageId = proposalDevelopmentDocumentForm.getPageId();
+             Person user = GlobalVariables.getUserSession().getPerson();
+ 
+             for (PessimisticLock lock : document.getPessimisticLocks()) {
+                 String lockRegion = lock.getLockDescriptor() != null ? StringUtils.split(lock.getLockDescriptor(),"-")[1] : null;
+-                if (!lock.isOwnedByUser(user) && ((lockRegion == null || lockRegion.equals(pageRegion)) &&
+-                        !StringUtils.equals(form.getPageId(),ProposalDevelopmentDataValidationConstants.BUDGET_PAGE_ID) ||
+-                        (StringUtils.equals(form.getPageId(), Constants.PROP_DEV_PERMISSIONS_PAGE) && StringUtils.equals(lockRegion,KraAuthorizationConstants.LOCK_DESCRIPTOR_NARRATIVES)))) {
+-                    String lockDescriptor = StringUtils.defaultIfBlank(lock.getLockDescriptor(), "full");
++                if (!lock.isOwnedByUser(user)  && !StringUtils.equals(pageId,ProposalDevelopmentConstants.KradConstants.BUDGET_PAGE)
++                        && !StringUtils.equals(lockRegion,KraAuthorizationConstants.LOCK_DESCRIPTOR_BUDGET)) {
++                    String lockDescriptor = StringUtils.defaultIfBlank(lock.getLockDescriptor(), FULL);
+                     String lockOwner = lock.getOwnedByUser().getName();
+                     String lockTime = RiceConstants.getDefaultTimeFormat().format(lock.getGeneratedTimestamp());
+                     String lockDate = RiceConstants.getDefaultDateFormat().format(lock.getGeneratedTimestamp());
+ 
+-                    if (!getParameterService().getParameterValueAsBoolean("KC-GEN", "All", PessimisticLockConstants.ALLOW_CLEAR_PESSIMISTIC_LOCK_PARM)) {
++                    if (!getParameterService().getParameterValueAsBoolean(Constants.KC_GENERIC_PARAMETER_NAMESPACE , Constants.KC_ALL_PARAMETER_DETAIL_TYPE_CODE, PessimisticLockConstants.ALLOW_CLEAR_PESSIMISTIC_LOCK_PARM)) {
+                     GlobalVariables.getMessageMap().putError(KRADConstants.GLOBAL_ERRORS,
+                             RiceKeyConstants.ERROR_TRANSACTIONAL_LOCKED, lockDescriptor, lockOwner, lockTime, lockDate);
+                     } else {
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/authorization/KraAuthorizationConstants.java b/coeus-impl/src/main/java/org/kuali/kra/authorization/KraAuthorizationConstants.java
+index 5bc8241..f26f856 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/authorization/KraAuthorizationConstants.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/authorization/KraAuthorizationConstants.java
+@@ -31,7 +31,6 @@
+     
+     public static final String LOCK_DESCRIPTOR_PROPOSAL = "PROPOSAL DEVELOPMENT";
+     public static final String LOCK_DESCRIPTOR_BUDGET = "BUDGET";
+-    public static final String LOCK_DESCRIPTOR_NARRATIVES = "NARRATIVES";
+     public static final String LOCK_DESCRIPTOR_AWARD = "AWARD";
+     public static final String LOCK_DESCRIPTOR_TIME_AND_MONEY = "TIME_AND_MONEY";
+     public static final String LOCK_DESCRIPTOR_PROTOCOL = "PROTOCOL";
+diff --git a/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/budget/core/ProposalBudgetPage.xml b/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/budget/core/ProposalBudgetPage.xml
+index fbf67e5..f25b8a0 100644
+--- a/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/budget/core/ProposalBudgetPage.xml
++++ b/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/budget/core/ProposalBudgetPage.xml
+@@ -55,10 +55,10 @@
+ 							<bean parent="Uif-MenuDivider" p:order="40"/>
+ 			        		<bean parent="Uif-ActionLink" p:actionLabel="Include for Submission"
+ 								p:methodToCall="markForSubmission" p:additionalSubmitData="budgetId:@{#line.budgetId}"
+-								p:iconClass="icon-ok" p:render="@{#line.budgetId != document.developmentProposal.finalBudget?.budgetId}" p:order="50"/>
++								p:iconClass="icon-ok" p:render="@{#line.budgetId != document.developmentProposal.finalBudget?.budgetId and canEditView}" p:order="50"/>
+                             <bean parent="Uif-ActionLink" p:actionLabel="Remove from Submission"
+                                   p:methodToCall="removeFromSubmission" p:iconClass="icon-ok"
+-                                  p:render="@{#line.budgetId == document.developmentProposal.finalBudget?.budgetId}" p:order="60"/>
++                                  p:render="@{#line.budgetId == document.developmentProposal.finalBudget?.budgetId and canEditView}" p:order="60"/>
+ 						</list>
+ 					</property>
+ 				</bean>
+diff --git a/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/core/ProposalCommon.xml b/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/core/ProposalCommon.xml
+index ca1eb4a..0ca1629 100644
+--- a/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/core/ProposalCommon.xml
++++ b/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/core/ProposalCommon.xml
+@@ -38,11 +38,11 @@
+ 					p:finalizeMethodAdditionalArguments="previous" p:order="10" />
+ 				<bean parent="Uif-SecondaryActionButton" p:ajaxSubmit="false"
+ 					p:performClientSideValidation="true" p:methodToCall="save"
+-					p:actionLabel="Save" p:order="20" p:render="@{!#parent.readOnly or #editModes[#proposalAuthConsts.CAN_SAVE_CERTIFICATION]}"/>
++					p:actionLabel="Save" p:order="20" p:render="@{(!#parent.readOnly and canEditView) or #editModes[#proposalAuthConsts.CAN_SAVE_CERTIFICATION]}"/>
+ 				<bean parent="Uif-PrimaryActionButton" p:ajaxSubmit="true"
+ 					p:performClientSideValidation="true" p:methodToCall="navigate"
+ 					p:actionLabel="Save and Continue" p:finalizeMethodToCall="finalizeNavigationLinks"
+-					p:finalizeMethodAdditionalArguments="next" p:order="30" p:render="@{!#parent.readOnly}"/>
++					p:finalizeMethodAdditionalArguments="next" p:order="30" p:render="@{!#parent.readOnly and canEditView}"/>
+                 <bean parent="Uif-SecondaryActionButton" p:actionLabel="Close" p:order="40"
+                       p:methodToCall="closeProposal"/>
+ 			</list>
+diff --git a/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/core/ProposalSubmitPage.xml b/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/core/ProposalSubmitPage.xml
+index 7d73c04..e031211 100644
+--- a/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/core/ProposalSubmitPage.xml
++++ b/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/core/ProposalSubmitPage.xml
+@@ -59,10 +59,10 @@
+                           p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_SEND_ADHOC_REQUESTS]}"/>
+ 
+ 					<bean  p:actionLabel="Submit for Review" parent="Uif-PrimaryActionButton" p:methodToCall="submitForReview"  p:order="10"
+-                           p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_ROUTE] and document.documentHeader.workflowDocument.saved}"/>
++                           p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_ROUTE] and document.documentHeader.workflowDocument.saved and !#parent.readOnly}"/>
+ 
+                     <bean  p:actionLabel="Ad Hoc Recipients" parent="Uif-PrimaryActionButton" p:methodToCall="populateAdHocs"  p:order="20"
+-                           p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_ADD_ADHOC_REQUESTS] and !document.developmentProposal.isChild()}" />
++                           p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_ADD_ADHOC_REQUESTS] and (!#parent.readOnly or document.documentHeader.workflowDocument.enroute) and !document.developmentProposal.isChild()}" />
+ 
+ 
+                     <bean parent="Uif-PrimaryActionButton" p:actionLabel="Approve" p:methodToCall="approve" p:order="30"
+@@ -93,7 +93,7 @@
+ 
+ 
+ 			   		<bean parent="Uif-SecondaryActionButton" p:actionLabel="Cancel proposal" p:methodToCall="cancelProposal" p:order="80"
+-						p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_CANCEL]}">
++						p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_CANCEL] and !#parent.readOnly}">
+ 					 	<property name="confirmationDialog">
+ 			          		<bean id="ProposalCancelDialog" parent="Uif-DialogGroup-OkCancel" p:promptText="Are you sure you want to cancel ?"/>
+ 			          	</property>
+@@ -102,7 +102,7 @@
+ 					<bean parent="Uif-Space"/><bean parent="Uif-Space"/>
+ 					 
+ 					 <bean parent="Uif-SecondaryActionButton" p:actionLabel="Delete Proposal" p:methodToCall="deleteProposal" p:order="90"
+-					 	p:render="@{#actionFlags[#{deleteDocument}]}">
++					 	p:render="@{#actionFlags[#{deleteDocument}] and !#parent.readOnly}">
+ 					 	<property name="confirmationDialog">
+ 			          		<bean id="ProposalDeleteDialog" parent="Uif-DialogGroup-OkCancel" p:promptText="Are you sure you want to delete ?"/>
+ 			          	</property>
+diff --git a/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/docperm/ProposalPermissionsPage.xml b/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/docperm/ProposalPermissionsPage.xml
+index 5089ed5..2b14116 100644
+--- a/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/docperm/ProposalPermissionsPage.xml
++++ b/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/docperm/ProposalPermissionsPage.xml
+@@ -58,7 +58,7 @@
+     <bean id="PropDev-PermissionsPage-AddButton" parent="PropDev-PermissionsPage-AddButton-parentBean" />
+     <bean id="PropDev-PermissionsPage-AddButton-parentBean" abstract="true"
+           parent="Uif-PrimaryActionButton" p:actionLabel="Add User"
+-          p:methodToCall="prepareAddPermission" p:render="@{#editModes['modifyPermissions'] or #editModes['Add Proposal Viewer']}"
++          p:methodToCall="prepareAddPermission" p:render="@{(#editModes['modifyPermissions'] or #editModes['Add Proposal Viewer']) and (!#parent.readOnly or document.documentHeader.workflowDocument.enroute)}"
+           p:actionParameters="PropDev-PermissionsPage-Wizard.step:0" p:iconClass="icon-user"/>
+ 
+     <bean id="PropDev-PermissionsPage-Wizard" parent="Kc-Wizard" p:readOnly="false"
+diff --git a/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/person/ProposalPersonnelPage.xml b/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/person/ProposalPersonnelPage.xml
+index b219d3c..973e9e3 100644
+--- a/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/person/ProposalPersonnelPage.xml
++++ b/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/person/ProposalPersonnelPage.xml
+@@ -652,7 +652,7 @@
+ 
+                 <bean parent="Questionnaire-QuestionsGroup" p:propertyName="questionnaireHelper.answerHeaders[0].questions"
+                       p:render="@{#ViewHelper.renderQuestionnaire(#line)}"
+-                      p:readOnly="@{document.developmentProposal.isChild()}"
++                      p:readOnly="@{document.developmentProposal.isChild() or (#parent.readOnly and !#editModes[#proposalAuthConsts.CAN_SAVE_CERTIFICATION])}"
+                       p:order="40" />
+             </list>
+         </property>

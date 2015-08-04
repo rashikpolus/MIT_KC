@@ -1,0 +1,133 @@
+#!/usr/bin/perl
+
+#install notes:
+# 1 -- check the ctrl_prefix
+# 2 -- check the mail address
+# 3 -- check the target_machine
+# 4 -- uncomment if the directories are used
+# 5 -- make sure the .ssh/netdev.dev file is right
+
+$usage= "Usage: $0 [-u prd|tst|dev]";
+#
+use Getopt::Std;
+getopt("u");
+
+#print "$opt_u is -u\n";
+
+# initialization stuff
+$target_machine = "sap-dropbox";
+$ctrl_prefix = "cospf";
+$mailto = 'kc-notifications@mit.edu';
+
+$date = `date`;
+# Let's do right...
+$home = $ENV{"HOME"} . "\/";
+#$home = "/dbmsu001/home/oraclesu/";
+$directory = "/opt/kc/feeds/sap/osp-r3";
+$netrc = $home . ".netrc";
+
+# set options based on flag, default to prd
+if($opt_u eq "tst"){
+	$directory = $directory . "\/test";
+
+} elsif($opt_u eq "dev"){
+	$directory = $directory . "\/dev";
+
+} else {
+	$opt_u = "prd";
+	$directory = $directory . "\/prod";
+}
+
+$netrc_src = $home . ".ssh\/netrc." . $opt_u;
+#print "NETRC_SRC is $netrc_src\n";
+
+open(LOG,">/usr/local/OSP-Prod/R3-Feeds/log$$");
+print LOG "\nRun with option $opt_u on $date";
+
+# copy the correct netrc file using it as a lock file to check
+# if there's another ftp.cron running
+$i = 0;
+while( -e $netrc ){
+	sleep 10;
+	$i++;
+	if( $i > 6){
+		print "Another netrc file exists... Is another ftp.cron running?\n";
+		print LOG "Existing .netrc file prevents completion.\n";
+		exit 1;
+	}
+}
+#copy the netrc file
+system("cp $netrc_src $netrc");
+
+# read directory
+opendir(DIR,"$directory");
+@entries = readdir(DIR);
+closedir(DIR);
+
+# change the working directory
+chdir($directory);
+
+$files_trans = 0; # counter for files transferred
+
+# process files for those matching the control prefix
+foreach $entry (@entries){
+	if(  $entry =~ $ctrl_prefix ){
+# construct the datafile and control file names
+		$data_entry = $entry;
+		$data_entry =~ s/^c/d/;
+# make sure it exists and do the transfer
+		if( -e $data_entry && -e $entry){
+			$return = &transfer($data_entry,$entry,$target_machine);
+			if( $return == 0 ) { # successful transfer
+#				print "Data	file $data_entry and it's control file were transferred on $date\n";
+				$files_trans++;
+				print LOG "$data_entry moved to $target_machine on $date";
+				# move files to archive
+				system("mv $data_entry archive\/$data_entry");
+				system("mv $entry archive\/$entry");
+			} else { # something failed
+				print LOG "Attempt to transfer $data_entry failed.\n";
+			}
+		}else{ #one of the files doesn't exist
+			print LOG "Either $data_entry or $entry not there.\n";
+		}
+	}
+}
+# nothing found to transfer
+if($files_trans == 0){
+	print LOG "No files found to transfer.\n";
+}
+
+# output log
+close(LOG);
+system("cat /usr/local/OSP-Prod/R3-Feeds/log$$ >> /usr/local/OSP-Prod/R3-Feeds/ftp.log");
+
+# mail if successful
+if($files_trans > 0 ){ #At least one file was transferred.
+	open(MAIL, "|/usr/lib/sendmail -t")||die "Failure running sendmail $!";
+	print MAIL "To: $mailto\n";
+	print MAIL "Subject: OSP-Award FTP report\n\n";
+	open(LOG,"/usr/local/OSP-Prod/R3-Feeds/log$$");
+	while(<LOG>){
+		print MAIL <LOG>;
+	}
+}
+
+# clean up
+close(MAIL);
+close(LOG);
+system("rm $netrc");
+system("rm /usr/local/OSP-Prod/R3-Feeds/log$$");
+system("tail -20000 /usr/local/OSP-Prod/R3-Feeds/ftp.log >/dev/shm/new");
+system("cat /dev/shm/new >/usr/local/OSP-Prod/R3-Feeds/ftp.log");
+system("rm /dev/shm/new");
+
+exit 0;
+
+# the subroutine to call ftp.sh
+sub transfer {
+	$rc = system("/usr/local/OSP-Prod/R3-Feeds/ftp.sh $_[0] $_[1] $_[2]");
+#	print "Return is $rc\n";
+	return $rc;
+}
+

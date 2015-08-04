@@ -1,0 +1,6 @@
+0,10,20,30,40,50 * * * * /usr/local/OSP-Prod/R3-Feeds/ftp.cron -u prd
+2,12,22,32,42,52 * * * * /usr/local/OSP-Prod/R3-Feeds/ftp.cron -u dev
+5,15,25,35,45,55 * * * * /usr/local/OSP-Prod/R3-Feeds/ftp.cron -u tst
+
+
+#5,15,25,35,45,55 * * * * /opt/kc/feeds/sap/osp-r3/sap_ftp.pl -u tst

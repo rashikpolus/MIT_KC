@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+ <bean id="RolodexMaintenanceDocument-EditRolodex" parent="MIT-RolodexMaintenanceDocument-EditRolodex-parentBean"/>
+ <bean id="MIT-RolodexMaintenanceDocument-EditRolodex-parentBean" parent="RolodexMaintenanceDocument-EditRolodex-parentBean">
+  
+  <property name="maintainableItems">
+      <list>
+        <bean parent="MaintainableFieldDefinition" p:name="rolodexId" p:required="true"/>
+        <bean parent="MaintainableFieldDefinition" p:name="lastName"/>
+        <bean parent="MaintainableFieldDefinition" p:name="firstName"/>
+        <bean parent="MaintainableFieldDefinition" p:name="middleName"/>
+        <bean parent="MaintainableFieldDefinition" p:name="suffix"/>
+        <bean parent="MaintainableFieldDefinition" p:name="prefix"/>
+        <bean parent="MaintainableFieldDefinition" p:name="title"/>
+        <bean parent="MaintainableFieldDefinition" p:name="active" p:defaultValue="true"/>
+        <bean parent="MaintainableFieldDefinition" p:name="sponsorCode"/>
+        <bean parent="MaintainableFieldDefinition" p:name="organization" p:required="true"/>
+        <bean parent="MaintainableFieldDefinition" p:name="ownedByUnit" p:required="true"/>
+        <bean parent="MaintainableFieldDefinition" p:name="addressLine1"/>
+        <bean parent="MaintainableFieldDefinition" p:name="addressLine2"/>
+        <bean parent="MaintainableFieldDefinition" p:name="addressLine3"/>
+        <bean parent="MaintainableFieldDefinition" p:name="city"/>
+        <bean parent="MaintainableFieldDefinition" p:name="county"/>
+        <bean parent="MaintainableFieldDefinition" p:name="state"/>
+        <bean parent="MaintainableFieldDefinition" p:name="postalCode"/>
+        <bean parent="MaintainableFieldDefinition" p:name="countryCode" p:webUILeaveFieldFunction="updateStateFromCountry"/>
+        <bean parent="MaintainableFieldDefinition" p:name="phoneNumber"/>
+        <bean parent="MaintainableFieldDefinition" p:name="emailAddress"/>
+        <bean parent="MaintainableFieldDefinition" p:name="faxNumber"/>
+        <bean parent="MaintainableFieldDefinition" p:name="deleteFlag"/>
+        <bean parent="MaintainableFieldDefinition" p:name="comments"/>
+        <bean parent="MaintainableFieldDefinition" p:name="versionNumber"/>
+      </list>
+    </property>
+  </bean>
+  
+</beans>
+  

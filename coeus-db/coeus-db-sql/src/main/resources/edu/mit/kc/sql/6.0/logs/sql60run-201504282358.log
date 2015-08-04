@@ -1,0 +1,4300 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Tue Apr 28 23:58:54 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+CREATE SEQUENCE SEQ_AWARD_PERSON_CONFIRM_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_AWARD_PERSON_REMOVE_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_AWARD_PERSON_REMOVE_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+Sequence created.
+
+
+Sequence created.
+
+
+Table created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table created.
+
+
+Table altered.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Table altered.
+
+SP2-0310: unable to open file "ddl/DDL_MITKC-818_12292014.sql"
+
+Commit complete.
+
+
+Table created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table created.
+
+
+Table altered.
+
+
+Commit complete.
+
+
+Sequence created.
+
+
+Table created.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+0 rows updated.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Commit complete.
+
+
+Table created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Sequence created.
+
+
+Table created.
+
+
+Table altered.
+
+
+Sequence created.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+CREATE TABLE DASHBOARD_EXPENDITURES
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+PRIMARY KEY (EXP_ID)
+*
+ERROR at line 3:
+ORA-02260: table can have only one primary key
+
+
+
+Table created.
+
+
+Table altered.
+
+CREATE SEQUENCE SEQ_DASHBOARD_EXPENDITURES_ID INCREMENT BY 1 START WITH 1 NOCACHE
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+Sequence created.
+
+
+Table created.
+
+
+Table altered.
+
+CREATE SEQUENCE SEQ_MODULE_ALERT_ID INCREMENT BY 1 START WITH 1 NOCACHE
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+CREATE TABLE ALERT_TYPE
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+PRIMARY KEY (ALERT_TYPE_ID)
+*
+ERROR at line 3:
+ORA-02260: table can have only one primary key
+
+
+SP2-0310: unable to open file "ddl/SEQUENCE_MITKC-1424.sql"
+ADD ALERT_TYPE_ID  NUMBER (12) NOT NULL
+    *
+ERROR at line 2:
+ORA-01430: column being added already exists in table
+
+
+FOREIGN KEY (ALERT_TYPE_ID)
+*
+ERROR at line 3:
+ORA-02275: such a referential constraint already exists in the table
+
+
+DROP COLUMN MODULE_NMSPC_CD
+            *
+ERROR at line 2:
+ORA-00904: "MODULE_NMSPC_CD": invalid identifier
+
+
+DROP COLUMN MODULE_NAME
+            *
+ERROR at line 2:
+ORA-00904: "MODULE_NAME": invalid identifier
+
+
+CREATE TABLE DASHBOARD_EXPENDITURES_WH
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE DASHBOARD_EXPENDITURES_WH
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+0 rows updated.
+
+
+118682 rows updated.
+
+
+131784 rows updated.
+
+
+0 rows updated.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+0 rows updated.
+
+
+1 row updated.
+
+
+Commit complete.
+
+
+1 row updated.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+2 rows updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+2 rows updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+Table truncated.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+382 rows created.
+
+
+9 rows created.
+
+
+1 row deleted.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+Table created.
+
+
+19 rows created.
+
+
+Commit complete.
+
+INSERT INTO BUDGET_CATEGORY_TYPE(BUDGET_CATEGORY_TYPE_CODE,DESCRIPTION,SORT_ID,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.BUDGET_CATEGORY_TYPEP1) violated
+
+
+INSERT INTO BUDGET_CATEGORY(BUDGET_CATEGORY_CODE,DESCRIPTION,CATEGORY_TYPE,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.BUDGET_CATEGORYP1) violated
+
+
+INSERT INTO COST_ELEMENT(COST_ELEMENT,DESCRIPTION,BUDGET_CATEGORY_CODE,ON_OFF_CAMPUS_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID,ACTIVE_FLAG)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.COST_ELEMENTP1) violated
+
+
+INSERT INTO COST_ELEMENT(COST_ELEMENT,DESCRIPTION,BUDGET_CATEGORY_CODE,ON_OFF_CAMPUS_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID,ACTIVE_FLAG)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.COST_ELEMENTP1) violated
+
+
+INSERT INTO COST_ELEMENT(COST_ELEMENT,DESCRIPTION,BUDGET_CATEGORY_CODE,ON_OFF_CAMPUS_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID,ACTIVE_FLAG)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.COST_ELEMENTP1) violated
+
+
+INSERT INTO COST_ELEMENT(COST_ELEMENT,DESCRIPTION,BUDGET_CATEGORY_CODE,ON_OFF_CAMPUS_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID,ACTIVE_FLAG)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.COST_ELEMENTP1) violated
+
+
+INSERT INTO COST_ELEMENT(COST_ELEMENT,DESCRIPTION,BUDGET_CATEGORY_CODE,ON_OFF_CAMPUS_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID,ACTIVE_FLAG)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.COST_ELEMENTP1) violated
+
+
+INSERT INTO COST_ELEMENT(COST_ELEMENT,DESCRIPTION,BUDGET_CATEGORY_CODE,ON_OFF_CAMPUS_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID,ACTIVE_FLAG)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.COST_ELEMENTP1) violated
+
+
+INSERT INTO COST_ELEMENT(COST_ELEMENT,DESCRIPTION,BUDGET_CATEGORY_CODE,ON_OFF_CAMPUS_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID,ACTIVE_FLAG)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.COST_ELEMENTP1) violated
+
+
+INSERT INTO COST_ELEMENT(COST_ELEMENT,DESCRIPTION,BUDGET_CATEGORY_CODE,ON_OFF_CAMPUS_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID,ACTIVE_FLAG)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.COST_ELEMENTP1) violated
+
+
+INSERT INTO COST_ELEMENT(COST_ELEMENT,DESCRIPTION,BUDGET_CATEGORY_CODE,ON_OFF_CAMPUS_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID,ACTIVE_FLAG)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.COST_ELEMENTP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+
+0 rows created.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+1 row updated.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+1 row created.
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+INSERT INTO KRIM_ROLE_T(ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRIM_ROLE_TC1) violated
+
+
+
+Commit complete.
+
+
+18 rows updated.
+
+
+0 rows updated.
+
+INSERT INTO KRCR_PARM_T (APPL_ID, NMSPC_CD, CMPNT_CD, PARM_NM, PARM_TYP_CD, VAL, PARM_DESC_TXT, EVAL_OPRTR_CD, OBJ_ID, VER_NBR)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+INSERT INTO KRCR_PARM_T (APPL_ID, NMSPC_CD, CMPNT_CD, PARM_NM, PARM_TYP_CD, VAL, PARM_DESC_TXT, EVAL_OPRTR_CD, OBJ_ID, VER_NBR)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+2 rows updated.
+
+
+2 rows updated.
+
+
+2 rows updated.
+
+
+2 rows updated.
+
+
+Commit complete.
+
+DELETE FROM SP_REV_APPROVAL_TYPE WHERE DESCRIPTION like 'Link to IRB'
+*
+ERROR at line 1:
+ORA-02292: integrity constraint (KCSO.FK_PROPOSAL_SP_APROVAL_TYPE) violated -
+child record found
+
+
+DELETE FROM SP_REV_APPROVAL_TYPE WHERE DESCRIPTION like 'Link to IRB'
+*
+ERROR at line 1:
+ORA-02292: integrity constraint (KCSO.FK_PROPOSAL_SP_APROVAL_TYPE) violated -
+child record found
+
+
+
+1 row deleted.
+
+
+0 rows deleted.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+4107 rows updated.
+
+
+1704 rows updated.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+Commit complete.
+
+
+2 rows updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+2 rows updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+Commit complete.
+
+
+0 rows deleted.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+4107 rows updated.
+
+
+1704 rows updated.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+2 rows updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+2 rows updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+Commit complete.
+
+
+Commit complete.
+
+SP2-0310: unable to open file "dml/DML_MITKC-818_12292014.sql"
+
+Commit complete.
+
+
+Table altered.
+
+
+Commit complete.
+
+
+25885 rows updated.
+
+
+25885 rows updated.
+
+
+25885 rows updated.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+1 row updated.
+
+
+Commit complete.
+
+
+Commit complete.
+
+SP2-0310: unable to open file "dml/DML_MITKC-113_20012015.sql"
+
+Commit complete.
+
+
+Commit complete.
+
+SP2-0310: unable to open file "DML_MITKC-1040_02042015.sql"
+SP2-0310: unable to open file "DML_MITKC-418_20150204.sql"
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row updated.
+
+
+Commit complete.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+PL/SQL procedure successfully completed.
+
+
+171 rows created.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+2 rows deleted.
+
+
+1 row deleted.
+
+
+Commit complete.
+
+
+1115189 rows updated.
+
+
+Commit complete.
+
+SP2-0310: unable to open file "dml/DML_MITKC-611_02262015.sql"
+
+1 row created.
+
+
+Commit complete.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+Commit complete.
+
+
+1 row updated.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+Commit complete.
+
+
+1 row updated.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row updated.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+7 rows created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row deleted.
+
+
+0 rows deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+291 rows updated.
+
+
+0 rows deleted.
+
+
+1 row deleted.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+102 rows updated.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+1 row created.
+
+insert into KC_KRMS_TERM_FUN_PARAM(KC_KRMS_TERM_FUN_PARAM_ID,KC_KRMS_TERM_FUNCTION_ID,PARAM_NAME,PARAM_TYPE,PARAM_ORDER,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.PK_KC_KRMS_TERM_FUN_PARAM) violated
+
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+Table created.
+
+
+22 rows created.
+
+
+6 rows created.
+
+
+Commit complete.
+
+
+Commit complete.
+
+INSERT INTO KRIM_ROLE_T (ROLE_ID, OBJ_ID, VER_NBR, ROLE_NM, NMSPC_CD, DESC_TXT, KIM_TYP_ID, ACTV_IND, LAST_UPDT_DT)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRIM_ROLE_TC1) violated
+
+
+
+Table created.
+
+
+22317 rows created.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Table altered.
+
+
+22317 rows updated.
+
+
+Commit complete.
+
+
+22317 rows updated.
+
+
+22317 rows updated.
+
+
+22317 rows updated.
+
+
+22317 rows updated.
+
+
+22317 rows updated.
+
+
+22317 rows updated.
+
+
+22317 rows updated.
+
+
+22317 rows updated.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+0 rows created.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+4 rows created.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+Table truncated.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+2 rows created.
+
+
+Commit complete.
+
+
+Table truncated.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+0 rows created.
+
+
+Commit complete.
+
+
+Table truncated.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+0 rows created.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+37 rows updated.
+
+
+1 row updated.
+
+
+Commit complete.
+
+CREATE TABLE TMP_MIG_PROTO_DOC_MAPING(
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+0 rows created.
+
+
+Commit complete.
+
+ALTER TABLE TMP_MIG_PROTO_DOC_MAPING ADD CONSTRAINT PK_DOCUMENT_NUMBER PRIMARY KEY(DOCUMENT_NUMBER)
+                                                                       *
+ERROR at line 1:
+ORA-02260: table can have only one primary key
+
+
+
+Table altered.
+
+
+0 rows updated.
+
+
+Commit complete.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Commit complete.
+
+CREATE TABLE TMP_MIG_PROTO_DOC_MAPING(
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+0 rows created.
+
+
+Commit complete.
+
+ALTER TABLE TMP_MIG_PROTO_DOC_MAPING ADD CONSTRAINT PK_DOCUMENT_NUMBER PRIMARY KEY(DOCUMENT_NUMBER)
+                                                                       *
+ERROR at line 1:
+ORA-02260: table can have only one primary key
+
+
+
+Table altered.
+
+
+0 rows updated.
+
+
+Commit complete.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Commit complete.
+
+
+0 rows updated.
+
+
+1 row updated.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+1 row created.
+
+
+1 row created.
+
+
+3 rows deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+21 rows deleted.
+
+
+Table altered.
+
+
+Commit complete.
+
+
+1 row updated.
+
+create table sap_kc_obj_cd_mapping(
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+9 rows deleted.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+create table sap_kc_obj_cd_mapping(
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+9 rows deleted.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+1 row updated.
+
+
+Commit complete.
+
+
+0 rows updated.
+
+
+Commit complete.
+
+
+242 rows updated.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+SP2-0310: unable to open file "dml/DML_MITKC-1338_20150428.sql"
+
+Commit complete.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

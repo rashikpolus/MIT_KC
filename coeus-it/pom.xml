@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses />.
+ -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.kuali.coeus</groupId>
+        <artifactId>coeus</artifactId>
+        <version>1505.70</version>
+    </parent>
+    <artifactId>coeus-it</artifactId>
+    <packaging>jar</packaging>
+    <name>Kuali Coeus Integration Test</name>
+    <description>
+        The Kuali Coeus Integration Test module contains integration tests for the Kuali Coeus application.
+    </description>
+
+    <prerequisites>
+        <maven>${require.maven.version}</maven>
+    </prerequisites>
+
+    <properties>
+        <surefire.skipTests>true</surefire.skipTests>
+        <maven.skip.packaging>true</maven.skip.packaging>
+    </properties>
+
+    <build>
+        <testResources>
+            <testResource>
+                <filtering>true</filtering>
+                <directory>src/test/resources</directory>
+                <includes>
+                    <include>META-INF/kc-test-config-build.xml</include>
+                </includes>
+            </testResource>
+            <testResource>
+                <directory>src/test/resources</directory>
+            </testResource>
+        </testResources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <!-- the coeus-it module depends on artifacts that exist in the coeus-webapp module in a weird way
+             adding this dependency to express this and force the proper build order -->
+        <dependency>
+            <groupId>org.kuali.coeus</groupId>
+            <artifactId>coeus-webapp</artifactId>
+            <version>${project.version}</version>
+            <type>war</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.kuali.coeus</groupId>
+            <artifactId>coeus-impl</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+            <!--exclude provided app server deps, allow app server implementation to include them for integration tests -->
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.el</groupId>
+                    <artifactId>javax.el-api</artifactId>
+                </exclusion>
+
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>javax.servlet-api</artifactId>
+                </exclusion>
+
+                <exclusion>
+                    <groupId>javax.servlet.jsp</groupId>
+                    <artifactId>javax.servlet.jsp-api</artifactId>
+                </exclusion>
+
+                <exclusion>
+                    <groupId>javax.servlet.jsp.jstl</groupId>
+                    <artifactId>javax.servlet.jsp.jstl-api</artifactId>
+                </exclusion>
+
+                <exclusion>
+                    <groupId>org.glassfish.web</groupId>
+                    <artifactId>javax.servlet.jsp.jstl</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.kuali.coeus</groupId>
+            <artifactId>coeus-s2sgen-impl</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>${db.groupId}</groupId>
+            <artifactId>${db.artifactId}</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-deploy</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-jsp</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-webapp</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jetty.orbit</groupId>
+            <artifactId>javax.servlet</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jetty.orbit</groupId>
+            <artifactId>javax.servlet.jsp</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-library</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jmock</groupId>
+            <artifactId>jmock</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jmock</groupId>
+            <artifactId>jmock-legacy</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jmock</groupId>
+            <artifactId>jmock-junit4</artifactId>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>itests</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <failsafe.skipITs>false</failsafe.skipITs>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>oracle</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.eclipse.persistence</groupId>
+                    <artifactId>org.eclipse.persistence.oracle</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+</project>

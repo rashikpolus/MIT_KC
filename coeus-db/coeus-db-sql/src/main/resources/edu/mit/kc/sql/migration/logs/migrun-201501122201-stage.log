@@ -1,0 +1,20 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Mon Jan 12 22:03:03 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+Enter password: 
+ERROR:
+ORA-12162: TNS:net service name is incorrectly specified
+
+
+Enter password: 
+ERROR:
+ORA-12162: TNS:net service name is incorrectly specified
+
+
+ERROR:
+ORA-12162: TNS:net service name is incorrectly specified
+
+
+SP2-0157: unable to CONNECT to ORACLE after 3 attempts, exiting SQL*Plus

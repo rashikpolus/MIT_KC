@@ -1,0 +1,46 @@
+
+<!-- config file loaded by the TestHarness root test case. -->
+<config>
+
+  <!-- add all the common defaults -->
+  <param name="config.location">classpath:META-INF/common-config-defaults.xml</param>
+
+  <param name="message.delivery">synchronous</param>
+  <param name="dev.mode">true</param>
+  <param name="rice.ken.testMode">true</param>
+  <param name="rice.kcb.testmode">true</param>
+
+  <param name="encryption.key" override="false">7IC64w6ksLU</param>
+
+  <!-- Default to the single test keystore. -->
+  <param name="keystore.alias">rice</param>
+  <param name="keystore.password">r1c3pw</param>
+  <param name="keystore.file">${basedir}/src/test/resources/keystore/ricekeystore</param>
+  <param name="keystore.location">${basedir}/src/test/resources/keystore/ricekeystore</param>
+
+  <param name="useQuartzDatabase">false</param>
+  <param name="notification.quartz.autostartup">false</param>
+
+  <param name="datasource.pool.minSize">5</param>
+  <param name="datasource.pool.maxSize">5</param>
+  <param name="datasource.pool.maxWait">30000</param>
+
+  <param name="rice.struts.message.resources">org.kuali.rice.krad.ApplicationResources,org.kuali.rice.kew.ApplicationResources,org.kuali.rice.ksb.ApplicationResources,org.kuali.rice.kim.ApplicationResources,KR-Test-ApplicationResources</param>
+
+  <param name="rice.kr.set.soap.services.as.default">false</param>
+  <param name="rice.kcb.set.soap.services.as.default">false</param>
+  <param name="rice.ken.set.soap.services.as.default">false</param>
+  <param name="rice.kew.set.soap.services.as.default">false</param>
+  <param name="rice.kim.set.soap.services.as.default">false</param>
+  <param name="rice.ksb.set.soap.services.as.default">false</param>
+
+  <param name="rice.krad.componentPublishing.enabled">false</param>
+
+  <param name="location.mode">LOCAL</param>
+  <param name="coreservice.mode">LOCAL</param>
+  <param name="ken.mode">LOCAL</param>
+  <param name="kim.mode">LOCAL</param>
+  <param name="kew.mode">LOCAL</param>
+  <param name="krms.mode">LOCAL</param>
+
+</config>

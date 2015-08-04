@@ -1,0 +1,50 @@
+<!--
+ Copyright 2005-2014 The Kuali Foundation
+
+ Licensed under the GNU Affero General Public License, Version 3 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.osedu.org/licenses/ECL-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<!--
+ Note: This maintenance document does not have any maintenance section definitions 
+       (i.e. maintainableSections).  Instead we use the additionalSectionsFile property
+       to control the appearance of the whole maintenance document.
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	
+<bean id="AwardFandaRate-fandaRateTypeCode" parent="AwardFandaRate-fandaRateTypeCode-parentBean" />
+	<bean id="AwardFandaRate-fandaRateTypeCode-parentBean" abstract="true"  parent="AttributeDefinition" >
+	<property name="name" value="fandaRateTypeCode" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="Type" />
+		<property name="shortLabel" value="Type" />
+		<property name="maxLength" value="22" />		
+		<property name="validationPattern" >
+			<bean parent="NumericValidationPattern" />
+		</property> 
+		<property name="required" value="true" /> 
+		<property name="control" >
+	      	<bean parent="SelectControlDefinition"	     
+            p:valuesFinderClass="org.kuali.kra.lookup.keyvalue.MitAwardFandaRatesValuesFinder"  
+            p:includeKeyInLabel="false" />
+    	</property>
+	<property name="summary" value="F&amp;A Rate Type Code" />
+		<property name="description" value="F&amp;A Rate Type Code" /> 
+	</bean>
+	
+
+</beans>

@@ -1,0 +1,768 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Sun May 3 01:50:01 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+
+1 row created.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+Sequence created.
+
+
+Sequence altered.
+
+
+Sequence altered.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+Commit complete.
+
+Insert into KRCR_PARM_T (NMSPC_CD,CMPNT_CD,PARM_NM,OBJ_ID,VER_NBR,PARM_TYP_CD,VAL,PARM_DESC_TXT,EVAL_OPRTR_CD,APPL_ID) values
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+Insert into KRCR_PARM_T (NMSPC_CD,CMPNT_CD,PARM_NM,OBJ_ID,VER_NBR,PARM_TYP_CD,VAL,PARM_DESC_TXT,EVAL_OPRTR_CD,APPL_ID) values
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+Insert into KRCR_PARM_T (NMSPC_CD,CMPNT_CD,PARM_NM,OBJ_ID,VER_NBR,PARM_TYP_CD,VAL,PARM_DESC_TXT,EVAL_OPRTR_CD,APPL_ID) values
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+Insert into KRCR_PARM_T (NMSPC_CD,CMPNT_CD,PARM_NM,OBJ_ID,VER_NBR,PARM_TYP_CD,VAL,PARM_DESC_TXT,EVAL_OPRTR_CD,APPL_ID) values
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+Insert into KRCR_PARM_T (NMSPC_CD,CMPNT_CD,PARM_NM,OBJ_ID,VER_NBR,PARM_TYP_CD,VAL,PARM_DESC_TXT,EVAL_OPRTR_CD,APPL_ID) values
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+
+Commit complete.
+
+Insert into KRCR_PARM_T (NMSPC_CD,CMPNT_CD,PARM_NM,OBJ_ID,VER_NBR,PARM_TYP_CD,VAL,PARM_DESC_TXT,EVAL_OPRTR_CD,APPL_ID) values
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+Insert into KRCR_PARM_T (NMSPC_CD,CMPNT_CD,PARM_NM,OBJ_ID,VER_NBR,PARM_TYP_CD,VAL,PARM_DESC_TXT,EVAL_OPRTR_CD,APPL_ID) values
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+Insert into KRCR_PARM_T (NMSPC_CD,CMPNT_CD,PARM_NM,OBJ_ID,VER_NBR,PARM_TYP_CD,VAL,PARM_DESC_TXT,EVAL_OPRTR_CD,APPL_ID) values
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+Insert into KRCR_PARM_T (NMSPC_CD,CMPNT_CD,PARM_NM,OBJ_ID,VER_NBR,PARM_TYP_CD,VAL,PARM_DESC_TXT,EVAL_OPRTR_CD,APPL_ID) values
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+Insert into KRCR_PARM_T (NMSPC_CD,CMPNT_CD,PARM_NM,OBJ_ID,VER_NBR,PARM_TYP_CD,VAL,PARM_DESC_TXT,EVAL_OPRTR_CD,APPL_ID) values
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+Insert into KRCR_PARM_T (NMSPC_CD,CMPNT_CD,PARM_NM,OBJ_ID,VER_NBR,PARM_TYP_CD,VAL,PARM_DESC_TXT,EVAL_OPRTR_CD,APPL_ID) values
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+Insert into KRCR_PARM_T (NMSPC_CD,CMPNT_CD,PARM_NM,OBJ_ID,VER_NBR,PARM_TYP_CD,VAL,PARM_DESC_TXT,EVAL_OPRTR_CD,APPL_ID) values
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+
+Commit complete.
+
+CREATE SEQUENCE SEQ_IP_FY_BASED_ID INCREMENT BY 1 MAXVALUE 9999 MINVALUE 1 CACHE 20
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+Sequence altered.
+
+
+Sequence altered.
+
+Insert into KRCR_PARM_T (NMSPC_CD,CMPNT_CD,PARM_NM,OBJ_ID,VER_NBR,PARM_TYP_CD,VAL,PARM_DESC_TXT,EVAL_OPRTR_CD,APPL_ID) values ('KC-PD','Document','GENERATE_IP_BASED_ON_FY',sys_guid(),1,'CONFG','Y','On enabling this parameter,IP Number will be generated based on the fiscal year.','A','KUALI')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+
+Commit complete.
+
+
+Sequence created.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+1 row updated.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+CREATE TABLE PROPOSAL_ATTACHMENT_TYPE(
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE PROPOSAL_ATTACHMENTS(
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE PROPOSAL_ATTACHMENTS_DATA(
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE  SEQ_PROPOSAL_ATTACHMENT_ID
+                 *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_PROPOSAL_ATTACHMNT_DATA_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Commit complete.
+
+SP2-0310: unable to open file "constraints/KC_FK1_BUDGET_SUB_AWARD_ATT.sql"
+SP2-0310: unable to open file "dml/KC_DML_01_KRACOEUS-8128_B000.sql"
+
+Commit complete.
+
+
+Table altered.
+
+
+19 rows updated.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Commit complete.
+
+
+1 row created.
+
+alter table AWARD_ATTACHMENT add DOCUMENT_STATUS_CODE CHAR(1)
+                                 *
+ERROR at line 1:
+ORA-01430: column being added already exists in table
+
+
+alter table SUBAWARD_ATTACHMENTS add DOCUMENT_STATUS_CODE CHAR(1)
+                                     *
+ERROR at line 1:
+ORA-01430: column being added already exists in table
+
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+1 row created.
+
+
+1 row created.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+1 row updated.
+
+
+1 row deleted.
+
+
+0 rows deleted.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+SP2-0310: unable to open file "dml/DML_MITKC-818_20150324.sql"
+CREATE TABLE WL_ABSENTEE
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_CAPACITY
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_ASSIGNED_BY
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_CURRENT_LOAD
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_FLEXIBILITY
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_LOAD_SIMULATION
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_OPTIMIZATION_DATA
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_PROP_AGGREGATOR_COMPLEXITY
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_PROP_AGGREGATOR_ERR_COUNT
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_PROP_CANNED_REVIEW_COMMENTS
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_PROP_REV_COMM_LAST_YEAR
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_PROP_REVIEW_ACTION
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_PROP_REVIEW_COMMENTS
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_PROP_REVIEW_ROLE
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_PROP_REVIEW_TIME_SPENT
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_REVIEW_ASSIGNMENTS
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_SUBMISSION_VEHICLE
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_PROP_REVIEW_DETAILS
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_SIM_CAPACITY
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_SIM_CURRENT_LOAD
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_SIM_FLEXIBILITY
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_SIM_HEADER
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_SIM_RUN_STATUS
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_SIM_UNIT_ASSIGNMENTS
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_UNIT_ASSIGNMENTS
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_ABSENTEE_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_WL_CAPACITY_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_WL_CURRENT_LOAD_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_WL_FLEXIBILITY_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_WL_OPTIMIZATION_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_WL_COMPLEXITY_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_WL_AGGREG_COUNT_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_WL_REV_COMM_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_WL_REV_ASSIGNMENT_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_WL_PROP_REV_COMM_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_WL_PROP_REV_DET_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_WL_UNIT_ASSIGN_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_SIM_CAPACITY_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_SIM_CURRENT_LOAD_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_SIM_FLEXIBILITY_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE  SEQ_SIM_ID
+                 *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+Sequence created.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+1 row updated.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+INSERT INTO KRCR_PARM_T(NMSPC_CD,CMPNT_CD,PARM_NM,OBJ_ID,VER_NBR,PARM_TYP_CD,VAL,PARM_DESC_TXT,EVAL_OPRTR_CD,APPL_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+Table altered.
+
+
+Commit complete.
+
+
+1 row updated.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+INSERT INTO KRCR_PARM_T(NMSPC_CD, CMPNT_CD, PARM_NM, OBJ_ID, VER_NBR, PARM_TYP_CD, VAL, PARM_DESC_TXT, EVAL_OPRTR_CD, APPL_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row updated.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+1 row updated.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Table altered.
+
+
+Table altered.
+
+ALTER TABLE WL_PROP_AGGREGATOR_COMPLEXITY ADD UPDATE_USER  VARCHAR2 (60) DEFAULT 'admin' NOT NULL
+                                              *
+ERROR at line 1:
+ORA-01430: column being added already exists in table
+
+
+
+Commit complete.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

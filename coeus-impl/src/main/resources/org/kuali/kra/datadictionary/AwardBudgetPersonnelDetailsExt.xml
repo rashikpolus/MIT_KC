@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="AwardBudgetPersonnelDetailsExt" parent="AwardBudgetPersonnelDetailsExt-parentBean" />
+    <bean id="AwardBudgetPersonnelDetailsExt-parentBean" abstract="true" parent="BusinessObjectEntry">
+        <property name="businessObjectClass" value="org.kuali.kra.award.budget.AwardBudgetPersonnelDetailsExt" />
+        <property name="objectLabel" value="Award Budget Extension" />
+        <property name="inquiryDefinition" >
+            <ref bean="AwardBudgetPersonnelDetailsExt-inquiryDefinition" />
+        </property>
+        <property name="lookupDefinition" >
+            <ref bean="AwardBudgetPersonnelDetailsExt-lookupDefinition" />
+        </property>
+        <property name="titleAttribute" value="budgetPersonnelLineItemId" />
+        <property name="attributes" >
+            <list>
+                <ref bean="AwardBudgetPersonnelDetailsExt-budgetPersonnelLineItemId" />
+                <ref bean="AwardBudgetPersonnelDetailsExt-obligatedAmount" />
+                <ref bean="AwardBudgetPersonnelDetailsExt-versionNumber" />
+                <ref bean="AwardBudgetPersonnelDetailsExt-percentCharged" />
+                <ref bean="AwardBudgetPersonnelDetailsExt-percentEffort" />
+            </list>
+        </property>
+    </bean>
+
+    <!-- Attribute Definitions -->
+    <bean id="AwardBudgetPersonnelDetailsExt-budgetPersonnelLineItemId" parent="AwardBudgetPersonnelDetailsExt-budgetPersonnelLineItemId-parentBean" />
+    <bean id="AwardBudgetPersonnelDetailsExt-budgetPersonnelLineItemId-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="budgetPersonnelLineItemId" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Budget Id" />
+        <property name="shortLabel" value="Budget Id" />
+        <property name="maxLength" value="22" />
+        <property name="validationPattern" >
+            <bean parent="NumericValidationPattern" />
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+        <property name="control" >
+      <bean parent="TextControlDefinition" p:size="10"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="10" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="Budget Id" />
+        <property name="description" value="Budget Id" />
+    </bean>
+
+  <bean id="AwardBudgetPersonnelDetailsExt-obligatedAmount" parent="AwardBudgetPersonnelDetailsExt-obligatedAmount-parentBean"/>
+  <bean id="AwardBudgetPersonnelDetailsExt-obligatedAmount-parentBean" abstract="true" parent="KraAttributeReferenceDummy-genericAmount">
+    <property name="name" value="obligatedAmount"/>
+    <property name="label" value="Obligated Amount"/>
+    <property name="shortLabel" value="Obligated Amount"/>
+    <property name="summary" value="Obligated amount from award amount info"/>
+    <property name="description" value="Obligated amount from award amount info"/>
+  </bean>
+
+    <bean id="AwardBudgetPersonnelDetailsExt-versionNumber" parent="AwardBudgetPersonnelDetailsExt-versionNumber-parentBean" />
+  <bean id="AwardBudgetPersonnelDetailsExt-versionNumber-parentBean" abstract="true" parent="AttributeReferenceDummy-versionNumber"/>
+  <bean id="AwardBudgetPersonnelDetailsExt-percentCharged" parent="AwardBudgetPersonnelDetailsExt-percentCharged-parentBean"/>
+  <bean id="AwardBudgetPersonnelDetailsExt-percentCharged-parentBean" abstract="true" parent="BudgetPersonnelDetails-percentCharged-parentBean">
+  	<property name="maxLength" value="7" />
+    <property name="validationPattern" >
+      <bean parent="FixedPointValidationPattern" p:precision="6" p:scale="2" p:allowNegative="true"/>
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="FixedPointPatternConstraint">
+        <property name="precision" value="6"/>
+        <property name="scale" value="2"/>
+        <property name="allowNegative" value="true"/>
+      </bean>
+    </property>
+    <property name="control" >
+      <bean parent="TextControlDefinition" p:size="7"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="7" parent="Uif-TextControl"/>
+    </property>
+  </bean>
+
+  <bean id="AwardBudgetPersonnelDetailsExt-percentEffort" parent="AwardBudgetPersonnelDetailsExt-percentEffort-parentBean"/>
+  <bean id="AwardBudgetPersonnelDetailsExt-percentEffort-parentBean" abstract="true" parent="BudgetPersonnelDetails-percentEffort-parentBean">
+  	<property name="maxLength" value="7" />
+    <property name="validationPattern" >
+      <bean parent="FixedPointValidationPattern" p:precision="6" p:scale="2" p:allowNegative="true"/>
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="FixedPointPatternConstraint">
+        <property name="precision" value="6"/>
+        <property name="scale" value="2"/>
+        <property name="allowNegative" value="true"/>
+      </bean>
+    </property>
+    <property name="control" >
+      <bean parent="TextControlDefinition" p:size="7"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="7" parent="Uif-TextControl"/>
+    </property>
+  </bean>
+
+    <!-- Business Object Inquiry Definition -->
+    <bean id="AwardBudgetPersonnelDetailsExt-inquiryDefinition" parent="AwardBudgetPersonnelDetailsExt-inquiryDefinition-parentBean" />
+  <bean id="AwardBudgetPersonnelDetailsExt-InquiryView" parent="AwardBudgetPersonnelDetailsExt-InquiryView-parentBean"/>
+    <bean id="AwardBudgetPersonnelDetailsExt-inquiryDefinition-parentBean" abstract="true" parent="InquiryDefinition">
+        <property name="title" value="Budget Personnel Line Item Id" />
+        <property name="inquirySections" >
+            <list>
+                <bean parent="InquirySectionDefinition">
+                    <property name="title" value="Budget Personnel Line Item Id" />
+                    <property name="numberOfColumns" value="1" />
+                    <property name="inquiryFields" >
+                        <list>
+              <bean parent="FieldDefinition" p:attributeName="budgetPersonnelLineItemId" p:forceInquiry="true"/>
+              <bean parent="FieldDefinition" p:attributeName="obligatedAmount"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="AwardBudgetPersonnelDetailsExt-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView">
+    <property name="headerText" value="Budget Personnel Line Item Id"/>
+    <property name="dataObjectClassName" value="org.kuali.kra.award.budget.AwardBudgetPersonnelDetailsExt"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-GridSection">
+          <property name="headerText" value="Budget Personnel Line Item Id"/>
+          <property name="layoutManager.numberOfColumns" value="2"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="budgetPersonnelLineItemId" parent="Uif-DataField"/>
+              <bean p:propertyName="obligatedAmount" parent="Uif-DataField"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Business Object Lookup Definition -->
+    <bean id="AwardBudgetPersonnelDetailsExt-lookupDefinition" parent="AwardBudgetPersonnelDetailsExt-lookupDefinition-parentBean" />
+  <bean id="AwardBudgetPersonnelDetailsExt-LookupView" parent="AwardBudgetPersonnelDetailsExt-LookupView-parentBean"/>
+    <bean id="AwardBudgetPersonnelDetailsExt-lookupDefinition-parentBean" abstract="true" parent="LookupDefinition">
+        <property name="title" value="Award Budget Personnel Line Item Ext Lookup" /><property name="defaultSort" >
+      <bean parent="SortDefinition"/>
+        </property>
+        <property name="lookupFields" >
+            <list>
+        <bean parent="FieldDefinition" p:attributeName="budgetPersonnelLineItemId" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="obligatedAmount"/>
+            </list>
+        </property>
+        <property name="resultFields" >
+            <list>
+        <bean parent="FieldDefinition" p:attributeName="budgetPersonnelLineItemId" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="obligatedAmount"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="AwardBudgetPersonnelDetailsExt-LookupView-parentBean" abstract="true" parent="Uif-LookupView">
+    <property name="dataObjectClassName" value="org.kuali.kra.award.budget.AwardBudgetPersonnelDetailsExt"/>
+    <property name="headerText" value="Award Budget Personnel Line Item Ext Lookup"/>
+    <property name="criteriaFields">
+      <list>
+        <bean p:propertyName="budgetPersonnelLineItemId" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="obligatedAmount" parent="Uif-LookupCriteriaInputField"/>
+      </list>
+    </property>
+    <property name="resultFields">
+      <list>
+        <bean p:propertyName="budgetPersonnelLineItemId" parent="Uif-DataField"/>
+        <bean p:propertyName="obligatedAmount" parent="Uif-DataField"/>
+      </list>
+    </property>
+  </bean>
+
+</beans>

@@ -1,0 +1,11 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Mon Jan 12 21:40:07 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+ERROR:
+ORA-12505: TNS:listener does not currently know of SID given in connect
+descriptor
+
+
+Enter user-name: Enter password: 

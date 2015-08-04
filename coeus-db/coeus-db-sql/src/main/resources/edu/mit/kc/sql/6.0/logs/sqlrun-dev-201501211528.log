@@ -1,0 +1,345 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Wed Jan 21 15:28:57 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+
+'RUNNINGDDLSNAPSHOT'
+--------------------
+running ddl snapshot
+
+
+'RUNNINGDDLSNAPSHOT'
+--------------------
+running ddl snapshot
+
+
+'RUNNINGDMLSNAPSHOT'
+--------------------
+running dml snapshot
+
+
+Table dropped.
+
+
+Table created.
+
+
+292312 rows created.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+Table dropped.
+
+
+Table created.
+
+
+560762 rows created.
+
+
+Table dropped.
+
+
+Table created.
+
+
+483543 rows created.
+
+
+Index created.
+
+
+Commit complete.
+
+
+Index created.
+
+
+Commit complete.
+
+
+Index created.
+
+
+Commit complete.
+
+
+Index created.
+
+
+Commit complete.
+
+
+1531712 rows deleted.
+
+
+1452674 rows deleted.
+
+
+Table dropped.
+
+
+Table created.
+
+
+Commit complete.
+
+DROP TABLE TEMP_AWARD_REPORT
+           *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+
+Table created.
+
+
+Commit complete.
+
+DROP TABLE TEMP_AWD_REPORT_TERM
+           *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+
+Table created.
+
+
+Table dropped.
+
+
+Table created.
+
+
+269110 rows created.
+
+
+Commit complete.
+
+
+269110 rows created.
+
+
+Commit complete.
+
+
+214433 rows created.
+
+
+Commit complete.
+
+
+983753 rows created.
+
+
+Commit complete.
+
+
+257422 rows created.
+
+
+Commit complete.
+
+
+1168345 rows created.
+
+
+Commit complete.
+
+
+1198186 rows created.
+
+
+Commit complete.
+
+
+1537594 rows created.
+
+
+Commit complete.
+
+
+1198186 rows updated.
+
+
+Commit complete.
+
+
+Table dropped.
+
+
+Table dropped.
+
+
+140045 rows created.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+270429 rows updated.
+
+
+Commit complete.
+
+
+0 rows updated.
+
+
+Commit complete.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows deleted.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+1 row deleted.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Index created.
+
+CREATE INDEX OSP$AWARD_AMOUNT_INFO_I3 ON OSP$AWARD_AMOUNT_INFO(MIT_AWARD_NUMBER,SEQUENCE_NUMBER,AMOUNT_SEQUENCE_NUMBER)
+                                                               *
+ERROR at line 1:
+ORA-01408: such column list already indexed
+
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+Index created.
+
+create index AWARD_REP_TERMS_I1 ON AWARD_REP_TERMS_RECNT(AWARD_REPORT_TERMS_ID,CONTACT_TYPE_CODE,ROLODEX_ID)
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+0 rows deleted.
+
+
+140045 rows deleted.
+
+
+0 rows deleted.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

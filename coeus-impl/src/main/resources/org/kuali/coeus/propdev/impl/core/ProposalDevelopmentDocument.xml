@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans.xsd">
+  <bean id="ProposalDevelopmentDocument" parent="ProposalDevelopmentDocument-parentBean"/>
+  <bean id="ProposalDevelopmentDocument-parentBean" abstract="true" parent="TransactionalDocumentEntry">
+    <property name="usePessimisticLocking" value="true"/>
+    <property name="useWorkflowPessimisticLocking" value="true"/>
+    <property name="documentTypeName" value="ProposalDevelopmentDocument"/>
+    <property name="documentClass" value="org.kuali.coeus.propdev.impl.core.ProposalDevelopmentDocument"/>
+    <property name="businessRulesClass" value="org.kuali.coeus.propdev.impl.core.ProposalDevelopmentDocumentRule"/>
+    <property name="documentAuthorizerClass" value="org.kuali.coeus.propdev.impl.auth.ProposalDevelopmentDocumentAuthorizer"/>
+    <property name="displayTopicFieldInNotes" value="true"/>
+    <property name="allowsCopy" value="true"/>
+    <property name="headerNavigationList">
+      <list>
+        <bean parent="HeaderNavigation">
+          <property name="helpDefinition">
+            <bean parent="HelpDefinition" p:parameterNamespace="KC-PD" p:parameterName="proposalDevelopmentProposalHelp" p:parameterDetailType="Document"/>
+          </property>
+          <property name="headerTabDisplayName" value="Proposal"/>
+          <property name="headerTabNavigateTo" value="proposal"/>
+        </bean>
+        <bean parent="HeaderNavigation">
+          <property name="helpDefinition">
+            <bean parent="HelpDefinition" p:parameterNamespace="KC-PD" p:parameterName="proposalDevelopmentGrantsGovHelp" p:parameterDetailType="Document"/>
+          </property>
+          <property name="headerTabDisplayName" value="S2S"/>
+          <property name="headerTabNavigateTo" value="grantsGov"/>
+        </bean>
+        <bean parent="HeaderNavigation">
+          <property name="helpDefinition">
+            <bean parent="HelpDefinition" p:parameterNamespace="KC-PD" p:parameterName="proposalDevelopmentKeyPersonnelHelp" p:parameterDetailType="Document"/>
+          </property>
+          <property name="headerTabDisplayName" value="Key Personnel"/>
+          <property name="headerTabNavigateTo" value="keyPersonnel"/>
+        </bean>
+        <bean parent="HeaderNavigation">
+          <property name="helpDefinition">
+            <bean parent="HelpDefinition" p:parameterNamespace="KC-PD" p:parameterName="proposalDevelopmentSpecialReviewHelp" p:parameterDetailType="Document"/>
+          </property>
+          <property name="headerTabDisplayName" value="Special Review"/>
+          <property name="headerTabNavigateTo" value="specialReview"/>
+        </bean>
+        <bean parent="HeaderNavigation">
+          <property name="helpDefinition">
+            <bean parent="HelpDefinition" p:parameterNamespace="KC-PD" p:parameterName="proposalDevelopmentCustomDataHelp" p:parameterDetailType="Document"/>
+          </property>
+          <property name="headerTabDisplayName" value="Custom Data"/>
+          <property name="headerTabNavigateTo" value="customData"/>
+        </bean>
+        <bean parent="HeaderNavigation">
+          <property name="helpDefinition">
+            <bean parent="HelpDefinition" p:parameterNamespace="KC-PD" p:parameterName="proposalDevelopmentAbstractsAttachmentsHelp" p:parameterDetailType="Document"/>
+          </property>
+          <property name="headerTabDisplayName" value="Abstracts and Attachments"/>
+          <property name="headerTabNavigateTo" value="abstractsAttachments"/>
+        </bean>
+        <bean parent="HeaderNavigation">
+          <property name="helpDefinition">
+            <bean parent="HelpDefinition" p:parameterNamespace="KC-PD" p:parameterName="proposalDevelopmentQuestionsHelp" p:parameterDetailType="Document"/>
+          </property>
+          <property name="headerTabDisplayName" value="Questions"/>
+          <property name="headerTabNavigateTo" value="questions"/>
+        </bean>
+        <bean parent="HeaderNavigation">
+          <property name="helpDefinition">
+            <bean parent="HelpDefinition" p:parameterNamespace="KC-PD" p:parameterName="proposalDevelopmentBudgetVersionsHelp" p:parameterDetailType="Document"/>
+          </property>
+          <property name="headerTabDisplayName" value="Budget Versions"/>
+          <property name="headerTabNavigateTo" value="budgetVersions"/>
+        </bean>
+        <bean parent="HeaderNavigation">
+          <property name="helpDefinition">
+            <bean parent="HelpDefinition" p:parameterNamespace="KC-PD" p:parameterName="proposalDevelopmentPermissionsHelp" p:parameterDetailType="Document"/>
+          </property>
+          <property name="headerTabDisplayName" value="Permissions"/>
+          <property name="headerTabNavigateTo" value="permissions"/>
+        </bean>
+        <bean parent="HeaderNavigation">
+          <property name="helpDefinition">
+            <bean parent="HelpDefinition" p:parameterNamespace="KC-PD" p:parameterName="proposalDevelopmentProposalHelp" p:parameterDetailType="D"/>
+          </property>
+          <property name="headerTabDisplayName" value="Proposal Summary"/>
+          <property name="headerTabNavigateTo" value="approverView"/>
+        </bean>
+        <bean parent="HeaderNavigation">
+          <property name="helpDefinition">
+            <bean parent="HelpDefinition" p:parameterNamespace="KC-PD" p:parameterName="proposalDevelopmentHierarchyHelp" p:parameterDetailType="Document"/>
+          </property>
+          <property name="headerTabDisplayName" value="Proposal Hierarchy"/>
+          <property name="headerTabNavigateTo" value="hierarchy"/>
+        </bean>
+        <bean parent="HeaderNavigation">
+          <property name="helpDefinition">
+            <bean parent="HelpDefinition" p:parameterNamespace="KC-PD" p:parameterName="proposalDevelopmentActionsHelp" p:parameterDetailType="Document"/>
+          </property>
+          <property name="headerTabDisplayName" value="Proposal Actions"/>
+          <property name="headerTabNavigateTo" value="actions"/>
+        </bean>
+        <bean parent="HeaderNavigation">
+          <property name="helpDefinition">
+            <bean parent="HelpDefinition" p:parameterNamespace="KC-PD" p:parameterName="proposalDevelopmentMedusaHelp" p:parameterDetailType="Document"/>
+          </property>
+          <property name="headerTabDisplayName" value="Medusa"/>
+          <property name="headerTabNavigateTo" value="medusa"/>
+        </bean>
+      </list>
+    </property>
+    <property name="allowsNoteAttachments" value="false"/>
+    <property name="workflowProperties">
+    	<ref bean="ProposalDevelopmentDocument-workflowProperties"/>
+    </property>
+    <property name="attributes">
+      <list>
+        <ref bean="ProposalDevelopmentDocument-versionNumber"/>
+        <ref bean="ProposalDevelopmentDocument-updateUser"/>
+        <ref bean="ProposalDevelopmentDocument-updateTimestamp"/>
+      </list>
+    </property>
+  </bean>
+
+<!-- Attribute Definitions -->
+  <bean id="ProposalDevelopmentDocument-versionNumber" parent="ProposalDevelopmentDocument-versionNumber-parentBean"/>
+  <bean id="ProposalDevelopmentDocument-versionNumber-parentBean" abstract="true" parent="AttributeReferenceDummy-versionNumber"/>
+    <bean id="ProposalDevelopmentDocument-updateUser" parent="ProposalDevelopmentDocument-updateUser-parentBean" />
+    <bean id="ProposalDevelopmentDocument-updateUser-parentBean" abstract="true" parent="KraAttributeReferenceDummy-updateUser">
+        <property name="description" value="The user who created or last modified the Proposal Development Document." />
+    </bean>
+
+  <bean id="ProposalDevelopmentDocument-updateTimestamp" parent="ProposalDevelopmentDocument-updateTimestamp-parentBean"/>
+    <bean id="ProposalDevelopmentDocument-updateTimestamp-parentBean" abstract="true" parent="KraAttributeReferenceDummy-updateTimestamp">
+        <property name="description" value="The timestamp when the Proposal Development Document was created or last modified." />
+    </bean>
+  
+  <bean id="ProposalDevelopmentDocument-workflowProperties" parent="ProposalDevelopmentDocument-workflowProperties-parentBean"/>
+  <bean id="ProposalDevelopmentDocument-workflowProperties-parentBean" abstract="true" parent="WorkflowProperties" >
+    <property name="workflowPropertyGroups">
+      <list>
+        <bean parent="WorkflowPropertyGroup">
+          <property name="workflowProperties">
+            <list>
+              <bean parent="WorkflowProperty" p:path="documentHeader"/>
+              <bean parent="WorkflowProperty" p:path="developmentProposal.proposalNumber"/>
+              <bean parent="WorkflowProperty" p:path="developmentProposal.ownedByUnitNumber"/>
+              <bean parent="WorkflowProperty" p:path="developmentProposal.budgets.totalCost"/>
+              <bean parent="WorkflowProperty" p:path="developmentProposal.finalBudget.totalCost"/>
+              <bean parent="WorkflowProperty" p:path="developmentProposal.principalInvestigatorName"/>
+              <bean parent="WorkflowProperty" p:path="developmentProposal.title"/>
+              <bean parent="WorkflowProperty" p:path="developmentProposal.sponsor.sponsorCode"/>
+              <bean parent="WorkflowProperty" p:path="developmentProposal.proposalPersons.personId"/>
+              <bean parent="WorkflowProperty" p:path="developmentProposal.proposalPersons.proposalPersonRoleId"/>
+              <bean parent="WorkflowProperty" p:path="developmentProposal.proposalPersons.homeUnit"/>
+              <bean parent="WorkflowProperty" p:path="developmentProposal.proposalPersons.units"/>
+			 </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>    
+</beans>

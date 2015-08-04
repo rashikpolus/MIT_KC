@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/util
+                           http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <bean id="grlImporter" abstract="true" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean" p:singleton="true" p:mustExist="true" />
+    <bean id="institutionalProposalService" parent="grlImporter" p:serviceName="institutionalProposalService" />
+    <bean id="specialReviewService" parent="grlImporter" p:serviceName="specialReviewService"/> 
+
+    <!-- SYS -->
+
+    <bean id="uifExportControllerService" parent="grlImporter" p:serviceName="uifExportControllerService" />
+    <bean id="kcCommonControllerService" parent="grlImporter" p:serviceName="kcCommonControllerService" />
+    <bean id="controllerService" parent="grlImporter" p:serviceName="controllerService" />
+    <bean id="kcAuthorizationService" parent="grlImporter" p:serviceName="kcAuthorizationService" />
+    <bean id="kcDocumentRejectionService" parent="grlImporter" p:serviceName="kcDocumentRejectionService" />
+    <bean id="kcPersistenceStructureService" parent="grlImporter" p:serviceName="kcPersistenceStructureService" />
+    <bean id="kcWorkflowService" parent="grlImporter" p:serviceName="kcWorkflowService" />
+    <bean id="systemAuthorizationService" parent="grlImporter" p:serviceName="systemAuthorizationService" />
+    <bean id="taskAuthorizationService" parent="grlImporter" p:serviceName="taskAuthorizationService" />
+    <bean id="unitAuthorizationService" parent="grlImporter" p:serviceName="unitAuthorizationService" />
+    <bean id="kcPersonLookupableHelperService" parent="grlImporter" p:serviceName="kcPersonLookupableHelperService" p:singleton="false" />
+    <bean id="pessimisticLockService" parent="grlImporter" p:serviceName="pessimisticLockService" />
+    <bean id="globalVariableService" parent="grlImporter" p:serviceName="globalVariableService" />
+    <bean id="errorReporter" parent="grlImporter" p:serviceName="errorReporter"/>
+    <bean id="auditHelper" parent="grlImporter" p:serviceName="auditHelper"/>
+    <bean id="kcEntityManager" parent="grlImporter" p:serviceName="kcEntityManager" />
+    <bean id="kcPessimisticLockService" parent="grlImporter" p:serviceName="kcPessimisticLockService" />
+
+    <!-- AWARD -->
+    <bean id="awardService" parent="grlImporter" p:serviceName="awardService" />
+
+    <!-- COMMON BUDGET -->
+
+    <bean id="budgetCalculationService" parent="grlImporter" p:serviceName="budgetCalculationService" />
+    <bean id="budgetService" parent="grlImporter" p:serviceName="budgetService" />
+    <bean id="budgetSummaryService" parent="grlImporter" p:serviceName="budgetSummaryService" />
+    <bean id="deepCopyPostProcessor" parent="grlImporter" p:serviceName="deepCopyPostProcessor" />
+    <bean id="budgetPersonService" parent="grlImporter" p:serviceName="budgetPersonService" />
+    <bean id="budgetPersonnelBudgetService" parent="grlImporter" p:serviceName="budgetPersonnelBudgetService" />
+    <bean id="budgetRatesService" parent="grlImporter" p:serviceName="budgetRatesService" />
+    <bean id="budgetDistributionService" parent="grlImporter" p:serviceName="budgetDistributionService" />
+    <bean id="budgetJustificationService" parent="grlImporter" p:serviceName="budgetJustificationService" />
+    <bean id="budgetPrintService" parent="grlImporter" p:serviceName="budgetPrintService" />
+
+    <!-- COMMON QUESTIONNAIRE -->
+
+    <bean id="questionnaireService" parent="grlImporter" p:serviceName="questionnaireService" />
+    <bean id="questionnaireAnswerService" parent="grlImporter" p:serviceName="questionnaireAnswerService" />
+    <bean id="questionnairePrint" parent="grlImporter" p:serviceName="questionnairePrint" p:singleton="false"/>
+
+    <!-- COMMON OTHER -->
+
+    <bean id="kcPersonService" parent="grlImporter" p:serviceName="kcPersonService" />
+    <bean id="printingService" parent="grlImporter" p:serviceName="printingService" />
+    <bean id="unitService" parent="grlImporter" p:serviceName="unitService" />
+    <bean id="versionHistoryService" parent="grlImporter" p:serviceName="versionHistoryService" />
+    <bean id="ynqService" parent="grlImporter" p:serviceName="ynqService" />
+    <bean id="personEditableService" parent="grlImporter" p:serviceName="personEditableService" />
+    <bean id="sponsorHierarchyService" parent="grlImporter" p:serviceName="sponsorHierarchyService" />
+    <bean id="kcAttachmentService" parent="grlImporter" p:serviceName="kcAttachmentService"/>
+    <bean id="fiscalYearMonthService" parent="grlImporter" p:serviceName="fiscalYearMonthService" />
+    <bean id="questionnairePrintingService" parent="grlImporter" p:serviceName="questionnairePrintingService"/>
+    <bean id="kcFileControllerService" parent="grlImporter" p:serviceName="kcFileControllerService"/>
+    <bean id="kcNotificationService" parent="grlImporter" p:serviceName="kcNotificationService"/>
+    <bean id="wizardControllerService" parent="grlImporter" p:serviceName="wizardControllerService"/>
+    <bean id="kcBusinessRulesEngine" parent="grlImporter" p:serviceName="kcBusinessRulesEngine"/>
+    <bean id="sponsorSearchService" parent="grlImporter" p:serviceName="sponsorSearchService" />
+
+    <!-- IRB -->
+
+    <bean id="proposalDevelopmentProtocolDocumentService" parent="grlImporter" p:serviceName="proposalDevelopmentProtocolDocumentService" />
+    <bean id="protocolSpecialReviewService" parent="grlImporter" p:serviceName="protocolSpecialReviewService" />
+    <bean id="protocolFinderDao" parent="grlImporter" p:serviceName="protocolFinderDao" />
+
+    <!-- IACUC -->
+
+    <bean id="iacucProtocolProposalDevelopmentProtocolDocumentService" parent="grlImporter" p:serviceName="iacucProtocolProposalDevelopmentProtocolDocumentService" />
+    <bean id="iacucProtocolSpecialReviewService" parent="grlImporter" p:serviceName="iacucProtocolSpecialReviewService" />
+    <bean id="iacucProtocolFinderDao" parent="grlImporter" p:serviceName="iacucProtocolFinderDao" />
+
+    <!-- INST PROP -->
+
+    <bean id="proposalAdminDetailsService" parent="grlImporter" p:serviceName="proposalAdminDetailsService" />
+    <bean id="instPropSponsorService" parent="grlImporter" p:serviceName="instPropSponsorService" />
+
+</beans>

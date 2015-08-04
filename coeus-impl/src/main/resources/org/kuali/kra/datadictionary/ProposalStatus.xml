@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="ProposalStatus" parent="ProposalStatus-parentBean"/>
+    <bean abstract="true" id="ProposalStatus-parentBean" parent="BusinessObjectEntry">
+        <property name="businessObjectClass" value="org.kuali.kra.institutionalproposal.ProposalStatus"/>
+		<property name="objectLabel" value="Proposal Status"/>
+        <property name="inquiryDefinition">
+            <ref bean="ProposalStatus-inquiryDefinition"/>
+        </property>
+        <property name="lookupDefinition">
+            <ref bean="ProposalStatus-lookupDefinition"/>
+        </property>
+        <property name="titleAttribute" value="proposalStatusCode"/>
+        <property name="attributes">
+            <list>
+                <ref bean="ProposalStatus-proposalStatusCode"/>
+                <ref bean="ProposalStatus-description"/>
+                <ref bean="ProposalStatus-versionNumber"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Attribute Definitions -->
+    <bean id="ProposalStatus-proposalStatusCode" parent="ProposalStatus-proposalStatusCode-parentBean"/>
+    <bean abstract="true" id="ProposalStatus-proposalStatusCode-parentBean" parent="AttributeDefinition">
+        <property name="name" value="proposalStatusCode"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="label" value="Proposal Status Code"/>
+        <property name="shortLabel" value="Proposal Status Code"/>
+        <property name="maxLength" value="22"/>
+        <property name="validationPattern">
+            <bean parent="NumericValidationPattern"/>
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+        <property name="control">
+            <bean p:size="10" parent="TextControlDefinition"/>
+        </property>
+    <property name="controlField">
+      <bean p:size="10" parent="Uif-TextControl"/>
+    </property>
+        <property name="summary" value="Proposal Status Code"/>
+        <property name="description" value="Proposal Status Code"/>
+    </bean>
+
+    <bean id="ProposalStatus-description" parent="ProposalStatus-description-parentBean"/>
+    <bean abstract="true" id="ProposalStatus-description-parentBean" parent="AttributeDefinition">
+        <property name="name" value="description"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="label" value="Description"/>
+        <property name="shortLabel" value="Description"/>
+        <property name="maxLength" value="200"/>
+    <property name="validationPattern">
+      <bean p:allowWhitespace="true" parent="AnyCharacterValidationPattern"/>
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AnyCharacterPatternConstraint">
+        <property name="allowWhitespace" value="true"/>
+      </bean>
+    </property>
+        <property name="control">
+            <bean p:size="40" parent="TextControlDefinition"/>
+        </property>
+    <property name="controlField">
+      <bean p:size="40" parent="Uif-TextControl"/>
+    </property>
+        <property name="summary" value="Description"/>
+        <property name="description" value="Description"/>
+    </bean>
+
+    <bean id="ProposalStatus-versionNumber" parent="ProposalStatus-versionNumber-parentBean"/>
+  <bean abstract="true" id="ProposalStatus-versionNumber-parentBean" parent="AttributeReferenceDummy-versionNumber"/>
+    <!-- Business Object Inquiry Definition -->
+    <bean id="ProposalStatus-inquiryDefinition" parent="ProposalStatus-inquiryDefinition-parentBean"/>
+  <bean id="ProposalStatus-InquiryView" parent="ProposalStatus-InquiryView-parentBean"/>
+    <bean abstract="true" id="ProposalStatus-inquiryDefinition-parentBean" parent="InquiryDefinition">
+        <property name="title" value="Proposal Status Code"/>
+        <property name="inquirySections">
+            <list>
+                <bean parent="InquirySectionDefinition">
+                    <property name="title" value="Proposal Status Code"/>
+                    <property name="numberOfColumns" value="1"/>
+                    <property name="inquiryFields">
+                        <list>
+                            <bean p:attributeName="proposalStatusCode" p:forceInquiry="true" parent="FieldDefinition"/>
+                            <bean p:attributeName="description" parent="FieldDefinition"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+  <bean id="ProposalStatus-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView">
+    <property name="headerText" value="Proposal Status Code"/>
+    <property name="dataObjectClassName" value="org.kuali.kra.institutionalproposal.ProposalStatus"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-GridSection">
+          <property name="headerText" value="Proposal Status Code"/>
+          <property name="layoutManager.numberOfColumns" value="2"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="proposalStatusCode" parent="Uif-DataField"/>
+              <bean p:propertyName="description" parent="Uif-DataField"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+    <!-- Business Object Lookup Definition -->
+    <bean id="ProposalStatus-lookupDefinition" parent="ProposalStatus-lookupDefinition-parentBean"/>
+  <bean id="ProposalStatus-LookupView" parent="ProposalStatus-LookupView-parentBean"/>
+    <bean abstract="true" id="ProposalStatus-lookupDefinition-parentBean" parent="LookupDefinition">
+        <property name="title" value="Proposal Status Lookup"/><property name="defaultSort">
+      <bean parent="SortDefinition"/>
+        </property>
+		<property name="helpDefinition" >
+      <bean parent="HelpDefinition" p:parameterNamespace="KC-M" p:parameterName="institutionalProposalStatusMaintenanceHelp" p:parameterDetailType="Document"/>
+  		</property>            
+        <property name="lookupFields">
+            <list>
+                <bean p:attributeName="proposalStatusCode" p:forceInquiry="true" parent="FieldDefinition"/>
+                <bean p:attributeName="description" parent="FieldDefinition"/>
+            </list>
+        </property>
+        <property name="resultFields">
+            <list>
+                <bean p:attributeName="proposalStatusCode" p:forceInquiry="true" parent="FieldDefinition"/>
+                <bean p:attributeName="description" parent="FieldDefinition"/>
+            </list>
+        </property>
+    </bean>
+
+  <bean id="ProposalStatus-LookupView-parentBean" abstract="true" parent="Uif-LookupView">
+    <property name="dataObjectClassName" value="org.kuali.kra.institutionalproposal.ProposalStatus"/>
+    <property name="headerText" value="Proposal Status Lookup"/>
+    <property name="criteriaFields">
+      <list>
+        <bean p:propertyName="proposalStatusCode" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="description" parent="Uif-LookupCriteriaInputField"/>
+      </list>
+    </property>
+    <property name="resultFields">
+      <list>
+        <bean p:propertyName="proposalStatusCode" parent="Uif-DataField"/>
+        <bean p:propertyName="description" parent="Uif-DataField"/>
+      </list>
+    </property>
+  </bean>
+
+</beans>

@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="WlFlexibility" parent="WlFlexibility-parentBean" />
+	<bean id="WlFlexibility-parentBean" abstract="true" parent="BusinessObjectEntry">
+		<property name="businessObjectClass"
+			value="edu.mit.kc.workloadbalancing.bo.WlFlexibility" />
+		<property name="objectLabel" value="Wl Flexibility" />
+		<property name="lookupDefinition">
+			<ref bean="WlFlexibility-lookupDefinition" />
+		</property>
+		<property name="titleAttribute" value="flexibilityId" />
+		<property name="attributes">
+			<list>
+				<ref bean="WlFlexibility-flexibilityId" />
+				<ref bean="WlFlexibility-personId" />
+				<ref bean="WlFlexibility-sponsorGroup" />
+				<ref bean="WlFlexibility-flexibility" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- Attribute Definitions -->
+	<bean id="WlFlexibility-flexibilityId" parent="WlFlexibility-flexibilityId-parentBean" />
+	<bean id="WlFlexibility-flexibilityId-parentBean" abstract="true"
+		parent="AttributeDefinition">
+		<property name="name" value="flexibilityId" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="Flexibility Id" />
+		<property name="shortLabel" value="Flexibility Id" />
+		<property name="maxLength" value="200" />
+		<property name="validationPattern">
+			<bean parent="AnyCharacterValidationPattern" p:allowWhitespace="true" />
+		</property>
+		<property name="validCharactersConstraint">
+			<bean parent="AnyCharacterPatternConstraint">
+				<property name="allowWhitespace" value="true" />
+			</bean>
+		</property>
+		<property name="required" value="false" />
+		<property name="control">
+			<bean parent="TextControlDefinition" />
+		</property>
+		<property name="controlField">
+			<bean parent="Uif-TextControl" />
+		</property>
+		<property name="summary" value="Flexibility Id" />
+		<property name="description" value="Flexibility Id" />
+	</bean>
+
+	<bean id="WlFlexibility-personId" parent="WlFlexibility-personId-parentBean" />
+	<bean id="WlFlexibility-personId-parentBean" abstract="true"
+		parent="AttributeDefinition">
+		<property name="name" value="personId" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="Person Id" />
+		<property name="shortLabel" value="Person Id" />
+		<property name="maxLength" value="200" />
+		<property name="validationPattern">
+			<bean parent="AnyCharacterValidationPattern" p:allowWhitespace="true" />
+		</property>
+		<property name="validCharactersConstraint">
+			<bean parent="AnyCharacterPatternConstraint">
+				<property name="allowWhitespace" value="true" />
+			</bean>
+		</property>
+		<property name="required" value="false" />
+		<property name="control">
+			<bean parent="TextControlDefinition" />
+		</property>
+		<property name="controlField">
+			<bean parent="Uif-TextControl" />
+		</property>
+		<property name="summary" value="Person Id" />
+		<property name="description" value="Person Id" />
+	</bean>
+
+	<bean id="WlFlexibility-sponsorGroup" parent="WlFlexibility-sponsorGroup-parentBean" />
+	<bean id="WlFlexibility-sponsorGroup-parentBean" abstract="true"
+		parent="AttributeDefinition">
+		<property name="name" value="sponsorGroup" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="Sponsor Group" />
+		<property name="shortLabel" value="Sponsor Group" />
+		<property name="maxLength" value="200" />
+		<property name="validationPattern">
+			<bean parent="AnyCharacterValidationPattern" p:allowWhitespace="true" />
+		</property>
+		<property name="validCharactersConstraint">
+			<bean parent="AnyCharacterPatternConstraint">
+				<property name="allowWhitespace" value="true" />
+			</bean>
+		</property>
+		<property name="required" value="false" />
+		<property name="control">
+			<bean parent="TextControlDefinition" />
+		</property>
+		<property name="controlField">
+			<bean parent="Uif-TextControl" />
+		</property>
+		<property name="summary" value="Sponsor Group" />
+		<property name="description" value="Sponsor Group" />
+	</bean>
+
+	<bean id="WlFlexibility-flexibility" parent="WlFlexibility-flexibility-parentBean" />
+	<bean id="WlFlexibility-flexibility-parentBean" abstract="true"
+		parent="AttributeDefinition">
+		<property name="name" value="flexibility" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="Flexibility" />
+		<property name="shortLabel" value="Flexibility" />
+		<property name="maxLength" value="200" />
+		<property name="validationPattern">
+			<bean parent="AnyCharacterValidationPattern" p:allowWhitespace="true" />
+		</property>
+		<property name="validCharactersConstraint">
+			<bean parent="AnyCharacterPatternConstraint">
+				<property name="allowWhitespace" value="true" />
+			</bean>
+		</property>
+		<property name="required" value="false" />
+		<property name="control">
+			<bean parent="TextControlDefinition" />
+		</property>
+		<property name="controlField">
+			<bean parent="Uif-TextControl" />
+		</property>
+		<property name="summary" value="Flexibility" />
+		<property name="description" value="Flexibility" />
+	</bean>
+
+	<!-- Business Object Lookup Definition -->
+	<bean id="WlFlexibility-lookupDefinition" parent="WlFlexibility-lookupDefinition-parentBean" />
+	<bean id="WlFlexibility-LookupView" parent="WlFlexibility-LookupView-parentBean" />
+	<bean id="WlFlexibility-lookupDefinition-parentBean" abstract="true"
+		parent="LookupDefinition">
+		<property name="title" value="WL Flexibility Lookup" />
+		<property name="defaultSort">
+			<bean parent="SortDefinition" />
+		</property>
+		<property name="lookupFields">
+			<list>
+
+				<bean parent="FieldDefinition" p:attributeName="personId" />
+			</list>
+		</property>
+		<property name="resultFields">
+			<list>
+				<bean parent="FieldDefinition" p:attributeName="flexibilityId" />
+				<bean parent="FieldDefinition" p:attributeName="personId" />
+				<bean parent="FieldDefinition" p:attributeName="sponsorGroup" />
+				<bean parent="FieldDefinition" p:attributeName="flexibility" />
+			</list>
+		</property>
+	</bean>
+
+
+	<bean id="WlFlexibility-LookupView-parentBean" abstract="true"
+		parent="Uif-LookupView" p:headerText="WL Flexibility Lookup"
+		p:dataObjectClassName="edu.mit.kc.workloadbalancing.bo.WlFlexibility">
+		<property name="defaultSortAttributeNames">
+			<list>
+				<value>flexibilityId</value>
+			</list>
+		</property>
+		<property name="criteriaFields">
+			<list>
+				<bean parent="Uif-LookupCriteriaInputField" p:propertyName="flexibilityId"
+					p:order="10" />
+				<bean parent="Uif-LookupCriteriaInputField" p:propertyName="personId"
+					p:order="20" />
+				<bean parent="Uif-LookupCriteriaInputField" p:propertyName="sponsorGroup"
+					p:order="30" />
+				<bean parent="Uif-LookupCriteriaInputField" p:propertyName="flexibility"
+					p:order="40" />
+			</list>
+		</property>
+		<property name="resultFields">
+			<list>
+				<bean parent="Uif-DataField" p:propertyName="flexibilityId"
+					p:order="10" />
+				<bean parent="Uif-DataField" p:propertyName="personId" p:order="20" />
+				<bean parent="Uif-DataField" p:propertyName="sponsorGroup"
+					p:order="30" />
+				<bean parent="Uif-DataField" p:propertyName="flexibility"
+					p:order="40" />
+
+			</list>
+		</property>
+	</bean>
+</beans>
+	

@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                    http://www.springframework.org/schema/util
+                    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	<bean id="PropBudget-AssignPersonnelToPeriodsPage" parent="PropBudget-AssignPersonnelToPeriodsPage-parentBean" />
+	<bean id="PropBudget-AssignPersonnelToPeriodsPage-parentBean" parent="PropBudget-Page">
+		<property name="items">
+			<list>
+				<ref bean="PropBudget-AssignPersonnelToPeriodsPage-TabGroup" />
+				<ref bean="PropBudget-AssignPersonnelToPeriodsPage-AddPersonnel"/>
+				<ref bean="PropBudget-EditPersonnelPeriod-Section"/>
+			</list>
+		</property>
+		<property name="header">
+			<bean parent="Uif-PageHeader" />
+		</property>
+	</bean>
+
+
+	<bean id="PropBudget-AssignPersonnelToPeriodsPage-TabGroup" parent="PropBudget-AssignPersonnelToPeriodsPage-TabGroup-parentBean"/>
+	<bean id="PropBudget-AssignPersonnelToPeriodsPage-TabGroup-parentBean" abstract="true" parent="Kc-DynamicTabSection"
+		p:tabCollectionPropertyName="budget.budgetPeriods" p:expressionProperties="budgetPeriod:budgetPeriod,budgetPeriodId:budgetPeriodId"
+		p:idSuffixPropertyName="budgetPeriod" p:header.headerText="Assign Personnel to Periods">
+		<property name="groupPrototype"><bean id="PropBudget-AssignPersonnelToPeriodsPage-PersonnelDetails" parent="PropBudget-AssignPersonnelToPeriodsPage-PeriodTab"/></property>
+		<property name="header.lowerGroup">
+			<bean parent="Uif-HeaderLowerGroup">
+				<property name="items">
+					<list>
+						<bean parent="Uif-Message"
+							p:messageText="Assign personnel to one or all periods and configure efforts and charges."
+							p:order="10" />
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="PropBudget-AssignPersonnelToPeriodsPage-PeriodTab" parent="PropBudget-AssignPersonnelToPeriodsPage-PeriodTab-parentBean" />
+	<bean id="PropBudget-AssignPersonnelToPeriodsPage-PeriodTab-parentBean" abstract="true" parent="Uif-TableCollectionSection" p:headerText="Period @{#budgetPeriod}"
+		p:collectionObjectClass="org.kuali.coeus.common.budget.framework.personnel.BudgetPersonnelDetails"
+		p:propertyName="budget.budgetPersonnelDetails" 
+		p:addWithDialog="false" p:renderAddLine="false" p:readOnly="false"
+		p:layoutManager.renderSequenceField="false"
+		p:renderInactiveToggleButton="false">
+		<property name="layoutManager.groupingTitle" value="@{#lp.personDetailGroup} [color=#B0BED9] [css='pull-right'][action=editBudgetDetailsAndRates,data={budgetPeriodId:@{#budgetPeriodId},lineItemGroupKey:'@{#lp.personDetailGroup}'}][b]Details &amp; Rates[/b][/action][/css][/color]"/>
+		<property name="filters">
+			<list>
+				<bean parent="Uif-ConditionalCollectionFilter" p:expression="@{#line.budgetPeriod.toString() == #budgetPeriod}"/>
+			</list>
+		</property>
+		<property name="layoutManager.richTable.templateOptions">
+			<map>
+				<entry key="sDom" value="tip" />
+				<entry key="bRetrieve" value="true" />
+				<entry key="bPaginate" value="false" />
+				<entry key="bInfo" value="false" />
+			</map>
+		</property>
+		<property name="header.rightGroup">
+			<bean parent="Uif-HeaderRightGroup">
+				<property name="items">
+					<list>
+						<bean parent="PropBudget-AssignPersonnelToPeriodsPage-CalculateCurrentPeriod" p:render="@{!viewOnly and canEditView }" p:order="10"/>
+						<bean parent="PropBudget-AssignPersonnelToPeriodsPage-AssignPersonnel" p:render="@{!viewOnly and canEditView}" p:order="20"/>
+					</list>
+				</property>
+			</bean>
+		</property>
+		<property name="items">
+			<list>
+                <bean parent="Uif-MessageField" p:messageText="@{#line.budgetPerson != null ? #line.budgetPerson.personName:'#{T(org.kuali.coeus.common.budget.framework.core.BudgetConstants.BudgetPerson).SUMMARYPERSON.personName}'}"
+                    p:label="Person" p:order="10" />
+				<bean parent="Uif-DataField" p:propertyName="startDate"
+					p:label="Start" p:order="20" p:required="false"/>
+				<bean parent="Uif-DataField" p:propertyName="endDate" p:label="End"
+					p:order="30" p:required="false"/>
+				<bean parent="Uif-DataField" p:propertyName="percentEffort"
+					p:label="Effort" p:order="40"/>
+				<bean parent="Uif-DataField" p:propertyName="percentCharged"
+					p:label="Charged" p:order="50"/>
+                <bean parent="Uif-MessageField" p:messageText="@{#line.budgetPeriodType != null ? #line.budgetPeriodType.description:''}"
+                    p:label="Period Type" p:order="60" />
+				<bean parent="Uif-DataField" p:propertyName="salaryRequested"
+					p:order="70"/>
+				<bean parent="Uif-DataField" p:propertyName="calculatedFringe"
+					p:label="Calculated Fringe" p:order="80"/>
+			</list>
+		</property>
+		<property name="lineActions">
+			<list>
+				<bean parent="Uif-SecondaryActionButton-Mini" p:methodToCall="editPersonPeriodDetails"
+					p:actionLabel="Details" p:order="10" p:render="@{!#parent.readOnly}">
+					<property name="additionalSubmitData">
+						<map>
+							<entry key="budgetPeriodId" value="@{#budgetPeriodId}"/>
+						</map>
+					</property>		
+				</bean>
+				<bean parent="Uif-DeleteLineAction-IconOnly" p:order="20" p:methodToCall="deletePersonnelLineItem"
+					p:iconClass="icon-trash" p:render="@{!viewOnly and canEditView}">
+					<property name="additionalSubmitData">
+						<map>
+							<entry key="budgetPeriodId" value="@{#budgetPeriodId}"/>
+						</map>
+					</property>
+					<property name="confirmationDialog">
+						<bean parent="Uif-DialogGroup-OkCancel" p:promptText="Are you sure you want to delete the personnel line item?"/>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="PropBudget-AssignPersonnelToPeriodsPage-CalculateCurrentPeriod" parent="PropBudget-AssignPersonnelToPeriodsPage-CalculateCurrentPeriod-parentBean"/>
+	<bean id="PropBudget-AssignPersonnelToPeriodsPage-CalculateCurrentPeriod-parentBean" abstract="true" parent="Uif-SecondaryActionButton-Mini" 
+		p:refreshId="PropBudget-AssignPersonnelToPeriodsPage-PersonnelDetails_@{#budgetPeriod}"
+		p:actionLabel="Calculate Current Period" p:methodToCall="calculateCurrentPeriod">
+		<property name="additionalSubmitData">
+			<map>
+				<entry key="budgetPeriodId" value="@{#budgetPeriodId}"/>
+			</map>
+		</property>
+	</bean>
+	
+	<bean id="PropBudget-AssignPersonnelToPeriodsPage-AssignPersonnel" parent="PropBudget-AssignPersonnelToPeriodsPage-AssignPersonnel-parentBean"/>
+	<bean id="PropBudget-AssignPersonnelToPeriodsPage-AssignPersonnel-parentBean" abstract="true" parent="Uif-SecondaryActionButton-Mini" 
+		p:actionLabel="Assign Personnel..."
+		p:refreshId="PropBudget-AssignPersonnelToPeriodsPage-AddPersonnel"
+		p:methodToCall="assignPersonnelToPeriod">
+		<property name="additionalSubmitData">
+			<map>
+				<entry key="budgetPeriodId" value="@{#budgetPeriodId}"/>
+			</map>
+		</property>		
+	</bean>	
+
+
+    <bean id="PropBudget-AssignPersonnelToPeriodsPage-AddPersonnel" parent="PropBudget-AssignPersonnelToPeriodsPage-AddPersonnel-parentBean"/>
+    <bean id="PropBudget-AssignPersonnelToPeriodsPage-AddPersonnel-parentBean" abstract="true" parent="Uif-DialogGroup"
+          p:fieldBindingObjectPath="addProjectPersonnelHelper" p:retrieveViaAjax="true"
+          p:onHideDialogScript="retrieveComponent('PropBudget-AssignPersonnelToPeriodsPage-PersonnelDetails_@{#fp.addProjectPersonnelHelper.currentTabBudgetPeriod.budgetPeriod}', 'refreshPageWithBudgetExpenseRules');"
+          p:destroyDialogOnHidden="true" p:enterKeyAction="@DEFAULT"
+		  p:refreshWhenChangedPropertyNames="addProjectPersonnelHelper.budgetPersonnelDetail.personSequenceNumber"
+          p:header.headerText="Add Personnel to Period">
+        <property name="items">
+            <list>
+				<bean parent="Uif-CssGridSection-1FieldLabelColumn">
+					<property name="items">
+						<list>
+							<bean parent="Uif-InputField" p:propertyName="budgetPersonnelDetail.personSequenceNumber"
+								p:optionsFinder="#{#getService('budgetPersonValuesFinder')}" p:order="10" p:required="true"
+								p:enableAutoQuickfinder="false"/>
+ 							<bean parent="Uif-MessageField" p:messageText="@{addProjectPersonnelHelper.appointmentType}"
+								p:order="20" p:label="Appointment Type"/>
+ 							<bean parent="Uif-MessageField" p:messageText="@{addProjectPersonnelHelper.budgetPersonnelDetail.budgetPerson?.effectiveDate}"
+								p:order="30" p:label="Salary Effective Date"/>
+							<bean parent="Uif-InputField" p:propertyName="budgetLineItem.costElement"
+								p:label="Object Code" p:optionsFinder="#{#getService('budgetPersonnelCostElementValuesFinder')}" 
+								p:optionsFinder.addBlankOption="false" p:order="40">
+								<property name="quickfinder">
+            						<bean parent="Uif-QuickFinder" p:dataObjectClassName="org.kuali.coeus.common.budget.framework.core.CostElement"
+                  						p:fieldConversions="costElement:addProjectPersonnelHelper.budgetLineItem.costElement" p:returnByScript="true"/>
+        						</property>
+							</bean>	
+							<bean parent="Uif-InputField" p:propertyName="budgetPersonGroupName"
+								p:label="Group" p:order="50" p:required="false"
+								p:optionsFinder="#{#getService('groupNameValuesFinder')}" 
+								p:optionsFinder.addBlankOption="false">
+						    	<property name="control">
+						      		<bean parent="Uif-DropdownControl"/>
+						    	</property>
+    						</bean>
+							<bean parent="Uif-InputField" p:propertyName="budgetLineItem.groupName" p:progressiveRender="@{#fp.budgetPersonGroupName == '#{T(org.kuali.coeus.common.budget.framework.core.BudgetConstants).BUDGET_PERSONNEL_NEW_GROUP_NAME}'}"
+								p:label="New Group Name" p:order="60">
+						    	<property name="control">
+      								<bean p:size="80" parent="Uif-TextControl" />
+						    	</property>
+						    </bean>
+							<bean parent="Uif-InputField" p:propertyName="budgetPersonnelDetail.startDate"
+								p:order="70" p:required="true"/>
+							<bean parent="Uif-InputField" p:propertyName="budgetPersonnelDetail.endDate"
+								p:order="80" p:required="true"/>
+							<bean parent="Uif-InputField" p:propertyName="budgetPersonnelDetail.percentEffort"
+								p:readOnly="@{#fp.budgetPersonnelDetail.personSequenceNumber == #{T(org.kuali.coeus.common.budget.framework.core.BudgetConstants.BudgetPerson).SUMMARYPERSON.personId}}"
+								p:order="90" p:label="Effort %" p:readOnlyDisplayReplacement="&amp;nbsp;"/>
+							<bean parent="Uif-InputField" p:propertyName="budgetPersonnelDetail.percentCharged"
+								p:readOnly="@{#fp.budgetPersonnelDetail.personSequenceNumber == #{T(org.kuali.coeus.common.budget.framework.core.BudgetConstants.BudgetPerson).SUMMARYPERSON.personId}}"
+								p:order="100" p:label="Charged %" p:readOnlyDisplayReplacement="&amp;nbsp;"/>
+							<bean parent="Uif-InputField" p:propertyName="budgetPersonnelDetail.periodTypeCode"
+								p:readOnly="@{#fp.budgetPersonnelDetail.personSequenceNumber == #{T(org.kuali.coeus.common.budget.framework.core.BudgetConstants.BudgetPerson).SUMMARYPERSON.personId}}"
+								p:readOnlyDisplayReplacement="&amp;nbsp;"
+								p:order="110" p:enableAutoQuickfinder="false"/>
+						</list>
+					</property>
+				</bean>
+            </list>
+        </property>
+        <property name="footer">
+            <bean parent="Uif-FooterBase">
+                <property name="items">
+                    <list>
+                        <bean parent="Uif-PrimaryActionButton" p:actionLabel="Assign to Period @{#fp.addProjectPersonnelHelper.currentTabBudgetPeriod.budgetPeriod}" p:methodToCall="addPersonnelToPeriod"
+                              p:refreshId="PropBudget-AssignPersonnelToPeriodsPage-AddPersonnel"
+                              p:defaultEnterKeyAction="true"
+                              p:dialogDismissOption=""
+			       			  p:successCallback="Kc.Dialog.closeDialogWithoutError('PropBudget-AssignPersonnelToPeriodsPage-AddPersonnel');"
+                              p:order="10" p:performClientSideValidation="true"/>
+                        <bean parent="Uif-DialogDismissButton" p:actionLabel="Cancel" p:order="20"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+	<bean id="PropBudget-EditPersonnelPeriod-Section" parent="PropBudget-EditPersonnelPeriod-Section-parent" />
+	<bean id="PropBudget-EditPersonnelPeriod-Section-parent" p:fieldBindingObjectPath="addProjectPersonnelHelper.editBudgetPersonnelDetail" abstract="true" parent="Uif-DialogGroup" 
+        p:onHideDialogScript="retrieveComponent('PropBudget-AssignPersonnelToPeriodsPage-PersonnelDetails_@{#fp.addProjectPersonnelHelper.currentTabBudgetPeriod.budgetPeriod}', 'refreshPageWithBudgetExpenseRules');"
+		p:refreshWhenChangedPropertyNames="addProjectPersonnelHelper.editBudgetPersonnelDetail.personSequenceNumber"
+		p:methodToCallOnRefresh="refreshEditBudgetLineItem"
+		p:retrieveViaAjax="true"
+		p:headerText="Edit Assigned Personnel" p:destroyDialogOnHidden="true" p:enterKeyAction="@DEFAULT">
+		<property name="items">
+			<list>
+				<bean parent="Uif-DataField" p:fieldLabel.labelText=" " p:propertyName="budgetPerson.personName"
+					p:style="font-weight: bold; font-size: larger;" p:order="0"/>
+				<ref bean="PropBudget-EditPersonnelPeriod-Section-Details" />
+			</list>
+		</property>
+		<property name="footer">
+			<bean parent="Uif-FooterBase">
+				<property name="items">
+					<list>
+						<bean parent="Uif-PrimaryActionButton" p:actionLabel="Save Changes" p:methodToCall="savePersonPeriodDetails"
+                            p:refreshId="PropBudget-EditPersonnelPeriod-Section"
+                            p:dialogDismissOption=""
+			       			p:successCallback="Kc.Dialog.closeDialogWithoutError('PropBudget-EditPersonnelPeriod-Section');"
+                      		p:actionParameters="@{T(org.kuali.rice.krad.uif.UifParameters).SELECTED_COLLECTION_PATH}:budget.budgetPersonnelDetails,
+                      		@{T(org.kuali.rice.krad.uif.UifParameters).SELECTED_COLLECTION_ID}:PropBudget-AssignPersonnelToPeriodsPage-PersonnelDetails,
+                      		@{T(org.kuali.rice.krad.uif.UifParameters).SELECTED_LINE_INDEX}:@{addProjectPersonnelHelper.editLineIndex}"
+							p:performClientSideValidation="true" p:defaultEnterKeyAction="true"
+							p:render="@{!#parent.readOnly}" p:order="10" />
+						<bean parent="Uif-SecondaryActionButton" p:actionLabel="Calculate" p:methodToCall="calculatePersonnelPeriodLineItem"
+							p:performClientSideValidation="true"
+							p:render="@{!#parent.readOnly}" p:refreshId="PropBudget-EditPersonnelPeriod-Section" p:order="20" />
+						<bean parent="Uif-DialogDismissButton" p:actionLabel="Cancel"
+							p:order="30" />
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="PropBudget-EditPersonnelPeriod-Section-Details" parent="PropBudget-EditPersonnelPeriod-Section-Details-parent" />
+	<bean id="PropBudget-EditPersonnelPeriod-Section-Details-parent" abstract="true" parent="Uif-CssGridSection-2FieldLabelColumn">
+		<property name="items">
+			<list>
+				<bean parent="Uif-InputField" p:propertyName="personSequenceNumber"
+					p:optionsFinder="#{#getService('budgetPersonValuesFinder')}" p:order="5" p:required="true"
+					p:enableAutoQuickfinder="false"/>
+				<bean parent="Uif-DataField" p:propertyName="budgetPerson.role"
+					p:label="Role" p:order="10"/>
+ 				<bean parent="Uif-MessageField" p:messageText="@{addProjectPersonnelHelper.editBudgetPersonnelDetail.budgetPerson?.appointmentType?.description}"
+					p:order="20" p:label="Appointment Type"/>
+ 				<bean parent="Uif-MessageField" p:messageText="@{addProjectPersonnelHelper.editBudgetPersonnelDetail.budgetPerson?.effectiveDate}"
+					p:order="30" p:label="Salary Effective Date"/>
+				<bean parent="Uif-InputField" p:propertyName="periodTypeCode" p:order="40" p:enableAutoQuickfinder="false"
+					p:readOnly="@{#parent.readOnly or #fp.personSequenceNumber == #{T(org.kuali.coeus.common.budget.framework.core.BudgetConstants.BudgetPerson).SUMMARYPERSON.personId}}"
+					p:readOnlyDisplayReplacement="&amp;nbsp;"/>
+				<bean parent="Uif-InputField" p:propertyName="startDate"
+					p:required="true" p:order="50"/>
+				<bean parent="Uif-InputField" p:propertyName="endDate"
+					p:required="true" p:order="60"/>
+				<bean parent="PropBudget-AssignPersonnelToPeriodsPage-PercentField" p:propertyName="percentEffort" 
+					p:readOnly="@{#parent.readOnly or #fp.personSequenceNumber == #{T(org.kuali.coeus.common.budget.framework.core.BudgetConstants.BudgetPerson).SUMMARYPERSON.personId}}"
+					p:label="Effort" p:order="70" p:readOnlyDisplayReplacement="&amp;nbsp;"/>
+				<bean parent="PropBudget-AssignPersonnelToPeriodsPage-PercentField" p:propertyName="percentCharged" 
+					p:readOnly="@{#parent.readOnly or #fp.personSequenceNumber == #{T(org.kuali.coeus.common.budget.framework.core.BudgetConstants.BudgetPerson).SUMMARYPERSON.personId}}"
+					p:label="Charged" p:order="80" p:readOnlyDisplayReplacement="&amp;nbsp;"/>
+				<bean parent="Uif-InputField" p:propertyName="salaryRequested" 
+					p:readOnly="@{#parent.readOnly or #fp.personSequenceNumber != #{T(org.kuali.coeus.common.budget.framework.core.BudgetConstants.BudgetPerson).SUMMARYPERSON.personId}}"
+					p:label="Requested Salary" p:order="90" />
+				<bean parent="Uif-DataField" p:propertyName="calculatedFringe"
+					p:label="Calculated Fringe" p:order="110"/>
+				<bean parent="Uif-DataField" p:propertyName="costSharingAmount" 
+					p:label="Cost Sharing Amount" p:order="120" />
+				<bean parent="Uif-DataField" p:propertyName="underrecoveryAmount" 
+					p:label="Unrecovered F&amp;A" p:order="120" />
+				<bean parent="Uif-DataField" p:propertyName="personMonths" p:label="Person Months" p:order="130"/>
+				<bean parent="Uif-InputField" p:propertyName="lineItemDescription" p:order="140"
+					p:readOnly="@{#parent.readOnly or #fp.personSequenceNumber == #{T(org.kuali.coeus.common.budget.framework.core.BudgetConstants.BudgetPerson).SUMMARYPERSON.personId}}">
+  					<property name="control">
+    					<bean parent="Uif-TextAreaControl" p:cols="60" p:rows="3"/>
+  					</property>
+  				</bean>	
+			</list>
+		</property>
+	</bean>
+
+	<bean id="PropBudget-AssignPersonnelToPeriodsPage-PercentField" parent="PropBudget-AssignPersonnelToPeriodsPage-PercentField-parentBean" />
+	<bean id="PropBudget-AssignPersonnelToPeriodsPage-PercentField-parentBean" abstract="true" parent="Uif-InputField">
+		<property name="postInputAddons">
+			<list>
+				<bean parent="Uif-Message" p:messageText="%" />
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="PropBudget-AssignPersonnelToPeriodsPage-DetailsAndRates" parent="PropBudget-AssignPersonnelToPeriodsPage-DetailsAndRates-parent" />
+	<bean id="PropBudget-AssignPersonnelToPeriodsPage-DetailsAndRates-parent" abstract="true" parent="Uif-DialogGroup" 
+		p:fieldBindingObjectPath="addProjectPersonnelHelper" p:headerText="Details &amp; Rates" p:destroyDialogOnHidden="true">
+		<property name="items">
+			<list>
+				<ref bean="PropBudget-AssignPersonnelToPeriodsPage-DetailsAndRates-TabSection" />
+			</list>
+		</property>
+		<property name="footer">
+			<bean parent="Uif-FooterBase">
+				<property name="items">
+					<list>
+                        <bean parent="Uif-PrimaryActionButton" p:actionLabel="Save Changes" p:methodToCall="save"
+                              p:performClientSideValidation="true" p:dialogDismissOption="REQUEST" p:render="@{!#parent.readOnly}" p:order="10" />
+
+						<bean parent="Uif-PrimaryActionButton" p:actionLabel="Apply To Later Periods" p:methodToCall="applyToLaterPeriods"
+							p:performClientSideValidation="true" p:dialogDismissOption="REQUEST" p:render="@{!#parent.readOnly}" p:order="20" />
+                        <bean parent="Uif-DialogDismissButton" p:actionLabel="Cancel"
+                              p:order="30" />
+
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="PropBudget-AssignPersonnelToPeriodsPage-DetailsAndRates-TabSection" parent="PropBudget-AssignPersonnelToPeriodsPage-DetailsAndRates-TabSection-parent" />
+	<bean id="PropBudget-AssignPersonnelToPeriodsPage-DetailsAndRates-TabSection-parent" parent="Uif-TabSection">
+		<property name="items">
+			<list>
+				<bean parent="PropBudget-AssignPersonnelToPeriodsPage-DetailsAndRates-GeneralTab"
+					p:headerText="General" p:order="10" />
+				<bean parent="PropBudget-AssignPersonnelToPeriodsPage-DetailsAndRates-RatesTab"
+					p:headerText="Rates" p:order="20" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="PropBudget-AssignPersonnelToPeriodsPage-DetailsAndRates-GeneralTab" parent="PropBudget-AssignPersonnelToPeriodsPage-DetailsAndRates-GeneralTab-parentBean" />
+	<bean id="PropBudget-AssignPersonnelToPeriodsPage-DetailsAndRates-GeneralTab-parentBean" abstract="true" parent="Uif-VerticalBoxSubSection">
+		<property name="items">
+			<list>
+				<ref bean="PropBudget-AssignPersonneltoPeriods-GeneralTab-Section" />
+			</list>
+		</property>
+	</bean>
+
+    <bean id="PropBudget-AssignPersonneltoPeriods-GeneralTab-Section" parent="PropBudget-AssignPersonneltoPeriods-GeneralTab-Section-parentBean" />
+    <bean id="PropBudget-AssignPersonneltoPeriods-GeneralTab-Section-parentBean" abstract="true" parent="Uif-VerticalBoxSubSection">
+        <property name="items">
+            <list>
+                <ref bean="PropBudget-AssignPersonneltoPeriods-General"/>
+                <ref bean="PropBudget-LineItem-InflationRateSection"/>
+                <ref bean="PropBudget-AssignPersonneltoPeriods-ApplyRates"/>
+            </list>
+        </property>
+    </bean>
+
+	<bean id="PropBudget-AssignPersonneltoPeriods-General" parent="PropBudget-AssignPersonneltoPeriods-General-parentBean" />
+	<bean id="PropBudget-AssignPersonneltoPeriods-General-parentBean" parent="Uif-CssGridSection-1FieldLabelColumn">
+		<property name="items">
+			<list>
+				<bean parent="Uif-InputField" p:propertyName="budgetLineItem.budgetCategoryCode"
+					p:order="10"/>
+				<bean parent="Uif-DataField" p:propertyName="budgetLineItem.underrecoveryAmount"
+					p:order="20"/>
+				<bean parent="Uif-DataField" p:propertyName="budgetLineItem.costSharingAmount"
+					p:order="30"/>
+				<bean parent="Uif-InputField" p:propertyName="budgetLineItem.budgetJustification"
+					p:label="Notes" p:order="40"/>
+				<bean parent="Uif-InputField" p:propertyName="budgetLineItem.lineItemDescription"
+					p:label="Group Description" p:order="50"/>
+				<bean parent="Uif-InputField" p:propertyName="budgetLineItem.quantity"
+					p:label="# of Persons" p:order="60"/>
+			</list>
+		</property>
+	</bean>
+
+    <bean id="PropBudget-AssignPersonneltoPeriods-ApplyRates" parent="PropBudget-AssignPersonneltoPeriods-ApplyRates-parentBean" />
+    <bean id="PropBudget-AssignPersonneltoPeriods-ApplyRates-parentBean" parent="Uif-CssGridSection-1FieldLabelColumn">
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="budgetLineItem.applyInRateFlag"
+                      p:order="10" p:label="Apply Inflation"/>
+                <bean parent="Uif-InputField" p:propertyName="budgetLineItem.submitCostSharingFlag"
+                      p:order="20" p:label="Submit cost sharing"/>
+                <bean parent="Uif-InputField" p:propertyName="budgetLineItem.onOffCampusFlag"
+                      p:order="30" p:label="On Campus"
+                      p:onChangeScript="ajaxSubmitForm('refresh',{'refreshCaller': 'PropBudget-AssignPersonnelToPeriodsPage-DetailsAndRates'})"/>
+            </list>
+        </property>
+    </bean>
+
+	<bean id="PropBudget-AssignPersonnelToPeriodsPage-DetailsAndRates-RatesTab" parent="PropBudget-BudgetLineItem-Rates" />
+
+</beans>

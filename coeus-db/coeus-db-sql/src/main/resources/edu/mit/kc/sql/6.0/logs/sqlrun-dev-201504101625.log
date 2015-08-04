@@ -1,0 +1,118 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Fri Apr 10 16:25:06 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+SP2-0103: Nothing in SQL buffer to run.
+
+'RUNNINGDDLSNAPSHOT'
+--------------------
+running ddl snapshot
+
+
+'RUNNINGDDLSNAPSHOT'
+--------------------
+running ddl snapshot
+
+
+'RUNNINGDMLSNAPSHOT'
+--------------------
+running dml snapshot
+
+INSERT INTO KRIM_ROLE_T (ROLE_ID, OBJ_ID, VER_NBR, ROLE_NM, NMSPC_CD, DESC_TXT, KIM_TYP_ID, ACTV_IND, LAST_UPDT_DT)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRIM_ROLE_TC1) violated
+
+
+CREATE TABLE TMP_MIG_PROTO_DOC_MAPING(
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+0 rows created.
+
+ALTER TABLE TMP_MIG_PROTO_DOC_MAPING ADD CONSTRAINT PK_DOCUMENT_NUMBER PRIMARY KEY(DOCUMENT_NUMBER)
+                                                                       *
+ERROR at line 1:
+ORA-02260: table can have only one primary key
+
+
+
+Table altered.
+
+
+0 rows updated.
+
+
+Commit complete.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

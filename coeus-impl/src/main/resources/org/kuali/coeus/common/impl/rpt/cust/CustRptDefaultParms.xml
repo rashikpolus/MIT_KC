@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean id="CustRptDefaultParms" parent="CustRptDefaultParms-parentBean" />
+  <bean id="CustRptDefaultParms-parentBean" abstract="true" parent="BusinessObjectEntry">
+    <property name="businessObjectClass" value="org.kuali.coeus.common.impl.rpt.cust.CustRptDefaultParms"/>
+		<property name="objectLabel" value="CustRptDefaultParms" />
+		<property name="inquiryDefinition">
+			<ref bean="CustRptDefaultParms-inquiryDefinition" />
+		</property>
+		<property name="lookupDefinition">
+			<ref bean="CustRptDefaultParms-lookupDefinition" />
+		</property>
+		<property name="attributes">
+			<list>
+				<ref bean="CustRptDefaultParms-parameterName" />
+				<ref bean="CustRptDefaultParms-reportTypeCode" />
+				<ref bean="CustReportDetails-custReportType.reportTypeCode" />
+				<ref bean="CustRptDefaultParms-className" />
+				<ref bean="CustRptDefaultParms-javaStatements" />
+				<ref bean="CustRptDefaultParms-unitForAuthCheck" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- Attribute Definitions -->
+	<bean id="CustRptDefaultParms-parameterName" parent="CustRptDefaultParms-parameterName-parentBean" />
+  <bean id="CustRptDefaultParms-parameterName-parentBean" abstract="true" parent="AttributeDefinition">
+		<property name="name" value="parameterName" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="Parameter Name" />
+		<property name="shortLabel" value="Parameter Name" />
+		<property name="maxLength" value="100" />
+		<property name="validationPattern">
+			<bean parent="AnyCharacterValidationPattern" />
+		</property>
+    <property name="validCharactersConstraint">
+      <bean parent="AnyCharacterPatternConstraint"/>
+    </property>
+		<property name="required" value="false" />
+		<property name="control">
+			<bean parent="TextControlDefinition" p:size="10" />
+		</property>
+    <property name="controlField">
+      <bean p:size="10" parent="Uif-TextControl"/>
+    </property>
+		<property name="summary" value="Parameter Name" />
+		<property name="description" value="Parameter Name" />
+	</bean>
+
+	<bean id="CustRptDefaultParms-reportTypeCode" parent="CustRptDefaultParms-reportTypeCode-parentBean" />
+  <bean id="CustRptDefaultParms-reportTypeCode-parentBean" abstract="true" parent="AttributeDefinition">
+		<property name="name" value="reportTypeCode" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="Report Type Code" />
+		<property name="shortLabel" value="Report Type Code" />
+		<property name="maxLength" value="3" />
+		<property name="validationPattern">
+			<bean parent="NumericValidationPattern" />
+		</property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+		<property name="required" value="false" />
+		<property name="control">
+			<bean parent="TextControlDefinition" p:size="10" />
+		</property>
+    <property name="controlField">
+      <bean p:size="10" parent="Uif-TextControl"/>
+    </property>
+		<property name="summary" value="Report Type Code" />
+		<property name="description" value="Report Type Code" />
+	</bean>
+	
+  <bean id="CustReportDetails-custReportType.reportTypeCode" parent="CustReportDetails-custReportType.reportTypeCode-parentBean"/>
+  <bean id="CustReportDetails-custReportType.reportTypeCode-parentBean" abstract="true" parent="CustReportType-reportTypeCode">
+		<property name="name" value="custReportType.reportTypeCode" />
+		<property name="label" value="Report Type Code" />
+	</bean>
+	
+	<bean id="CustRptDefaultParms-className" parent="CustRptDefaultParms-className-parentBean" />
+  <bean id="CustRptDefaultParms-className-parentBean" abstract="true" parent="AttributeDefinition">
+		<property name="name" value="className" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="Class Name" />
+		<property name="shortLabel" value="Class Name" />
+		<property name="maxLength" value="100" />
+		<property name="validationPattern">
+			<bean parent="AnyCharacterValidationPattern" />
+		</property>
+    <property name="validCharactersConstraint">
+      <bean parent="AnyCharacterPatternConstraint"/>
+    </property>
+		<property name="required" value="false" />
+		<property name="control">
+			<bean parent="TextControlDefinition" p:size="10" />
+		</property>
+    <property name="controlField">
+      <bean p:size="10" parent="Uif-TextControl"/>
+    </property>
+		<property name="summary" value="Class Name" />
+		<property name="description" value="Class Name" />
+	</bean>
+
+	<bean id="CustRptDefaultParms-javaStatements" parent="CustRptDefaultParms-javaStatements-parentBean" />
+  <bean id="CustRptDefaultParms-javaStatements-parentBean" abstract="true" parent="AttributeDefinition">
+		<property name="name" value="javaStatements" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="Java Statements" />
+		<property name="shortLabel" value="Java Statements" />
+		<property name="maxLength" value="2000" />
+		<property name="validationPattern">
+			<bean parent="AnyCharacterValidationPattern" p:allowWhitespace="true" />
+		</property>
+    <property name="validCharactersConstraint">
+      <bean parent="AnyCharacterPatternConstraint">
+        <property name="allowWhitespace" value="true"/>
+      </bean>
+    </property>
+		<property name="required" value="false" />
+		<property name="control">
+			<bean parent="TextControlDefinition" p:size="10" />
+		</property>
+    <property name="controlField">
+      <bean p:size="10" parent="Uif-TextControl"/>
+    </property>
+		<property name="summary" value="Java Statements" />
+		<property name="description" value="Java Statements" />
+	</bean>
+
+	<bean id="CustRptDefaultParms-unitForAuthCheck" parent="CustRptDefaultParms-unitForAuthCheck-parentBean" />
+  <bean id="CustRptDefaultParms-unitForAuthCheck-parentBean" abstract="true" parent="AttributeDefinition">
+		<property name="name" value="unitForAuthCheck" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="Unit For Auth Check" />
+		<property name="shortLabel" value="Unit For Auth Check" />
+		<property name="maxLength" value="1" />
+		<property name="validationPattern">
+			<bean parent="AlphaNumericValidationPattern" />
+		</property>
+    <property name="validCharactersConstraint">
+      <bean parent="AlphaNumericPatternConstraint"/>
+    </property>
+		<property name="required" value="false" />
+		<property name="control">
+			<bean parent="TextControlDefinition" p:size="10" />
+		</property>
+    <property name="controlField">
+      <bean p:size="10" parent="Uif-TextControl"/>
+    </property>
+		<property name="summary" value="Unit For Auth Check" />
+		<property name="description" value="Unit For Auth Check" />
+	</bean>
+
+	<!-- Business Object Inquiry Definition -->
+	<bean id="CustRptDefaultParms-inquiryDefinition" parent="CustRptDefaultParms-inquiryDefinition-parentBean" />
+  <bean id="CustRptDefaultParms-InquiryView" parent="CustRptDefaultParms-InquiryView-parentBean"/>
+  <bean id="CustRptDefaultParms-inquiryDefinition-parentBean" abstract="true" parent="InquiryDefinition">
+		<property name="title" value="CustRptDefaultParms" />
+		<property name="inquirySections">
+			<list>
+				<bean parent="InquirySectionDefinition">
+					<property name="title" value="Custom Report Default Parameters" />
+					<property name="numberOfColumns" value="1" />
+					<property name="inquiryFields">
+						<list>
+              <bean parent="FieldDefinition" p:attributeName="reportTypeCode" p:forceInquiry="true"/>
+              <bean parent="FieldDefinition" p:attributeName="custReportType.reportTypeCode" p:forceInquiry="true"/>
+              <bean parent="FieldDefinition" p:attributeName="parameterName" p:forceInquiry="true"/>
+              <bean parent="FieldDefinition" p:attributeName="className" p:forceInquiry="true"/>
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+  <bean id="CustRptDefaultParms-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView">
+    <property name="headerText" value="CustRptDefaultParms"/>
+    <property name="dataObjectClassName" value="org.kuali.coeus.common.impl.rpt.cust.CustRptDefaultParms"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-GridSection">
+          <property name="headerText" value="Custom Report Default Parameters"/>
+          <property name="layoutManager.numberOfColumns" value="2"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="reportTypeCode" parent="Uif-DataField"/>
+              <bean p:propertyName="custReportType.reportTypeCode" parent="Uif-DataField"/>
+              <bean p:propertyName="parameterName" parent="Uif-DataField"/>
+              <bean p:propertyName="className" parent="Uif-DataField"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <!-- Business Object Lookup Definition -->
+	<bean id="CustRptDefaultParms-lookupDefinition" parent="CustRptDefaultParms-lookupDefinition-parentBean" />
+  <bean id="CustRptDefaultParms-LookupView" parent="CustRptDefaultParms-LookupView-parentBean"/>
+  <bean id="CustRptDefaultParms-lookupDefinition-parentBean" abstract="true" parent="LookupDefinition">
+		<property name="title" value="Custom Report Default Parameters Lookup" /><property name="defaultSort">
+      <bean parent="SortDefinition"/>
+		</property>
+		<property name="lookupFields">
+			<list>
+        <bean p:attributeName="parameterName" parent="FieldDefinition" p:forceInquiry="false"/>
+        <bean p:attributeName="reportTypeCode" parent="FieldDefinition" p:forceInquiry="false"/>
+			</list>
+		</property>
+		<property name="resultFields">
+			<list>
+        <bean p:attributeName="parameterName" parent="FieldDefinition" p:forceInquiry="false"/>
+        <bean p:attributeName="reportTypeCode" parent="FieldDefinition" p:forceInquiry="false"/>
+        <bean p:attributeName="className" parent="FieldDefinition" p:forceInquiry="false"/>
+        <bean p:attributeName="javaStatements" parent="FieldDefinition" p:forceInquiry="false"/>
+        <bean p:attributeName="unitForAuthCheck" parent="FieldDefinition" p:forceInquiry="false"/>
+			</list>
+		</property>
+	</bean>
+
+  <bean id="CustRptDefaultParms-LookupView-parentBean" abstract="true" parent="Uif-LookupView">
+    <property name="dataObjectClassName" value="org.kuali.coeus.common.impl.rpt.cust.CustRptDefaultParms"/>
+    <property name="headerText" value="Custom Report Default Parameters Lookup"/>
+    <property name="criteriaFields">
+      <list>
+        <bean p:propertyName="parameterName" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="reportTypeCode" parent="Uif-LookupCriteriaInputField"/>
+      </list>
+    </property>
+    <property name="resultFields">
+      <list>
+        <bean p:propertyName="parameterName" parent="Uif-DataField"/>
+        <bean p:propertyName="reportTypeCode" parent="Uif-DataField"/>
+        <bean p:propertyName="className" parent="Uif-DataField"/>
+        <bean p:propertyName="javaStatements" parent="Uif-DataField"/>
+        <bean p:propertyName="unitForAuthCheck" parent="Uif-DataField"/>
+      </list>
+    </property>
+  </bean>
+
+</beans>

@@ -1,0 +1,76 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Thu Apr 30 06:43:00 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+SP2-0103: Nothing in SQL buffer to run.
+
+364 rows updated.
+
+
+Commit complete.
+
+drop table TMP_NEGOTIATION_ACTIVITY
+           *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+
+Table created.
+
+
+2 rows created.
+
+
+Commit complete.
+
+  inner join temp_negotiation_act_id t2 on t2.negotiation_activity_id = t1.negotiation_activity_id
+             *
+ERROR at line 6:
+ORA-06550: line 6, column 14:
+PL/SQL: ORA-00942: table or view does not exist
+ORA-06550: line 4, column 3:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 3, column 8:
+PLS-00341: declaration of cursor 'C_NEGO' is incomplete or malformed
+ORA-06550: line 9, column 10:
+PL/SQL: Item ignored
+ORA-06550: line 17, column 21:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 17, column 3:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 23, column 29:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 23, column 29:
+PL/SQL: ORA-00904: "R_NEGO"."NEGOTIATION_ID": invalid identifier
+ORA-06550: line 22, column 3:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 36, column 93:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 36, column 93:
+PL/SQL: ORA-00904: "R_NEGO"."NEGOTIATION_ID": invalid identifier
+ORA-06550: line 36, column 4:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 3
+
+
+
+Commit complete.
+
+
+Table dropped.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

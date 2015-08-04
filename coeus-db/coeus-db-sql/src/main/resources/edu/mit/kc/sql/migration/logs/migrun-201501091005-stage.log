@@ -1,0 +1,10 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Fri Jan 9 10:05:25 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+ERROR:
+ORA-12170: TNS:Connect timeout occurred
+
+
+Enter user-name: 

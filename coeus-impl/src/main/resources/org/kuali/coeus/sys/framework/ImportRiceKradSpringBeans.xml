@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:annotation-config />
+
+    <!-- this spring file is meant to be imported into other modules as needed -->
+
+    <bean id="grlImporter" abstract="true" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean" p:singleton="true" p:mustExist="true" />
+
+    <bean id="kualiModuleService" parent="grlImporter" p:serviceName="kualiModuleService" />
+    <bean id="parameterService" parent="grlImporter" p:serviceName="parameterService" />
+    <bean id="modelAndViewService" parent="grlImporter" p:serviceName="modelAndViewService" />
+    <bean id="kcFileService" parent="grlImporter" p:serviceName="kcFileService" />
+
+    <bean class="org.kuali.rice.krad.uif.freemarker.FreeMarkerInlineRenderBootstrap" />
+
+    <bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+        <property name="preferFileSystemAccess" value="false" />
+        <property name="templateLoaderPath" value="/"/>
+        <property name="freemarkerSettings">
+            <props>
+                <prop key="number_format">computer</prop>
+                <prop key="template_update_delay">2147483647</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+        <property name="cache" value="true"/>
+        <property name="prefix" value=""/>
+        <property name="suffix" value=".ftl"/>
+    </bean>
+
+    <bean id="handlerMapping" class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
+        <property name="interceptors">
+            <list>
+                <ref bean="transactionHandlerInterceptor"/>
+                <ref bean="uifControllerHandlerInterceptor"/>
+                <ref bean="moduleLockingHandlerInterceptor"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="uifControllerHandlerInterceptor"
+          class="org.kuali.rice.krad.web.controller.UifControllerHandlerInterceptor">
+        <property name="modelAndViewService" ref="modelAndViewService" />
+    </bean>
+
+    <bean id="moduleLockingHandlerInterceptor" class="org.kuali.rice.krad.web.controller.ModuleLockingHandlerInterceptor">
+        <property name="moduleLockedMapping" value="module-locked"/>
+        <property name="kualiModuleService" ref="kualiModuleService"/>
+    </bean>
+
+    <bean id="transactionHandlerInterceptor" class="org.kuali.rice.krad.web.controller.TransactionHandlerInterceptor"/>
+
+    <bean class="org.kuali.coeus.sys.framework.controller.interceptor.KcUifHandlerExceptionResolver">
+        <property name="innerHandler">
+            <bean class="org.kuali.rice.krad.web.controller.UifHandlerExceptionResolver"/>
+        </property>
+    </bean>
+
+    <bean class="org.kuali.rice.krad.web.controller.UifRequestMappingHandlerAdapter">
+        <property name="webBindingInitializer" ref="kradConfigurableWebBindingInitializer" />
+        <property name="messageConverters">
+            <list>
+                <bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter"/>
+                <bean class="org.springframework.http.converter.ResourceHttpMessageConverter"/>
+                <bean class="org.springframework.http.converter.StringHttpMessageConverter"/>
+                <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"/>
+                <bean class="org.springframework.http.converter.xml.SourceHttpMessageConverter"/>
+                <bean class="org.springframework.http.converter.xml.XmlAwareFormHttpMessageConverter"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="kradConfigurableWebBindingInitializer"
+          class="org.kuali.rice.krad.web.bind.UifConfigurableWebBindingInitializer"/>
+
+    <bean id="multipartResolver" class="org.kuali.coeus.sys.framework.controller.ParameterAwareCommonsMultipartResolver">
+        <property name="kcFileService" ref="kcFileService"/>
+    </bean>
+
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basenames">
+            <list>
+                <value>org/kuali/rice/krad/ApplicationResources</value>
+                <value>org/kuali/rice/krad/KRADApplicationResources</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="viewHelperService" class="org.kuali.rice.krad.uif.service.impl.ViewHelperServiceImpl" />
+
+    <bean id="viewPresentationControllerBase" class="org.kuali.rice.krad.uif.view.ViewPresentationControllerBase" />
+
+</beans>

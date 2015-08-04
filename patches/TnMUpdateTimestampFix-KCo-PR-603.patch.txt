@@ -1,0 +1,182 @@
+From 6186a4a6fd21fe12b1abdb2ccfe0c6d46ec4b60e Mon Sep 17 00:00:00 2001
+From: Gayathri Athreya <gathreya@email.arizona.edu>
+Date: Mon, 6 Jul 2015 15:27:02 -0700
+Subject: [PATCH] RESKC-573: Fixing update timestamp for award amount info
+ Disrupts reporting. Subsequent routing of T&M docs in award, changes the
+ update timestamp of previous award amount info entries in the table. While
+ routing a T&M doc, only the update timestamp field of the award amount info
+ entries for that doc should be updated.
+
+---
+ .../main/java/org/kuali/kra/award/home/Award.java  |  6 +++
+ .../org/kuali/kra/award/home/AwardAmountInfo.java  | 51 +++++-----------------
+ .../web/struts/action/TimeAndMoneyAction.java      | 30 ++++++-------
+ 3 files changed, 30 insertions(+), 57 deletions(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/award/home/Award.java b/coeus-impl/src/main/java/org/kuali/kra/award/home/Award.java
+index cc6cd2a..7f929b8 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/award/home/Award.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/award/home/Award.java
+@@ -2649,11 +2649,16 @@ public void setAllowUpdateTimestampToBeReset(boolean allowUpdateTimestampToBeRes
+ 
+     @Override
+     public void setUpdateTimestamp(Timestamp updateTimestamp) {
++
+         if (isAllowUpdateTimestampToBeReset()) {
+             super.setUpdateTimestamp(updateTimestamp);
+         } else {
+             setAllowUpdateTimestampToBeReset(true);
+         }
++
++        // We want to retain the old update timestamps of old award infos and just change the latest one.
++        List<AwardAmountInfo> currentAwardAmountInfos = getAwardAmountInfos();
++        currentAwardAmountInfos.get(currentAwardAmountInfos.size() - 1).changeUpdateTimestamp(updateTimestamp);
+     }
+     
+     public List<Award> getAwardVersions() {
+@@ -2813,4 +2818,5 @@ public void setAwardCgbList(List<AwardCgb> awardCgbList) {
+ 	public void setAllFundingProposals(List<AwardFundingProposal> allFundingProposals) {
+ 		this.allFundingProposals = allFundingProposals;
+ 	}
++
+ }
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/award/home/AwardAmountInfo.java b/coeus-impl/src/main/java/org/kuali/kra/award/home/AwardAmountInfo.java
+index 1efe356..7ac1c21 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/award/home/AwardAmountInfo.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/award/home/AwardAmountInfo.java
+@@ -22,12 +22,8 @@
+ import org.kuali.coeus.sys.api.model.ScaleTwoDecimal;
+ 
+ import java.sql.Date;
++import java.sql.Timestamp;
+ 
+-/**
+- * AwardAmountInfo BO
+- * 
+- * @author Kuali Coeus development team (kc.dev@kuali.org)
+- */
+ public class AwardAmountInfo extends AwardAssociate {
+ 
+     private static final long serialVersionUID = 1L;
+@@ -80,8 +76,6 @@
+ 
+     private Integer originatingAwardVersion;
+ 
+-    // private AwardBudgetInfo awardBudgetInfo;   
+-    // private AwardAmtFnaDistribution awardAmtFnaDistribution;   
+     public AwardAmountInfo() {
+         anticipatedTotalAmount = new ScaleTwoDecimal(0.00);
+         antDistributableAmount = new ScaleTwoDecimal(0.00);
+@@ -319,21 +313,6 @@ public void setObligatedTotalIndirect(ScaleTwoDecimal obligatedTotalIndirect) {
+         this.obligatedTotalIndirect = obligatedTotalIndirect;
+     }
+ 
+-    //    public AwardBudgetInfo getAwardBudgetInfo() {  
+-    //        return awardBudgetInfo;  
+-    //    }  
+-    //  
+-    //    public void setAwardBudgetInfo(AwardBudgetInfo awardBudgetInfo) {  
+-    //        this.awardBudgetInfo = awardBudgetInfo;  
+-    //    }A  
+-    //  
+-    //    public AwardAmtFnaDistribution getAwardAmtFnaDistribution() {  
+-    //        return awardAmtFnaDistribution;  
+-    //    }  
+-    //  
+-    //    public void setAwardAmtFnaDistribution(AwardAmtFnaDistribution awardAmtFnaDistribution) {  
+-    //        this.awardAmtFnaDistribution = awardAmtFnaDistribution;  
+-    //    }  
+     /**
+      * Gets the originatingAwardVersion attribute. 
+      * @return Returns the originatingAwardVersion.
+@@ -396,23 +375,15 @@ public void resetChangeValues() {
+         setAnticipatedChangeIndirect(new ScaleTwoDecimal(0));
+     }
+ 
+-//TODO: For debugging, to be taken out eventually
+-public String toString() {
+-  return 
+-  "anticipatedTotalAmount = " +      anticipatedTotalAmount +         
+-  ", antDistributableAmount = " +      antDistributableAmount +         
+-  ", amountObligatedToDate = " +       amountObligatedToDate +          
+-  ", obliDistributableAmount = " +     obliDistributableAmount +        
+-  ", anticipatedChange = " +           anticipatedChange +              
+-  ", obligatedChange = " +             obligatedChange +                
+-  ", obligatedChangeDirect = " +       obligatedChangeDirect +          
+-  ", obligatedChangeIndirect = " +     obligatedChangeIndirect +        
+-  ", anticipatedChangeDirect = " +     anticipatedChangeDirect +        
+-  ", anticipatedChangeIndirect = " +   anticipatedChangeIndirect +      
+-  ", anticipatedTotalDirect = " +      anticipatedTotalDirect +         
+-  ", anticipatedTotalIndirect = " +    anticipatedTotalIndirect +       
+-  ", obligatedTotalDirect = " +        obligatedTotalDirect +           
+-  ", obligatedTotalIndirect = " +      obligatedTotalIndirect;
+-}
++    public void changeUpdateTimestamp(Timestamp updateTimestamp) {
++        super.setUpdateTimestamp(updateTimestamp);
++    }
++
++   @Override
++    public void setUpdateTimestamp(Timestamp updateTimestamp) {
++        if (this.getUpdateTimestamp() == null) {
++            super.setUpdateTimestamp(updateTimestamp);
++        }
++    }
+ 
+ }
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/web/struts/action/TimeAndMoneyAction.java b/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/web/struts/action/TimeAndMoneyAction.java
+index 9bc8aa2..b276e7e 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/web/struts/action/TimeAndMoneyAction.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/web/struts/action/TimeAndMoneyAction.java
+@@ -592,19 +592,21 @@ public ActionForward route(ActionMapping mapping, ActionForm form, HttpServletRe
+             throws Exception {
+         ActionForward actionForward;
+         save(mapping, form, request, response);
+-        TimeAndMoneyForm timeAndMoneyForm = (TimeAndMoneyForm) form;
+-        actionForward = super.route(mapping, form, request, response);  
+-        // save report tracking items
++        actionForward = super.route(mapping, form, request, response);
++
++        return doRoutingTasks(mapping, (TimeAndMoneyForm) form, actionForward);
++    }
++
++    protected ActionForward doRoutingTasks(ActionMapping mapping, TimeAndMoneyForm timeAndMoneyForm, ActionForward actionForward) throws ParseException {
+         saveReportTrackingItems(timeAndMoneyForm);
+-        
+         String routeHeaderId = timeAndMoneyForm.getDocument().getDocumentNumber();
++
+         String returnLocation = buildActionUrl(routeHeaderId, Constants.MAPPING_AWARD_TIME_AND_MONEY_PAGE, TIME_AND_MONEY_DOCUMENT);
+-        
+         ActionForward basicForward = mapping.findForward(KRADConstants.MAPPING_PORTAL);
+         ActionForward holdingPageForward = mapping.findForward(Constants.MAPPING_HOLDING_PAGE);
+         return routeToHoldingPage(basicForward, actionForward, holdingPageForward, returnLocation);
+     }
+-    
++
+     protected void saveReportTrackingItems(TimeAndMoneyForm timeAndMoneyForm) throws ParseException {
+         TimeAndMoneyDocument timeAndMoneyDocument = timeAndMoneyForm.getTimeAndMoneyDocument();
+         Award award = timeAndMoneyDocument.getAward();
+@@ -620,19 +622,13 @@ public ActionForward blanketApprove(ActionMapping mapping, ActionForm form, Http
+             HttpServletResponse response) throws Exception {
+         ActionForward actionForward;
+         save(mapping, form, request, response);
+-        actionForward = super.blanketApprove(mapping, form, request, response);      
+-        
+-        TimeAndMoneyForm timeAndMoneyForm = (TimeAndMoneyForm) form;
+-        saveReportTrackingItems(timeAndMoneyForm);
++        actionForward = super.blanketApprove(mapping, form, request, response);
+ 
+-        String routeHeaderId = timeAndMoneyForm.getDocument().getDocumentNumber();
+-        
+-        String returnLocation = buildActionUrl(routeHeaderId, Constants.MAPPING_AWARD_TIME_AND_MONEY_PAGE, TIME_AND_MONEY_DOCUMENT);
+-        ActionForward basicForward = mapping.findForward(KRADConstants.MAPPING_PORTAL);
+-        ActionForward holdingPageForward = mapping.findForward(Constants.MAPPING_HOLDING_PAGE);
+-        return routeToHoldingPage(basicForward, actionForward, holdingPageForward, returnLocation);
++        return doRoutingTasks(mapping, (TimeAndMoneyForm) form, actionForward);
+     }
+-    
++
++
++
+     /**
+      * must remove all award amount infos corresponding to this document.  Date changes create and add new Award Amount Info.  Pending Transactions
+      * do not create new Award Amount Info until the document is routed or blanket approved.

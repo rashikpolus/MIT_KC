@@ -1,0 +1,113 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+       xmlns:p="http://www.springframework.org/schema/p" 
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:beans="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:lang="http://www.springframework.org/schema/lang"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+                           http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context-3.0.xsd
+                           http://www.springframework.org/schema/lang
+                           http://www.springframework.org/schema/lang/spring-lang-3.0.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+                           http://www.springframework.org/schema/util
+                           http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+    <import resource="classpath:edu/mit/kc/MitKcSpringBeans.xml" />
+    <bean id="kcNotificationService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="kcNotificationService" />
+    </bean>
+    <bean id="businessObjectService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="businessObjectService" />
+    </bean>
+    <bean id="parameterService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="parameterService" />
+    </bean>
+     <bean id="citiTrainingDataFeedService" class="edu.mit.kc.citi.CitiTrainingDataFeedServiceImpl">
+        <property name="parameterService" ref="parameterService"/>
+        <property name="businessObjectService" ref="businessObjectService" />
+        <property name="kcNotificationService" ref="kcNotificationService" />
+        <property name="dbFunctionExecuteService" ref="dbFunctionExecuteService" />
+    </bean>
+	<bean id="cacDataFeedService" class="edu.mit.kc.cac.CacDataFeedServiceImpl">
+        <property name="parameterService" ref="parameterService"/>
+        <property name="businessObjectService" ref="businessObjectService" />
+        <property name="kcNotificationService" ref="kcNotificationService" />
+        <property name="dbFunctionExecuteService" ref="dbFunctionExecuteService" /> 
+    </bean>
+    <bean id="citiTrainingDataFeedJobDetail" class="org.quartz.JobDetail" >
+        <property name="jobClass" value="edu.mit.kc.citi.CitiTrainingDataFeedJobDetail" />
+        <property name="name" value="citiTrainingDataFeedJobDetail" />
+    </bean>
+    <bean id="cacDataFeedJobDetail" class="org.quartz.JobDetail" >
+        <property name="jobClass" value="edu.mit.kc.cac.CacDataFeedJobDetail" />
+        <property name="name" value="cacDataFeedJobDetail" />
+    </bean>
+    <bean id="citiTrainingDataFeedTrigger" class="org.kuali.coeus.sys.framework.scheduling.KcCronTriggerBean">
+        <property name="jobDetail" ref="citiTrainingDataFeedJobDetail" />
+        <property name="parameterService" ref="parameterService" />    
+        <property name="dateTimeService" ref="dateTimeService" />
+        <property name="cronExpressionParameterName" value="CITI_TRAINING_DATA_FEED_CRON_TRIGGER" />
+        <property name="triggerEnabledParameterName" value="ENABLE_CITI_TRAINING_DATA_FEED" />
+        <property name="parameterNamespace" value="KC-ADM" />
+        <property name="parameterComponent" value="All" />
+    </bean>
+    <bean id="cacDataFeedTrigger" class="org.kuali.coeus.sys.framework.scheduling.KcCronTriggerBean">
+        <property name="jobDetail" ref="cacDataFeedJobDetail" />
+        <property name="parameterService" ref="parameterService" />    
+        <property name="dateTimeService" ref="dateTimeService" />
+        <property name="cronExpressionParameterName" value="CAC_DATA_FEED_CRON_TRIGGER" />
+        <property name="triggerEnabledParameterName" value="ENABLE_CAC_DATA_FEED" />
+        <property name="parameterNamespace" value="KC-ADM" />
+        <property name="parameterComponent" value="All" />
+    </bean>
+	<bean id="jobFactoryBean" class="org.springframework.scheduling.quartz.SpringBeanJobFactory"/>
+
+    <bean id="mitKcSchedulerFactory" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref local="citiTrainingDataFeedTrigger"/>
+                <ref local="cacDataFeedTrigger"/>
+            </list>
+        </property>
+        <property name="jobFactory" ref="jobFactoryBean"/>
+        <!-- 
+            Injecting these services into the scheduler factory so it can be added to the job context 
+            which is passed to the executeInternal method of the job class.
+        -->
+        <property name= "schedulerContextAsMap">
+            <map>
+                <entry key="citiTrainingDataFeedService" > 
+                    <ref bean="citiTrainingDataFeedService" /> 
+                </entry>
+                <entry key="cacDataFeedService" > 
+                    <ref bean="cacDataFeedService" /> 
+                </entry>
+                <entry key="parameterService"> 
+                    <ref bean="parameterService" /> 
+                </entry>
+                <entry key="kcNotificationService"> 
+                    <ref bean="kcNotificationService" /> 
+                </entry>
+                <entry key="user" value="${mitKcBatchJobUserName}" />
+            </map>
+        </property>
+        <property name="quartzProperties">
+            <props>
+                <prop key="org.quartz.jobStore.tablePrefix">${kcQuartzDatabasePrefix}</prop>
+            </props>
+        </property>
+        <property name="dataSource" ref="dataSource" />
+        <!--
+            This is set to true so that the tables are modified when the job is modified, otherwise
+            manual deletion of values from tables will be required every time job is changed
+        -->
+        <property name="overwriteExistingJobs" value="true" />
+     </bean>
+</beans>

@@ -1,0 +1,126 @@
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+Table altered.
+
+
+Table altered.
+
+
+1 row created.
+
+
+Table altered.
+
+CREATE TABLE FILE_DATA (ID VARCHAR2(36), DATA BLOB DEFAULT EMPTY_BLOB())
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object 
+
+
+ALTER TABLE NARRATIVE_ATTACHMENT ADD FILE_DATA_ID VARCHAR2(36)
+                                     *
+ERROR at line 1:
+ORA-01430: column being added already exists in table 
+
+
+
+82423 rows updated.
+
+INSERT INTO FILE_DATA (SELECT FILE_DATA_ID, NARRATIVE_DATA FROM NARRATIVE_ATTACHMENT)
+                                            *
+ERROR at line 1:
+ORA-00904: "NARRATIVE_DATA": invalid identifier 
+
+
+ALTER TABLE NARRATIVE_ATTACHMENT MODIFY FILE_DATA_ID VARCHAR2(36) NOT NULL
+                                        *
+ERROR at line 1:
+ORA-01442: column to be modified to NOT NULL is already NOT NULL 
+
+
+ALTER TABLE NARRATIVE_ATTACHMENT DROP COLUMN NARRATIVE_DATA
+                                             *
+ERROR at line 1:
+ORA-00904: "NARRATIVE_DATA": invalid identifier 
+
+
+ALTER TABLE EPS_PROP_PERSON_BIO_ATTACHMENT ADD FILE_DATA_ID VARCHAR2(36)
+                                               *
+ERROR at line 1:
+ORA-01430: column being added already exists in table 
+
+
+
+13128 rows updated.
+
+INSERT INTO FILE_DATA (SELECT FILE_DATA_ID, BIO_DATA FROM EPS_PROP_PERSON_BIO_ATTACHMENT)
+                                            *
+ERROR at line 1:
+ORA-00904: "BIO_DATA": invalid identifier 
+
+
+ALTER TABLE EPS_PROP_PERSON_BIO_ATTACHMENT MODIFY FILE_DATA_ID VARCHAR2(36) NOT NULL
+                                                  *
+ERROR at line 1:
+ORA-01442: column to be modified to NOT NULL is already NOT NULL 
+
+
+ALTER TABLE EPS_PROP_PERSON_BIO_ATTACHMENT DROP COLUMN BIO_DATA
+                                                       *
+ERROR at line 1:
+ORA-00904: "BIO_DATA": invalid identifier 
+
+
+
+6 rows deleted.
+
+ALTER TABLE FILE_DATA ADD PRIMARY KEY(ID)
+                          *
+ERROR at line 1:
+ORA-02260: table can have only one primary key 
+
+
+
+Table altered.
+
+
+Commit complete.
+
+
+Commit complete.
+

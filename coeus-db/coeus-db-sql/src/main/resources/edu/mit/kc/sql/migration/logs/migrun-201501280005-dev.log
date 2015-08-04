@@ -1,0 +1,163 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Wed Jan 28 00:05:17 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+
+Table truncated.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+DELETE FROM ATTACHMENT_FILE WHERE FILE_ID IN(SELECT FILE_ID FROM NEGOTIATION_ATTACHMENT)
+*
+ERROR at line 1:
+ORA-02292: integrity constraint (KCSO.NEGOTIATION_ATTACHMENT_FK2) violated -
+child record found
+
+
+
+Table truncated.
+
+
+Table created.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+Table dropped.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Commit complete.
+
+
+33581 rows updated.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+Commit complete.
+
+
+1109 rows deleted.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+33581 rows deleted.
+
+
+31 rows deleted.
+
+
+31 rows deleted.
+
+
+Table truncated.
+
+
+Table created.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+Table dropped.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

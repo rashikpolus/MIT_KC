@@ -1,0 +1,101 @@
+From b62b0145f680376a40523f1c68343f995d476e83 Mon Sep 17 00:00:00 2001
+From: Gayathri <gathreya@email.arizona.edu>
+Date: Tue, 26 May 2015 16:18:27 -0700
+Subject: [PATCH] RESKC-485: STE in dataoverride when using award id As an OSP
+ Contract Administrator and proposal approver, I need to use data override to
+ correct information on routing proposals (defined in the maintenance doc
+ 'proposal dev editable columns).
+
+To duplicate;
+As Quickstart in res-demo1, open a proposal in approval pending status
+Open DataOverride from toolbar
+Select Award ID
+Enter the 12 digit award id
+When I enter a valid award id, it takes it. If I enter an invalid one, the modal shows an error but if I go ahead and submit, I either get a STE or screen goes blank.
+
+org.kuali.rice.core.api.exception.RiceRuntimeException: Exception trying to invoke action SAVE for document: 4690
+	at org.kuali.rice.krad.document.DocumentControllerServiceImpl.performWorkflowAction(DocumentControllerServiceImpl.java:892)
+	at org.kuali.rice.krad.document.DocumentControllerServiceImpl.save(DocumentControllerServiceImpl.java:285)
+	at org.kuali.rice.krad.document.DocumentControllerServiceImpl.save(DocumentControllerServiceImpl.java:266)
+	at org.kuali.coeus.propdev.impl.core.ProposalDevelopmentControllerBase.save(ProposalDevelopmentControllerBase.java:257)
+	at org.kuali.coeus.propdev.impl.dataovveride.ProposalDevelopmentDataOverrideController.createOverride(ProposalDevelopmentDataOverrideController.java:115)
+	at org.kuali.coeus.propdev.impl.dataovveride.ProposalDevelopmentDataOverrideController$$FastClassBySpringCGLIB$$76e3085c.invoke(<generated>)
+
+Caused by: java.lang.RuntimeException: No PersistenceProvider handles type: class org.kuali.kra.award.home.Award
+	at org.kuali.rice.krad.data.provider.impl.ProviderBasedDataObjectService.persistenceProviderForType(ProviderBasedDataObjectService.java:266)
+	at org.kuali.rice.krad.data.provider.impl.ProviderBasedDataObjectService.findMatching(ProviderBasedDataObjectService.java:96)
+	at org.kuali.coeus.propdev.impl.core.SubmissionInfoServiceImpl.getProposalCurrentAwardVersion(SubmissionInfoServiceImpl.java:303)
+	at org.kuali.coeus.propdev.impl.core.SubmissionInfoServiceImpl.getProposalCurrentAwardSponsorAwardNumber(SubmissionInfoServiceImpl.java:169)
+	at org.kuali.coeus.propdev.impl.core.ProposalDevelopmentDocumentRule.processProposalRequiredFieldsBusinessRule(ProposalDevelopmentDocumentRule.java:319)
+	at
+---
+ .../core/ProposalDevelopmentViewHelperServiceImpl.java |  3 +--
+ .../propdev/impl/core/SubmissionInfoServiceImpl.java   | 18 +++++++++++++++---
+ 2 files changed, 16 insertions(+), 5 deletions(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentViewHelperServiceImpl.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentViewHelperServiceImpl.java
+index af03ffd..89e336c 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentViewHelperServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentViewHelperServiceImpl.java
+@@ -746,8 +746,7 @@ public boolean hasAttachment(ProposalDevelopmentAttachmentHelper helper, String
+     }
+ 
+     public String displayFullName(String userName){
+-        String name = getPersonService().getPersonByPrincipalName(userName).getName();
+-        return name;
++        return ObjectUtils.isNull(userName) ? "" : getPersonService().getPersonByPrincipalName(userName).getName();
+     }
+ 
+     public String replaceLineBreaks(String string) {
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/SubmissionInfoServiceImpl.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/SubmissionInfoServiceImpl.java
+index 962a316..96252be 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/SubmissionInfoServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/SubmissionInfoServiceImpl.java
+@@ -33,6 +33,7 @@
+ import org.kuali.rice.coreservice.framework.parameter.ParameterConstants;
+ import org.kuali.rice.coreservice.framework.parameter.ParameterService;
+ import org.kuali.rice.krad.data.DataObjectService;
++import org.kuali.rice.krad.service.BusinessObjectService;
+ import org.kuali.rice.krad.service.LegacyDataAdapter;
+ import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.beans.factory.annotation.Qualifier;
+@@ -64,11 +65,15 @@
+     @Autowired
+     @Qualifier("legacyDataAdapter")
+     private LegacyDataAdapter legacyDataAdapter;
+-    
++
+     @Autowired
+     @Qualifier("proposalTypeService")
+     private ProposalTypeService proposalTypeService;
+ 
++    @Autowired
++    @Qualifier("businessObjectService")
++    private BusinessObjectService businessObjectService;
++
+ 
+     @Override
+     public String getFederalId(String proposalNumber) {
+@@ -300,8 +305,7 @@ protected Award getProposalCurrentAwardVersion(String currentAwardNumber) {
+         else {
+             HashMap<String, String> valueMap = new HashMap<String, String>();
+             valueMap.put("awardNumber", currentAwardNumber);
+-            List<Award> awards = getDataObjectService().findMatching(Award.class,
+-                    QueryByCriteria.Builder.andAttributes(valueMap).build()).getResults();
++            List<Award> awards = (List) getBusinessObjectService().findMatching(Award.class, valueMap);
+             if (awards != null && !awards.isEmpty()) {
+                 award = awards.get(0);
+             }
+@@ -356,4 +360,12 @@ public ProposalTypeService getProposalTypeService() {
+ 	public void setProposalTypeService(ProposalTypeService proposalTypeService) {
+ 		this.proposalTypeService = proposalTypeService;
+ 	}
++
++    public BusinessObjectService getBusinessObjectService() {
++        return businessObjectService;
++    }
++
++    public void setBusinessObjectService(BusinessObjectService businessObjectService) {
++        this.businessObjectService = businessObjectService;
++    }
+ }

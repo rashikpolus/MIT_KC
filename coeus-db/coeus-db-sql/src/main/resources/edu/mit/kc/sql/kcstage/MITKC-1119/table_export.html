@@ -1,0 +1,559 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=Cp1252">
+<!-- base href="http://apexdev.us.oracle.com:7778/pls/apx11w/" -->
+<style type="text/css">
+table {
+background-color:#F2F2F5;
+border-width:1px 1px 0px 1px;
+border-color:#C9CBD3;
+border-style:solid;
+}
+td {
+color:#000000;
+font-family:Tahoma,Arial,Helvetica,Geneva,sans-serif;
+font-size:9pt;
+background-color:#EAEFF5;
+padding:8px;
+background-color:#F2F2F5;
+border-color:#ffffff #ffffff #cccccc #ffffff;
+border-style:solid solid solid solid;
+border-width:1px 0px 1px 0px;
+}
+th {
+font-family:Tahoma,Arial,Helvetica,Geneva,sans-serif;
+font-size:9pt;
+padding:8px;
+background-color:#CFE0F1;
+border-color:#ffffff #ffffff #cccccc #ffffff;
+border-style:solid solid solid none;
+border-width:1px 0px 1px 0px;
+white-space:nowrap;
+}
+</style>
+<script type="text/javascript">
+window.apex_search = {};
+apex_search.init = function (){
+	this.rows = document.getElementById('data').getElementsByTagName('TR');
+	this.rows_length = apex_search.rows.length;
+	this.rows_text =  [];
+	for (var i=0;i<apex_search.rows_length;i++){
+        this.rows_text[i] = (apex_search.rows[i].innerText)?apex_search.rows[i].innerText.toUpperCase():apex_search.rows[i].textContent.toUpperCase();
+	}
+	this.time = false;
+}
+
+apex_search.lsearch = function(){
+	this.term = document.getElementById('S').value.toUpperCase();
+	for(var i=0,row;row = this.rows[i],row_text = this.rows_text[i];i++){
+		row.style.display = ((row_text.indexOf(this.term) != -1) || this.term  === '')?'':'none';
+	}
+	this.time = false;
+}
+
+apex_search.search = function(e){
+    var keycode;
+    if(window.event){keycode = window.event.keyCode;}
+    else if (e){keycode = e.which;}
+    else {return false;}
+    if(keycode == 13){
+		apex_search.lsearch();
+	}
+    else{return false;}
+}</script>
+</head><body onload="apex_search.init();">
+<table border="0" cellpadding="0" cellspacing="0">
+<tbody><tr><td><input type="text" size="30" maxlength="1000" value="" id="S" onkeyup="apex_search.search(event);" /><input type="button" value="Search" onclick="apex_search.lsearch();"/> 
+</td></tr>
+</tbody></table>
+<br>
+<table border="0" cellpadding="0" cellspacing="0">
+<tr>	<th>OLD_AWARD_ID</th>
+	<th>AWARD_NUMBER</th>
+	<th>SEQUENCE_NUMBER</th>
+</tr>
+<tbody id="data">
+
+	<tr>
+<td align="right">239639</td>
+<td>015476-00001</td>
+<td align="right">9</td>
+	</tr>
+	<tr>
+<td align="right">241780</td>
+<td>015627-00001</td>
+<td align="right">55</td>
+	</tr>
+	<tr>
+<td align="right">244346</td>
+<td>015798-00001</td>
+<td align="right">17</td>
+	</tr>
+	<tr>
+<td align="right">277286</td>
+<td>017990-00001</td>
+<td align="right">14</td>
+	</tr>
+	<tr>
+<td align="right">279028</td>
+<td>018154-00001</td>
+<td align="right">8</td>
+	</tr>
+	<tr>
+<td align="right">279028</td>
+<td>018154-00001</td>
+<td align="right">8</td>
+	</tr>
+	<tr>
+<td align="right">281225</td>
+<td>018192-00001</td>
+<td align="right">23</td>
+	</tr>
+	<tr>
+<td align="right">281225</td>
+<td>018192-00001</td>
+<td align="right">23</td>
+	</tr>
+	<tr>
+<td align="right">281257</td>
+<td>018194-00001</td>
+<td align="right">2</td>
+	</tr>
+	<tr>
+<td align="right">6074860</td>
+<td>018220-00001</td>
+<td align="right">16</td>
+	</tr>
+	<tr>
+<td align="right">287368</td>
+<td>018643-00001</td>
+<td align="right">5</td>
+	</tr>
+	<tr>
+<td align="right">290928</td>
+<td>018942-00001</td>
+<td align="right">7</td>
+	</tr>
+	<tr>
+<td align="right">294965</td>
+<td>019266-00001</td>
+<td align="right">7</td>
+	</tr>
+	<tr>
+<td align="right">295582</td>
+<td>019306-00001</td>
+<td align="right">10</td>
+	</tr>
+	<tr>
+<td align="right">6098677</td>
+<td>019317-00001</td>
+<td align="right">14</td>
+	</tr>
+	<tr>
+<td align="right">6098677</td>
+<td>019317-00001</td>
+<td align="right">14</td>
+	</tr>
+	<tr>
+<td align="right">6103925</td>
+<td>019331-00001</td>
+<td align="right">13</td>
+	</tr>
+	<tr>
+<td align="right">295829</td>
+<td>019343-00001</td>
+<td align="right">8</td>
+	</tr>
+	<tr>
+<td align="right">6074899</td>
+<td>019346-00001</td>
+<td align="right">14</td>
+	</tr>
+	<tr>
+<td align="right">6074899</td>
+<td>019346-00001</td>
+<td align="right">14</td>
+	</tr>
+	<tr>
+<td align="right">296404</td>
+<td>019388-00001</td>
+<td align="right">2</td>
+	</tr>
+	<tr>
+<td align="right">297981</td>
+<td>019571-00001</td>
+<td align="right">3</td>
+	</tr>
+	<tr>
+<td align="right">299001</td>
+<td>019649-00001</td>
+<td align="right">4</td>
+	</tr>
+	<tr>
+<td align="right">301524</td>
+<td>019862-00001</td>
+<td align="right">4</td>
+	</tr>
+	<tr>
+<td align="right">303209</td>
+<td>020029-00001</td>
+<td align="right">2</td>
+	</tr>
+	<tr>
+<td align="right">306236</td>
+<td>020313-00001</td>
+<td align="right">13</td>
+	</tr>
+	<tr>
+<td align="right">6106252</td>
+<td>020396-00001</td>
+<td align="right">13</td>
+	</tr>
+	<tr>
+<td align="right">6106252</td>
+<td>020396-00001</td>
+<td align="right">13</td>
+	</tr>
+	<tr>
+<td align="right">6101647</td>
+<td>020411-00001</td>
+<td align="right">10</td>
+	</tr>
+	<tr>
+<td align="right">307292</td>
+<td>020416-00002</td>
+<td align="right">2</td>
+	</tr>
+	<tr>
+<td align="right">308050</td>
+<td>020479-00001</td>
+<td align="right">7</td>
+	</tr>
+	<tr>
+<td align="right">308212</td>
+<td>020501-00001</td>
+<td align="right">6</td>
+	</tr>
+	<tr>
+<td align="right">308443</td>
+<td>020523-00001</td>
+<td align="right">10</td>
+	</tr>
+	<tr>
+<td align="right">308443</td>
+<td>020523-00001</td>
+<td align="right">10</td>
+	</tr>
+	<tr>
+<td align="right">309632</td>
+<td>020638-00001</td>
+<td align="right">4</td>
+	</tr>
+	<tr>
+<td align="right">309850</td>
+<td>020673-00001</td>
+<td align="right">8</td>
+	</tr>
+	<tr>
+<td align="right">314085</td>
+<td>021105-00001</td>
+<td align="right">2</td>
+	</tr>
+	<tr>
+<td align="right">316112</td>
+<td>021364-00001</td>
+<td align="right">8</td>
+	</tr>
+	<tr>
+<td align="right">316112</td>
+<td>021364-00001</td>
+<td align="right">8</td>
+	</tr>
+	<tr>
+<td align="right">316112</td>
+<td>021364-00001</td>
+<td align="right">8</td>
+	</tr>
+	<tr>
+<td align="right">317055</td>
+<td>021442-00001</td>
+<td align="right">5</td>
+	</tr>
+	<tr>
+<td align="right">318113</td>
+<td>021536-00001</td>
+<td align="right">4</td>
+	</tr>
+	<tr>
+<td align="right">318113</td>
+<td>021536-00001</td>
+<td align="right">4</td>
+	</tr>
+	<tr>
+<td align="right">6098693</td>
+<td>021641-00001</td>
+<td align="right">11</td>
+	</tr>
+	<tr>
+<td align="right">320320</td>
+<td>021732-00001</td>
+<td align="right">8</td>
+	</tr>
+	<tr>
+<td align="right">320372</td>
+<td>021744-00001</td>
+<td align="right">4</td>
+	</tr>
+	<tr>
+<td align="right">320727</td>
+<td>021785-00001</td>
+<td align="right">16</td>
+	</tr>
+	<tr>
+<td align="right">320727</td>
+<td>021785-00001</td>
+<td align="right">16</td>
+	</tr>
+	<tr>
+<td align="right">320727</td>
+<td>021785-00001</td>
+<td align="right">16</td>
+	</tr>
+	<tr>
+<td align="right">325541</td>
+<td>022238-00001</td>
+<td align="right">4</td>
+	</tr>
+	<tr>
+<td align="right">6075022</td>
+<td>022555-00001</td>
+<td align="right">5</td>
+	</tr>
+	<tr>
+<td align="right">328365</td>
+<td>022632-00001</td>
+<td align="right">4</td>
+	</tr>
+	<tr>
+<td align="right">328576</td>
+<td>022668-00001</td>
+<td align="right">1</td>
+	</tr>
+	<tr>
+<td align="right">328660</td>
+<td>022681-00001</td>
+<td align="right">4</td>
+	</tr>
+	<tr>
+<td align="right">6095311</td>
+<td>022691-00001</td>
+<td align="right">6</td>
+	</tr>
+	<tr>
+<td align="right">328801</td>
+<td>022703-00001</td>
+<td align="right">10</td>
+	</tr>
+	<tr>
+<td align="right">328852</td>
+<td>022715-00001</td>
+<td align="right">4</td>
+	</tr>
+	<tr>
+<td align="right">6097097</td>
+<td>022735-00001</td>
+<td align="right">7</td>
+	</tr>
+	<tr>
+<td align="right">6095314</td>
+<td>022737-00001</td>
+<td align="right">4</td>
+	</tr>
+	<tr>
+<td align="right">329240</td>
+<td>022760-00001</td>
+<td align="right">3</td>
+	</tr>
+	<tr>
+<td align="right">329544</td>
+<td>022817-00001</td>
+<td align="right">3</td>
+	</tr>
+	<tr>
+<td align="right">329544</td>
+<td>022817-00001</td>
+<td align="right">3</td>
+	</tr>
+	<tr>
+<td align="right">329544</td>
+<td>022817-00001</td>
+<td align="right">3</td>
+	</tr>
+	<tr>
+<td align="right">329671</td>
+<td>022842-00001</td>
+<td align="right">6</td>
+	</tr>
+	<tr>
+<td align="right">330115</td>
+<td>022907-00001</td>
+<td align="right">4</td>
+	</tr>
+	<tr>
+<td align="right">6102768</td>
+<td>022955-00001</td>
+<td align="right">4</td>
+	</tr>
+	<tr>
+<td align="right">6101663</td>
+<td>022975-00001</td>
+<td align="right">4</td>
+	</tr>
+	<tr>
+<td align="right">330672</td>
+<td>023024-00001</td>
+<td align="right">6</td>
+	</tr>
+	<tr>
+<td align="right">330672</td>
+<td>023024-00001</td>
+<td align="right">6</td>
+	</tr>
+	<tr>
+<td align="right">330690</td>
+<td>023031-00001</td>
+<td align="right">3</td>
+	</tr>
+	<tr>
+<td align="right">330941</td>
+<td>023080-00001</td>
+<td align="right">4</td>
+	</tr>
+	<tr>
+<td align="right">331279</td>
+<td>023145-00001</td>
+<td align="right">2</td>
+	</tr>
+	<tr>
+<td align="right">331477</td>
+<td>023199-00001</td>
+<td align="right">2</td>
+	</tr>
+	<tr>
+<td align="right">331550</td>
+<td>023225-00001</td>
+<td align="right">5</td>
+	</tr>
+	<tr>
+<td align="right">331550</td>
+<td>023225-00001</td>
+<td align="right">5</td>
+	</tr>
+	<tr>
+<td align="right">331552</td>
+<td>023227-00001</td>
+<td align="right">2</td>
+	</tr>
+	<tr>
+<td align="right">331810</td>
+<td>023319-00001</td>
+<td align="right">1</td>
+	</tr>
+	<tr>
+<td align="right">6106758</td>
+<td>023414-00002</td>
+<td align="right">2</td>
+	</tr>
+	<tr>
+<td align="right">332537</td>
+<td>023525-00001</td>
+<td align="right">1</td>
+	</tr>
+	<tr>
+<td align="right">332733</td>
+<td>023601-00001</td>
+<td align="right">5</td>
+	</tr>
+	<tr>
+<td align="right">6106764</td>
+<td>023784-00001</td>
+<td align="right">8</td>
+	</tr>
+	<tr>
+<td align="right">333581</td>
+<td>023840-00001</td>
+<td align="right">1</td>
+	</tr>
+	<tr>
+<td align="right">333754</td>
+<td>023880-00001</td>
+<td align="right">2</td>
+	</tr>
+	<tr>
+<td align="right">333873</td>
+<td>023933-00001</td>
+<td align="right">1</td>
+	</tr>
+	<tr>
+<td align="right">333873</td>
+<td>023933-00001</td>
+<td align="right">1</td>
+	</tr>
+	<tr>
+<td align="right">6317079</td>
+<td>023947-00001</td>
+<td align="right">7</td>
+	</tr>
+	<tr>
+<td align="right">6097117</td>
+<td>023988-00001</td>
+<td align="right">2</td>
+	</tr>
+	<tr>
+<td align="right">6097120</td>
+<td>023995-00001</td>
+<td align="right">1</td>
+	</tr>
+	<tr>
+<td align="right">6102785</td>
+<td>024003-00001</td>
+<td align="right">2</td>
+	</tr>
+	<tr>
+<td align="right">6112056</td>
+<td>024005-00001</td>
+<td align="right">2</td>
+	</tr>
+	<tr>
+<td align="right">6318009</td>
+<td>024008-00001</td>
+<td align="right">2</td>
+	</tr>
+	<tr>
+<td align="right">6321918</td>
+<td>024016-00001</td>
+<td align="right">3</td>
+	</tr>
+	<tr>
+<td align="right">6112057</td>
+<td>024017-00001</td>
+<td align="right">2</td>
+	</tr>
+	<tr>
+<td align="right">6110184</td>
+<td>024023-00001</td>
+<td align="right">1</td>
+	</tr>
+	<tr>
+<td align="right">6318011</td>
+<td>024033-00001</td>
+<td align="right">2</td>
+	</tr>
+	<tr>
+<td align="right">6329299</td>
+<td>024042-00001</td>
+<td align="right">4</td>
+	</tr>
+</tbody></table><!-- SQL:
+select t1.old_award_id, t2.award_number , t2.sequence_number
+from kcso.TEMP_AWARD_ID_MAPPING t1
+inner join kcso.award t2 on t1.old_award_id = t2.award_id--</body></html>

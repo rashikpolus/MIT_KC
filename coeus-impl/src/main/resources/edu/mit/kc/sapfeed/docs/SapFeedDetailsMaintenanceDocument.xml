@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+	<bean id="SapFeedDetailsMaintenanceDocument" parent="uifMaintenanceDocumentEntry"
+		p:dataObjectClass="org.kuali.coeus.propdev.impl.sapfeed.SapFeedDetails"
+		p:maintainableClass="org.kuali.coeus.sys.framework.maintenance.KcMaintainableBase"
+		p:businessRulesClass="org.kuali.rice.krad.rules.MaintenanceDocumentRuleBase"
+		p:documentAuthorizerClass="org.kuali.rice.krad.maintenance.MaintenanceDocumentAuthorizerBase"
+		p:documentTypeName="SapFeedDetailsMaintenanceDocument" />
+
+
+	<bean id="SapFeeddetails-MaintenanceView" parent="Uif-MaintenanceView"
+		p:headerText="SAP Feed Maintenance" p:title="SAP Feed Maintenance"
+		p:dataObjectClassName="org.kuali.coeus.propdev.impl.sapfeed.SapFeedDetails">
+		<property name="items">
+			<list merge="true">
+				<bean parent="Uif-MaintenanceGridSection" p:headerText="SapFeedDetails">
+					<property name="items">
+						<list>
+							<bean parent="Uif-InputField" p:propertyName="feedId"
+								p:order="10" />
+							<bean parent="Uif-InputField" p:propertyName="awardNumber"
+								p:order="20" />
+							<bean parent="Uif-InputField" p:propertyName="sequenceNumber"
+								p:order="30" />
+							<bean parent="Uif-InputField" p:propertyName="feedType"
+								p:order="40" />
+							<bean parent="Uif-InputField" p:propertyName="feedStatus"
+								p:order="50" />
+							<bean parent="Uif-InputField" p:propertyName="batchId"
+								p:order="60" />
+							<bean parent="Uif-InputField" p:propertyName="tranId"
+								p:order="70" />
+
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+</beans>

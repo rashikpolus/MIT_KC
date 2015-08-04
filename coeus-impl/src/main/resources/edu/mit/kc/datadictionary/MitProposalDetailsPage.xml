@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2005-2013 The Kuali Foundation Licensed under the Educational 
+	Community License, Version 2.0 (the "License"); you may not use this file 
+	except in compliance with the License. You may obtain a copy of the License 
+	at http://www.opensource.org/licenses/ecl2.php Unless required by applicable 
+	law or agreed to in writing, software distributed under the License is distributed 
+	on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either 
+	express or implied. See the License for the specific language governing permissions 
+	and limitations under the License. -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="PropDev-DetailsPage" parent="PropDev-DetailsPage-parentBean" />
+	<bean id="PropDev-DetailsPage-parentBean" parent="PropDev-DocumentPage">
+		<property name="items">
+			<list>
+				<ref bean="PropDev-DetailsPage-SponsorField" />		
+			</list>
+		</property>
+	</bean>
+	
+	<!-- <bean id="DevelopmentProposal" parent="MIT-DevelopmentProposal-parentBean" />
+	<bean id="MIT-DevelopmentProposal-parentBean" 
+		parent="DevelopmentProposal-parentBean">
+		<property name="attributes">
+			<list>
+				<ref bean="DevelopmentProposal-proposalNumber" />
+	
+			</list>
+		</property>
+	</bean> -->
+        <bean id="PropDev-DetailsPage-SponsorField" parent="PropDev-DetailsPage-SponsorField-parentBean" />
+    <bean id="PropDev-DetailsPage-SponsorField-parentBean" abstract="true"
+          parent="PropDev-DetailsPage-SponsorField-Defaults" p:propertyName="sponsor.sponsorName"
+          p:instructionalMessage.messageText="@{document.developmentProposal.sponsor?.sponsorName?:'&amp;nbsp;'}">
+        <property name="quickfinder">
+            <bean parent="PropDev-DetailsPage-SponsorQuickFinder"
+                  p:lookupParameters="sponsorCode:sponsorCode"
+                  p:fieldConversions="sponsorCode:sponsorCode">
+            </bean>
+        </property>
+    </bean>
+    <bean id="PropDev-DetailsPage-SponsorField-Defaults" abstract="true"
+		parent="PropDev-DetailsPage-SponsorField-Defaults-parentBean" />
+	<bean id="PropDev-DetailsPage-SponsorField-Defaults-parentBean"
+		abstract="true" parent="Uif-InputField"
+		p:additionalCssClasses="transparentField">
+        <property name="quickfinder">
+			<bean parent="Uif-QuickFinder" p:returnByScript="true"
+				p:hideCriteriaOnSearch="true" />
+		</property>
+		<property name="suggest">
+			<bean parent="Uif-Suggest" p:render="true"
+				p:additionalPropertiesToReturn="sponsorName">
+				<property name="templateOptions">
+					<map>
+						<entry key="minLength" value="1" />
+						<entry key="delay" value="1" />
+						<entry key="html" value="true" />
+						<entry key="select"
+							value="function(event, ui) { Kc.PropDev.sponsorSuggestSelect(event, ui); return false; }" />
+					</map>
+				</property>
+				<property name="suggestQuery">
+					<bean parent="Uif-AttributeQueryConfig" p:queryMethodInvokerConfig.targetObject="#{#getService('proposalDevelopmentViewHelperService')}" p:queryMethodToCall="performSponsorFieldSuggest" />
+				</property>
+			</bean>
+		</property>
+		<property name="instructionalMessage">
+			<bean parent="Uif-Message"
+				p:messageText="@{document.developmentProposal.sponsor?.sponsorName?:'&amp;nbsp;'}"
+				p:additionalCssClasses="informationalText,belowInputField,form-control,input-sm,uif-textControl,has-helper"
+				 />
+		</property>
+		<property name="control">
+			<bean parent="Uif-TextControl"
+                  p:maxLength="200"
+				p:onBlurScript="Kc.PropDev.updateSponsorName(jQuery(this).val(), jQuery(this).parents('.uif-inputField:first').find('.informationalText'));" />
+		</property>
+	</bean>
+</beans>

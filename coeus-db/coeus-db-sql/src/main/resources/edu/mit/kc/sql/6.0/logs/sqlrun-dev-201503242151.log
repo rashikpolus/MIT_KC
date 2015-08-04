@@ -1,0 +1,47 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Tue Mar 24 21:51:43 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+SP2-0103: Nothing in SQL buffer to run.
+
+'RUNNINGDDLSNAPSHOT'
+--------------------
+running ddl snapshot
+
+
+Table altered.
+
+
+Table altered.
+
+ADD CONSTRAINT UQ_DASH_BOARD_MENU
+               *
+ERROR at line 2:
+ORA-02299: cannot validate (KCSO.UQ_DASH_BOARD_MENU) - duplicate keys found
+
+
+ADD CONSTRAINT UQ_DASH_BOARD_MENU
+               *
+ERROR at line 2:
+ORA-02299: cannot validate (KCSO.UQ_DASH_BOARD_MENU) - duplicate keys found
+
+
+
+'RUNNINGDMLSNAPSHOT'
+--------------------
+running dml snapshot
+
+
+Commit complete.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

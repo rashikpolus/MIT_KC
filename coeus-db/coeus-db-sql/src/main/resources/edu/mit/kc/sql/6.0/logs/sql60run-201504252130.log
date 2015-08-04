@@ -1,0 +1,5465 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Sat Apr 25 21:32:37 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+CREATE SEQUENCE SEQ_AWARD_PERSON_CONFIRM_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_AWARD_PERSON_REMOVE_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+ALTER TABLE  award_person_remove MODIFY UPDATE_TIMESTAMP_CONFIRM  NULL
+                                        *
+ERROR at line 1:
+ORA-01451: column to be modified to NULL cannot be modified to NULL
+
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+Sequence created.
+
+
+Sequence created.
+
+
+Table created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table created.
+
+
+Table altered.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Table altered.
+
+SP2-0310: unable to open file "ddl/DDL_MITKC-818_12292014.sql"
+
+Commit complete.
+
+
+Table created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table created.
+
+
+Table altered.
+
+
+Commit complete.
+
+
+Sequence created.
+
+
+Table created.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+0 rows updated.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Commit complete.
+
+
+Table created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Sequence created.
+
+
+Table created.
+
+
+Table altered.
+
+
+Sequence created.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+CREATE TABLE DASHBOARD_EXPENDITURES
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+PRIMARY KEY (EXP_ID)
+*
+ERROR at line 3:
+ORA-02260: table can have only one primary key
+
+
+
+Table created.
+
+
+Table altered.
+
+CREATE SEQUENCE SEQ_DASHBOARD_EXPENDITURES_ID INCREMENT BY 1 START WITH 1 NOCACHE
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+Sequence created.
+
+
+Table created.
+
+
+Table altered.
+
+CREATE SEQUENCE SEQ_MODULE_ALERT_ID INCREMENT BY 1 START WITH 1 NOCACHE
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+CREATE TABLE ALERT_TYPE
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+PRIMARY KEY (ALERT_TYPE_ID)
+*
+ERROR at line 3:
+ORA-02260: table can have only one primary key
+
+
+SP2-0310: unable to open file "ddl/SEQUENCE_MITKC-1424.sql"
+ADD ALERT_TYPE_ID  NUMBER (12) NOT NULL
+    *
+ERROR at line 2:
+ORA-01430: column being added already exists in table
+
+
+FOREIGN KEY (ALERT_TYPE_ID)
+*
+ERROR at line 3:
+ORA-02275: such a referential constraint already exists in the table
+
+
+DROP COLUMN MODULE_NMSPC_CD
+            *
+ERROR at line 2:
+ORA-00904: "MODULE_NMSPC_CD": invalid identifier
+
+
+DROP COLUMN MODULE_NAME
+            *
+ERROR at line 2:
+ORA-00904: "MODULE_NAME": invalid identifier
+
+
+CREATE TABLE DASHBOARD_EXPENDITURES_WH
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE DASHBOARD_EXPENDITURES_WH
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+0 rows updated.
+
+
+118392 rows updated.
+
+
+131642 rows updated.
+
+
+0 rows updated.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+  from KC_ROLE_BOOTSTRAP t1 left outer join KC_COEUS_ROLE_MAPPING t2 on t1.role_nm = t2.kc_roles
+                                            *
+ERROR at line 4:
+ORA-06550: line 4, column 45:
+PL/SQL: ORA-00942: table or view does not exist
+ORA-06550: line 3, column 3:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 2, column 8:
+PLS-00341: declaration of cursor 'C_DATA' is incomplete or malformed
+ORA-06550: line 7, column 8:
+PL/SQL: Item ignored
+ORA-06550: line 14, column 19:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 14, column 1:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 18, column 69:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 18, column 69:
+PL/SQL: ORA-00904: "R_DATA"."ROLE_NM": invalid identifier
+ORA-06550: line 18, column 5:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 26, column 60:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 26, column 3:
+PL/SQL: Statement ignored
+
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+0 rows updated.
+
+
+1 row updated.
+
+
+Commit complete.
+
+
+1 row updated.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+2 rows updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+2 rows updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+update comment_type set award_comment_screen_flag = 'N' where comment_type_code = 1 --Invoice Instructions
+                                                              *
+ERROR at line 1:
+ORA-01722: invalid number
+
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+Commit complete.
+
+truncate table KC_ROLE_BOOTSTRAP
+               *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('135','067B851A0B24BE8FE050007F01005E55',1,'CustomReviewer','KC-WKFLW','Proposal Custom Reviewer','72','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('136','067B851A0B25BE8FE050007F01005E55',1,'KP','KC-WKFLW','Proposal Key Persons','72','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('137','067B851A0B26BE8FE050007F01005E55',1,'Proposal Log PI','KC-IP','Derived role from PI on Proposal Log','80','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('138','067B851A0B27BE8FE050007F01005E55',1,'Unit Administrator','KC-WKFLW','Derived role based on Unit','81','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('139','067B851A0B28BE8FE050007F01005E55',1,'Create Temporary Proposal Log','KC-IP','Create Temporary Proposal Log','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('140','067B851A0B29BE8FE050007F01005E55',1,'Create Proposal Log','KC-IP','Create Proposal Log','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('141','067B851A0B2ABE8FE050007F01005E55',1,'Modify Proposal Log','KC-IP','Modify Proposal Log','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('142','067B851A0B2BBE8FE050007F01005E55',1,'View Proposal Log','KC-IP','View Proposal Log','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('143','067B851A0B2CBE8FE050007F01005E55',1,'IRB Online Reviewer','KC-PROTOCOL','Online Reviewers','82','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('148','067B851A0B2DBE8FE050007F01005E55',1,'Protocol Unassigned','KC-PROTOCOL','Protocol Unassigned - no permissions','68','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('149','067B851A0B2EBE8FE050007F01005E55',1,'ProtocolApprover','KC-PROTOCOL','This role exists primarily to grant implicit Cancel permission to Protocol Aggregators and Admins','83','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('150','067B851A0B2FBE8FE050007F01005E55',1,'Active Committee Member','KC-PROTOCOL','Role members are derived from active committee members on the systems current date.','84','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('151','067B851A0B30BE8FE050007F01005E55',1,'Active Committee Member On Scheduled Date','KC-PROTOCOL','Role members are derived from the active committee members on a particular schedule date.','85','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('153','067B87E97977F57CE050007F01005F14',1,'Time And Money Viewer','KC-T','View Time And Money Document','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('154','067B87E97978F57CE050007F01005F14',1,'Time And Money Modifier','KC-T','Modify Time And Money Document','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('155','067B88230A2A8D18E050007F01005F20',1,'Delete Proposal','KC-PD','Delete Proposal Permission','68','Y',null)
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('156','067B8841135C0889E050007F01005F30',1,'Modify all Protocols','KC-UNT','Modify all Protocols','69','Y',null)
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('157','067B88522194DCE2E050007F01005F38',1,'Modify All Dev Proposals','KC-UNT','Modify All Dev Proposals','68','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('158','067B885221A3DCE2E050007F01005F38',1,'Funding Source Monitor','KC-UNT','Funding Source Monitor','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('159','067B885221ACDCE2E050007F01005F38',1,'Active Committee Member On Protocol','KC-PROTOCOL','Role members are derived from active committee members on the protocol.','86','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('160','067B885221AEDCE2E050007F01005F38',1,'Maintain Questionnaire','KC-QUESTIONNAIRE','Grants the ability to maintain questionnaire.','1','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('161','067B885221B1DCE2E050007F01005F38',1,'Maintain IRB Questionnaire','KC-PROTOCOL','Grants the ability to maintain irb questionnaires.','1','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('162','067B885221B5DCE2E050007F01005F38',1,'Maintain Proposal Questionnaire','KC-PD','Grants the ability to maintain proposal questionnaires.','1','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('163','067B889630EDDA6EE050007F01005F48',1,'COI Administrator','KC-COIDISCLOSURE','COI Administrator','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('164','067B889630FCDA6EE050007F01005F48',1,'COI Reviewer','KC-COIDISCLOSURE','COI Reviewer','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('165','067B88963113DA6EE050007F01005F48',1,'PI','KC-PROTOCOL','The Protocol Principal Investigator role.','87','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('166','067B88963114DA6EE050007F01005F48',1,'COI','KC-PROTOCOL','The Protocol Co-Investigator role.','87','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('167','067B88963115DA6EE050007F01005F48',1,'SP','KC-PROTOCOL','The Protocol Study Personnel role.','87','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('168','067B88963116DA6EE050007F01005F48',1,'CRC','KC-PROTOCOL','The Protocol Correspondent CRC role.','87','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('169','067B88963117DA6EE050007F01005F48',1,'CA','KC-PROTOCOL','The Protocol Correspondent Administrator role.','87','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('170','067B88963119DA6EE050007F01005F48',1,'Faculty','KC-PROTOCOL','The Faculty Affiliate role.','88','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('171','067B8896311ADA6EE050007F01005F48',1,'Non-Faculty','KC-PROTOCOL','The Non-Faculty Affiliate role.','88','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('172','067B8896311BDA6EE050007F01005F48',1,'Affiliate','KC-PROTOCOL','The Protocol Affiliate role.','88','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('173','067B8896311CDA6EE050007F01005F48',1,'Student Investigator','KC-PROTOCOL','The Protocol Sutdent Investigator role.','88','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('174','067B8896311DDA6EE050007F01005F48',1,'Faculty Supervisor','KC-PROTOCOL','The Protocol Faculty Supervisor role.','88','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('175','067B88963127DA6EE050007F01005F48',1,'Protocol Deleter','KC-PROTOCOL','Protocol Deleter','68','Y',null)
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1380','067B88963138DA6EE050007F01005F48',1,'Negotiation Administrator','KC-NEGOTIATION','The Negotiation Administrator role','1','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1381','067B88963139DA6EE050007F01005F48',1,'Negotiator','KC-NEGOTIATION','The Negotiator role','89','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1382','067B8896313ADA6EE050007F01005F48',1,'Negotiation Creator','KC-NEGOTIATION','The Negotiation Creator role','1','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1383','067B8896313BDA6EE050007F01005F48',1,'Investigators','KC-NEGOTIATION','The Negotiation Investigators role','90','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1384','067B8896313CDA6EE050007F01005F48',1,'PI','KC-NEGOTIATION','The Negotiation Principle Investigator role','90','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1385','067B8896313DDA6EE050007F01005F48',1,'COI','KC-NEGOTIATION','The Negotiation Co-Investigator role','90','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1386','067B8896313EDA6EE050007F01005F48',1,'KP','KC-NEGOTIATION','The Negotiation Key Person role','90','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('176','067B88963158DA6EE050007F01005F48',1,'Maintain Award Report Tracking','KC-AWARD','Role to maintain award report tracking records.','1','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1409','067B8896315DDA6EE050007F01005F48',1,'View Subaward','KC-SUBAWARD','View Subawards role','1','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1410','067B8896315EDA6EE050007F01005F48',1,'Modify Subaward','KC-SUBAWARD','The Subaward Create/Modify role','1','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1415','067B88963177DA6EE050007F01005F48',1,'Unit Correspondent','KC-PROTOCOL','The Unit Correspondent role','91','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1416','067B88963178DA6EE050007F01005F48',1,'Organization Correspondent','KC-PROTOCOL','The Organization Correspondent role','91','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('177','067B88963179DA6EE050007F01005F48',1,'KC Superuser','KC-SYS','KC Superuser role for administration access','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1417','067B88AC89B0A6C7E050007F01005F50',1,'Kuali Rules Management System Administrator','KR-RULE','This role maintains KRMS agendas and rules.','1','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1418','067B89A62F1920FFE050007F01005F62',1,'Coi Disclosure Reviewer','KC-COIDISCLOSURE','Role members are derived from reviewers assigned to a coi disclosure.','100','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1419','067B89A62F1A20FFE050007F01005F62',1,'COI Reporter','KC-COIDISCLOSURE','COI Reporter','1','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1420','067B89A62F3420FFE050007F01005F62',1,'IACUC Protocol Creator','KC-IACUC','IACUC Protocol Creator','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1421','067B89A62F3820FFE050007F01005F62',1,'IACUC Protocol Aggregator','KC-IACUC','IACUC Protocol Aggregator','68','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1422','067B89A62F5720FFE050007F01005F62',1,'Modify IACUC Protocols','KC-IACUC','Modify IACUC Protocols','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1423','067B89A62F5920FFE050007F01005F62',1,'IACUC Protocol Viewer','KC-IACUC','IACUC Protocol Viewer','68','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1424','067B89A62F6B20FFE050007F01005F62',1,'Maintain Unit','KC-UNT','Maintain Unit','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1425','067B89A62FAE20FFE050007F01005F62',1,'Committee Administrator','KC-COMMITTEE','Committee Administrator','68','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1426','067B89A62FAF20FFE050007F01005F62',1,'Active Committee Member On Scheduled Date','KC-COMMITTEE','Role members are derived from the active committee members on a particular schedule date.','85','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1632','067B8B0A60D025F6E050007F01005FD8',1,'IACUCApprover','KC-UNT','IACUC Approver','69','N',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('KR1001','067B8B175D8E28C3E050007F01005FDC',1,'Complete Request Recipient','KR-WKFLW','This role derives its members from users with an complete action request in the route log of a given document.','42','Y',null)
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1633','067B8B439805944AE050007F01005FE4',1,'COI Approver','KC-COIDISCLOSURE','Role similar to COI Reviewer with some added limited admin functionality','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('10000','067B8B439818944AE050007F01005FE4',1,'Modify Training','KC-SYS','Role for maintaining training and person training','1','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1634','067B8B439827944AE050007F01005FE4',1,'Run Award Reports','KC-UNT','Role for run award report','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1635','067B8B439828944AE050007F01005FE4',1,'Run Committee Reports','KC-UNT','Role for run committee report','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1636','067B8B439829944AE050007F01005FE4',1,'Run Dev Proposal Reports','KC-UNT','Role for run development proposal report','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1637','067B8B43982A944AE050007F01005FE4',1,'Run Dev Budget Reports','KC-UNT','Role for run development budget report','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1638','067B8B43982B944AE050007F01005FE4',1,'Run Global Reports','KC-UNT','Role for run global report','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1639','067B8B43982C944AE050007F01005FE4',1,'Run Person Reports','KC-UNT','Role for run person report','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1640','067B8B43982D944AE050007F01005FE4',1,'Run Protocol Reports','KC-UNT','Role for run protocol report','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1641','067B8B43982E944AE050007F01005FE4',1,'Run Rolodex Reports','KC-UNT','Role for run rolodex report','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1642','067B8B43982F944AE050007F01005FE4',1,'Run Sponsor Reports','KC-UNT','Role for run sponsor report','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1643','067B8B439830944AE050007F01005FE4',1,'Run Unit Reports','KC-UNT','Role for run unit report','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1644','067B8B439831944AE050007F01005FE4',1,'Run User Reports','KC-UNT','Role for run user report','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1645','067B8B439832944AE050007F01005FE4',1,'Maintain Custom Reports','KC-UNT','Role for run maintain custom report','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1646','067B8B439845944AE050007F01005FE4',1,'COI Maintainer','KC-COIDISCLOSURE','Grants the ability to maintain all sorts of COI-related artifacts','1','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1647','067B8B43986C944AE050007F01005FE4',1,'Subaward Requisitioner Review Approver','KC-SUBAWARD','Subaward requisitioner review approver Role','1','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1648','067B8B439896944AE050007F01005FE4',1,'IACUCWorkflowApprover','KC-WKFLW','IACUC Protocol document workflow approver','1','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('KR1000','067B8B7F25DD134EE050007F01005FF4',1,'GuestRole','KUALI','This role is used for no login guest users.','1','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('KC10001','067B8BAE0D3133DBE050007F01005FFC',1,'Protocol Aggregator','KC-PROTOCOL-DOC','Added to Document Qualified Role memberships for corresponding Role in KC-PROTOCOL namespace','68','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('KC10002','067B8BAE0D3233DBE050007F01005FFC',1,'Protocol Viewer','KC-PROTOCOL-DOC','Added to Document Qualified Role memberships for corresponding Role in KC-PROTOCOL namespace','68','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('10003','067B8BAE0D3E33DBE050007F01005FFC',1,'Modify Person Signature','KC-SYS','Role for maintaining person signature','1','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('KC1649','067B8BAE0D6533DBE050007F01005FFC',1,'IACUC Unit Correspondent','KC-IACUC','The IACUC Unit Correspondent role','KC117','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('KC1650','067B8BAE0D6633DBE050007F01005FFC',1,'IACUC Organization Correspondent','KC-IACUC','The IACUC Organization Correspondent role','KC117','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('KC10004','067BB4DD19D543BCE050007F010064DD',1,'Aggregator Only Document Level','KC-PD','Proposal Aggregator without Rate Modify Right','KC10000','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('KC10005','067BB4DD19E143BCE050007F010064DD',1,'Budget Creator Only Document Level','KC-PD','Budget Creator without Rate Modify Perm','KC10000','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('KC10006','067BB4DD19E843BCE050007F010064DD',1,'approver Document Level','KC-PD','approver','KC10000','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('KC10007','067BB4DD19E943BCE050007F010064DD',1,'unassigned Document Level','KC-PD','Unassigned role - no permissions','KC10000','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('KC10008','067BB4DD19EA43BCE050007F010064DD',1,'Viewer Document Level','KC-PD','Proposal Viewer','KC10000','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('KC10009','067BB4DD19EF43BCE050007F010064DD',1,'Budget Creator Document Level','KC-PD','Proposal Budget Creator','KC10000','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('KC10010','067BB4DD19FA43BCE050007F010064DD',1,'Narrative Writer Document Level','KC-PD','Proposal Narrative Writer','KC10000','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('KC10011','067BB4DD1A0143BCE050007F010064DD',1,'Aggregator Document Level','KC-PD','Proposal Aggregator','KC10000','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('KC10012','067BB4DD1A1343BCE050007F010064DD',1,'Access_Proposal_Person_Institutional_Salaries Document Level','KC-PD','Access Proposal Person Institutional Salaries','KC10000','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('KC10013','067BB4DD1A1643BCE050007F010064DD',1,'Delete Proposal Document Level','KC-PD','Delete Proposal Permission','KC10000','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('KC10014','067BB4DD1A1B43BCE050007F010064DD',1,'Investigators Document Level','KC-PD','Proposal Development Investigators Role','KC10000','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('KC10015','067BB4DD1A1C43BCE050007F010064DD',1,'All Unit Administrators Document Level','KC-PD','All Proposal Unit Administrators','KC10000','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('KC10016','067BB4DD1A1D43BCE050007F010064DD',1,'Maintain Proposal Questionnaire Document Level','KC-PD','Grants the ability to maintain proposal questionnaires.','KC10000','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1427','067B89A62FB120FFE050007F01005F62',1,'Modify Sponsor Template','KC-AWARD','Modify Sponsor Template','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1601','067B89A62FC120FFE050007F01005F62',1,'Investigators','KC-PD','Proposal Development Investigators Role','101','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1602','067B89A62FC320FFE050007F01005F62',1,'All Unit Administrators','KC-PD','All Proposal Unit Administrators','102','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1603','067B89A62FC520FFE050007F01005F62',1,'All Past Approvers','KC-WKFLW','All Past Approvers','103','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1604','067B89A62FC720FFE050007F01005F62',1,'Investigators','KC-IP','Institutional Proposal Investigator Role','104','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1605','067B89A62FC920FFE050007F01005F62',1,'All Unit Administrators','KC-IP','All Institutional Proposal Unit Administrators','105','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1428','067B89A62FCB20FFE050007F01005F62',1,'Access_Proposal_Person_Institutional_Salaries','KC-PD','Access Proposal Person Institutional Salaries','68','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1429','067B89A62FCC20FFE050007F01005F62',1,'View Institutionally Maintained Salaries','KC-PD','View Institutionally Maintained Salaries','68','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1430','067B89A6300320FFE050007F01005F62',1,'Maintain Sponsor Hierarchy','KC-SYS','Role for maintaing sponsor hierarchy data.','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1431','067B89A6300A20FFE050007F01005F62',1,'Sponsor Maintainer','KC-UNT','Sponsor Maintainer','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1432','067B89A6301120FFE050007F01005F62',1,'Add Address Book','KC-UNT','Add Address Book','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1433','067B89A6301520FFE050007F01005F62',1,'Address Book Maintainer','KC-UNT','Address Book Maintainer','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1434','067B89A6301D20FFE050007F01005F62',1,'Modify Organizations','KC-UNT','Modify Organizations','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1606','067B89EAB5E16575E050007F01005F6A',1,'Document Router','KR-WKFLW','This role derives its members from users with the Route Document permission for a given document type.','106','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1607','067B89F617C6C753E050007F01005F6E',1,'IACUC Administrator','KC-UNT','IACUC Administrator','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1608','067B89F617CBC753E050007F01005F6E',1,'IACUC Reviewer','KC-UNT','IACUC Reviewer','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1609','067B89F617D7C753E050007F01005F6E',1,'Active IACUC Committee Member','KC-IACUC','Role members are derived from active committee members.','107','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1610','067B89F617D9C753E050007F01005F6E',1,'Active IACUC Committee Member on Scheduled Date','KC-IACUC','Role members are derived from active committee members on scheduled date.','108','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1611','067B89F617DBC753E050007F01005F6E',1,'Active IACUC Committee Member on Protocol','KC-IACUC','Role members are derived from active committee members on protocol.','109','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1612','067B89F617DFC753E050007F01005F6E',1,'Modify all IACUC Protocols','KC-UNT','Modify all IACUC Protocols','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1613','067B89F617FAC753E050007F01005F6E',1,'View all IACUC Protocols','KC-UNT','View all IACUC Protocols','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1614','067B89F61801C753E050007F01005F6E',1,'IACUC Protocol Deleter','KC-IACUC','IACUC Protocol Deleter','68','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1713','067B89F618A3C753E050007F01005F6E',1,'Investigators','KC-AWARD','Award Investigator Role','110','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1714','067B89F618A5C753E050007F01005F6E',1,'All Unit Administrators','KC-AWARD','All Award Unit Administrators','111','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1718','067B89F618B3C753E050007F01005F6E',1,'Requisitioner','KC-SUBAWARD','Subaward Requisitioner Role','112','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1615','067B89F618C8C753E050007F01005F6E',1,'Role Maintenance','KC-UNT','Role Maintenance','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1616','067B89F618DDC753E050007F01005F6E',1,'Maintain COI Questionnaire','KC-COIDISCLOSURE','Grants the ability to maintain COI questionnaires.','1','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1617','067B89F618F2C753E050007F01005F6E',1,'Maintain IACUC Questionnaire','KC-IACUC','Grants the ability to maintain IACUC questionnaires.','1','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1618','067B89F61906C753E050007F01005F6E',1,'IACUC Online Reviewer','KC-IACUC','IACUC Online Reviewer','113','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1619','067B89F61913C753E050007F01005F6E',1,'IACUC ProtocolApprover','KC-IACUC','This role exists primarily to grant implicit Cancel permission to IACUC Protocol Aggregators and Admins','83','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1620','067B89F61914C753E050007F01005F6E',1,'IACUC Protocol Unassigned','KC-IACUC','IACUC Protocol Unassigned - no permissions','68','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1621','067B89F61916C753E050007F01005F6E',1,'Active Committee Member On Iacuc Protocol','KC-IACUC','Role members are derived from active committee members on the protocol.','114','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1622','067B89F61919C753E050007F01005F6E',1,'PI','KC-IACUC','The Protocol Principal Investigator role.','115','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1623','067B89F6191AC753E050007F01005F6E',1,'COI','KC-IACUC','The Protocol Co-Investigator role.','115','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1624','067B89F6191BC753E050007F01005F6E',1,'SP','KC-IACUC','The Protocol Study Personnel role.','115','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1625','067B89F6191CC753E050007F01005F6E',1,'CRC','KC-IACUC','The Protocol Correspondent CRC role.','115','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1626','067B89F6191DC753E050007F01005F6E',1,'CA','KC-IACUC','The Protocol Correspondent Administrator role.','115','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1627','067B89F6191FC753E050007F01005F6E',1,'Faculty','KC-IACUC','The Faculty Affiliate role.','116','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1628','067B89F61920C753E050007F01005F6E',1,'Non-Faculty','KC-IACUC','The Non-Faculty Affiliate role.','116','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1629','067B89F61921C753E050007F01005F6E',1,'Affiliate','KC-IACUC','The Protocol Affiliate role.','116','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1630','067B89F61922C753E050007F01005F6E',1,'Student Investigator','KC-IACUC','The Protocol Student Investigator role.','116','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1631','067B89F61923C753E050007F01005F6E',1,'Faculty Supervisor','KC-IACUC','The Protocol Faculty Supervisor role.','116','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('1','5ADF18B6D4847954E0404F8189D85002',1,'User','KUALI','This role derives its members from the users in the Principal table. This role gives users high-level permissions to interact with RICE documents and to login to KUALI.','2','Y',to_date('04-NOV-08','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('59','5BABFACC4F62A8EEE0404F8189D8770F',1,'Approve Request Recipient','KR-WKFLW','This role derives its members from users with that have received an action request for a given document.','42','Y',to_date('14-NOV-08','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('60','5BABFACC4F63A8EEE0404F8189D8770F',1,'Initiator','KR-WKFLW','This role derives its members from the initiator listed within the route log of a given document.','43','Y',to_date('14-NOV-08','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('61','5BABFACC4F64A8EEE0404F8189D8770F',1,'Initiator or Reviewer','KR-WKFLW','This role derives its members from the initiator and action request recipients listed within the route log of a given document.','43','Y',to_date('14-NOV-08','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('63','5B31640F0105ADF1E0404F8189D84647',1,'Technical Administrator','KR-SYS','This role can take superuser actions and blanket approve RICE documents as well as being able to modify and assign permissions, responsibilities and roles belonging to the KR namespaces.','1','Y',to_date('08-NOV-08','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('66','5BABFACC4F61A8EEE0404F8189D8770F',1,'Document Editor','KR-NS','This role derives its members from users with the Edit Document permission for a given document type.,','45','Y',to_date('14-NOV-08','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('67','5BABFACC4F65A8EEE0404F8189D8770F',1,'Router','KR-WKFLW','This role derives its members from the user who took the Complete action on a given document.','43','Y',to_date('14-NOV-08','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('83','606763510FBF96D3E0404F8189D857A2',1,'Document Opener','KR-NS','This role derives its members from users with the Open Document permission for a given document type.,','60','Y',to_date('13-JAN-09','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('88','6102F3FA08CE45CFE0404F8189D8317E',1,'Acknowledge Request Recipient','KR-WKFLW','This role derives its members from users with an acknowledge action request in the route log of a given document.','42','Y',to_date('21-JAN-09','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('89','6102F3FA08CF45CFE0404F8189D8317E',1,'FYI Request Recipient','KR-WKFLW','This role derives its members from users with an FYI action request in the route log of a given document.','42','Y',to_date('21-JAN-09','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('90','61815E6C62D0B647E0404F8189D873B3',1,'System User','KR-SYS','This role represents the KR System User, that is the user ID RICE uses when it takes programmed actions.','1','Y',to_date('06-AUG-09','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('95','67F145466E8B9160E0404F8189D86771',1,'Document Initiator','KR-SYS','This role derives its members from users with the Initiate Document permission for a given document type.','66','Y',to_date('06-AUG-09','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('97','67F145466EB09160E0404F8189D86771',1,'Non-Ad Hoc Approve Request Recipient','KR-WKFLW','This role derives its members from users with an Approval action request (that was not generated via the ad-hoc recipients tab) in the route log of a given document.','42','Y',to_date('06-AUG-09','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('98','067B851A0AFFBE8FE050007F01005E55',1,'Manager','KC-SYS','This role represents a collection of all the KC module manager roles and has permission to initiate simple maintenance documents.','1','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('99','067B851A0B00BE8FE050007F01005E55',1,'IRBApprover','KC-WKFLW','IRB Approver','1','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('100','067B851A0B01BE8FE050007F01005E55',1,'OSPApprover','KC-WKFLW','Office of Sponsored Projects Approver','1','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('101','067B851A0B02BE8FE050007F01005E55',1,'Award Budget Viewer','KC-AB','Award Budget Viewer - the role grants permissions to view award budget at departmental level','68','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('102','067B851A0B03BE8FE050007F01005E55',1,'Award Budget Modifier','KC-AB','Award Budget Modifier - the role grants permissions to modify or view award budget at departmental level','68','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('103','067B851A0B04BE8FE050007F01005E55',1,'approver','KC-PD','approver','68','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('104','067B851A0B05BE8FE050007F01005E55',1,'Protocol Viewer','KC-PROTOCOL','Protocol Viewer','68','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('105','067B851A0B06BE8FE050007F01005E55',1,'Protocol Aggregator','KC-PROTOCOL','Protocol Aggregator','68','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('106','067B851A0B07BE8FE050007F01005E55',1,'unassigned','KC-PD','Unassigned role - no permissions','68','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('107','067B851A0B08BE8FE050007F01005E55',1,'Viewer','KC-PD','Proposal Viewer','68','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('108','067B851A0B09BE8FE050007F01005E55',1,'Budget Creator','KC-PD','Proposal Budget Creator','68','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('109','067B851A0B0ABE8FE050007F01005E55',1,'Narrative Writer','KC-PD','Proposal Narrative Writer','68','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('110','067B851A0B0BBE8FE050007F01005E55',1,'Aggregator','KC-PD','Proposal Aggregator','68','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('111','067B851A0B0CBE8FE050007F01005E55',1,'Proposal Creator','KC-UNT','Proposal Creator','68','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('112','067B851A0B0DBE8FE050007F01005E55',1,'Award Budget Approver','KC-AB','Award Budget Approver - the role grants permissions to edit and approve award budget','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('113','067B851A0B0EBE8FE050007F01005E55',1,'Award Budget Aggregator','KC-AB','Award Budget Aggregator - the role grants permissions to create and maintain award budget at department level','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('114','067B851A0B0FBE8FE050007F01005E55',1,'Award Budget Maintainer','KC-AB','Maintain Award Budget - the role grants permissions to modify and submit award budget at departmental level','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('115','067B851A0B10BE8FE050007F01005E55',1,'Award Budget Administrator','KC-AB','Award Budget Administrator - the role grants permissions to manage any award budget at OSP level','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('116','067B851A0B11BE8FE050007F01005E55',1,'Intellectual Property Review Maintainer','KC-IP','Maintain Intellectual Property Review','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('117','067B851A0B12BE8FE050007F01005E55',1,'Institutional Proposal Maintainer','KC-IP','Maintain Institutional Proposals','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('118','067B851A0B13BE8FE050007F01005E55',1,'Institutional Proposal Viewer','KC-IP','View Institutional Proposals','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('119','067B851A0B14BE8FE050007F01005E55',1,'Award Unassigned','KC-AWARD','Award Unassigned','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('120','067B851A0B15BE8FE050007F01005E55',1,'Template Viewer','KC-AWARD','Template Viewer','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('121','067B851A0B16BE8FE050007F01005E55',1,'Departments Awards Viewer','KC-AWARD','Departments Awards Viewer','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('122','067B851A0B17BE8FE050007F01005E55',1,'Award Attachments Viewer','KC-AWARD','Role grants permission to view any Attachment in an Award','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('123','067B851A0B18BE8FE050007F01005E55',1,'Award Viewer','KC-AWARD','Award Viewer','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('124','067B851A0B19BE8FE050007F01005E55',1,'Award Attachments Maintainer','KC-AWARD','Role grants permission to add, view or delete any Attachment in an Award','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('125','067B851A0B1ABE8FE050007F01005E55',1,'Application Administrator','KC-SYS','Application Administrator','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('126','067B851A0B1BBE8FE050007F01005E55',1,'Award Modifier','KC-AWARD','Award Modifier','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('127','067B851A0B1CBE8FE050007F01005E55',1,'IRB Reviewer','KC-UNT','IRB Reviewer','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('128','067B851A0B1DBE8FE050007F01005E55',1,'IRB Administrator','KC-UNT','IRB Administrator','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('129','067B851A0B1EBE8FE050007F01005E55',1,'Protocol Creator','KC-UNT','Protocol Creator','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('130','067B851A0B1FBE8FE050007F01005E55',1,'Proposal Submission','KC-ADM','Proposal Submission','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('131','067B851A0B20BE8FE050007F01005E55',1,'OSP Administrator','KC-ADM','OSP Administrator','69','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('132','067B851A0B21BE8FE050007F01005E55',1,'PI','KC-WKFLW','Proposal Primary Investigator','70','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('133','067B851A0B22BE8FE050007F01005E55',1,'COI','KC-WKFLW','Proposal Co-Investigator','71','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+Insert into KC_ROLE_BOOTSTRAP (ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND,LAST_UPDT_DT) values ('134','067B851A0B23BE8FE050007F01005E55',1,'DepartmentReviewer','KC-WKFLW','Proposal Departmental Reviewer','72','Y',to_date('28-OCT-14','DD-MON-RR'))
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+
+Commit complete.
+
+    from KC_ROLE_BOOTSTRAP
+         *
+ERROR at line 5:
+ORA-06550: line 5, column 10:
+PL/SQL: ORA-00942: table or view does not exist
+ORA-06550: line 4, column 5:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 3, column 10:
+PLS-00341: declaration of cursor 'C_DATA' is incomplete or malformed
+ORA-06550: line 7, column 10:
+PL/SQL: Item ignored
+ORA-06550: line 12, column 21:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 12, column 3:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 17, column 20:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 17, column 20:
+PL/SQL: ORA-00904: "R_DATA"."NMSPC_CD": invalid identifier
+ORA-06550: line 15, column 3:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 21, column 128:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 21, column 135:
+PL/SQL: ORA-00984: column not allowed here
+ORA-06550: line 20, column 5:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 23, column 54:
+PLS-00320:
+
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+Table truncated.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+382 rows created.
+
+
+9 rows created.
+
+
+1 row deleted.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+Table created.
+
+
+19 rows created.
+
+
+Commit complete.
+
+INSERT INTO BUDGET_CATEGORY_TYPE(BUDGET_CATEGORY_TYPE_CODE,DESCRIPTION,SORT_ID,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.BUDGET_CATEGORY_TYPEP1) violated
+
+
+INSERT INTO BUDGET_CATEGORY(BUDGET_CATEGORY_CODE,DESCRIPTION,CATEGORY_TYPE,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.BUDGET_CATEGORYP1) violated
+
+
+INSERT INTO COST_ELEMENT(COST_ELEMENT,DESCRIPTION,BUDGET_CATEGORY_CODE,ON_OFF_CAMPUS_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID,ACTIVE_FLAG)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.COST_ELEMENTP1) violated
+
+
+INSERT INTO COST_ELEMENT(COST_ELEMENT,DESCRIPTION,BUDGET_CATEGORY_CODE,ON_OFF_CAMPUS_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID,ACTIVE_FLAG)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.COST_ELEMENTP1) violated
+
+
+INSERT INTO COST_ELEMENT(COST_ELEMENT,DESCRIPTION,BUDGET_CATEGORY_CODE,ON_OFF_CAMPUS_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID,ACTIVE_FLAG)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.COST_ELEMENTP1) violated
+
+
+INSERT INTO COST_ELEMENT(COST_ELEMENT,DESCRIPTION,BUDGET_CATEGORY_CODE,ON_OFF_CAMPUS_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID,ACTIVE_FLAG)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.COST_ELEMENTP1) violated
+
+
+INSERT INTO COST_ELEMENT(COST_ELEMENT,DESCRIPTION,BUDGET_CATEGORY_CODE,ON_OFF_CAMPUS_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID,ACTIVE_FLAG)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.COST_ELEMENTP1) violated
+
+
+INSERT INTO COST_ELEMENT(COST_ELEMENT,DESCRIPTION,BUDGET_CATEGORY_CODE,ON_OFF_CAMPUS_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID,ACTIVE_FLAG)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.COST_ELEMENTP1) violated
+
+
+INSERT INTO COST_ELEMENT(COST_ELEMENT,DESCRIPTION,BUDGET_CATEGORY_CODE,ON_OFF_CAMPUS_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID,ACTIVE_FLAG)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.COST_ELEMENTP1) violated
+
+
+INSERT INTO COST_ELEMENT(COST_ELEMENT,DESCRIPTION,BUDGET_CATEGORY_CODE,ON_OFF_CAMPUS_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID,ACTIVE_FLAG)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.COST_ELEMENTP1) violated
+
+
+INSERT INTO COST_ELEMENT(COST_ELEMENT,DESCRIPTION,BUDGET_CATEGORY_CODE,ON_OFF_CAMPUS_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID,ACTIVE_FLAG)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.COST_ELEMENTP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+
+0 rows created.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+1 row updated.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+1 row created.
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+INSERT INTO VALID_CE_RATE_TYPES(COST_ELEMENT,RATE_CLASS_CODE,RATE_TYPE_CODE,ACTIVE_FLAG,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.VALID_CE_RATE_TYPESP1) violated
+
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+INSERT INTO KRIM_ROLE_T(ROLE_ID,OBJ_ID,VER_NBR,ROLE_NM,NMSPC_CD,DESC_TXT,KIM_TYP_ID,ACTV_IND)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRIM_ROLE_TC1) violated
+
+
+
+Commit complete.
+
+
+18 rows updated.
+
+
+0 rows updated.
+
+INSERT INTO KRCR_PARM_T (APPL_ID, NMSPC_CD, CMPNT_CD, PARM_NM, PARM_TYP_CD, VAL, PARM_DESC_TXT, EVAL_OPRTR_CD, OBJ_ID, VER_NBR)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+INSERT INTO KRCR_PARM_T (APPL_ID, NMSPC_CD, CMPNT_CD, PARM_NM, PARM_TYP_CD, VAL, PARM_DESC_TXT, EVAL_OPRTR_CD, OBJ_ID, VER_NBR)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+2 rows updated.
+
+
+2 rows updated.
+
+
+2 rows updated.
+
+
+2 rows updated.
+
+
+Commit complete.
+
+DELETE FROM SP_REV_APPROVAL_TYPE WHERE DESCRIPTION like 'Link to IRB'
+*
+ERROR at line 1:
+ORA-02292: integrity constraint (KCSO.FK_PROPOSAL_SP_APROVAL_TYPE) violated -
+child record found
+
+
+DELETE FROM SP_REV_APPROVAL_TYPE WHERE DESCRIPTION like 'Link to IRB'
+*
+ERROR at line 1:
+ORA-02292: integrity constraint (KCSO.FK_PROPOSAL_SP_APROVAL_TYPE) violated -
+child record found
+
+
+
+1 row deleted.
+
+
+0 rows deleted.
+
+commit
+*
+ERROR at line 2:
+ORA-02185: a token other than WORK follows COMMIT
+
+
+
+1 row created.
+
+
+Commit complete.
+
+
+4103 rows updated.
+
+
+1703 rows updated.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+Commit complete.
+
+
+2 rows updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+2 rows updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+Commit complete.
+
+
+0 rows deleted.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+4103 rows updated.
+
+
+1703 rows updated.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+2 rows updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+2 rows updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+Commit complete.
+
+
+Commit complete.
+
+SP2-0310: unable to open file "dml/DML_MITKC-818_12292014.sql"
+
+Commit complete.
+
+
+Table altered.
+
+ALTER TABLE NEGOTIATION_ACTIVITY MODIFY ACTIVITY_TYPE_ID NUMBER(22,0) NULL
+                                        *
+ERROR at line 1:
+ORA-01451: column to be modified to NULL cannot be modified to NULL
+
+
+UPDATE BUDGET SET BUDGET_NAME='budget-'||version_number WHERE BUDGET_NAME is null
+*
+ERROR at line 2:
+ORA-02185: a token other than WORK follows COMMIT
+
+
+
+25820 rows updated.
+
+
+25820 rows updated.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+1 row updated.
+
+
+Commit complete.
+
+
+Commit complete.
+
+SP2-0310: unable to open file "dml/DML_MITKC-113_20012015.sql"
+
+Commit complete.
+
+
+Commit complete.
+
+SP2-0310: unable to open file "DML_MITKC-1040_02042015.sql"
+SP2-0310: unable to open file "DML_MITKC-418_20150204.sql"
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row updated.
+
+
+Commit complete.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+PL/SQL procedure successfully completed.
+
+
+171 rows created.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+delete	from KREW_TYP_T where NM = 'Sample Type'
+*
+ERROR at line 1:
+ORA-02292: integrity constraint (KCSO.KREW_TYP_ATTR_FK2) violated - child
+record found
+
+
+
+1113821 rows updated.
+
+
+Commit complete.
+
+SP2-0310: unable to open file "dml/DML_MITKC-611_02262015.sql"
+
+1 row created.
+
+
+Commit complete.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+Commit complete.
+
+
+1 row updated.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+Commit complete.
+
+
+1 row updated.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row updated.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+7 rows created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+UPDATE KRIM_ROLE_T SET NMSPC_CD='KC-PD' WHERE NMSPC_CD='KC-AWARD' AND NM='WL Super User'
+                                                                      *
+ERROR at line 1:
+ORA-00904: "NM": invalid identifier
+
+
+
+1 row deleted.
+
+
+0 rows deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row created.
+
+
+1 row created.
+
+(select ROLE_ID from KRIM_ROLE_T where role_nm = 'Maintain Key Person'),
+ *
+ERROR at line 13:
+ORA-01427: single-row subquery returns more than one row
+
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+UPDATE KRIM_ROLE_MEMBER_T SET ROLE_ID=(SELECT ROLE_ID FROM KRIM_ROLE_T WHERE NMSPC_CD = 'KC-AWARD' AND ROLE_NM = 'Maintain Key Person')
+       *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+
+0 rows deleted.
+
+
+1 row deleted.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+92 rows updated.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+1 row created.
+
+insert into KC_KRMS_TERM_FUN_PARAM(KC_KRMS_TERM_FUN_PARAM_ID,KC_KRMS_TERM_FUNCTION_ID,PARAM_NAME,PARAM_TYPE,PARAM_ORDER,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.PK_KC_KRMS_TERM_FUN_PARAM) violated
+
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+Table created.
+
+
+19 rows created.
+
+
+6 rows created.
+
+
+Commit complete.
+
+
+Commit complete.
+
+INSERT INTO KRIM_ROLE_T (ROLE_ID, OBJ_ID, VER_NBR, ROLE_NM, NMSPC_CD, DESC_TXT, KIM_TYP_ID, ACTV_IND, LAST_UPDT_DT)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRIM_ROLE_TC1) violated
+
+
+
+Table created.
+
+
+22246 rows created.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Table altered.
+
+
+22246 rows updated.
+
+
+Commit complete.
+
+
+22246 rows updated.
+
+
+22246 rows updated.
+
+
+22246 rows updated.
+
+
+22246 rows updated.
+
+
+22246 rows updated.
+
+
+22246 rows updated.
+
+
+22246 rows updated.
+
+
+22246 rows updated.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+0 rows created.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+4 rows created.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+Table truncated.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+2 rows created.
+
+
+Commit complete.
+
+
+Table truncated.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+0 rows created.
+
+
+Commit complete.
+
+
+Table truncated.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+0 rows created.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+37 rows updated.
+
+
+1 row updated.
+
+
+Commit complete.
+
+CREATE TABLE TMP_MIG_PROTO_DOC_MAPING(
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+0 rows created.
+
+
+Commit complete.
+
+ALTER TABLE TMP_MIG_PROTO_DOC_MAPING ADD CONSTRAINT PK_DOCUMENT_NUMBER PRIMARY KEY(DOCUMENT_NUMBER)
+                                                                       *
+ERROR at line 1:
+ORA-02260: table can have only one primary key
+
+
+
+Table altered.
+
+
+0 rows updated.
+
+
+Commit complete.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Commit complete.
+
+CREATE TABLE TMP_MIG_PROTO_DOC_MAPING(
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+0 rows created.
+
+
+Commit complete.
+
+ALTER TABLE TMP_MIG_PROTO_DOC_MAPING ADD CONSTRAINT PK_DOCUMENT_NUMBER PRIMARY KEY(DOCUMENT_NUMBER)
+                                                                       *
+ERROR at line 1:
+ORA-02260: table can have only one primary key
+
+
+
+Table altered.
+
+
+0 rows updated.
+
+
+Commit complete.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Commit complete.
+
+
+0 rows updated.
+
+
+1 row updated.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+1 row created.
+
+
+1 row created.
+
+
+3 rows deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+21 rows deleted.
+
+
+Table altered.
+
+
+Commit complete.
+
+
+1 row updated.
+
+create table sap_kc_obj_cd_mapping(
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+create table sap_kc_obj_cd_mapping(
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+3 rows updated.
+
+
+Commit complete.
+
+SQL> Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

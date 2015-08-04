@@ -1,0 +1,41 @@
+From d779cdb339a5adb7365e6a1a938d666c39a4e41c Mon Sep 17 00:00:00 2001
+From: Joe Williams <jwillia@iastate.edu>
+Date: Fri, 13 Mar 2015 09:16:56 -0500
+Subject: [PATCH] RESKC-221:fix enroute attachment saving
+
+---
+ .../impl/attachment/ProposalDevelopmentAttachmentController.java   | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalDevelopmentAttachmentController.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalDevelopmentAttachmentController.java
+index cd13917..17714cc 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalDevelopmentAttachmentController.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalDevelopmentAttachmentController.java
+@@ -314,7 +314,7 @@ public ModelAndView saveNarrative(@ModelAttribute("KualiForm") ProposalDevelopme
+                 getKcNotificationService().sendNotification(context);
+             }
+         }
+-        return getRefreshControllerService().refresh(form);
++        return super.narrativePageSave(form,true);
+     }
+ 
+     @Transactional @RequestMapping(value = "/proposalDevelopment", params="methodToCall=sendNarrativeChangeNotification")
+@@ -351,7 +351,7 @@ public ModelAndView saveBiography(@ModelAttribute("KualiForm") ProposalDevelopme
+             form.setUpdateComponentId("PropDev-AttachmentsPage-PersonnelDetails");
+             form.setAjaxReturnType(UifConstants.AjaxReturnTypes.UPDATECOMPONENT.getKey());
+         }
+-        return getRefreshControllerService().refresh(form);
++        return super.narrativePageSave(form,true);
+     }
+ 
+     @Transactional @RequestMapping(value = "/proposalDevelopment", params="methodToCall=saveInstituteAttachment")
+@@ -370,8 +370,7 @@ public ModelAndView saveInstituteAttachment(@ModelAttribute("KualiForm") Proposa
+         }
+         form.getDevelopmentProposal().getInstituteAttachments().set(selectedLineIndex,narrative);
+         form.getProposalDevelopmentAttachmentHelper().reset();
+-
+-        return getRefreshControllerService().refresh(form);
++        return super.narrativePageSave(form,true);
+     }
+ 
+     @Transactional @RequestMapping(value = "/proposalDevelopment", params="methodToCall=saveAbstract")

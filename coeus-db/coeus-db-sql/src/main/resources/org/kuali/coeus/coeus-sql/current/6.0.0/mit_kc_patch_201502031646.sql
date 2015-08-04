@@ -1,0 +1,4 @@
+@tables/KC_TBL_AWARD_COST_SHARE.sql
+@tables/KC_TBL_EPS_PROP_COST_SHARING.sql
+@tables/KC_TBL_PROPOSAL_COST_SHARING.sql
+commit;

@@ -1,0 +1,61 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Mon Feb 9 19:12:40 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+SP2-0103: Nothing in SQL buffer to run.
+
+15324 rows updated.
+
+
+76773 rows updated.
+
+
+7713 rows updated.
+
+
+12 rows updated.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+ALTER TABLE proposal_attachments DROP CONSTRAINT UK_PROPOSAL_ATTACHMENTS
+                                                 *
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
+
+
+
+7713 rows deleted.
+
+
+Commit complete.
+
+
+0 rows deleted.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

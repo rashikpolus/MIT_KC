@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/util
+       http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <context:annotation-config />
+    <context:component-scan base-package="org.kuali.coeus.common.proposal" />
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="properties" value="#{T(org.kuali.rice.core.api.config.property.ConfigContext).getCurrentContextConfig().getProperties()}" />
+    </bean>
+
+    <import resource="classpath:org/kuali/coeus/common/impl/CommonImportRiceSpringBeans.xml"/>
+    <import resource="classpath:org/kuali/coeus/common/impl/CommonImportModuleSpringBeans.xml"/>
+
+    <bean id="proposalModuleConfiguration" parent="proposalModuleConfiguration-parentBean" />
+    <bean id="proposalModuleConfiguration-parentBean" class="org.kuali.rice.krad.bo.ModuleConfiguration" abstract="true">
+        <property name="initializeDataDictionary" value="true" />
+        <property name="namespaceCode" value="KC-P" />
+        <property name="packagePrefixes">
+            <list>
+                <value>org.kuali.coeus.common.proposal</value>
+            </list>
+        </property>
+        <property name="databaseRepositoryFilePaths">
+            <list>
+                <value>org/kuali/coeus/common/proposal/impl/repository-proposal.xml</value>
+            </list>
+        </property>
+        <property name="dataDictionaryPackages">
+            <list>
+                <value>classpath:org/kuali/coeus/common/proposal/impl/mail/MailBy.xml</value>
+                <value>classpath:org/kuali/coeus/common/proposal/impl/mail/MailType.xml</value>
+                <value>classpath:org/kuali/coeus/common/proposal/impl/mail/MailByMaintenanceDocument.xml</value>
+                <value>classpath:org/kuali/coeus/common/proposal/impl/mail/MailTypeMaintenanceDocument.xml</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="platformAwareDao" class="org.kuali.rice.core.framework.persistence.ojb.dao.PlatformAwareDaoBaseOjb" abstract="true">
+        <property name="jcdAlias" value="kradApplicationDataSource" />
+        <property name="dbPlatform" ref="dbPlatform" />
+    </bean>
+
+    <bean id="currentReportDao" parent="platformAwareDao" class="org.kuali.coeus.common.proposal.impl.report.CurrentReportDaoOjb" />
+
+    <bean id="pendingReportDao" parent="platformAwareDao" class="org.kuali.coeus.common.proposal.impl.report.PendingReportDaoOjb" />
+
+</beans>

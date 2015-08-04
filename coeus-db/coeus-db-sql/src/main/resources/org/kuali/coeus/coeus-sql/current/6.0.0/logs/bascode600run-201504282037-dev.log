@@ -1,0 +1,45 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Tue Apr 28 20:37:02 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+SP2-0103: Nothing in SQL buffer to run.
+
+'RUNNINGKCCDMLSNAPSHOT'
+------------------------
+running kcc dml snapshot
+
+
+1 row created.
+
+INSERT INTO NOTIFICATION_TYPE (NOTIFICATION_TYPE_ID, MODULE_CODE, ACTION_CODE, DESCRIPTION, SUBJECT, MESSAGE, PROMPT_USER, SEND_NOTIFICATION, UPDATE_USER, UPDATE_TIMESTAMP, VER_NBR, OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.UNQ_MODULE_ACTION_CODE) violated
+
+
+
+1 row updated.
+
+
+1 row created.
+
+VALUES (KRIM_ROLE_PERM_ID_S.NEXTVAL, SYS_GUID(), 1, 'Proposal Lead Unit OSP Administrator', 'KC-PD', 'Proposal Lead Unit OSP Administrator', (SELECT KIM_TYP_ID FROM KRIM_TYP_T WHERE NMSPC_CD = 'KC-PD' AND NM = 'Derived Role: Proposal Lead Unit OSP Administrator'), 'Y', SYSDATE)
+                                                                                                                                              *
+ERROR at line 2:
+ORA-01427: single-row subquery returns more than one row
+
+
+
+Commit complete.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

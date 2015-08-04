@@ -1,0 +1,371 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Tue Mar 24 21:54:26 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+
+'RUNNINGKCCDMLSNAPSHOT'
+------------------------
+running kcc dml snapshot
+
+
+188 rows created.
+
+
+20 rows created.
+
+INSERT INTO WL_ASSIGNED_BY(	ASSIGNED_BY_CODE,DESCRIPTION,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.PK_ASSIGNED_BY) violated
+
+
+
+17184 rows created.
+
+
+320 rows created.
+
+
+0 rows created.
+
+
+0 rows created.
+
+
+197 rows created.
+
+
+12308 rows created.
+
+INSERT INTO WL_PROP_CANNED_REVIEW_COMMENTS(CANNED_REVIEW_COMMENT_CODE,DESCRIPTION,SPONSOR_GROUP,SPONSOR_TYPE_CODE,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.PK_PROP_CANNED_REVIEW_COMMENTS) violated
+
+
+
+60431 rows created.
+
+INSERT INTO WL_PROP_REVIEW_ACTION(REVIEW_ACTION_CODE,DESCRIPTION,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.PK_PROP_REVIEW_ACTION) violated
+
+
+
+47027 rows created.
+
+
+3 rows created.
+
+INSERT INTO WL_PROP_REVIEW_TIME_SPENT(REVIEW_TIME_SPENT_CODE,DESCRIPTION,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.PK_PROP_REVIEW_TIME_SPENT) violated
+
+
+
+270 rows created.
+
+INSERT INTO WL_SUBMISSION_VEHICLE(SUBMISSION_VEHICLE_CODE,DESCRIPTION,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.PK_SUBMISSION_VEHICLE) violated
+
+
+
+19573 rows created.
+
+
+19 rows created.
+
+
+1652 rows created.
+
+
+304 rows created.
+
+
+1 row created.
+
+INSERT INTO WL_SIM_RUN_STATUS(SIM_RUN_STATUS_CODE,DESCRIPTION,UPDATE_TIMESTAMP,UPDATE_USER,VER_NBR,OBJ_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.PK_SIM_RUN_STATUS) violated
+
+
+
+942 rows created.
+
+
+0 rows created.
+
+
+Commit complete.
+
+CREATE TABLE WL_ABSENTEE
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_CAPACITY
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_ASSIGNED_BY
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_CURRENT_LOAD
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_FLEXIBILITY
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_LOAD_SIMULATION
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_OPTIMIZATION_DATA
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_PROP_AGGREGATOR_COMPLEXITY
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_PROP_AGGREGATOR_ERR_COUNT
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_PROP_CANNED_REVIEW_COMMENTS
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_PROP_REV_COMM_LAST_YEAR
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_PROP_REVIEW_ACTION
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_PROP_REVIEW_COMMENTS
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_PROP_REVIEW_ROLE
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_PROP_REVIEW_TIME_SPENT
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_REVIEW_ASSIGNMENTS
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_SUBMISSION_VEHICLE
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_PROP_REVIEW_DETAILS
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_SIM_CAPACITY
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_SIM_CURRENT_LOAD
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_SIM_FLEXIBILITY
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_SIM_HEADER
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_SIM_RUN_STATUS
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_SIM_UNIT_ASSIGNMENTS
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE WL_UNIT_ASSIGNMENTS
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_ABSENTEE_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_WL_CAPACITY_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_WL_CURRENT_LOAD_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_WL_FLEXIBILITY_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_WL_OPTIMIZATION_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_WL_COMPLEXITY_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_WL_AGGREG_COUNT_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_WL_REV_COMM_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_WL_REV_ASSIGNMENT_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_WL_PROP_REV_COMM_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_WL_PROP_REV_DET_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_WL_UNIT_ASSIGN_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_SIM_CAPACITY_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_SIM_CURRENT_LOAD_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_SIM_FLEXIBILITY_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE  SEQ_SIM_ID
+                 *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+Sequence created.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

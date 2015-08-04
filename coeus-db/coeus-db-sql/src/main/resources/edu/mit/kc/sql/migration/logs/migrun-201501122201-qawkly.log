@@ -1,0 +1,11 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Mon Jan 12 22:02:36 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+Enter password: 
+ERROR:
+ORA-12162: TNS:net service name is incorrectly specified
+
+
+Enter password: 

@@ -1,0 +1,1349 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Tue Jan 6 21:59:38 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+
+Table altered.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+Table created.
+
+
+Table altered.
+
+
+Table created.
+
+
+Table altered.
+
+ALTER TABLE AWARD_PERSON_CONFIRM ADD CONSTRAINT AWARD_PERSON_CONFIRM_PK PRIMARY KEY (AWARD_PERSON_CONFIRM_ID)
+                                                                        *
+ERROR at line 1:
+ORA-02260: table can have only one primary key
+
+
+
+Sequence created.
+
+
+PL/SQL procedure successfully completed.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+SP2-0310: unable to open file "dml/DML_MITKC-45_B000.sql"
+INSERT INTO KRIM_PERM_T (PERM_ID, OBJ_ID, VER_NBR, PERM_TMPL_ID, NMSPC_CD, NM, DESC_TXT)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRIM_PERM_T_TC1) violated
+
+
+
+1 row created.
+
+
+1 row created.
+
+
+6 rows created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+0 rows deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+PL/SQL procedure successfully completed.
+
+insert into KRMS_TYP_T(TYP_ID,NM,NMSPC_CD,SRVC_NM,ACTV,VER_NBR)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRMS_TYP_TC1) violated
+
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+insert into KRMS_TERM_RSLVR_T (TERM_RSLVR_ID, NMSPC_CD, NM, TYP_ID, OUTPUT_TERM_SPEC_ID, ACTV, VER_NBR)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.SYS_C0045722) violated
+
+
+	values (CONCAT('KCMIT', KRMS_TERM_RSLVR_PARM_SPEC_S.NEXTVAL), (select TERM_RSLVR_ID from KRMS_TERM_RSLVR_T where NM='PI Is Specified Person Check Resolver' and NMSPC_CD='KC-PD'),
+	                                                                      *
+ERROR at line 2:
+ORA-01400: cannot insert NULL into
+("KCSO"."KRMS_TERM_RSLVR_PARM_SPEC_T"."TERM_RSLVR_ID")
+
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+insert into KRMS_TERM_SPEC_T (TERM_SPEC_ID, NMSPC_CD, NM, DESC_TXT, TYP, ACTV, VER_NBR)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.SYS_C0045484) violated
+
+
+	values (CONCAT('KCMIT', KRMS_TERM_S.NEXTVAL),(select TERM_SPEC_ID from KRMS_TERM_SPEC_T where NMSPC_CD='KC-PD' and  NM=(select FUNC_ID from KRMS_FUNC_T where  NM='coiAndPIQuestionAnsweredRule' and NMSPC_CD='KC-PD')),
+	                                                     *
+ERROR at line 2:
+ORA-01400: cannot insert NULL into ("KCSO"."KRMS_TERM_T"."TERM_SPEC_ID")
+
+
+	values (CONCAT('KCMIT', KRMS_CNTXT_VLD_TERM_SPEC_S.NEXTVAL),'KC-PD-CONTEXT',(select TERM_SPEC_ID from KRMS_TERM_SPEC_T where NMSPC_CD='KC-PD' and
+	                                                                                    *
+ERROR at line 2:
+ORA-01400: cannot insert NULL into
+("KCSO"."KRMS_CNTXT_VLD_TERM_SPEC_T"."TERM_SPEC_ID")
+
+
+	values ((select TERM_SPEC_ID from KRMS_TERM_SPEC_T where NMSPC_CD='KC-PD' and
+	                *
+ERROR at line 2:
+ORA-01400: cannot insert NULL into
+("KCSO"."KRMS_TERM_SPEC_CTGRY_T"."TERM_SPEC_ID")
+
+
+			(select TERM_SPEC_ID from KRMS_TERM_SPEC_T where NMSPC_CD='KC-PD' and
+			        *
+ERROR at line 4:
+ORA-01400: cannot insert NULL into
+("KCSO"."KRMS_TERM_RSLVR_T"."OUTPUT_TERM_SPEC_ID")
+
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+insert into KRMS_CNTXT_VLD_TERM_SPEC_T (CNTXT_TERM_SPEC_PREREQ_ID, CNTXT_ID, TERM_SPEC_ID, PREREQ)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.SYS_C0045487) violated
+
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row updated.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+1 row deleted.
+
+
+2 rows deleted.
+
+
+1 row deleted.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+insert into KRMS_TERM_RSLVR_PARM_SPEC_T (TERM_RSLVR_PARM_SPEC_ID, TERM_RSLVR_ID, NM, VER_NBR)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.SYS_C0045728) violated
+
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+3 rows deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+insert into KRMS_TERM_SPEC_T (TERM_SPEC_ID, NMSPC_CD, NM, DESC_TXT, TYP, ACTV, VER_NBR)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.SYS_C0045484) violated
+
+
+	values (CONCAT('KCMIT', KRMS_CNTXT_VLD_TERM_SPEC_S.NEXTVAL),'KC-PD-CONTEXT',(select TERM_SPEC_ID from KRMS_TERM_SPEC_T where NMSPC_CD='KC-PD' and
+	                                                                                    *
+ERROR at line 2:
+ORA-01400: cannot insert NULL into
+("KCSO"."KRMS_CNTXT_VLD_TERM_SPEC_T"."TERM_SPEC_ID")
+
+
+	values ((select TERM_SPEC_ID from KRMS_TERM_SPEC_T where NMSPC_CD='KC-PD' and
+	                *
+ERROR at line 2:
+ORA-01400: cannot insert NULL into
+("KCSO"."KRMS_TERM_SPEC_CTGRY_T"."TERM_SPEC_ID")
+
+
+			(select TERM_SPEC_ID from KRMS_TERM_SPEC_T where NMSPC_CD='KC-PD' and
+			        *
+ERROR at line 4:
+ORA-01400: cannot insert NULL into
+("KCSO"."KRMS_TERM_RSLVR_T"."OUTPUT_TERM_SPEC_ID")
+
+
+	values (CONCAT('KCMIT', KRMS_TERM_RSLVR_PARM_SPEC_S.NEXTVAL), (select TERM_RSLVR_ID from KRMS_TERM_RSLVR_T where NM='Cost Element in Version Period Crossed Limit Check Resolver' and NMSPC_CD='KC-PD'),
+	                                                                      *
+ERROR at line 2:
+ORA-01400: cannot insert NULL into
+("KCSO"."KRMS_TERM_RSLVR_PARM_SPEC_T"."TERM_RSLVR_ID")
+
+
+	values (CONCAT('KCMIT', KRMS_TERM_RSLVR_PARM_SPEC_S.NEXTVAL), (select TERM_RSLVR_ID from KRMS_TERM_RSLVR_T where NM='Cost Element in Version Period Crossed Limit Check Resolver' and NMSPC_CD='KC-PD'),
+	                                                                      *
+ERROR at line 2:
+ORA-01400: cannot insert NULL into
+("KCSO"."KRMS_TERM_RSLVR_PARM_SPEC_T"."TERM_RSLVR_ID")
+
+
+	values (CONCAT('KCMIT', KRMS_TERM_RSLVR_PARM_SPEC_S.NEXTVAL), (select TERM_RSLVR_ID from KRMS_TERM_RSLVR_T where NM='Cost Element in Version Period Crossed Limit Check Resolver' and NMSPC_CD='KC-PD'),
+	                                                                      *
+ERROR at line 2:
+ORA-01400: cannot insert NULL into
+("KCSO"."KRMS_TERM_RSLVR_PARM_SPEC_T"."TERM_RSLVR_ID")
+
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+Insert into KRCR_PARM_T (NMSPC_CD,CMPNT_CD,PARM_NM,OBJ_ID,VER_NBR,PARM_TYP_CD,VAL,PARM_DESC_TXT,EVAL_OPRTR_CD,APPL_ID) values ('KC-GEN','All','KC_MODULE_INT_COMMITTEE',SYS_GUID(),1,'CONFG','11','Module Code Int For Committee Module','A','KC')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+Insert into SPONSOR_HIERARCHY (HIERARCHY_NAME,SPONSOR_CODE,LEVEL1,LEVEL2,LEVEL3,LEVEL4,LEVEL5,LEVEL6,LEVEL7,LEVEL8,LEVEL9,LEVEL10,UPDATE_TIMESTAMP,UPDATE_USER,LEVEL1_SORTID,LEVEL2_SORTID,LEVEL3_SORTID,LEVEL4_SORTID,LEVEL5_SORTID,LEVEL6_SORTID,LEVEL7_SORTID,LEVEL8_SORTID,LEVEL9_SORTID,LEVEL10_SORTID,VER_NBR,OBJ_ID) values ('NIH Multiple PI','000440','NIH Multiple PI',null,null,null,null,null,null,null,null,null,SYSDATE,USER,1,null,null,null,null,null,null,null,null,null,1,SYS_GUID())
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.SPONSOR_HIERARCHYP1) violated
+
+
+
+1 row created.
+
+
+1 row created.
+
+INSERT INTO KRCR_PARM_T(NMSPC_CD, CMPNT_CD, PARM_NM, OBJ_ID, VER_NBR, PARM_TYP_CD, VAL, PARM_DESC_TXT, EVAL_OPRTR_CD, APPL_ID) VALUES ('KC-GEN', 'All', 'EnableFrequencyValidationForNull', SYS_GUID(), '1', 'CONFG', 'Y', 'Enable Frequency Code Validation for Null', 'A', 'KC')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+INSERT INTO KRCR_PARM_T(NMSPC_CD, CMPNT_CD, PARM_NM, OBJ_ID, VER_NBR, PARM_TYP_CD, VAL, PARM_DESC_TXT, EVAL_OPRTR_CD, APPL_ID) VALUES ('KC-AWARD', 'Document', 'SPL_REV_TYPE_CODE_HUMAN' , SYS_GUID(), '1', 'CONFG', '1', 'Special Review Type Code for Human', 'A', 'KC')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

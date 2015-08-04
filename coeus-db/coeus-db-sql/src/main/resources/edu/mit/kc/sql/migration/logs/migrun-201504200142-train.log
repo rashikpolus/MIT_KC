@@ -1,0 +1,130 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Mon Apr 20 01:45:35 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+SP2-0103: Nothing in SQL buffer to run.
+
+Function created.
+
+
+Function created.
+
+
+0 rows deleted.
+
+
+Commit complete.
+
+     WAREUSER.BALANCES_BY_FISCAL_PERIOD@WAREHOUSE_COEUS.MIT.EDU AL4
+                                        *
+ERROR at line 12:
+ORA-02019: connection description for remote database not found
+
+
+
+Commit complete.
+
+
+0 rows deleted.
+
+
+Commit complete.
+
+
+Sequence dropped.
+
+
+Sequence created.
+
+
+0 rows created.
+
+
+Commit complete.
+
+
+0 rows updated.
+
+
+Commit complete.
+
+
+0 rows updated.
+
+
+10 rows updated.
+
+
+1278 rows updated.
+
+
+Commit complete.
+
+
+Table dropped.
+
+
+Table created.
+
+
+51 rows created.
+
+
+Commit complete.
+
+
+51 rows updated.
+
+
+Commit complete.
+
+
+15 rows deleted.
+
+
+Commit complete.
+
+
+51 rows created.
+
+
+Commit complete.
+
+
+Table dropped.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

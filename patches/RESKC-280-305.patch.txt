@@ -1,0 +1,1195 @@
+From 36b1239b66dac973276c320a715523657391fd3c Mon Sep 17 00:00:00 2001
+From: Gayathri <gathreya@email.arizona.edu>
+Date: Mon, 27 Apr 2015 11:28:20 -0700
+Subject: [PATCH] RESKC-280: IP versioning should not copy award funding
+ proposals over. When a version of IP is linked to a version of the award,
+ only that version needs to be linked instead of all edits of ths IP beling
+ linked to the award. While displaying the awards linked in IP, display all
+ the IP versions linked to awards.
+
+---
+ .../home/InstitutionalProposal.java                | 436 +++++----------------
+ .../service/InstitutionalProposalService.java      |  14 +-
+ .../impl/InstitutionalProposalServiceImpl.java     |  57 +--
+ .../institutionalProposalFundedAwards.tag          |  10 +-
+ 4 files changed, 151 insertions(+), 366 deletions(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/institutionalproposal/home/InstitutionalProposal.java b/coeus-impl/src/main/java/org/kuali/kra/institutionalproposal/home/InstitutionalProposal.java
+index 7653bf0..f9561a6 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/institutionalproposal/home/InstitutionalProposal.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/institutionalproposal/home/InstitutionalProposal.java
+@@ -57,6 +57,7 @@
+ import org.kuali.kra.institutionalproposal.ipreview.IntellectualPropertyReview;
+ import org.kuali.kra.institutionalproposal.proposallog.ProposalLog;
+ import org.kuali.kra.institutionalproposal.proposallog.service.ProposalLogService;
++import org.kuali.kra.institutionalproposal.service.InstitutionalProposalService;
+ import org.kuali.kra.institutionalproposal.specialreview.InstitutionalProposalSpecialReview;
+ import org.kuali.kra.negotiations.bo.Negotiable;
+ import org.kuali.kra.negotiations.bo.NegotiationPersonDTO;
+@@ -79,6 +80,15 @@
+     private static final long serialVersionUID = 1L;
+     private static final Integer PROPOSAL_PENDING_STATUS_CODE = 1;
+     private static final Integer PROPOSAL_FUNDED_STATUS_CODE = 2;
++    public static final String PROPOSAL_STATUS = "proposalStatus";
++    public static final String PROPOSAL_TYPE = "proposalType";
++    public static final String SPONSOR = "sponsor";
++    public static final String PRIME_SPONSOR = "primeSponsor";
++    public static final String PROPOSAL_TYPE_CODE = "proposalTypeCode";
++    public static final String COMMENT_TYPE = "commentType";
++    public static final String ACTIVITY_TYPE = "activityType";
++    public static final String ACTIVITY_CODE = "code";
++    public static final String SELECT = "(select)";
+ 
+     private InstitutionalProposalDocument institutionalProposalDocument;
+     private Long proposalId;
+@@ -153,9 +163,14 @@
+     private List<InstitutionalProposalComment> proposalComments;
+     private IntellectualPropertyReview intellectualPropertyReview;
+ 
++    private static final String DEFAULT_VALUE = "0";
++    private static final int INITIAL_SEQUENCE_NUMBER = 1;
++    private static final String ACTIVE = "A";
++    private static final String INSTITUTIONAL_PROPOSAL_DOCUMENT = "institutionalProposalDocument";
++
+     private List<ProposalIpReviewJoin> proposalIpReviewJoins;
+     private List<InstitutionalProposalPerson> projectPersons;
+-    private List<InstitutionalProposalUnitContact> institutionalProposalUnitContacts;
++    private List<InstitutionalProposalUnitContact> institutionalProposalUnitContacts = new ArrayList<>();
+     private List<InstitutionalProposalCustomData> institutionalProposalCustomDataList;
+     private List<InstitutionalProposalNotepad> institutionalProposalNotepads;
+     private List<InstitutionalProposalSpecialReview> specialReviews;
+@@ -172,9 +187,7 @@
+     private transient String lookupUnitNumber;
+     private transient String lookupPersonNumber;
+     private transient FiscalYearMonthService fiscalYearMonthService;
+-    
+     private transient boolean allowUpdateTimestampToBeReset = true;
+-
+     private transient KcPersonService kcPersonService;
+ 
+     public InstitutionalProposal() {
+@@ -185,25 +198,23 @@ public InstitutionalProposal() {
+     }
+ 
+     /**
+-     * 
+-     * This method sets the default values for initial persistence as part of skeleton. As various panels are developed;
++     * This method sets the default values for initial persistence as
++     * part of skeleton. As various panels are developed;
+      * corresponding field initializations should be removed from this method.
+      */
+     private void initializeInstitutionalProposalWithDefaultValues() {
+-        setSequenceNumber(1);
+-        // setSponsorCode("005852");
+-        setCostSharingIndicator("0");
+-        setIdcRateIndicator("0");
+-        setSpecialReviewIndicator("0");
+-        setScienceCodeIndicator("0");
+-        ipReviewActivityIndicator = "A";
++        setSequenceNumber(INITIAL_SEQUENCE_NUMBER);
++        setCostSharingIndicator(DEFAULT_VALUE);
++        setIdcRateIndicator(DEFAULT_VALUE);
++        setSpecialReviewIndicator(DEFAULT_VALUE);
++        setScienceCodeIndicator(DEFAULT_VALUE);
++        ipReviewActivityIndicator = ACTIVE;
+         Calendar cl = Calendar.getInstance();
+         setCreateTimeStamp(new Date(cl.getTime().getTime()));
+-        // setProposalNumber("1");
+-        setTotalDirectCostInitial(new ScaleTwoDecimal(0));
+-        setTotalDirectCostTotal(new ScaleTwoDecimal(0));
+-        setTotalIndirectCostInitial(new ScaleTwoDecimal(0));
+-        setTotalIndirectCostTotal(new ScaleTwoDecimal(0));
++        setTotalDirectCostInitial(ScaleTwoDecimal.ZERO);
++        setTotalDirectCostTotal(ScaleTwoDecimal.ZERO);
++        setTotalIndirectCostInitial(ScaleTwoDecimal.ZERO);
++        setTotalIndirectCostTotal(ScaleTwoDecimal.ZERO);
+         newDescription = getDefaultNewDescription();
+         setProposalSequenceStatus(VersionStatus.PENDING.toString());
+         setStatusCode(1);// default value for all IP's
+@@ -212,16 +223,16 @@ private void initializeInstitutionalProposalWithDefaultValues() {
+     }
+ 
+     protected void initializeCollections() {
+-        institutionalProposalCustomDataList = new ArrayList<InstitutionalProposalCustomData>();
+-        specialReviews = new ArrayList<InstitutionalProposalSpecialReview>();
+-        institutionalProposalScienceKeywords = new ArrayList<InstitutionalProposalScienceKeyword>();
+-        institutionalProposalCostShares = new ArrayList<InstitutionalProposalCostShare>();
+-        institutionalProposalUnrecoveredFandAs = new ArrayList<InstitutionalProposalUnrecoveredFandA>();
+-        proposalIpReviewJoins = new ArrayList<ProposalIpReviewJoin>();
++        institutionalProposalCustomDataList = new ArrayList<>();
++        specialReviews = new ArrayList<>();
++        institutionalProposalScienceKeywords = new ArrayList<>();
++        institutionalProposalCostShares = new ArrayList<>();
++        institutionalProposalUnrecoveredFandAs = new ArrayList<>();
++        proposalIpReviewJoins = new ArrayList<>();
+         proposalIpReviewJoins.add(new ProposalIpReviewJoin());
+-        awardFundingProposals = new ArrayList<AwardFundingProposal>();
+-        institutionalProposalUnitContacts = new ArrayList<InstitutionalProposalUnitContact>();
+-        proposalComments = new ArrayList<InstitutionalProposalComment>();
++        awardFundingProposals = new ArrayList<>();
++        institutionalProposalUnitContacts = new ArrayList<>();
++        proposalComments = new ArrayList<>();
+     }
+ 
+     public void setDefaultInitialContractAdmin() {
+@@ -257,9 +268,6 @@ public boolean isCancelled() {
+ 
+     /**
+      * Is this Proposal funded by the given Award number and version?
+-     * @param awardNumber String
+-     * @param awardSequence Integer
+-     * @return boolean
+      */
+     public boolean isFundedByAward(String awardNumber, Integer awardSequence) {
+         for (AwardFundingProposal awardFundingProposal : this.getAwardFundingProposals()) {
+@@ -275,50 +283,28 @@ public boolean isFundedByAward(String awardNumber, Integer awardSequence) {
+      * This method calculates fiscal Month and fiscal Year fields. It also adds leading 0 to Month if needed.
+      */
+     private void calculateFiscalMonthAndYearFields() {
+-        /*
+-        Calendar cl = Calendar.getInstance();
+-        cl.add(Calendar.MONTH, 6);
+-        String monthString = Integer.toString(cl.get(Calendar.MONTH) + 1);
+-        if (monthString.length() == 1) {
+-            monthString = "0" + monthString;
+-        }
+-        setFiscalMonth(monthString);
+-        setFiscalYear(Integer.toString(cl.get(Calendar.YEAR)));
+-        */
+         String monthString = this.getFiscalYearMonthService().getCurrentFiscalMonthForDisplay().toString();
+         if (monthString.length() == 1) {
+-            monthString = "0" + monthString;
++            monthString = DEFAULT_VALUE + monthString;
+         }
+         setFiscalMonth(monthString);
+         setFiscalYear(this.getFiscalYearMonthService().getCurrentFiscalYear().toString());
+     }
+-    
+-    /**
+-     * Gets the institutionalProposalDocument attribute. 
+-     * @return Returns the institutionalProposalDocument.
+-     */
++
+     public InstitutionalProposalDocument getInstitutionalProposalDocument() {
+         if (institutionalProposalDocument == null) {
+-            this.refreshReferenceObject("institutionalProposalDocument");
++            this.refreshReferenceObject(INSTITUTIONAL_PROPOSAL_DOCUMENT);
+         }
+         return institutionalProposalDocument;
+     }
+ 
+-    /**
+-     * Sets the institutionalProposalDocument attribute value.
+-     * @param institutionalProposalDocument The institutionalProposalDocument to set.
+-     */
+     public void setInstitutionalProposalDocument(InstitutionalProposalDocument institutionalProposalDocument) {
+         this.institutionalProposalDocument = institutionalProposalDocument;
+     }
+ 
+     /**
+-     * Add an AwardFundingProposal
+-     * 
+      * The Award "owns" the relationship, so this method should not be called directly. Instead, this method will be called when an
+      * InstitutionalProposal is linked to an Award from Award maintenance.
+-     * 
+-     * @param afp
+      */
+     public void add(AwardFundingProposal afp) {
+         awardFundingProposals.add(afp);
+@@ -344,24 +330,15 @@ public void add(InstitutionalProposalUnrecoveredFandA institutionalProposalUnrec
+         institutionalProposalUnrecoveredFandAs.add(institutionalProposalUnrecoveredFandA);
+     }
+ 
+-    /**
+-     * This method 
+-     * @return
+-     */
+     public ScaleTwoDecimal getTotalInitialCost() {
+-        ScaleTwoDecimal returnValue = new ScaleTwoDecimal(0);
++        ScaleTwoDecimal returnValue = ScaleTwoDecimal.ZERO;
+         returnValue = returnValue.add(totalDirectCostInitial);
+         returnValue = returnValue.add(totalIndirectCostInitial);
+         return returnValue;
+     }
+ 
+-    /**
+-     * This method
+-     * 
+-     * @return
+-     */
+     public ScaleTwoDecimal getTotalCost() {
+-        ScaleTwoDecimal returnValue = new ScaleTwoDecimal(0);
++        ScaleTwoDecimal returnValue = ScaleTwoDecimal.ZERO;
+         returnValue = returnValue.add(totalDirectCostTotal);
+         returnValue = returnValue.add(totalIndirectCostTotal);
+         return returnValue;
+@@ -369,125 +346,66 @@ public ScaleTwoDecimal getTotalCost() {
+ 
+     /**
+      * This method calculates the total value of a list of ValuableItems
+-     * 
+-     * @param valuableItems
+-     * @return The total value
+      */
+     ScaleTwoDecimal getTotalAmount(List<? extends ValuableItem> valuableItems) {
+-        ScaleTwoDecimal returnVal = new ScaleTwoDecimal(0.00);
++        ScaleTwoDecimal returnVal = ScaleTwoDecimal.ZERO;
+         for (ValuableItem item : valuableItems) {
+-            ScaleTwoDecimal amount = item.getAmount() != null ? item.getAmount() : new ScaleTwoDecimal(0.00);
++            ScaleTwoDecimal amount = item.getAmount() != null ? item.getAmount() : ScaleTwoDecimal.ZERO;
+             returnVal = returnVal.add(amount);
+         }
+         return returnVal;
+     }
+ 
+-    /**
+-     * This method calls getTotalAmount to calculate the total of all Commitment Amounts.
+-     * 
+-     * @return
+-     */
+     public ScaleTwoDecimal getTotalCostShareAmount() {
+         return getTotalAmount(institutionalProposalCostShares);
+     }
+ 
+-    /**
+-     * This method calls getTotalAmount to calculate the total of all Unrecovered FandAs.
+-     * 
+-     * @return
+-     */
+     public ScaleTwoDecimal getTotalUnrecoveredFandAAmount() {
+         return getTotalAmount(institutionalProposalUnrecoveredFandAs);
+     }
+ 
+-    /**
+-     * Gets the specialReviews attribute.
+-     * 
+-     * @return Returns the specialReviews.
+-     */
+     public List<InstitutionalProposalSpecialReview> getSpecialReviews() {
+         return specialReviews;
+     }
+ 
+-    /**
+-     * Sets the specialReviews attribute value.
+-     * 
+-     * @param specialReviews The specialReviews to set.
+-     */
+     public void setSpecialReviews(List<InstitutionalProposalSpecialReview> specialReviews) {
+         this.specialReviews = specialReviews;
+     }
+ 
+-    /**
+-     * Gets the institutionalProposalCustomDataList attribute.
+-     * 
+-     * @return Returns the institutionalProposalCustomDataList.
+-     */
+     public List<InstitutionalProposalCustomData> getInstitutionalProposalCustomDataList() {
+         return institutionalProposalCustomDataList;
+     }
+ 
+-
+-    /**
+-     * Gets the institutionalProposalNotepads attribute. 
+-     * @return Returns the institutionalProposalNotepads.
+-     */
+     public List<InstitutionalProposalNotepad> getInstitutionalProposalNotepads() {
+ 
+         if (institutionalProposalNotepads == null) {
+-            institutionalProposalNotepads = new ArrayList<InstitutionalProposalNotepad>();
++            institutionalProposalNotepads = new ArrayList<>();
+         }
+         return institutionalProposalNotepads;
+     }
+ 
+-    /**
+-     * Sets the institutionalProposalNotepads attribute value.
+-     * @param institutionalProposalNotepads The institutionalProposalNotepads to set.
+-     */
+     public void setInstitutionalProposalNotepads(List<InstitutionalProposalNotepad> institutionalProposalNotepads) {
+         this.institutionalProposalNotepads = institutionalProposalNotepads;
+     }
+ 
+-
+-    /**
+-     * Sets the institutionalProposalCustomDataList attribute value.
+-     * @param institutionalProposalCustomDataList The institutionalProposalCustomDataList to set.
+-     */
+     public void setInstitutionalProposalCustomDataList(List<InstitutionalProposalCustomData> institutionalProposalCustomDataList) {
+         this.institutionalProposalCustomDataList = institutionalProposalCustomDataList;
+     }
+ 
+-
+-    /**
+-     * Gets the institutionalProposalScienceKeywords attribute. 
+-     * @return Returns the institutionalProposalScienceKeywords.
+-     */
+     public List<InstitutionalProposalScienceKeyword> getInstitutionalProposalScienceKeywords() {
+         return institutionalProposalScienceKeywords;
+     }
+ 
+-    /**
+-     * Sets the institutionalProposalScienceKeywords attribute value.
+-     * @param institutionalProposalScienceKeywords The institutionalProposalScienceKeywords to set.
+-     */
+     public void setInstitutionalProposalScienceKeywords(
+             List<InstitutionalProposalScienceKeyword> institutionalProposalScienceKeywords) {
+         this.institutionalProposalScienceKeywords = institutionalProposalScienceKeywords;
+     }
+ 
+-    /**
+-     * This method adds a Project Person to the institutionalProposal
+-     * @param projectPerson
+-     */
+     public void add(InstitutionalProposalPerson projectPerson) {
+         projectPersons.add(projectPerson);
+         projectPerson.setInstitutionalProposal(this);
+     }
+ 
+-    /**
+-     * Add an Institutional Proposal Unit or Central Administration contact
+-     * @param awardUnitContact
+-     */
+     public void add(InstitutionalProposalUnitContact institutionalProposalUnitContact) {
+         institutionalProposalUnitContacts.add(institutionalProposalUnitContact);
+         institutionalProposalUnitContact.setInstitutionalProposal(this);
+@@ -504,9 +422,6 @@ public KcPerson getOspAdministrator() {
+         return ospAdministrator;
+     }
+ 
+-    /**
+-     * @param institutionalProposalUnitContacts
+-     */
+     public void setInstitutionalProposalUnitContacts(List<InstitutionalProposalUnitContact> institutionalProposalUnitContacts) {
+         this.institutionalProposalUnitContacts = institutionalProposalUnitContacts;
+     }
+@@ -633,10 +548,6 @@ public void setActivityTypeCode(String activityTypeCode) {
+         this.activityTypeCode = activityTypeCode;
+     }
+ 
+-    /**
+-     * Sets the leadUnit attribute value.
+-     * @param leadUnit The leadUnit to set.
+-     */
+     public void setLeadUnit(Unit leadUnit) {
+         this.leadUnit = leadUnit;
+     }
+@@ -785,19 +696,10 @@ public void setMailAccountNumber(String mailAccountNumber) {
+         this.mailAccountNumber = mailAccountNumber;
+     }
+ 
+-
+-    /**
+-     * Gets the mailDescription attribute. 
+-     * @return Returns the mailDescription.
+-     */
+     public String getMailDescription() {
+         return mailDescription;
+     }
+ 
+-    /**
+-     * Sets the mailDescription attribute value.
+-     * @param mailDescription The mailDescription to set.
+-     */
+     public void setMailDescription(String mailDescription) {
+         this.mailDescription = mailDescription;
+     }
+@@ -916,7 +818,7 @@ public void setAwardTypeCode(Integer awardTypeCode) {
+ 
+     public ProposalStatus getProposalStatus() {
+         if (proposalStatus == null && statusCode != null) {
+-            this.refreshReferenceObject("proposalStatus");
++            this.refreshReferenceObject(PROPOSAL_STATUS);
+         }
+         return proposalStatus;
+     }
+@@ -935,7 +837,7 @@ public void setNoticeOfOpportunity(NoticeOfOpportunity noticeOfOpportunity) {
+ 
+     public ProposalType getProposalType() {
+         if (proposalType == null && proposalTypeCode != null) {
+-            this.refreshReferenceObject("proposalType");
++            this.refreshReferenceObject(PROPOSAL_TYPE);
+         }
+         return proposalType;
+     }
+@@ -952,18 +854,9 @@ public void setRolodex(Rolodex rolodex) {
+         this.rolodex = rolodex;
+     }
+ 
+-    /**
+-     * This method violates our policy of not calling a service in a getter. This will only call the service once to set a sponsor
+-     * when a sponsor code exists, but no sponsor was fetched
+-     * 
+-     * Seems like a persistence design issue to me. Why wouldn't Sponsor:Award be a 1:M relationship handled automagically by the
+-     * persistence framework?
+-     * 
+-     * @return
+-     */
+     public Sponsor getSponsor() {
+         if (outOfSync(sponsorCode, sponsor)) {
+-            this.refreshReferenceObject("sponsor");
++            this.refreshReferenceObject(SPONSOR);
+         }
+         return sponsor;
+     }
+@@ -973,23 +866,18 @@ public void setSponsor(Sponsor sponsor) {
+         this.sponsorCode = sponsor != null ? sponsor.getSponsorCode() : null;
+     }
+ 
+-    // Note: following the pattern of Sponsor, this getter indirectly calls a service.
+-    // Is there a better way?
+     public Sponsor getPrimeSponsor() {
+         if (outOfSync(primeSponsorCode, primeSponsor)) {
+-            this.refreshReferenceObject("primeSponsor");
++            this.refreshReferenceObject(PRIME_SPONSOR);
+         }
+         return primeSponsor;
+     }
+ 
+     /**
+      * checks if a sponsor code needs refreshing.
+-     * @param code the code
+-     * @param spon the sponsor to refresh
+-     * @return true if needs refreshing
+      */
+-    private static boolean outOfSync(String code, Sponsor spon) {
+-        return spon == null && !StringUtils.isEmpty(code) || (spon != null && !StringUtils.equals(spon.getSponsorCode(), code))
++    private static boolean outOfSync(String code, Sponsor sponsor) {
++        return sponsor == null && !StringUtils.isEmpty(code) || (sponsor != null && !StringUtils.equals(sponsor.getSponsorCode(), code))
+                 && !StringUtils.isEmpty(code);
+     }
+ 
+@@ -1020,7 +908,7 @@ public String getSponsorName() {
+ 
+     public ActivityType getActivityType() {
+         if (activityType == null && activityTypeCode != null) {
+-            this.refreshReferenceObject("activityType");
++            this.refreshReferenceObject(ACTIVITY_TYPE);
+         }
+         return activityType;
+     }
+@@ -1033,9 +921,6 @@ public AwardType getAwardType() {
+         return awardType;
+     }
+ 
+-    /**
+-     * @return Returns the awards.
+-     */
+     public List<AwardFundingProposal> getAwardFundingProposals() {
+         return awardFundingProposals;
+     }
+@@ -1048,12 +933,8 @@ public boolean getAwardFundingProposalsExist() {
+         return getAwardFundingProposals().size() > 0;
+     }
+ 
+-    /**
+-     * Get the list of only Active AwardFundingProposals.
+-     * @return List<AwardFundingProposal> the list.
+-     */
+     public List<AwardFundingProposal> getActiveAwardFundingProposals() {
+-        List<AwardFundingProposal> activeAfps = new ArrayList<AwardFundingProposal>();
++        List<AwardFundingProposal> activeAfps = new ArrayList<>();
+         for (AwardFundingProposal awardFundingProposal : this.getAwardFundingProposals()) {
+             if (awardFundingProposal.isActive()) {
+                 activeAfps.add(awardFundingProposal);
+@@ -1062,54 +943,38 @@ public boolean getAwardFundingProposalsExist() {
+         return activeAfps;
+     }
+ 
++    public List<AwardFundingProposal> getAllFundingProposals() {
++        return getInstitutionalProposalService().getAllAwardFundingProposalsForProposal(getProposalNumber());
++    }
++
++    private InstitutionalProposalService getInstitutionalProposalService() {
++        return KcServiceLocator.getService(InstitutionalProposalService.class);
++    }
++
+     public void setAwardType(AwardType awardType) {
+         this.awardType = awardType;
+     }
+ 
+-    /**
+-     * Gets the fiscalMonth attribute. 
+-     * @return Returns the fiscalMonth.
+-     */
+     public String getFiscalMonth() {
+         return fiscalMonth;
+     }
+ 
+-    /**
+-     * Sets the fiscalMonth attribute value.
+-     * @param fiscalMonth The fiscalMonth to set.
+-     */
+     public void setFiscalMonth(String fiscalMonth) {
+         this.fiscalMonth = fiscalMonth;
+     }
+ 
+-    /**
+-     * Gets the fiscalYear attribute. 
+-     * @return Returns the fiscalYear.
+-     */
+     public String getFiscalYear() {
+         return fiscalYear;
+     }
+ 
+-    /**
+-     * Sets the fiscalYear attribute value.
+-     * @param fiscalYear The fiscalYear to set.
+-     */
+     public void setFiscalYear(String fiscalYear) {
+         this.fiscalYear = fiscalYear;
+     }
+ 
+-    /**
+-     * This method finds the lead unit number, if any
+-     * @return
+-     */
+     public String getUnitNumber() {
+         return unitNumber;
+     }
+ 
+-    /**
+-     * Sets the unitNumber attribute value.
+-     * @param unitNumber The unitNumber to set.
+-     */
+     public void setUnitNumber(String unitNumber) {
+         this.unitNumber = unitNumber;
+     }
+@@ -1124,9 +989,6 @@ public void setLeadUnitNumber(String unitNumber) {
+         this.unitNumber = unitNumber;
+     }
+ 
+-    /**
+-     * @param awards The awards to set.
+-     */
+     public void setAwardFundingProposals(List<AwardFundingProposal> awardFundingProposals) {
+         this.awardFundingProposals = awardFundingProposals;
+     }
+@@ -1147,52 +1009,40 @@ public void setProposalCostSharing(InstitutionalProposalCostShare proposalCostSh
+         this.proposalCostSharing = proposalCostSharing;
+     }
+ 
+-    /**
+-     * Gets the projectPersons attribute. 
+-     * @return Returns the projectPersons.
+-     */
+-    @SuppressWarnings("unchecked")
+     public List<InstitutionalProposalPerson> getProjectPersons() 
+     {   if(CollectionUtils.isNotEmpty(projectPersons)) {    
+             Collections.sort(projectPersons, new ProjectPersonComparator());
+         }
+         return projectPersons; 
+     }
+-    
+-    
+-    @SuppressWarnings("rawtypes")
+-    class ProjectPersonComparator implements Comparator 
++
++    class ProjectPersonComparator implements Comparator
+     {
+         
+         public int compare(Object obj1, Object obj2) 
+         {
+             InstitutionalProposalPerson ipp1 = (InstitutionalProposalPerson) obj1;
+             InstitutionalProposalPerson ipp2 = (InstitutionalProposalPerson) obj2;
+-            String lastName1 = ipp1.getContact() != null ? ipp1.getContact().getLastName() != null ? ipp1.getContact().getLastName().toUpperCase() : "" : "";  
+-            String lastName2 = ipp2.getContact() != null ? ipp2.getContact().getLastName() != null ? ipp2.getContact().getLastName().toUpperCase() : "" : "";  
+-            String contactRoleCode1 = ipp1.getContactRole() != null ? ipp1.getContactRole().getRoleCode() : "";
+-            String contactRoleCode2 = ipp2.getContactRole() != null ? ipp2.getContactRole().getRoleCode() : "";
++            String lastName1 = ipp1.getContact() != null ? ipp1.getContact().getLastName() != null ?
++                    ipp1.getContact().getLastName().toUpperCase() : StringUtils.EMPTY : StringUtils.EMPTY;
++            String lastName2 = ipp2.getContact() != null ? ipp2.getContact().getLastName() != null ?
++                    ipp2.getContact().getLastName().toUpperCase() : StringUtils.EMPTY : StringUtils.EMPTY;
++            String contactRoleCode1 = ipp1.getContactRole() != null ? ipp1.getContactRole().getRoleCode() : StringUtils.EMPTY;
++            String contactRoleCode2 = ipp2.getContactRole() != null ? ipp2.getContactRole().getRoleCode() : StringUtils.EMPTY;
+                 
+-            if (contactRoleCode1.equals(contactRoleCode2))
+-            {
++            if (contactRoleCode1.equals(contactRoleCode2)) {
+                 return lastName1.compareTo(lastName2);
+             }
+-            else 
+-            {
+-                if (contactRoleCode1.equals(ContactRole.PI_CODE))
+-                {
++            else {
++                if (contactRoleCode1.equals(ContactRole.PI_CODE)) {
+                     return -1;
+                 }
+-                if (contactRoleCode2.equals(ContactRole.PI_CODE))
+-                {
++                if (contactRoleCode2.equals(ContactRole.PI_CODE)) {
+                     return 1;
+                 }
+-                if (contactRoleCode1.equals(ContactRole.COI_CODE)) 
+-                {
++                if (contactRoleCode1.equals(ContactRole.COI_CODE)) {
+                     return -1;
+-                }
+-                else 
+-                {
++                } else  {
+                     return 1;
+                 }              
+             }
+@@ -1200,11 +1050,6 @@ public int compare(Object obj1, Object obj2)
+         
+     }
+ 
+-    
+-    /**
+-     * Sets the projectPersons attribute value.
+-     * @param projectPersons The projectPersons to set.
+-     */
+     public void setProjectPersons(List<InstitutionalProposalPerson> projectPersons) {
+         this.projectPersons = projectPersons;
+     }
+@@ -1250,7 +1095,7 @@ public void setProposalIpReviewJoins(List<ProposalIpReviewJoin> proposalIpReview
+     }
+ 
+     public ProposalIpReviewJoin getProposalIpReviewJoin() {
+-        if (!CollectionUtils.isEmpty(this.proposalIpReviewJoins)) {
++        if (ObjectUtils.isNotNull(this.proposalIpReviewJoins != null)) {
+             return this.proposalIpReviewJoins.get(0);
+         }
+         return null;
+@@ -1260,57 +1105,33 @@ public void setProposalIpReviewJoin(ProposalIpReviewJoin proposalIpReviewJoin) {
+         this.proposalIpReviewJoins.add(0, proposalIpReviewJoin);
+     }
+ 
+-    /**
+-     * Gets the institutionalProposalCostShares attribute. 
+-     * @return Returns the institutionalProposalCostShares.
+-     */
+     public List<InstitutionalProposalCostShare> getInstitutionalProposalCostShares() {
+         return institutionalProposalCostShares;
+     }
+ 
+-    /**
+-     * Sets the institutionalProposalCostShares attribute value.
+-     * @param institutionalProposalCostShares The institutionalProposalCostShares to set.
+-     */
+     public void setInstitutionalProposalCostShares(List<InstitutionalProposalCostShare> institutionalProposalCostShares) {
+         this.institutionalProposalCostShares = institutionalProposalCostShares;
+     }
+ 
+-    /**
+-     * Gets the institutionalProposalUnrecoveredFandAs attribute. 
+-     * @return Returns the institutionalProposalUnrecoveredFandAs.
+-     */
+     public List<InstitutionalProposalUnrecoveredFandA> getInstitutionalProposalUnrecoveredFandAs() {
+         return institutionalProposalUnrecoveredFandAs;
+     }
+ 
+-    /**
+-     * Sets the institutionalProposalUnrecoveredFandAs attribute value.
+-     * @param institutionalProposalUnrecoveredFandAs The institutionalProposalUnrecoveredFandAs to set.
+-     */
+     public void setInstitutionalProposalUnrecoveredFandAs(
+             List<InstitutionalProposalUnrecoveredFandA> institutionalProposalUnrecoveredFandAs) {
+         this.institutionalProposalUnrecoveredFandAs = institutionalProposalUnrecoveredFandAs;
+     }
+ 
+-    /**
+-     * Gets the createTimeStamp attribute. 
+-     * @return Returns the createTimeStamp.
+-     */
+     public Date getCreateTimeStamp() {
+         return createTimeStamp;
+     }
+ 
+-    /**
+-     * Sets the createTimeStamp attribute value.
+-     * @param createTimeStamp The createTimeStamp to set.
+-     */
+     public void setCreateTimeStamp(Date createTimeStamp) {
+         this.createTimeStamp = createTimeStamp;
+     }
+ 
+     public String getDefaultNewDescription() {
+-        return "(select)";
++        return SELECT;
+     }
+ 
+     public String getNewDescription() {
+@@ -1321,19 +1142,6 @@ public void setNewDescription(String newDescription) {
+         this.newDescription = newDescription;
+     }
+ 
+-    // public Timestamp getUpdateTimestamp() {
+-    // return super.getUpdateTimestamp();
+-    // }
+-    // public void setUpdateTimestamp(Timestamp updateTimestamp) {
+-    // super.setUpdateTimestamp(updateTimestamp);
+-    // }//
+-    // public String getUpdateUser() {
+-    // return super.getUpdateUser();
+-    // }
+-    // public void setUpdateUser(String updateUser) {
+-    // super.setUpdateUser(updateUser);
+-    // }
+-
+     public String getProposalSequenceStatus() {
+         return proposalSequenceStatus;
+     }
+@@ -1352,37 +1160,21 @@ public InstitutionalProposalSpecialReview getSpecialReview(int index) {
+         return getSpecialReviews().get(index);
+     }
+ 
+-    /**
+-     * Gets the keywords attribute. 
+-     * @return Returns the keywords.
+-     */
+     @Override
+     public List<InstitutionalProposalScienceKeyword> getKeywords() {
+         return institutionalProposalScienceKeywords;
+     }
+ 
+-    /**
+-     * Sets the keywords attribute value.
+-     * @param keywords The keywords to set.
+-     */
+     public void setKeywords(List<InstitutionalProposalScienceKeyword> institutionalProposalScienceKeywords) {
+         this.institutionalProposalScienceKeywords = institutionalProposalScienceKeywords;
+     }
+ 
+-    /**
+-     * Add selected science keyword to award science keywords list.
+-     * @see org.kuali.coeus.common.framework.keyword.KeywordsManager#addKeyword(org.kuali.coeus.common.framework.keyword.ScienceKeyword)
+-     */
+     public void addKeyword(ScienceKeyword scienceKeyword) {
+         InstitutionalProposalScienceKeyword institutionalProposalScienceKeyword = new InstitutionalProposalScienceKeyword(this,
+             scienceKeyword);
+         getKeywords().add(institutionalProposalScienceKeyword);
+     }
+ 
+-    /**
+-     * It returns the ScienceKeyword object from keywords list
+-     * @see org.kuali.coeus.common.framework.keyword.KeywordsManager#getKeyword(int)
+-     */
+     public InstitutionalProposalScienceKeyword getKeyword(int index) {
+         return getKeywords().get(index);
+     }
+@@ -1408,11 +1200,7 @@ public void setSequenceOwner(InstitutionalProposal newOwner) {
+     }
+ 
+     /**
+-     * This method removes an AwardFundingProposal
+-     * 
+      * Since Award "owns" the relationship, this method should not be called except from Award
+-     * 
+-     * @param afp
+      */
+     public void remove(AwardFundingProposal afp) {
+         awardFundingProposals.remove(afp);
+@@ -1435,9 +1223,11 @@ protected void postPersist() {
+         updateProposalIpReviewJoin();
+         // This method links the institutional proposal with the merged proposal log
+         if (proposalId != null && proposalNumber != null)
+-        {
+-            KcServiceLocator.getService(ProposalLogService.class).updateMergedInstProposal(proposalId, proposalNumber);
+-        }
++            updateMergedInstitutionalProposal();
++    }
++
++    private void updateMergedInstitutionalProposal() {
++        KcServiceLocator.getService(ProposalLogService.class).updateMergedInstProposal(proposalId, proposalNumber);
+     }
+ 
+     @Override
+@@ -1469,13 +1259,12 @@ protected void updateProposalIpReviewJoin() {
+ 
+     /**
+      * This method lazy inits ActivityType
+-     * @return
+      */
+     public ActivityType getActivityTypeFromCode() {
+         if (activityType == null) {
+             if (activityTypeCode != null) {
+-                Map<String, Object> identifiers = new HashMap<String, Object>();
+-                identifiers.put("code", activityTypeCode);
++                Map<String, Object> identifiers = new HashMap<>();
++                identifiers.put(ACTIVITY_CODE, activityTypeCode);
+                 activityType = (ActivityType) getBusinessObjectService().findByPrimaryKey(ActivityType.class, identifiers);
+             }
+         }
+@@ -1484,13 +1273,12 @@ public ActivityType getActivityTypeFromCode() {
+ 
+     /**
+      * This method lazy inits ProposalType
+-     * @return
+      */
+     public ProposalType getProposalTypeFromCode() {
+         if (proposalType == null) {
+             if (proposalTypeCode != null) {
+-                Map<String, Object> identifiers = new HashMap<String, Object>();
+-                identifiers.put("proposalTypeCode", proposalTypeCode);
++                Map<String, Object> identifiers = new HashMap<>();
++                identifiers.put(PROPOSAL_TYPE_CODE, proposalTypeCode);
+                 proposalType = (ProposalType) getBusinessObjectService().findByPrimaryKey(ProposalType.class, identifiers);
+             }
+         }
+@@ -1499,19 +1287,12 @@ public ProposalType getProposalTypeFromCode() {
+ 
+     /**
+      * Populate properties on this InstitutionalProposal with the respective properties from ProposalLog.
+-     * 
+-     * @param proposalLog ProposalLog
+      */
+     public void doProposalLogDataFeed(ProposalLog proposalLog) {
+         this.setProposalNumber(proposalLog.getProposalNumber());
+         this.setDeadlineDate(proposalLog.getDeadlineDate());
+         this.setDeadlineTime(proposalLog.getDeadlineTime());
+-        /**
+-         * per KRACOEUS-4647 we don't want to pull the log's month/year, we want to calculate it fresh.
+-         */
+         this.calculateFiscalMonthAndYearFields();
+-        //this.setFiscalMonth(proposalLog.getFiscalMonth().toString());
+-        //this.setFiscalYear(proposalLog.getFiscalYear().toString());
+         this.setProposalTypeCode(Integer.parseInt(proposalLog.getProposalTypeCode()));
+         this.setStatusCode(1);
+         this.setSponsorCode(proposalLog.getSponsorCode());
+@@ -1568,7 +1349,6 @@ public KcPerson getInitialContractAdminUser() {
+                 return this.getKcPersonService().getKcPersonByPersonId(this.getInitialContractAdmin());
+             }
+             catch (Exception e) {
+-                // TODO temp unit test fix
+             }
+         }
+         return null;
+@@ -1600,7 +1380,7 @@ public InstitutionalProposalComment getInstitutionalProposalCommentByType(String
+         InstitutionalProposalComment ipComment = getCommentMap().get(commentTypeCode);
+         if (ipComment == null && createNew) {
+             ipComment = new InstitutionalProposalComment(commentTypeCode);
+-            ipComment.refreshReferenceObject("commentType");
++            ipComment.refreshReferenceObject(COMMENT_TYPE);
+             add(ipComment);
+             commentMap.put(ipComment.getCommentType().getCommentTypeCode(), ipComment);
+         }
+@@ -1614,7 +1394,7 @@ public void add(InstitutionalProposalComment ipComment) {
+ 
+     private Map<String, InstitutionalProposalComment> getCommentMap() {
+         if (commentMap == null) {
+-            commentMap = new HashMap<String, InstitutionalProposalComment>();
++            commentMap = new HashMap<>();
+             for (InstitutionalProposalComment ipc : proposalComments) {
+                 commentMap.put(ipc.getCommentType().getCommentTypeCode(), ipc);
+             }
+@@ -1663,7 +1443,6 @@ public boolean getShowReturnLink() {
+     }
+     
+     public String getInstProposalNumber(){
+-        //retrieveInstProposalNumberFromDB()
+         if(instProposalNumber == null){
+             instProposalNumber = proposalNumber;
+         }
+@@ -1677,8 +1456,6 @@ public void setInstProposalNumber(String instProposalNumber){
+ 
+     /**
+      * This method returns the combined number of units for all project personnel.
+-     * 
+-     * @return
+      */
+     public int getTotalUnitCount() {
+         int count = 0;
+@@ -1697,8 +1474,7 @@ public void setSponsorNihMultiplePi(boolean sponsorNihMultiplePi) {
+ 
+     @Override
+     public String getLeadUnitName() {
+-        String name = getLeadUnit() == null ? EMPTY_STRING : getLeadUnit().getUnitName();
+-        return name;
++        return getLeadUnit() == null ? StringUtils.EMPTY : getLeadUnit().getUnitName();
+     }
+     
+     @Override
+@@ -1708,39 +1484,37 @@ public String getPiName() {
+ 
+     @Override
+     public String getPiEmployeeName() {
+-        String name = getPrincipalInvestigator() == null ? EMPTY_STRING : getPrincipalInvestigator().getFullName();
+-        return name;
++        return getPrincipalInvestigator() == null ? StringUtils.EMPTY : getPrincipalInvestigator().getFullName();
+     }
+ 
+     @Override
+     public String getPiNonEmployeeName() {
+-        return EMPTY_STRING;
++        return StringUtils.EMPTY;
+     }
+ 
+     @Override
+     public String getAdminPersonName() {
+-        return EMPTY_STRING;
++        return StringUtils.EMPTY;
+     }
+ 
+     @Override
+     public String getPrimeSponsorName() {
+-        String name = getPrimeSponsor() == null ? EMPTY_STRING : getPrimeSponsor().getSponsorName();
+-        return name;
++        return getPrimeSponsor() == null ? StringUtils.EMPTY : getPrimeSponsor().getSponsorName();
+     }
+ 
+     @Override
+     public String getSponsorAwardNumber() {
+-        return EMPTY_STRING;
++        return StringUtils.EMPTY;
+     }
+ 
+     @Override
+     public String getSubAwardOrganizationName() {
+-        return EMPTY_STRING;
++        return StringUtils.EMPTY;
+     }
+     
+     @Override
+     public List<NegotiationPersonDTO> getProjectPeople() {
+-        List<NegotiationPersonDTO> kcPeople = new ArrayList<NegotiationPersonDTO>();
++        List<NegotiationPersonDTO> kcPeople = new ArrayList<>();
+         for (InstitutionalProposalPerson person : getProjectPersons()) {
+             kcPeople.add(new NegotiationPersonDTO(person.getPerson(), person.getRoleCode()));
+         }
+@@ -1754,11 +1528,7 @@ public String getAssociatedDocumentId() {
+     
+     @Override
+     public String getNegotiableProposalTypeCode() {
+-        if (getProposalTypeCode() != null) {
+-            return getProposalTypeCode().toString();
+-        } else {
+-            return EMPTY_STRING;
+-        }
++        return getProposalTypeCode() != null ? getProposalTypeCode().toString() : StringUtils.EMPTY;
+     }
+ 
+     @Override
+@@ -1768,22 +1538,22 @@ public ProposalType getNegotiableProposalType() {
+ 
+     @Override
+     public String getSubAwardRequisitionerName() {
+-        return EMPTY_STRING;
++        return StringUtils.EMPTY;
+     }
+ 
+     @Override
+     public String getSubAwardRequisitionerUnitNumber() {
+-        return EMPTY_STRING;
++        return StringUtils.EMPTY;
+     }
+ 
+     @Override
+     public String getSubAwardRequisitionerUnitName() {
+-        return EMPTY_STRING;
++        return StringUtils.EMPTY;
+     }
+ 
+     @Override
+     public String getSubAwardRequisitionerId() {
+-        return EMPTY_STRING;
++        return StringUtils.EMPTY;
+     }
+     
+     public FiscalYearMonthService getFiscalYearMonthService() {
+@@ -1799,8 +1569,8 @@ public boolean isAllowUpdateTimestampToBeReset() {
+     
+     /**
+      * 
+-     * Setting this value to false will prevent the update timestamp field from being upddate just once.  After that, the update timestamp field will update as regular.
+-     * @param allowUpdateTimestampToBeReset
++     * Setting this value to false will prevent the update timestamp field from being upddate just once.
++     * After that, the update timestamp field will update as regular.
+      */
+     public void setAllowUpdateTimestampToBeReset(boolean allowUpdateTimestampToBeReset) {
+         this.allowUpdateTimestampToBeReset = allowUpdateTimestampToBeReset;
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/institutionalproposal/service/InstitutionalProposalService.java b/coeus-impl/src/main/java/org/kuali/kra/institutionalproposal/service/InstitutionalProposalService.java
+index 5e90dd6..1f20e32 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/institutionalproposal/service/InstitutionalProposalService.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/institutionalproposal/service/InstitutionalProposalService.java
+@@ -21,6 +21,7 @@
+ import org.kuali.coeus.common.framework.version.VersionException;
+ import org.kuali.coeus.common.budget.framework.core.Budget;
+ import org.kuali.kra.award.home.Award;
++import org.kuali.kra.award.home.fundingproposal.AwardFundingProposal;
+ import org.kuali.kra.institutionalproposal.document.InstitutionalProposalDocument;
+ import org.kuali.kra.institutionalproposal.home.InstitutionalProposal;
+ import org.kuali.coeus.propdev.impl.core.DevelopmentProposal;
+@@ -147,10 +148,13 @@
+     InstitutionalProposalDocument createAndSaveNewVersion(InstitutionalProposal currentInstitutionalProposal, InstitutionalProposalDocument currentInstitutionalProposalDocument) throws VersionException, 
+     WorkflowException, IOException;
+ 
+-    /**
+-     * Retrieves the proposal id for the given award
+-     * @param award the award to find the proposal id for
+-     * @return the proposal id, or null if nothing can be found
+-     */
++
++    public List<AwardFundingProposal> getAllAwardFundingProposalsForProposal(String proposalNumber);
++
++        /**
++         * Retrieves the proposal id for the given award
++         * @param award the award to find the proposal id for
++         * @return the proposal id, or null if nothing can be found
++         */
+     public Long getProposalId(Award award);
+ }
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/institutionalproposal/service/impl/InstitutionalProposalServiceImpl.java b/coeus-impl/src/main/java/org/kuali/kra/institutionalproposal/service/impl/InstitutionalProposalServiceImpl.java
+index 4044238..30047c1 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/institutionalproposal/service/impl/InstitutionalProposalServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/institutionalproposal/service/impl/InstitutionalProposalServiceImpl.java
+@@ -90,7 +90,16 @@
+     private static final String DECIMAL_FORMAT = "00000000";
+     private static final String PROPOSAL_NUMBER = "proposalNumber";
+     private static final String SEQUENCE_NUMBER = "sequenceNumber";
+-    
++    public static final String PROPOSAL_ID = "proposalId";
++    public static final String ACTIVE = "active";
++    public static final String ACTIVE_VALUE = "Y";
++    public static final String INST_PROPOSAL_ID = "instProposalId";
++    public static final int DEFAULT_STATUS_CODE = 1;
++    public static final int WITHDRAWN_STATUS_CODE = 5;
++    public static final int DEFAULT_COST_SHARE_TYPE_CODE = 1;
++    public static final String VALID_FUNDING_PROPOSAL_STATUS_CODES = "validFundingProposalStatusCodes";
++    public static final String SEPARATOR = ",";
++
+     private BusinessObjectService businessObjectService;
+     private DocumentService documentService;
+     private VersioningService versioningService;
+@@ -222,7 +231,7 @@ public InstitutionalProposal getActiveInstitutionalProposalVersion(String propos
+                     
+                     InstitutionalProposal newVersion = versioningService.createNewVersion(activeVersion);
+                     newVersion.setStatusCode(ProposalStatus.FUNDED);
+-                    newVersion.setAwardFundingProposals(transferFundingProposals(activeVersion, newVersion));
++                    newVersion.setAwardFundingProposals(new ArrayList<AwardFundingProposal>());
+                     
+                     InstitutionalProposalDocument institutionalProposalDocument = 
+                         (InstitutionalProposalDocument) documentService.getNewDocument(InstitutionalProposalDocument.class);
+@@ -318,6 +327,18 @@ public InstitutionalProposal getActiveInstitutionalProposalVersion(String propos
+                                                                 true));
+         return results;    
+     }
++
++    public List<AwardFundingProposal> getAllAwardFundingProposalsForProposal(String proposalNumber) {
++        List<InstitutionalProposal> proposals = getProposalsForProposalNumber(proposalNumber);
++        List<AwardFundingProposal> fundingProposals = new ArrayList<>();
++        for (InstitutionalProposal proposal : proposals) {
++            Map<String, String> fieldValues = new HashMap<>();
++            fieldValues.put(PROPOSAL_ID, proposal.getProposalId().toString());
++            fieldValues.put(ACTIVE, ACTIVE_VALUE);
++            fundingProposals.addAll(getBusinessObjectService().findMatching(AwardFundingProposal.class, fieldValues));
++        }
++        return fundingProposals;
++    }
+     
+     @Override
+     public List<DevelopmentProposal> getAllLinkedDevelopmentProposals(String proposalNumber) {
+@@ -325,7 +346,7 @@ public InstitutionalProposal getActiveInstitutionalProposalVersion(String propos
+         List<InstitutionalProposal> proposals = getProposalsForProposalNumber(proposalNumber);
+         for (InstitutionalProposal curProposal : proposals) {
+             List<ProposalAdminDetails> details = new ArrayList<ProposalAdminDetails>(businessObjectService.findMatching(ProposalAdminDetails.class,
+-                    Collections.singletonMap("instProposalId", curProposal.getProposalId())));
++                    Collections.singletonMap(INST_PROPOSAL_ID, curProposal.getProposalId())));
+             for (ProposalAdminDetails detail : details) {
+             	result.add(dataObjectService.find(DevelopmentProposal.class, detail.getDevProposalNumber()));
+             }
+@@ -339,16 +360,7 @@ public String getNextInstitutionalProposalNumber() {
+         String nextProposalNumberAsString = formatter.format(nextProposalNumber);
+         return nextProposalNumberAsString;
+     }
+-    
+-    /* Local helper methods */
+-    
+-    /**
+-     * Queries the persistence layer to find the InstitutionalProposal record for the given proposalNumber.
+-     * 
+-     * @param proposalNumber String
+-     * @return InstitutionalProposal
+-     */
+-    @SuppressWarnings("unchecked")
++
+     protected InstitutionalProposal getActiveInstitutionalProposal(String proposalNumber) {
+         Map<String, String> criteria = new HashMap<String, String>();
+         criteria.put(InstitutionalProposal.PROPOSAL_NUMBER_PROPERTY_STRING, proposalNumber);
+@@ -502,13 +514,10 @@ protected InstitutionalProposalPerson generateInstitutionalProposalPerson(Propos
+             ipPersonCreditSplit.setNewCollectionRecord(pdPersonCreditSplit.isNewCollectionRecord());
+             ipPerson.add(ipPersonCreditSplit);
+         }
+-        //ipPerson.setEmailAddress(pdPerson.getEmailAddress());
+         ipPerson.setFaculty(pdPerson.getFacultyFlag());
+         ipPerson.setFullName(pdPerson.getFullName());
+         ipPerson.setKeyPersonRole(pdPerson.getProjectRole());
+         ipPerson.setNewCollectionRecord(pdPerson.isNewCollectionRecord());
+-        //ipPerson.setPerson(pdPerson.getPerson());
+-        //ipPerson.setPhoneNumber(pdPerson.getPhoneNumber());
+         ipPerson.setRoleCode(pdPerson.getRole().getRoleCode());
+         ipPerson.setTotalEffort(pdPerson.getPercentageEffort());
+         ipPerson.setAcademicYearEffort(pdPerson.getAcademicYearEffort());
+@@ -626,15 +635,15 @@ protected void doBudgetDataFeed(InstitutionalProposal institutionalProposal, Bud
+     }
+     
+     protected Integer getDefaultStatusCode() {
+-        return 1;
++        return DEFAULT_STATUS_CODE;
+     }
+     
+     protected Integer getWithdrawnStatusCode() {
+-        return 5;
++        return WITHDRAWN_STATUS_CODE;
+     }
+     
+     protected Integer getDefaultCostShareTypeCode() {
+-        return 1;
++        return DEFAULT_COST_SHARE_TYPE_CODE;
+     }
+     
+     
+@@ -647,7 +656,7 @@ public InstitutionalProposalDocument createAndSaveNewVersion(InstitutionalPropos
+         synchNewCustomAttributes(newVersion, currentInstitutionalProposal);
+         
+         newVersion.setProposalSequenceStatus(VersionStatus.PENDING.toString());
+-        newVersion.setAwardFundingProposals(transferFundingProposals(currentInstitutionalProposal, newVersion));
++        newVersion.setAwardFundingProposals(null);
+         InstitutionalProposalDocument newInstitutionalProposalDocument = 
+             (InstitutionalProposalDocument) getDocumentService().getNewDocument(InstitutionalProposalDocument.class);
+         newInstitutionalProposalDocument.getDocumentHeader().setDocumentDescription(currentInstitutionalProposalDocument.getDocumentHeader().getDocumentDescription());
+@@ -688,7 +697,9 @@ protected void synchNewCustomAttributes(InstitutionalProposal newInstitutionalPr
+     protected ArrayList<AwardFundingProposal> transferFundingProposals(InstitutionalProposal oldIP, InstitutionalProposal newIP) {
+         ArrayList<AwardFundingProposal> newFundingProposals = new ArrayList<AwardFundingProposal>();
+         for (AwardFundingProposal afpp:oldIP.getAwardFundingProposals()) {
+-            newFundingProposals.add(new AwardFundingProposal(afpp.getAward(), newIP));
++            AwardFundingProposal awardFundingProposal = new AwardFundingProposal(afpp.getAward(), newIP);
++            awardFundingProposal.setActive(true);
++            newFundingProposals.add(awardFundingProposal);
+             afpp.setActive(false);
+         }
+         getBusinessObjectService().save(oldIP.getAwardFundingProposals());
+@@ -751,8 +762,8 @@ public void setSequenceAccessorService(SequenceAccessorService sequenceAccessorS
+ 
+     @Override
+     public Collection<String> getValidFundingProposalStatusCodes() {
+-        String value = getParameterService().getParameterValueAsString(InstitutionalProposalDocument.class, "validFundingProposalStatusCodes");
+-        return Arrays.asList(value.split(","));
++        String value = getParameterService().getParameterValueAsString(InstitutionalProposalDocument.class, VALID_FUNDING_PROPOSAL_STATUS_CODES);
++        return Arrays.asList(value.split(SEPARATOR));
+     }
+ 
+     @Override
+diff --git a/coeus-webapp/src/main/webapp/WEB-INF/tags/institutionalproposal/institutionalProposalFundedAwards.tag b/coeus-webapp/src/main/webapp/WEB-INF/tags/institutionalproposal/institutionalProposalFundedAwards.tag
+index b0508a4..5e4fc94 100644
+--- a/coeus-webapp/src/main/webapp/WEB-INF/tags/institutionalproposal/institutionalProposalFundedAwards.tag
++++ b/coeus-webapp/src/main/webapp/WEB-INF/tags/institutionalproposal/institutionalProposalFundedAwards.tag
+@@ -43,12 +43,12 @@
+                 <th>Actions</th>
+             </c:if>
+         </tr>
+-        <c:forEach var="awardFundingProposal" items="${KualiForm.document.institutionalProposal.awardFundingProposals}" varStatus="status">
++        <c:forEach var="awardFundingProposal" items="${KualiForm.document.institutionalProposal.allFundingProposals}" varStatus="status">
+             <tr>
+-                <td><div align="center"><kul:htmlControlAttribute property="document.institutionalProposal.awardFundingProposal[${status.index}].award.awardNumber" attributeEntry="${awardAttributes.awardNumber}" readOnly="true"/></div></td>
+-                <td><div align="center"><kul:htmlControlAttribute property="document.institutionalProposal.awardFundingProposal[${status.index}].award.sequenceNumber" attributeEntry="${awardAttributes.sequenceNumber}" readOnly="true"/></div></td>
+-                <td><div align="center"><kul:htmlControlAttribute property="document.institutionalProposal.awardFundingProposal[${status.index}].proposal.sequenceNumber" attributeEntry="${institutionalProposalAttributes.proposalNumber}" readOnly="true"/></div></td>
+-                <td><div align="center"><kul:htmlControlAttribute property="document.institutionalProposal.awardFundingProposal[${status.index}].award.accountNumber" attributeEntry="${awardAttributes.accountNumber}" readOnly="true"/></div></td>
++                <td><div align="center"><kul:htmlControlAttribute property="document.institutionalProposal.allFundingProposals[${status.index}].award.awardNumber" attributeEntry="${awardAttributes.awardNumber}" readOnly="true"/></div></td>
++                <td><div align="center"><kul:htmlControlAttribute property="document.institutionalProposal.allFundingProposals[${status.index}].award.sequenceNumber" attributeEntry="${awardAttributes.sequenceNumber}" readOnly="true"/></div></td>
++                <td><div align="center"><kul:htmlControlAttribute property="document.institutionalProposal.allFundingProposals[${status.index}].proposal.sequenceNumber" attributeEntry="${institutionalProposalAttributes.proposalNumber}" readOnly="true"/></div></td>
++                <td><div align="center"><kul:htmlControlAttribute property="document.institutionalProposal.allFundingProposals[${status.index}].award.accountNumber" attributeEntry="${awardAttributes.accountNumber}" readOnly="true"/></div></td>
+                 <c:if test="${!readOnly}">
+                     <td>
+                         <div align="center">

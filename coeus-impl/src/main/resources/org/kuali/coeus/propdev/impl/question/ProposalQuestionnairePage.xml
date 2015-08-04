@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                    http://www.springframework.org/schema/util
+                    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+    <bean id="PropDev-QuestionnairePage" parent="PropDev-QuestionnairePage-parentBean"/>
+    <bean id="PropDev-QuestionnairePage-parentBean" parent="PropDev-DocumentPage">
+        <property name="items">
+            <list>
+                <bean parent="PropDev-QuestionnairePage-Section" p:order="10"/>
+            </list>
+        </property>
+        <property name="header">
+            <bean parent="Uif-PageHeader"/>
+        </property>
+    </bean>
+		
+    <bean id="PropDev-QuestionnairePage-Section" parent="PropDev-QuestionnairePage-Section-parentBean"/>
+    <bean id="PropDev-QuestionnairePage-Section-parentBean" abstract="true" parent="Uif-VerticalBoxSection" 
+    p:header.headerText="Questionnaire">
+        <property name="validationMessages.displayMessages" value="false"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-Message" p:messageText="There are no questions defined for this proposal."
+                        p:render="@{!#ViewHelper.areActiveQuestionnaires(questionnaireHelper.answerHeaders)}"/>
+			    <bean parent="PropDev-QuestionnairePage-TabGroup" p:order="10"/>
+			</list>
+        </property>
+    </bean>
+
+    <bean id="PropDev-QuestionnairePage-TabGroup" parent="PropDev-QuestionnairePage-TabGroup-parentBean"/>
+    <bean id="PropDev-QuestionnairePage-TabGroup-parentBean" abstract="true" parent="Uif-TabGroup"
+          class="org.kuali.coeus.propdev.impl.questionnaire.QuestionnaireTabGroup">
+            <property name="collectionGroupPrototype">
+                <bean parent="Questionnaire-QuestionsGroup">
+                       <property name="header">
+                           <bean parent="Uif-SectionHeader">
+                               <property name="rightGroup">
+                                   <bean parent="Uif-HorizontalBoxGroup">
+                                        <property name="items">
+                                            <list>
+                                                <bean parent="Uif-PrimaryActionButton" p:actionLabel="Update Available" p:render="@{#component.render and !#parent.readOnly}" p:order="10" p:methodToCall="prepareUpdateDialog"/>
+                                                <bean parent="Uif-SecondaryActionButton" p:actionLabel="Clear" p:render="@{!#parent.readOnly}" p:methodToCall="clearQuestionnaire" p:order="20"/>
+                                                <bean parent="Uif-SecondaryActionButton" p:actionLabel="Print" p:order="30">
+                                                    <property name="actionUrl">
+                                                        <bean parent="Uif-Url"/>
+                                                    </property>
+                                                </bean>
+                                            </list>
+                                        </property>
+                                   </bean>
+                               </property>
+                           </bean>
+                       </property>
+                </bean>
+            </property>
+          </bean>
+
+    <bean id="PropDev-QuestionnairePage-UpdateDialog" parent="PropDev-QuestionnairePage-UpdateDialog-parentBean"/>
+    <bean id="PropDev-QuestionnairePage-UpdateDialog-parentBean" abstract="true" parent="Uif-DialogGroup"
+        p:header.headerText="Please make a selection.">
+        <property name="items">
+            <list>
+                <bean parent="Uif-MessageField" p:messageText="A newer version of this questionnaire has been published.  An Update is required." p:order="10"/>
+                <bean parent="Uif-InputField" p:propertyName="updateAnswerHeader.updateOption" p:required="true" p:order="20">
+                    <property name="control">
+                        <bean parent="Uif-VerticalRadioControl">
+                            <property name="options">
+                                <list>
+                                    <bean parent="Uif-KeyLabelPair" p:key="0" p:value="Copy the answers from the old version of questionnaire to the new one.  Only questions that have been changed in the new version will have to be answered." />
+                                    <bean parent="Uif-KeyLabelPair" p:key="1" p:value="Do not copy answers from previous version of the questionnaire.  Every question in the new version of the questionnaire will have to be answered." />
+                                </list>
+                            </property>
+                        </bean>
+                    </property>
+                </bean>
+            </list>
+        </property>
+        <property name="footer.items">
+            <list>
+                <bean id="Uif-DialogConfirmButton" parent="Uif-PrimaryActionButton" p:actionLabel="Ok" p:order="10"
+                      p:dialogDismissOption="REQUEST" p:performClientSideValidation="true" p:methodToCall="updateQuestionnaire"/>
+            </list>
+        </property>
+    </bean>
+
+
+</beans>

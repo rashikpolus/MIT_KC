@@ -1,0 +1,10 @@
+@DML_MITKC-1351_04072015.sql
+@DML_MITKC-1360_04072015.sql
+@ddl_sap_error_log.sql
+@../feed/sap/kc_sap_feed_pkg.sql
+@../feed/sap/upd_sap_feed_log_error.sql
+@../feed/sap/fn_generate_sap_budget_feed.sql
+@../notification/rcr/fn_load_rcr_data_from_wh.sql
+commit;
+EXIT
+/

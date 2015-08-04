@@ -1,0 +1,93 @@
+From 50a08c95453104169de26d94960edfd8337fd22d Mon Sep 17 00:00:00 2001
+From: Gayathri Athreya <gathreya@email.arizona.edu>
+Date: Thu, 2 Jul 2015 12:32:44 -0700
+Subject: [PATCH] RESKC-589: Fixing proposal copy Tried to copy proposal
+ (status Approved and Submitted) from search results Action link "Copy"
+ (proposal had no subawards)
+
+In Copy modal:
+Selected same lead unit 264000
+Selected:
+Copy budget, final version
+Copy Attachments
+Copy Questionnaire.
+Clicked Copy. Got error message (see screenshot) and STE below.
+
+Tried again
+All same selections but did not select to include Attachments.
+Same errors & STE
+
+STE:
+
+Stacktrace (only in dev mode)
+
+java.lang.RuntimeException: An error occured while trying to copy the proposal development document.
+at org.kuali.coeus.propdev.impl.copy.ProposalCopyServiceImpl.copyProposal(ProposalCopyServiceImpl.java:239)
+at org.kuali.coeus.propdev.impl.copy.ProposalDevelopmentCopyController.copy(ProposalDevelopmentCopyController.java:62)
+Caused by: org.kuali.rice.krad.exception.ValidationException: business rule evaluation failed
+at org.kuali.rice.krad.document.DocumentBase.validateBusinessRules(DocumentBase.java:521)
+at org.kuali.coeus.sys.framework.model.KcTransactionalDocumentBase.validateBusinessRules(KcTransactionalDocumentBase.java:146)
+at org.kuali.rice.krad.service.impl.DocumentServiceImpl.validateAndPersistDocument(DocumentServiceImpl.java:876)
+at org.kuali.rice.krad.service.impl.DocumentServiceImpl.validateAndPersistDocumentAndSaveAdHocRoutingRecipients(DocumentServiceImpl.java:502)
+at org.kuali.rice.krad.service.impl.DocumentServiceImpl.saveDocument(DocumentServiceImpl.java:156)
+---
+ .../sql/mysql/kc/bootstrap/V1507_002__RESKC-589.sql  | 20 ++++++++++++++++++++
+ .../sql/oracle/kc/bootstrap/V1507_002__RESKC-589.sql | 20 ++++++++++++++++++++
+ 2 files changed, 40 insertions(+)
+ create mode 100644 coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/mysql/kc/bootstrap/V1507_002__RESKC-589.sql
+ create mode 100644 coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/oracle/kc/bootstrap/V1507_002__RESKC-589.sql
+
+diff --git a/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/mysql/kc/bootstrap/V1507_002__RESKC-589.sql b/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/mysql/kc/bootstrap/V1507_002__RESKC-589.sql
+new file mode 100644
+index 0000000..8780670
+--- /dev/null
++++ b/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/mysql/kc/bootstrap/V1507_002__RESKC-589.sql
+@@ -0,0 +1,20 @@
++--
++-- Kuali Coeus, a comprehensive research administration system for higher education.
++--
++-- Copyright 2005-2015 Kuali, Inc.
++--
++-- This program is free software: you can redistribute it and/or modify
++-- it under the terms of the GNU Affero General Public License as
++-- published by the Free Software Foundation, either version 3 of the
++-- License, or (at your option) any later version.
++--
++-- This program is distributed in the hope that it will be useful,
++-- but WITHOUT ANY WARRANTY; without even the implied warranty of
++-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++-- GNU Affero General Public License for more details.
++--
++-- You should have received a copy of the GNU Affero General Public License
++-- along with this program.  If not, see <http://www.gnu.org/licenses/>.
++--
++
++UPDATE NARRATIVE_TYPE SET ALLOW_MULTIPLE = 'Y' WHERE DESCRIPTION = 'SF424V2_AdditionalProjectTitle';
+\ No newline at end of file
+diff --git a/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/oracle/kc/bootstrap/V1507_002__RESKC-589.sql b/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/oracle/kc/bootstrap/V1507_002__RESKC-589.sql
+new file mode 100644
+index 0000000..8780670
+--- /dev/null
++++ b/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/oracle/kc/bootstrap/V1507_002__RESKC-589.sql
+@@ -0,0 +1,20 @@
++--
++-- Kuali Coeus, a comprehensive research administration system for higher education.
++--
++-- Copyright 2005-2015 Kuali, Inc.
++--
++-- This program is free software: you can redistribute it and/or modify
++-- it under the terms of the GNU Affero General Public License as
++-- published by the Free Software Foundation, either version 3 of the
++-- License, or (at your option) any later version.
++--
++-- This program is distributed in the hope that it will be useful,
++-- but WITHOUT ANY WARRANTY; without even the implied warranty of
++-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++-- GNU Affero General Public License for more details.
++--
++-- You should have received a copy of the GNU Affero General Public License
++-- along with this program.  If not, see <http://www.gnu.org/licenses/>.
++--
++
++UPDATE NARRATIVE_TYPE SET ALLOW_MULTIPLE = 'Y' WHERE DESCRIPTION = 'SF424V2_AdditionalProjectTitle';
+\ No newline at end of file

@@ -1,0 +1,354 @@
+From 2e3091f637e979b4e491bf50789782ed82e603aa Mon Sep 17 00:00:00 2001
+From: Gayathri Athreya <gathreya@email.arizona.edu>
+Date: Wed, 24 Jun 2015 15:00:37 -0700
+Subject: [PATCH] RESKC-486: Add create user and timestamp Create Timestamp and
+ Create User are missing; proposal admin details is missing several of the
+ "date submitted by" fields. Create time stamps are for auditing purposes and
+ to show who updated records. Additionally, these data values are used in
+ several reports to senior leadership.
+
+---
+ .../V1506_021__RESKC-486-createTimestamp.sql       | 21 +++++++++++++++++
+ .../V1506_021__RESKC-486-createTimestamp.sql       | 21 +++++++++++++++++
+ .../basic/ProposalDevelopmentHomeController.java   | 11 +++++++--
+ .../propdev/impl/copy/ProposalCopyServiceImpl.java | 13 +++++++++--
+ .../propdev/impl/core/DevelopmentProposal.java     | 26 +++++++++++++++++++++-
+ .../core/ProposalDevelopmentSubmitController.java  |  8 ++++++-
+ .../hierarchy/ProposalHierarchyServiceImpl.java    |  8 +++++++
+ .../proposaladmindetails/ProposalAdminDetails.java | 20 +++++++++++++++++
+ coeus-impl/src/main/resources/repository.xml       |  7 ++----
+ 9 files changed, 124 insertions(+), 11 deletions(-)
+ create mode 100644 coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/mysql/kc/bootstrap/V1506_021__RESKC-486-createTimestamp.sql
+ create mode 100644 coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/oracle/kc/bootstrap/V1506_021__RESKC-486-createTimestamp.sql
+
+diff --git a/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/mysql/kc/bootstrap/V1506_021__RESKC-486-createTimestamp.sql b/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/mysql/kc/bootstrap/V1506_021__RESKC-486-createTimestamp.sql
+new file mode 100644
+index 0000000..afdffcd
+--- /dev/null
++++ b/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/mysql/kc/bootstrap/V1506_021__RESKC-486-createTimestamp.sql
+@@ -0,0 +1,21 @@
++--
++-- Kuali Coeus, a comprehensive research administration system for higher education.
++--
++-- Copyright 2005-2015 Kuali, Inc.
++--
++-- This program is free software: you can redistribute it and/or modify
++-- it under the terms of the GNU Affero General Public License as
++-- published by the Free Software Foundation, either version 3 of the
++-- License, or (at your option) any later version.
++--
++-- This program is distributed in the hope that it will be useful,
++-- but WITHOUT ANY WARRANTY; without even the implied warranty of
++-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++-- GNU Affero General Public License for more details.
++--
++-- You should have received a copy of the GNU Affero General Public License
++-- along with this program.  If not, see <http://www.gnu.org/licenses/>.
++--
++
++alter table proposal_admin_details add (CREATE_TIMESTAMP DATETIME );
++alter table proposal_admin_details add (CREATE_USER VARCHAR(60) );
+\ No newline at end of file
+diff --git a/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/oracle/kc/bootstrap/V1506_021__RESKC-486-createTimestamp.sql b/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/oracle/kc/bootstrap/V1506_021__RESKC-486-createTimestamp.sql
+new file mode 100644
+index 0000000..91bd80b
+--- /dev/null
++++ b/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/oracle/kc/bootstrap/V1506_021__RESKC-486-createTimestamp.sql
+@@ -0,0 +1,21 @@
++--
++-- Kuali Coeus, a comprehensive research administration system for higher education.
++--
++-- Copyright 2005-2015 Kuali, Inc.
++--
++-- This program is free software: you can redistribute it and/or modify
++-- it under the terms of the GNU Affero General Public License as
++-- published by the Free Software Foundation, either version 3 of the
++-- License, or (at your option) any later version.
++--
++-- This program is distributed in the hope that it will be useful,
++-- but WITHOUT ANY WARRANTY; without even the implied warranty of
++-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++-- GNU Affero General Public License for more details.
++--
++-- You should have received a copy of the GNU Affero General Public License
++-- along with this program.  If not, see <http://www.gnu.org/licenses/>.
++--
++
++alter table proposal_admin_details add (CREATE_TIMESTAMP TIMESTAMP );
++alter table proposal_admin_details add (CREATE_USER VARCHAR(60) );
+\ No newline at end of file
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/basic/ProposalDevelopmentHomeController.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/basic/ProposalDevelopmentHomeController.java
+index d3e5c5b..49affcf 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/basic/ProposalDevelopmentHomeController.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/basic/ProposalDevelopmentHomeController.java
+@@ -18,6 +18,7 @@
+  */
+ package org.kuali.coeus.propdev.impl.basic;
+ 
++import java.sql.Timestamp;
+ import java.text.ParseException;
+ import java.text.SimpleDateFormat;
+ import java.util.*;
+@@ -89,9 +90,10 @@
+    @Transactional @RequestMapping(value = "/proposalDevelopment", params="methodToCall=createProposal")
+    public ModelAndView createProposal(@ModelAttribute("KualiForm") ProposalDevelopmentDocumentForm form, BindingResult result,
+            HttpServletRequest request, HttpServletResponse response) throws Exception {
+-
+        ProposalDevelopmentDocument proposalDevelopmentDocument = form.getProposalDevelopmentDocument();
+-       initialSave(proposalDevelopmentDocument);
++        addCreateDetails(proposalDevelopmentDocument);
++        initialSave(proposalDevelopmentDocument);
++
+        // this is needed if the proposal is being created from an opportunity, in which case
+        // the opportunity content needs to be generated before save
+        generateOpportunity(proposalDevelopmentDocument.getDevelopmentProposal().getS2sOpportunity());
+@@ -109,6 +111,11 @@ public ModelAndView createProposal(@ModelAttribute("KualiForm") ProposalDevelopm
+        return getModelAndViewService().getModelAndViewWithInit(form, PROPDEV_DEFAULT_VIEW_ID);
+    }
+ 
++    private void addCreateDetails(ProposalDevelopmentDocument proposalDevelopmentDocument) {
++        proposalDevelopmentDocument.getDevelopmentProposal().setCreateTimestamp(new Timestamp(System.currentTimeMillis()));
++        proposalDevelopmentDocument.getDevelopmentProposal().setCreateUser(getGlobalVariableService().getUserSession().getLoggedInUserPrincipalName());
++    }
++
+     protected void generateForms(DevelopmentProposal proposal) {
+         if (ObjectUtils.isNotNull(proposal.getS2sOpportunity())) {
+             s2sSubmissionService.setMandatoryForms(proposal, proposal.getS2sOpportunity());
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/copy/ProposalCopyServiceImpl.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/copy/ProposalCopyServiceImpl.java
+index 506a4e0..3f7a34b 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/copy/ProposalCopyServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/copy/ProposalCopyServiceImpl.java
+@@ -74,6 +74,7 @@
+ import org.springframework.beans.factory.annotation.Qualifier;
+ import org.springframework.stereotype.Component;
+ 
++import java.sql.Timestamp;
+ import java.util.*;
+ 
+ /**
+@@ -226,6 +227,8 @@ public ProposalDevelopmentDocument copyProposal(ProposalDevelopmentDocument doc,
+ 
+                 modifyNewProposal(doc, newDoc, criteria);
+ 
++                addCreateDetails(newDoc);
++
+                 getDocumentService().saveDocument(newDoc);
+ 
+                 // Can't initialize authorization until a proposal is saved
+@@ -327,7 +330,7 @@ protected ProposalDevelopmentDocument createNewProposal(ProposalDevelopmentDocum
+         copyOverviewProperties(srcDoc, newDoc);
+         
+         copyRequiredProperties(srcDoc, newDoc);
+-        
++
+         // Set lead unit.
+         setLeadUnit(newDoc, criteria.getLeadUnitNumber());
+         
+@@ -358,12 +361,18 @@ protected void copyRequiredProperties(ProposalDevelopmentDocument oldDoc, Propos
+         destDevelopmentProposal.getApplicantOrganization().setSiteNumber(srcDevelopmentProposal.getApplicantOrganization().getSiteNumber());
+         destDevelopmentProposal.getPerformingOrganization().setLocationName(srcDevelopmentProposal.getPerformingOrganization().getLocationName());
+         destDevelopmentProposal.getPerformingOrganization().setSiteNumber(srcDevelopmentProposal.getPerformingOrganization().getSiteNumber());
+-        
++
+         if (isProposalTypeRenewalRevisionContinuation(srcDevelopmentProposal.getProposalTypeCode())) {
+             destDevelopmentProposal.setSponsorProposalNumber(srcDevelopmentProposal.getSponsorProposalNumber());
+         }
+ 
+         copyCustomDataFromDocument(oldDoc, newDoc);
++
++    }
++
++    private void addCreateDetails(ProposalDevelopmentDocument proposalDevelopmentDocument) {
++        proposalDevelopmentDocument.getDevelopmentProposal().setCreateTimestamp(new Timestamp(System.currentTimeMillis()));
++        proposalDevelopmentDocument.getDevelopmentProposal().setCreateUser(getGlobalVariableService().getUserSession().getLoggedInUserPrincipalName());
+     }
+ 
+     /**
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/DevelopmentProposal.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/DevelopmentProposal.java
+index 829f9a5..63b723d 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/DevelopmentProposal.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/DevelopmentProposal.java
+@@ -94,6 +94,7 @@
+ import javax.persistence.*;
+ 
+ import java.sql.Date;
++import java.sql.Timestamp;
+ import java.util.*;
+ 
+ @Entity
+@@ -241,6 +242,12 @@
+     @Column(name = "PREV_GG_TRACKID")
+     private String prevGrantsGovTrackingID;
+ 
++    @Column(name = "CREATE_TIMESTAMP")
++    private Timestamp createTimestamp;
++
++    @Column(name = "CREATE_USER")
++    private String createUser;
++
+     @ManyToOne(targetEntity = DeadlineType.class, cascade = { CascadeType.REFRESH })
+     @JoinColumn(name = "DEADLINE_TYPE", referencedColumnName = "DEADLINE_TYPE_CODE", insertable = false, updatable = false)
+     private DeadlineType deadlineTypeRef;
+@@ -2292,7 +2299,24 @@ public SponsorHierarchyService getSponsorHierarchyService(){
+         }
+         return this.sponsorHierarchyService;
+     }
+-    
++
++
++    public Timestamp getCreateTimestamp() {
++        return createTimestamp;
++    }
++
++    public void setCreateTimestamp(Timestamp createTimestamp) {
++        this.createTimestamp = createTimestamp;
++    }
++
++    public String getCreateUser() {
++        return createUser;
++    }
++
++    public void setCreateUser(String createUser) {
++        this.createUser = createUser;
++    }
++
+     @Override
+     public ProposalDevelopmentBudgetExt getFinalBudget() {
+     	return finalBudget;
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentSubmitController.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentSubmitController.java
+index 2d8fe7b..aedb0a4 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentSubmitController.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentSubmitController.java
+@@ -18,6 +18,7 @@
+  */
+ package org.kuali.coeus.propdev.impl.core;
+ 
++import java.sql.Timestamp;
+ import java.util.*;
+ 
+ import javax.servlet.http.HttpServletRequest;
+@@ -577,13 +578,18 @@ private Long getActiveProposalId(String proposalNumber) {
+     
+     protected void persistProposalAdminDetails(String devProposalNumber, Long instProposalId) {
+         ProposalAdminDetails proposalAdminDetails = new ProposalAdminDetails();
++        addCreateDetails(proposalAdminDetails);
+         proposalAdminDetails.setDevProposalNumber(devProposalNumber);
+         proposalAdminDetails.setInstProposalId(instProposalId);
+         String loggedInUser = getGlobalVariableService().getUserSession().getPrincipalName();        
+         proposalAdminDetails.setSignedBy(loggedInUser);
+         getLegacyDataAdapter().save(proposalAdminDetails);
+     }
+-    
++
++    private void addCreateDetails(ProposalAdminDetails proposalAdminDetails) {
++        proposalAdminDetails.setCreateTimestamp(new Timestamp(System.currentTimeMillis()));
++        proposalAdminDetails.setCreateUser(getGlobalVariableService().getUserSession().getLoggedInUserPrincipalName());
++    }
+ 
+     @Transactional @RequestMapping(value = "/proposalDevelopment", params="methodToCall=approve")
+     public ModelAndView approve(@ModelAttribute("KualiForm") ProposalDevelopmentDocumentForm form) throws Exception{
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/hierarchy/ProposalHierarchyServiceImpl.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/hierarchy/ProposalHierarchyServiceImpl.java
+index 277e53d..ddbedf4 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/hierarchy/ProposalHierarchyServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/hierarchy/ProposalHierarchyServiceImpl.java
+@@ -81,6 +81,7 @@
+ 
+ import javax.persistence.EntityManager;
+ import java.io.IOException;
++import java.sql.Timestamp;
+ import java.util.*;
+ 
+ import static org.apache.commons.lang3.StringUtils.replace;
+@@ -195,6 +196,8 @@ public String createHierarchy(DevelopmentProposal initialChild, String userId) {
+         setInitialPi(hierarchyDoc.getDevelopmentProposal(), initialChild);
+         copyInitialAttachments(initialChild, hierarchyDoc.getDevelopmentProposal());
+ 
++        addCreateDetails(newDoc);
++
+         LOG.info(String.format("***Initial Child (#%s) linked to Parent (#%s)", initialChild.getProposalNumber(), hierarchyDoc.getDevelopmentProposal().getProposalNumber()));
+         
+         finalizeHierarchySync(hierarchyDoc.getDevelopmentProposal());
+@@ -204,6 +207,11 @@ public String createHierarchy(DevelopmentProposal initialChild, String userId) {
+         return hierarchyDoc.getDevelopmentProposal().getProposalNumber();
+     }
+ 
++    private void addCreateDetails(ProposalDevelopmentDocument proposalDevelopmentDocument) {
++        proposalDevelopmentDocument.getDevelopmentProposal().setCreateTimestamp(new Timestamp(System.currentTimeMillis()));
++        proposalDevelopmentDocument.getDevelopmentProposal().setCreateUser(getGlobalVariableService().getUserSession().getLoggedInUserPrincipalName());
++    }
++
+     protected ProposalDevelopmentDocument saveDocument(ProposalDevelopmentDocument newDoc) {
+         ProposalDevelopmentDocument hierarchyDoc;
+         // persist the document and add a budget
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/institutionalproposal/proposaladmindetails/ProposalAdminDetails.java b/coeus-impl/src/main/java/org/kuali/kra/institutionalproposal/proposaladmindetails/ProposalAdminDetails.java
+index cdb468d..babc046 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/institutionalproposal/proposaladmindetails/ProposalAdminDetails.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/institutionalproposal/proposaladmindetails/ProposalAdminDetails.java
+@@ -24,6 +24,7 @@
+ import org.kuali.coeus.instprop.api.admin.ProposalAdminDetailsContract;
+ 
+ import java.sql.Date;
++import java.sql.Timestamp;
+ 
+ public class ProposalAdminDetails extends KcPersistableBusinessObjectBase implements ProposalAdminDetailsContract {
+ 
+@@ -55,6 +56,9 @@
+     private DevelopmentProposal developmentProposal;
+ 
+     private InstitutionalProposal institutionalProposal;
++    private Timestamp createTimestamp;
++    private String createUser;
++
+ 
+     @Override
+     public Date getDateSubmittedByDept() {
+@@ -173,4 +177,20 @@ public InstitutionalProposal getInstitutionalProposal() {
+     public void setInstitutionalProposal(InstitutionalProposal institutionalProposal) {
+         this.institutionalProposal = institutionalProposal;
+     }
++
++    public Timestamp getCreateTimestamp() {
++        return createTimestamp;
++    }
++
++    public void setCreateTimestamp(Timestamp createTimestamp) {
++        this.createTimestamp = createTimestamp;
++    }
++
++    public String getCreateUser() {
++        return createUser;
++    }
++
++    public void setCreateUser(String createUser) {
++        this.createUser = createUser;
++    }
+ }
+diff --git a/coeus-impl/src/main/resources/repository.xml b/coeus-impl/src/main/resources/repository.xml
+index ee47690..a60b3ed 100644
+--- a/coeus-impl/src/main/resources/repository.xml
++++ b/coeus-impl/src/main/resources/repository.xml
+@@ -1207,7 +1207,6 @@
+ 
+ <class-descriptor class="org.kuali.kra.institutionalproposal.proposaladmindetails.ProposalAdminDetails" table="PROPOSAL_ADMIN_DETAILS">
+     <field-descriptor name="proposalAdminDetailId" column="PROPOSAL_ADMIN_DETAIL_ID" jdbc-type="BIGINT" primarykey="true" autoincrement="true" sequence-name="SEQ_PROPOSAL_ADMIN_DETAILS_ID" />
+-       
+     <field-descriptor name="dateSubmittedByDept" column="DATE_SUBMITTED_BY_DEPT" jdbc-type="DATE" />
+ 	<field-descriptor name="dateReturnedToDept" column="DATE_RETURNED_TO_DEPT" jdbc-type="DATE" />
+ 	<field-descriptor name="dateApprovedByOsp" column="DATE_APPROVED_BY_OSP" jdbc-type="DATE" />
+@@ -1216,14 +1215,12 @@
+ 	<field-descriptor name="instPropCreateUser" column="INST_PROP_CREATE_USER" jdbc-type="VARCHAR" />
+ 	<field-descriptor name="signedBy" column="SIGNED_BY" jdbc-type="VARCHAR" />
+ 	<field-descriptor name="submissionType" column="SUBMISSION_TYPE" jdbc-type="VARCHAR" conversion="org.kuali.rice.core.framework.persistence.ojb.conversion.OjbCharBooleanConversion"/>
+-	   
+-    <!-- OJB Hacks -->
+     <field-descriptor name="devProposalNumber" column="DEV_PROPOSAL_NUMBER" jdbc-type="VARCHAR" nullable="false" />
+     <field-descriptor name="instProposalId" column="INST_PROPOSAL_ID" jdbc-type="BIGINT" nullable="true" />
+-       
+-    <!-- common -->
+     <field-descriptor name="updateTimestamp" column="UPDATE_TIMESTAMP" jdbc-type="TIMESTAMP" />
+ 	<field-descriptor name="updateUser" column="UPDATE_USER" jdbc-type="VARCHAR" />
++	<field-descriptor name="createTimestamp" column="CREATE_TIMESTAMP" jdbc-type="TIMESTAMP" />
++	<field-descriptor name="createUser" column="CREATE_USER" jdbc-type="VARCHAR" />
+ 	<field-descriptor name="objectId" column="OBJ_ID" jdbc-type="VARCHAR" />
+ 	<field-descriptor name="versionNumber" column="VER_NBR" jdbc-type="BIGINT" locking="false" />
+ </class-descriptor>

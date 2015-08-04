@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="PropDev-Print-Dialog" parent="PropDev-Print-Dialog-parentBean" />
+    <bean id="PropDev-Print-Dialog-parentBean" abstract="true" parent="Uif-DialogGroup"
+            p:header.headerText="Print"
+            p:dialogCssClass="modal-lg">
+        <property name="items">
+                <list>
+                    <bean parent="Uif-Message" p:messageText="You do not have permission to export proposal data to PDF."
+                          p:render="@{!#editModes['printProposal']}"/>
+                    <bean parent="PropDev-Print-GrantsSection" p:order="10"/>
+                    <bean parent="PropDev-Print-SponsorSection" p:order="20"/>
+                    <bean parent="PropDev-Print-ReportsSection" p:order="30"/>
+                </list>
+        </property>
+        <property name="footer.items">
+            <list>
+                <bean parent="Uif-DialogDismissButton" p:actionLabel="Cancel" p:order="20" />
+             </list>
+        </property>
+    </bean>
+
+    <bean id="PropDev-Print-GrantsSection" parent="PropDev-Print-GrantsSection-parentBean"/>
+    <bean id="PropDev-Print-GrantsSection-parentBean" abstract="true" parent="Uif-Disclosure-VerticalBoxSection"
+          p:headerText="Grants.gov (@{document.developmentProposal.s2sOppForms.size()})"
+          p:disclosure.defaultOpen="false">
+        <property name="items">
+            <list>
+                <bean parent="PropDev-OpportunityPage-Forms" p:order="10" p:render="@{document.developmentProposal.s2sOppForms.size() > 0}"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="PropDev-Print-SponsorSection" parent="PropDev-Print-SponsorSection-parentBean"/>
+    <bean id="PropDev-Print-SponsorSection-parentBean" abstract="true" parent="Uif-Disclosure-VerticalBoxSection"
+          p:headerText="Sponsor form packages (@{sponsorFormTemplates.size()})" p:disclosure.defaultOpen="false">
+        <property name="items">
+            <list>
+                <bean parent="PropDev-Print-SponsorForms" p:order="10" />
+            </list>
+        </property>
+        <property name="footer">
+            <bean parent="Uif-FooterBase">
+               <property name="items">
+                    <list>
+                        <bean parent="Uif-SecondaryActionButton" p:actionLabel="Create PDF" p:methodToCall="refresh"
+                              p:refreshId="PropDev-Print-Dialog" p:order="10" p:cssClasses="pull-right"
+                              p:successCallback="window.location.href='@{#ConfigProperties['application.url']}/kc-pd-krad/proposalDevelopment?methodToCall=printSponsorForms&amp;formKey=@{formKey}';"
+                              p:preSubmitCall="dirtyFormState.skipDirtyChecks = true; return true;"
+                              p:disabled="@{!#editModes['printProposal']}" />
+                    </list>
+               </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="PropDev-Print-SponsorForms" parent="PropDev-Print-SponsorForms-parentBean"/>
+    <bean id="PropDev-Print-SponsorForms-parentBean" abstract="true" parent="Uif-TableCollectionSection"
+          p:propertyName="sponsorFormTemplates"
+          p:collectionObjectClass="org.kuali.coeus.common.framework.sponsor.form.SponsorFormTemplateList"
+          p:renderAddLine="false" p:layoutManager.renderSequenceField="false"
+          p:renderLineActions="false" p:layoutManager.richTable.render="false">
+        <property name="items">
+            <list>
+                <bean parent="Uif-DataField" p:propertyName="sponsorForms.packageName" p:order="10"
+                        p:fieldLabel.labelText="Attachment"/>
+                <bean parent="Uif-DataField" p:propertyName="pageDescription" p:order="20"
+                      p:fieldLabel.labelText="Description"/>
+                <bean parent="Uif-InputField" p:propertyName="selectToPrint" p:order="30"
+                      p:fieldLabel.labelText="[0]" p:readOnly="false">
+                    <property name="control">
+                        <bean parent="Uif-CheckboxControl" p:disabled="@{!#editModes['printProposal']}"/>
+                    </property>
+                    <property name="fieldLabel.inlineComponents">
+                        <list>
+                            <bean parent="Uif-DropdownToggleMenu"
+                                  p:toggleText="Select">
+                                <property name="menuItems">
+                                    <list>
+                                        <bean parent="PropDev-OpportunityPage-SelectMenuAction" p:actionLabel="Select All" p:order="10" p:disabled="@{!#editModes['printProposal']}"
+                                              p:actionScript="jQuery(this).closest('.uif-tableCollectionSection').find(&quot;input[name$='selectToPrint']&quot;).prop('checked', true);"/>
+                                        <bean parent="PropDev-OpportunityPage-SelectMenuAction" p:actionLabel="Select None" p:order="20" p:disabled="@{!#editModes['printProposal']}"
+                                              p:actionScript="jQuery(this).closest('.uif-tableCollectionSection').find(&quot;input[name$='selectToPrint']&quot;).prop('checked', false);"/>
+                                    </list>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+        <property name="layoutManager.libraryCssClasses">
+            <list>
+                <value>table</value>
+                <value>table-condensed</value>
+            </list>
+        </property>
+        <property name="layoutManager.cssClasses">
+            <null/>
+        </property>
+    </bean>
+
+    <bean id="PropDev-Print-ReportsSection" parent="PropDev-Print-ReportsSection-parentBean"/>
+    <bean id="PropDev-Print-ReportsSection-parentBean" abstract="true" parent="Uif-Disclosure-VerticalBoxSection"
+          p:headerText="Reports" p:disclosure.defaultOpen="false">
+        <property name="items">
+            <list>
+                <bean parent="PropDev-Print-GenerateReport" p:order="10"/>
+                <bean parent="PropDev-Print-CurrentReport" p:order="20"
+                        p:render="@{!#empty(reportHelper.personId) and reportHelper.reportType=='current'}"/>
+                <bean parent="PropDev-Print-PendingReport" p:order="30"
+                      p:render="@{!#empty(reportHelper.personId) and reportHelper.reportType=='pending'}"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="PropDev-Print-GenerateReport" parent="PropDev-Print-GenerateReport-parentBean"/>
+    <bean id="PropDev-Print-GenerateReport-parentBean" abstract="true" parent="Uif-Disclosure-HorizontalBoxSection">
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="reportHelper.reportType" p:order="10">
+                    <property name="control">
+                        <bean parent="Uif-DropdownControl" p:disabled="@{!#editModes['printProposal']}">
+                            <property name="options">
+                                <list>
+                                    <bean parent="Uif-KeyLabelPair" p:key="current" p:value="Current"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="pending" p:value="Pending"/>
+                                </list>
+                            </property>
+                        </bean>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:propertyName="reportHelper.targetPerson.fullName" p:order="20"
+                      p:fieldLabel.render="false"
+                      p:widgetInputOnly="true">
+                </bean>
+                <bean parent="Uif-InputField" p:propertyName="reportHelper.personId" p:order="30"
+                      p:fieldLabel.render="false">
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl" p:disabled="@{!#editModes['printProposal']}"/>
+                    </property>
+                    <property name="quickfinder">
+                        <bean parent="Uif-QuickFinderByScript"
+                              p:dataObjectClassName="org.kuali.coeus.common.framework.person.KcPerson"
+                              p:fieldConversions="personId:reportHelper.personId,fullName:reportHelper.targetPerson.fullName">
+                        </bean>
+                    </property>
+                </bean>
+                <bean parent="Uif-SecondaryActionButton" p:actionLabel="Generate Report" p:order="40"
+                      p:methodToCall="generateReport" p:refreshId="PropDev-Print-Dialog"
+                      p:progressiveRender="@{!#empty(reportHelper.personId)}"
+                      p:disabled="@{!#editModes['printProposal']}"/>
+                <bean parent="Uif-SecondaryActionButton" p:actionLabel="Print" p:order="50"
+                      p:methodToCall="refresh" p:refreshId="PropDev-Print-Dialog"
+                      p:progressiveRender="@{!#empty(reportHelper.personId)}"
+                      p:successCallback="window.location.href='@{#ConfigProperties['application.url']}/kc-pd-krad/proposalDevelopment?methodToCall=printReport&amp;formKey=@{formKey}';"
+                      p:disabled="@{!#editModes['printProposal']}">
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="PropDev-Print-CurrentReport" parent="PropDev-Print-CurrentReport-parentBean"/>
+    <bean id="PropDev-Print-CurrentReport-parentBean" abstract="true" parent="Uif-TableCollectionSection"
+          p:headerText="Current Support - @{reportHelper.targetPerson.fullName}"
+          p:propertyName="reportHelper.currentReportBeans"
+          p:collectionObjectClass="org.kuali.coeus.common.framework.print.CurrentReportBean"
+          p:layoutManager.renderSequenceField="false" p:renderInactiveToggleButton="false"
+          p:renderAddLine="false" p:renderLineActions="false"
+          p:layoutManager.richTable.render="false">
+        <property name="items">
+            <list>
+                <bean parent="Uif-DataField" p:propertyName="sponsorAwardNumber" p:order="10"
+                        p:fieldLabel.labelText="Sponsor Award ID"/>
+                <bean parent="Uif-DataField" p:propertyName="sponsorName" p:order="20"
+                      p:fieldLabel.labelText="Sponsor"/>
+                <bean parent="Uif-DataField" p:propertyName="roleCode" p:order="30"
+                      p:fieldLabel.labelText="Role"/>
+                <bean parent="Uif-DataField" p:propertyName="awardTitle" p:order="40"
+                      p:fieldLabel.labelText="Title"/>
+                <bean parent="Uif-DataField" p:propertyName="totalDirectCostTotal" p:order="50"
+                      p:fieldLabel.labelText="Total Direct Cost"
+                      p:render="@{#ViewHelper.displayDirectIndierctCosts()}"/>
+                <bean parent="Uif-DataField" p:propertyName="totalIndirectCostTotal" p:order="60"
+                      p:fieldLabel.labelText="Total F&amp;A Cost"
+                      p:render="@{#ViewHelper.displayDirectIndierctCosts()}"/>
+                <bean parent="Uif-DataField" p:propertyName="awardAmount" p:order="70"
+                      p:fieldLabel.labelText="Award Amount"/>
+                <bean parent="Uif-DataField" p:propertyName="projectStartDate" p:order="80"
+                      p:fieldLabel.labelText="Effective Date"/>
+                <bean parent="Uif-DataField" p:propertyName="projectEndDate" p:order="90"
+                      p:fieldLabel.labelText="End Date"/>
+                <bean parent="Uif-DataField" p:propertyName="totalEffort" p:order="100"
+                      p:fieldLabel.labelText="Effort %"/>
+                <bean parent="Uif-DataField" p:propertyName="academicYearEffort" p:order="110"
+                      p:fieldLabel.labelText="Academic Year Effort %"/>
+                <bean parent="Uif-DataField" p:propertyName="summerEffort" p:order="120"
+                      p:fieldLabel.labelText="Summer Effort %"/>
+                <bean parent="Uif-DataField" p:propertyName="calendarYearEffort" p:order="130"
+                      p:fieldLabel.labelText="Calendar Year Effort %"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="PropDev-Print-PendingReport" parent="PropDev-Print-PendingReport-parentBean"/>
+    <bean id="PropDev-Print-PendingReport-parentBean" abstract="true" parent="Uif-TableCollectionSection"
+          p:headerText="Pending Support - @{reportHelper.targetPerson.fullName}"
+          p:propertyName="reportHelper.pendingReportBeans"
+          p:collectionObjectClass="org.kuali.coeus.common.framework.print.PendingReportBean"
+          p:layoutManager.renderSequenceField="false" p:renderInactiveToggleButton="false"
+          p:renderAddLine="false" p:renderLineActions="false"
+          p:layoutManager.richTable.render="false">
+        <property name="items">
+            <list>
+                <bean parent="Uif-DataField" p:propertyName="proposalNumber" p:order="10"
+                      p:fieldLabel.labelText="Proposal Number"/>
+                <bean parent="Uif-DataField" p:propertyName="sponsorName" p:order="20"
+                      p:fieldLabel.labelText="Agency"/>
+                <bean parent="Uif-DataField" p:propertyName="roleCode" p:order="30"
+                      p:fieldLabel.labelText="Role"/>
+                <bean parent="Uif-DataField" p:propertyName="proposalTitle" p:order="40"
+                      p:fieldLabel.labelText="Title"/>
+                <bean parent="Uif-DataField" p:propertyName="totalDirectCostTotal" p:order="50"
+                      p:fieldLabel.labelText="Total Direct Cost"/>
+                <bean parent="Uif-DataField" p:propertyName="totalIndirectCostTotal" p:order="60"
+                      p:fieldLabel.labelText="Total F&amp;A Cost"/>
+                <bean parent="Uif-DataField" p:propertyName="totalRequestedCost" p:order="70"
+                      p:fieldLabel.labelText="Total Requested Cost"/>
+                <bean parent="Uif-DataField" p:propertyName="requestedStartDateInitial" p:order="80"
+                      p:fieldLabel.labelText="Effective Date"/>
+                <bean parent="Uif-DataField" p:propertyName="requestedEndDateTotal" p:order="90"
+                      p:fieldLabel.labelText="End Date"/>
+                <bean parent="Uif-DataField" p:propertyName="totalEffort" p:order="100"
+                      p:fieldLabel.labelText="Effort %"/>
+                <bean parent="Uif-DataField" p:propertyName="academicYearEffort" p:order="110"
+                      p:fieldLabel.labelText="Academic Year Effort %"/>
+                <bean parent="Uif-DataField" p:propertyName="summerEffort" p:order="120"
+                      p:fieldLabel.labelText="Summer Effort %"/>
+                <bean parent="Uif-DataField" p:propertyName="calendarYearEffort" p:order="130"
+                      p:fieldLabel.labelText="Calendar Year Effort %"/>
+            </list>
+        </property>
+    </bean>
+
+</beans>

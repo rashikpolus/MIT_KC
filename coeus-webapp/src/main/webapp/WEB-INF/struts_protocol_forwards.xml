@@ -1,0 +1,34 @@
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<forward name="protocol" path="/WEB-INF/jsp/irb/ProtocolProtocol.jsp" />
+<forward name="personnel" path="/WEB-INF/jsp/irb/ProtocolPersonnel.jsp" />
+<forward name="permissions" path="/WEB-INF/jsp/irb/ProtocolPermissions.jsp" />
+<forward name="permissionsRoleRights" path="/WEB-INF/jsp/irb/ProtocolPermissionsRoleRights.jsp" />
+<forward name="permissionsEditRoles" path="/WEB-INF/jsp/irb/ProtocolPermissionsEditRoles.jsp" />
+<forward name="permissionsCloseEditRoles" path="/WEB-INF/jsp/irb/ProtocolPermissionsCloseEditRoles.jsp" />
+<forward name="noteAndAttachment" path="/WEB-INF/jsp/irb/ProtocolNoteAndAttachment.jsp" />
+<forward name="onlineReview" path = "/WEB-INF/jsp/irb/ProtocolOnlineReview.jsp"/>
+<forward name="protocolActions" path="/WEB-INF/jsp/irb/ProtocolProtocolActions.jsp" />
+<forward name="protocolHistory" path="/WEB-INF/jsp/irb/ProtocolProtocolHistory.jsp" />
+<forward name="customData" path="/WEB-INF/jsp/irb/ProtocolCustomData.jsp" />
+<forward name="specialReview" path="/WEB-INF/jsp/irb/ProtocolSpecialReview.jsp" />
+<forward name="checkListItemDescription" path="/WEB-INF/jsp/irb/ProtocolCheckListItemDescription.jsp" />
+<forward name="questionnaire" path="/WEB-INF/jsp/irb/ProtocolQuestionnaire.jsp" />
+<forward name="protocolNotificationEditor" path="/WEB-INF/jsp/irb/ProtocolNotificationEditor.jsp"/>
+<forward name="medusa" path="/WEB-INF/jsp/irb/ProtocolMedusa.jsp" />

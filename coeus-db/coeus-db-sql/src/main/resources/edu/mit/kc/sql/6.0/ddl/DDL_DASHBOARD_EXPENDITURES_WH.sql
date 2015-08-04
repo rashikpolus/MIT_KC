@@ -1,0 +1,10 @@
+CREATE TABLE DASHBOARD_EXPENDITURES_WH
+(
+  PERSON_ID         VARCHAR2(60 BYTE)           NOT NULL,
+  FISCAL_YEAR       CHAR(4 BYTE)                NOT NULL,
+  LEVEL2_CATEGORY   varchar2(40),
+  LEVEL5_CATEGORY   varchar2(40),
+  EXP_AMOUNT        number(12,2),
+  OBJ_ID            VARCHAR2(36 BYTE)  DEFAULT SYS_GUID()            NOT NULL
+);
+

@@ -1,0 +1,784 @@
+From f7ddacadd29371782ffa032c7d992cb3edb1464a Mon Sep 17 00:00:00 2001
+From: Joe Williams <jwillia@iastate.edu>
+Date: Thu, 9 Apr 2015 09:19:57 -0500
+Subject: [PATCH] RESKC-18:add warning message when adding a narrative type to
+ the child that is already on the parent
+
+---
+ .../ProposalDevelopmentAttachmentController.java   | 107 +++++++-----
+ .../ProposalDevelopmentAttachmentHelper.java       |  42 +++--
+ .../ProposalNarrativeTypeValuesFinder.java         | 186 +++++++++++----------
+ .../impl/core/ProposalDevelopmentConstants.java    |  20 ++-
+ .../impl/attachment/ProposalAttachmentsPage.xml    |  25 +++
+ .../src/main/webapp/scripts/propdev/attachments.js |  11 ++
+ 6 files changed, 254 insertions(+), 137 deletions(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalDevelopmentAttachmentController.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalDevelopmentAttachmentController.java
+index 58eef57..76f6b93 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalDevelopmentAttachmentController.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalDevelopmentAttachmentController.java
+@@ -84,13 +84,13 @@
+ 
+     @Transactional @RequestMapping(value = "/proposalDevelopment", params={"methodToCall=save", "pageId=PropDev-AttachmentsPage"})
+     public ModelAndView saveAttachments(@ModelAttribute("KualiForm") ProposalDevelopmentDocumentForm form) throws Exception {
+-       return super.narrativePageSave(form,form.isCanEditView());
++       return super.narrativePageSave(form, form.isCanEditView());
+     }
+ 
+     @Transactional @RequestMapping(value = "/proposalDevelopment", params="methodToCall=addFileUploadLine")
+     public ModelAndView addFileUploadLine(@ModelAttribute("KualiForm") ProposalDevelopmentDocumentForm form, BindingResult result,
+                                           MultipartHttpServletRequest request, HttpServletResponse response) throws Exception {
+-        final String selectedCollectionPath = request.getParameter("bindingPath");
++        final String selectedCollectionPath = request.getParameter(ProposalDevelopmentConstants.KradConstants.BINDING_PATH);
+ 
+         addEditableCollectionLine(form, selectedCollectionPath);
+ 
+@@ -131,7 +131,7 @@ protected ModelAndView markAllAttachmentStatus(ProposalDevelopmentDocumentForm f
+             if(object instanceof Narrative) {
+             	Narrative narrative = (Narrative) object;
+             	narrative.setModuleStatusCode(moduleStatusCode);
+-                getDataObjectService().wrap(object).fetchRelationship("narrativeStatus");
++                getDataObjectService().wrap(object).fetchRelationship(ProposalDevelopmentConstants.KradConstants.NARRATIVE_STATUS);
+             }
+         }
+         return getRefreshControllerService().refresh(form);
+@@ -149,7 +149,7 @@ public ModelAndView prepareNarrative(@ModelAttribute("KualiForm") ProposalDevelo
+            form.getProposalDevelopmentAttachmentHelper().setNarrative(tmpNarrative);
+        }
+ 
+-        return getModelAndViewService().showDialog("PropDev-AttachmentsPage-ProposalDetails",true,form);
++        return getModelAndViewService().showDialog(ProposalDevelopmentConstants.KradConstants.PROP_DEV_ATTACHMENTS_PAGE_PROPOSAL_DETAILS, true, form);
+     }
+ 
+ 
+@@ -165,7 +165,7 @@ public ModelAndView prepareBiography(@ModelAttribute("KualiForm") ProposalDevelo
+             form.getProposalDevelopmentAttachmentHelper().setBiography(tmpBiography);
+         }
+ 
+-        return getModelAndViewService().showDialog("PropDev-AttachmentsPage-PersonnelDetails", true, form);
++        return getModelAndViewService().showDialog(ProposalDevelopmentConstants.KradConstants.PROP_DEV_ATTACHMENTS_PAGE_PERSONNEL_DETAILS, true, form);
+     }
+ 
+     @Transactional @RequestMapping(value = "/proposalDevelopment", params="methodToCall=prepareAbstract")
+@@ -180,7 +180,7 @@ public ModelAndView prepareAbstract(@ModelAttribute("KualiForm") ProposalDevelop
+             form.getProposalDevelopmentAttachmentHelper().setProposalAbstract(tmpAbstract);
+         }
+ 
+-        return getModelAndViewService().showDialog("PropDev-AttachmentsPage-AbstractDetails", true, form);
++        return getModelAndViewService().showDialog(ProposalDevelopmentConstants.KradConstants.PROP_DEV_ATTACHMENTS_PAGE_ABSTRACT_DETAILS, true, form);
+     }
+ 
+     @Transactional @RequestMapping(value = "/proposalDevelopment", params="methodToCall=prepareInstituteAttachment")
+@@ -191,11 +191,11 @@ public ModelAndView prepareInstituteAttachment(@ModelAttribute("KualiForm") Prop
+         if (StringUtils.isNotEmpty(selectedLine)) {
+             Narrative tmpNarrative = new Narrative();
+             form.getProposalDevelopmentAttachmentHelper().setSelectedLineIndex(selectedLine);
+-            PropertyUtils.copyProperties(tmpNarrative,form.getDevelopmentProposal().getInstituteAttachment(Integer.parseInt(selectedLine)));
++            PropertyUtils.copyProperties(tmpNarrative, form.getDevelopmentProposal().getInstituteAttachment(Integer.parseInt(selectedLine)));
+             form.getProposalDevelopmentAttachmentHelper().setInstituteAttachment(tmpNarrative);
+         }
+ 
+-        return getModelAndViewService().showDialog("PropDev-AttachmentsPage-InternalDetails",true,form);
++        return getModelAndViewService().showDialog(ProposalDevelopmentConstants.KradConstants.PROP_DEV_ATTACHMENTS_PAGE_INTERNAL_DETAILS, true, form);
+     }
+ 
+     @Transactional @RequestMapping(value = "/proposalDevelopment", params="methodToCall=prepareNote")
+@@ -206,40 +206,58 @@ public ModelAndView prepareNote(@ModelAttribute("KualiForm") ProposalDevelopment
+         if (StringUtils.isNotEmpty(selectedLine)) {
+             Note tmpNote = new Note();
+             form.getProposalDevelopmentAttachmentHelper().setSelectedLineIndex(selectedLine);
+-            PropertyUtils.copyProperties(tmpNote,form.getProposalDevelopmentDocument().getNote(Integer.parseInt(selectedLine)));
++            PropertyUtils.copyProperties(tmpNote, form.getProposalDevelopmentDocument().getNote(Integer.parseInt(selectedLine)));
+             form.getProposalDevelopmentAttachmentHelper().setNote(tmpNote);
+         }
+ 
+-        return getModelAndViewService().showDialog("PropDev-AttachmentsPage-NoteDetails", true, form);
++        return getModelAndViewService().showDialog(ProposalDevelopmentConstants.KradConstants.PROP_DEV_ATTACHMENTS_PAGE_NOTE_DETAILS, true, form);
+     }
+ 
+     @Transactional @RequestMapping(value = "/proposalDevelopment", params="methodToCall=addNarrative")
+     public ModelAndView addNarrative(@ModelAttribute("KualiForm") ProposalDevelopmentDocumentForm form) throws Exception{
+         Narrative narrative = form.getProposalDevelopmentAttachmentHelper().getNarrative();
+         initializeNarrative(narrative, form);
+-        if ( getKualiRuleService().applyRules(new AddNarrativeEvent("proposalDevelopmentAttachmentHelper.narrative",form.getProposalDevelopmentDocument(),form.getProposalDevelopmentAttachmentHelper().getNarrative()))) {
++        if ( getKualiRuleService().applyRules(new AddNarrativeEvent(ProposalDevelopmentConstants.KradConstants.PROPOSAL_DEVELOPMENT_ATTACHMENT_HELPER_NARRATIVE,form.getProposalDevelopmentDocument(),form.getProposalDevelopmentAttachmentHelper().getNarrative()))) {
+             form.getDevelopmentProposal().getNarratives().add(0,narrative);
+             form.getProposalDevelopmentAttachmentHelper().reset();
+         } else {
+-            form.setUpdateComponentId("PropDev-AttachmentsPage-ProposalDetails");
++            form.setUpdateComponentId(ProposalDevelopmentConstants.KradConstants.PROP_DEV_ATTACHMENTS_PAGE_PROPOSAL_DETAILS);
+             form.setAjaxReturnType(UifConstants.AjaxReturnTypes.UPDATECOMPONENT.getKey());
+         }
+         return getRefreshControllerService().refresh(form);
+ 
+     }
+ 
+-    @Transactional @RequestMapping(value = "/proposalDevelopment", params="methodToCall=addInstituteAttachment")
+-    public ModelAndView addInstituteAttachment(@ModelAttribute("KualiForm") ProposalDevelopmentDocumentForm form) throws Exception {
+-        Narrative narrative = form.getProposalDevelopmentAttachmentHelper().getInstituteAttachment();
+-        initializeNarrative(narrative,form);
+-        form.getDevelopmentProposal().getInstituteAttachments().add(0,narrative);
+-        form.getProposalDevelopmentAttachmentHelper().reset();
++    @Transactional @RequestMapping(value = "/proposalDevelopment", params="methodToCall=checkForExistingNarratives")
++    public ModelAndView checkForExistingNarratives(@ModelAttribute("KualiForm") ProposalDevelopmentDocumentForm form,
++                                                   @RequestParam String currentValue,@RequestParam String previousValue,@RequestParam String propertyPath) throws Exception {
++        if (form.getDevelopmentProposal().isChild()) {
++            NarrativeType narrativeType = getDataObjectService().find(NarrativeType.class, currentValue);
++            DevelopmentProposal parentProposal = getDataObjectService().find(DevelopmentProposal.class,form.getDevelopmentProposal().getHierarchyParentProposalNumber());
++            if(!narrativeType.isAllowMultiple() && getLegacyNarrativeService().doesProposalHaveNarrativeType(parentProposal,narrativeType)) {
++                form.getProposalDevelopmentAttachmentHelper().setCurrentNarrativeTypeDescription(narrativeType.getDescription());
++                form.getProposalDevelopmentAttachmentHelper().setPreviousNarrativeTypeValue(previousValue);
++                form.getProposalDevelopmentAttachmentHelper().setNarrativeTypePropertyPath(propertyPath);
++                return getModelAndViewService().showDialog(ProposalDevelopmentConstants.KradConstants.PROP_DEV_ATTACHMENT_PAGE_CONFIRM_ADD_ATTACHMENT_TO_CHILD, true, form);
++            }
++        }
++        return null;
++    }
+ 
+-        return getRefreshControllerService().refresh(form);
++    @Transactional @RequestMapping(value = "/proposalDevelopment", params="methodToCall=revertToPreviousNarrativeType")
++    public ModelAndView revertToPreviousNarrativeType(@ModelAttribute("KualiForm") ProposalDevelopmentDocumentForm form) throws Exception {
++        String propertyPath = form.getProposalDevelopmentAttachmentHelper().getNarrativeTypePropertyPath();
++        String previousNarrativeTypeValue = form.getProposalDevelopmentAttachmentHelper().getPreviousNarrativeTypeValue();
++        ObjectPropertyUtils.setPropertyValue(form, propertyPath, previousNarrativeTypeValue);
++        if (StringUtils.startsWith(propertyPath, ProposalDevelopmentConstants.KradConstants.PROPOSAL_DEVELOPMENT_ATTACHMENT_HELPER)) {
++            form.setAjaxReturnType(UifConstants.AjaxReturnTypes.UPDATECOMPONENT.getKey());
++            form.setUpdateComponentId(ProposalDevelopmentConstants.KradConstants.PROP_DEV_ATTACHMENTS_PAGE_PROPOSAL_DETAILS);
++        }
++        return getModelAndViewService().getModelAndView(form);
+     }
+ 
+     protected void initializeNarrative(Narrative narrative, ProposalDevelopmentDocumentForm form) {
+-        getLegacyNarrativeService().prepareNarrative(form.getProposalDevelopmentDocument(),narrative);
++        getLegacyNarrativeService().prepareNarrative(form.getProposalDevelopmentDocument(), narrative);
+         try {
+             narrative.init(narrative.getMultipartFile());
+             ((ProposalDevelopmentViewHelperServiceImpl)form.getViewHelperService()).updateAttachmentInformation(narrative.getNarrativeAttachment());
+@@ -248,6 +266,16 @@ protected void initializeNarrative(Narrative narrative, ProposalDevelopmentDocum
+         }
+     }
+ 
++    @Transactional @RequestMapping(value = "/proposalDevelopment", params="methodToCall=addInstituteAttachment")
++    public ModelAndView addInstituteAttachment(@ModelAttribute("KualiForm") ProposalDevelopmentDocumentForm form) throws Exception {
++        Narrative narrative = form.getProposalDevelopmentAttachmentHelper().getInstituteAttachment();
++        initializeNarrative(narrative, form);
++        form.getDevelopmentProposal().getInstituteAttachments().add(0,narrative);
++        form.getProposalDevelopmentAttachmentHelper().reset();
++
++        return getRefreshControllerService().refresh(form);
++    }
++
+     @Transactional @RequestMapping(value = "/proposalDevelopment", params="methodToCall=addBiography")
+     public ModelAndView addBiography(@ModelAttribute("KualiForm") ProposalDevelopmentDocumentForm form) throws Exception{
+         ProposalDevelopmentDocument document = form.getProposalDevelopmentDocument();
+@@ -257,7 +285,7 @@ public ModelAndView addBiography(@ModelAttribute("KualiForm") ProposalDevelopmen
+                 .getDocumentNextValue(Constants.PROP_PERSON_BIO_NUMBER));
+         biography.setUpdateUser(globalVariableService.getUserSession().getPrincipalName());
+         biography.setUpdateTimestamp(getDateTimeService().getCurrentTimestamp());
+-        getDataObjectService().wrap(biography).fetchRelationship("propPerDocType");
++        getDataObjectService().wrap(biography).fetchRelationship(ProposalDevelopmentConstants.KradConstants.PROP_PER_DOC_TYPE);
+         try {
+             biography.init(biography.getMultipartFile());
+             ((ProposalDevelopmentViewHelperServiceImpl)form.getViewHelperService()).updateAttachmentInformation(biography.getPersonnelAttachment());
+@@ -265,11 +293,11 @@ public ModelAndView addBiography(@ModelAttribute("KualiForm") ProposalDevelopmen
+             LOG.info("No File Attached");
+         }
+ 
+-        if (getKualiRuleService().applyRules(new AddPersonnelAttachmentEvent("proposalDevelopmentAttachmentHelper.biography",document,biography))){
++        if (getKualiRuleService().applyRules(new AddPersonnelAttachmentEvent(ProposalDevelopmentConstants.KradConstants.PROPOSAL_DEVELOPMENT_ATTACHMENT_HELPER_BIOGRAPHY, document, biography))){
+             form.getDevelopmentProposal().getPropPersonBios().add(0,biography);
+             form.getProposalDevelopmentAttachmentHelper().reset();
+         } else {
+-            form.setUpdateComponentId("PropDev-AttachmentsPage-PersonnelDetails");
++            form.setUpdateComponentId(ProposalDevelopmentConstants.KradConstants.PROP_DEV_ATTACHMENTS_PAGE_PERSONNEL_DETAILS);
+             form.setAjaxReturnType(UifConstants.AjaxReturnTypes.UPDATECOMPONENT.getKey());
+         }
+         return getRefreshControllerService().refresh(form);
+@@ -279,8 +307,8 @@ public ModelAndView addBiography(@ModelAttribute("KualiForm") ProposalDevelopmen
+     public ModelAndView saveNarrative(@ModelAttribute("KualiForm") ProposalDevelopmentDocumentForm form) throws Exception{
+         Narrative narrative = form.getProposalDevelopmentAttachmentHelper().getNarrative();
+         int selectedLineIndex = Integer.parseInt(form.getProposalDevelopmentAttachmentHelper().getSelectedLineIndex());
+-        narrative.refreshReferenceObject("narrativeType");
+-        narrative.refreshReferenceObject("narrativeStatus");
++        narrative.refreshReferenceObject(ProposalDevelopmentConstants.KradConstants.NARRATIVE_TYPE);
++        narrative.refreshReferenceObject(ProposalDevelopmentConstants.KradConstants.NARRATIVE_STATUS);
+         try {
+             narrative.init(narrative.getMultipartFile());
+             ((ProposalDevelopmentViewHelperServiceImpl)form.getViewHelperService()).updateAttachmentInformation(narrative.getNarrativeAttachment());
+@@ -288,11 +316,11 @@ public ModelAndView saveNarrative(@ModelAttribute("KualiForm") ProposalDevelopme
+             LOG.info("No File Attached");
+         }
+ 
+-        if ( getKualiRuleService().applyRules(new AddNarrativeEvent("proposalDevelopmentAttachmentHelper.narrative",form.getProposalDevelopmentDocument(),form.getProposalDevelopmentAttachmentHelper().getNarrative()))) {
++        if ( getKualiRuleService().applyRules(new AddNarrativeEvent(ProposalDevelopmentConstants.KradConstants.PROPOSAL_DEVELOPMENT_ATTACHMENT_HELPER_NARRATIVE,form.getProposalDevelopmentDocument(),form.getProposalDevelopmentAttachmentHelper().getNarrative()))) {
+             form.getDevelopmentProposal().getNarratives().set(selectedLineIndex,narrative);
+             form.getProposalDevelopmentAttachmentHelper().reset();
+         } else {
+-            form.setUpdateComponentId("PropDev-AttachmentsPage-ProposalDetails");
++            form.setUpdateComponentId(ProposalDevelopmentConstants.KradConstants.PROP_DEV_ATTACHMENTS_PAGE_PROPOSAL_DETAILS);
+             form.setAjaxReturnType(UifConstants.AjaxReturnTypes.UPDATECOMPONENT.getKey());
+         }
+ 
+@@ -317,8 +345,8 @@ public ModelAndView saveNarrative(@ModelAttribute("KualiForm") ProposalDevelopme
+     public ModelAndView sendNarrativeChangeNotification(ProposalDevelopmentDocumentForm proposalDevelopmentDocumentForm) {
+         if (proposalDevelopmentDocumentForm.isSendNarrativeChangeNotification()) {
+              final String step = proposalDevelopmentDocumentForm.getNotificationHelper().getNotificationRecipients().isEmpty() ? "0" : "2";
+-                proposalDevelopmentDocumentForm.getActionParameters().put("Kc-SendNotification-Wizard.step", step);
+-                return getModelAndViewService().showDialog("Kc-SendNotification-Wizard", true, proposalDevelopmentDocumentForm);
++                proposalDevelopmentDocumentForm.getActionParameters().put(ProposalDevelopmentConstants.KradConstants.KC_SEND_NOTIFICATION_WIZARD + ".step", step);
++                return getModelAndViewService().showDialog(ProposalDevelopmentConstants.KradConstants.KC_SEND_NOTIFICATION_WIZARD, true, proposalDevelopmentDocumentForm);
+         }
+         proposalDevelopmentDocumentForm.setSendNarrativeChangeNotification(false);
+         return getModelAndViewService().getModelAndView(proposalDevelopmentDocumentForm);
+@@ -330,28 +358,28 @@ public ModelAndView saveBiography(@ModelAttribute("KualiForm") ProposalDevelopme
+         int selectedLineIndex = Integer.parseInt(form.getProposalDevelopmentAttachmentHelper().getSelectedLineIndex());
+         biography.setUpdateUser(globalVariableService.getUserSession().getPrincipalName());
+         biography.setUpdateTimestamp(getDateTimeService().getCurrentTimestamp());
+-        getDataObjectService().wrap(biography).fetchRelationship("propPerDocType");
++        getDataObjectService().wrap(biography).fetchRelationship(ProposalDevelopmentConstants.KradConstants.PROP_PER_DOC_TYPE);
+         try {
+             biography.init(biography.getMultipartFile());
+             ((ProposalDevelopmentViewHelperServiceImpl)form.getViewHelperService()).updateAttachmentInformation(biography.getPersonnelAttachment());
+         } catch (Exception e) {
+             LOG.info("No File Attached");
+         }
+-        if (getKualiRuleService().applyRules(new AddPersonnelAttachmentEvent("proposalDevelopmentAttachmentHelper.biography",form.getProposalDevelopmentDocument(),biography))){
++        if (getKualiRuleService().applyRules(new AddPersonnelAttachmentEvent(ProposalDevelopmentConstants.KradConstants.PROPOSAL_DEVELOPMENT_ATTACHMENT_HELPER_BIOGRAPHY,form.getProposalDevelopmentDocument(),biography))){
+             form.getDevelopmentProposal().getPropPersonBios().set(selectedLineIndex, biography);
+             form.getProposalDevelopmentAttachmentHelper().reset();
+         } else {
+-            form.setUpdateComponentId("PropDev-AttachmentsPage-PersonnelDetails");
++            form.setUpdateComponentId(ProposalDevelopmentConstants.KradConstants.PROP_DEV_ATTACHMENTS_PAGE_PERSONNEL_DETAILS);
+             form.setAjaxReturnType(UifConstants.AjaxReturnTypes.UPDATECOMPONENT.getKey());
+         }
+-        return super.narrativePageSave(form,true);
++        return super.narrativePageSave(form, true);
+     }
+ 
+     @Transactional @RequestMapping(value = "/proposalDevelopment", params="methodToCall=saveInstituteAttachment")
+     public ModelAndView saveInstituteAttachment(@ModelAttribute("KualiForm") ProposalDevelopmentDocumentForm form) throws Exception{
+         Narrative narrative = form.getProposalDevelopmentAttachmentHelper().getInstituteAttachment();
+         int selectedLineIndex = Integer.parseInt(form.getProposalDevelopmentAttachmentHelper().getSelectedLineIndex());
+-        getDataObjectService().wrap(narrative).fetchRelationship("narrativeType");
++        getDataObjectService().wrap(narrative).fetchRelationship(ProposalDevelopmentConstants.KradConstants.NARRATIVE_TYPE);
+         try {
+             narrative.init(narrative.getMultipartFile());
+             ((ProposalDevelopmentViewHelperServiceImpl)form.getViewHelperService()).updateAttachmentInformation(narrative.getNarrativeAttachment());
+@@ -360,7 +388,7 @@ public ModelAndView saveInstituteAttachment(@ModelAttribute("KualiForm") Proposa
+         }
+         form.getDevelopmentProposal().getInstituteAttachments().set(selectedLineIndex,narrative);
+         form.getProposalDevelopmentAttachmentHelper().reset();
+-        return super.narrativePageSave(form,true);
++        return super.narrativePageSave(form, true);
+     }
+ 
+     @Transactional @RequestMapping(value = "/proposalDevelopment", params="methodToCall=saveAbstract")
+@@ -440,8 +468,8 @@ public ModelAndView getProposalAttachmentRights(@ModelAttribute("KualiForm") Pro
+ 
+         form.setNarrativeUserRights(editableRights);
+         form.setNarrativeUserRightsSelectedAttachment(selectedLine);
+-        form.getActionParameters().put("attachmentType","proposalAttachment");
+-        return getModelAndViewService().showDialog("PropDev-AttachmentPage-ViewEditRightDialog", true, form);
++        form.getActionParameters().put(ProposalDevelopmentConstants.KradConstants.ATTACHMENT_TYPE, ProposalDevelopmentConstants.KradConstants.PROPOSAL_ATTACHMENT);
++        return getModelAndViewService().showDialog(ProposalDevelopmentConstants.KradConstants.PROP_DEV_ATTACHMENT_PAGE_VIEW_EDIT_RIGHT_DIALOG, true, form);
+     }
+ 
+     @Transactional @RequestMapping(value = "/proposalDevelopment", params={"methodToCall=addInstituteAttachmentRights"})
+@@ -473,8 +501,8 @@ public ModelAndView getInstituteAttachmentRights(@ModelAttribute("KualiForm") Pr
+ 
+         form.setNarrativeUserRights(editableRights);
+         form.setNarrativeUserRightsSelectedAttachment(selectedLine);
+-        form.getActionParameters().put("attachmentType","instituteAttachment");
+-        return getModelAndViewService().showDialog("PropDev-AttachmentPage-ViewEditRightDialog", true, form);
++        form.getActionParameters().put(ProposalDevelopmentConstants.KradConstants.ATTACHMENT_TYPE, ProposalDevelopmentConstants.KradConstants.INSTITUTE_ATTACHMENT);
++        return getModelAndViewService().showDialog(ProposalDevelopmentConstants.KradConstants.PROP_DEV_ATTACHMENT_PAGE_VIEW_EDIT_RIGHT_DIALOG, true, form);
+     }
+ 
+     public LegacyNarrativeService getLegacyNarrativeService() {
+@@ -524,4 +552,5 @@ public PersonService getPersonService() {
+     public void setPersonService(PersonService personService) {
+         this.personService = personService;
+     }
++
+ }
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalDevelopmentAttachmentHelper.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalDevelopmentAttachmentHelper.java
+index 5302edf..8da5c74 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalDevelopmentAttachmentHelper.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalDevelopmentAttachmentHelper.java
+@@ -18,18 +18,10 @@
+  */
+ package org.kuali.coeus.propdev.impl.attachment;
+ 
+-import org.apache.commons.collections4.CollectionUtils;
+-import org.apache.commons.collections4.Predicate;
+-import org.apache.commons.lang3.builder.EqualsBuilder;
+ import org.kuali.coeus.propdev.impl.abstrct.ProposalAbstract;
+-import org.kuali.coeus.propdev.impl.core.ProposalDevelopmentDocument;
+-import org.kuali.coeus.propdev.impl.core.ProposalDevelopmentDocumentForm;
+ import org.kuali.coeus.propdev.impl.person.attachment.ProposalPersonBiography;
+-import org.kuali.kra.bo.DocumentNextvalue;
+-import org.kuali.kra.infrastructure.Constants;
+ import org.kuali.rice.krad.bo.Note;
+ 
+-import java.util.ArrayList;
+ import java.util.HashMap;
+ import java.util.List;
+ import java.util.Map;
+@@ -44,6 +36,9 @@
+     private String selectedLineIndex;
+     private String proposalAttachmentModuleStatusCode;
+     private String internalAttachmentModuleStatusCode;
++    private String previousNarrativeTypeValue;
++    private String currentNarrativeTypeDescription;
++    private String narrativeTypePropertyPath;
+ 
+     private Map<String,List<String>> editableFileAttachments;
+ 
+@@ -53,7 +48,7 @@ public ProposalDevelopmentAttachmentHelper() {
+         biography = new ProposalPersonBiography();
+         note = new Note();
+         proposalAbstract = new ProposalAbstract();
+-        editableFileAttachments = new HashMap<String,List<String>>();
++        editableFileAttachments = new HashMap<>();
+     }
+ 
+     public void reset() {
+@@ -62,8 +57,11 @@ public void reset() {
+         biography = new ProposalPersonBiography();
+         note = new Note();
+         proposalAbstract = new ProposalAbstract();
+-        editableFileAttachments = new HashMap<String,List<String>>();
++        editableFileAttachments = new HashMap<>();
+         selectedLineIndex = null;
++        previousNarrativeTypeValue = "";
++        currentNarrativeTypeDescription = "";
++        narrativeTypePropertyPath = "";
+     }
+ 
+     public ProposalPersonBiography getBiography() {
+@@ -137,4 +135,28 @@ public String getInternalAttachmentModuleStatusCode() {
+ 	public void setInternalAttachmentModuleStatusCode(String internalAttachmentModuleStatusCode) {
+ 		this.internalAttachmentModuleStatusCode = internalAttachmentModuleStatusCode;
+ 	}
++
++    public String getPreviousNarrativeTypeValue() {
++        return previousNarrativeTypeValue;
++    }
++
++    public void setPreviousNarrativeTypeValue(String previousNarrativeTypeValue) {
++        this.previousNarrativeTypeValue = previousNarrativeTypeValue;
++    }
++
++    public String getCurrentNarrativeTypeDescription() {
++        return currentNarrativeTypeDescription;
++    }
++
++    public void setCurrentNarrativeTypeDescription(String currentNarrativeTypeDescription) {
++        this.currentNarrativeTypeDescription = currentNarrativeTypeDescription;
++    }
++
++    public String getNarrativeTypePropertyPath() {
++        return narrativeTypePropertyPath;
++    }
++
++    public void setNarrativeTypePropertyPath(String narrativeTypePropertyPath) {
++        this.narrativeTypePropertyPath = narrativeTypePropertyPath;
++    }
+ }
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalNarrativeTypeValuesFinder.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalNarrativeTypeValuesFinder.java
+index 4e0d688..1951666 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalNarrativeTypeValuesFinder.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalNarrativeTypeValuesFinder.java
+@@ -22,7 +22,6 @@
+ import org.apache.commons.lang3.StringUtils;
+ import org.kuali.coeus.propdev.impl.core.ProposalDevelopmentDocument;
+ import org.kuali.coeus.propdev.impl.core.ProposalDevelopmentDocumentForm;
+-import org.kuali.coeus.sys.framework.keyvalue.FormViewAwareUifKeyValuesFinderBase;
+ import org.kuali.coeus.sys.framework.service.KcServiceLocator;
+ import org.kuali.kra.infrastructure.Constants;
+ import org.kuali.coeus.propdev.impl.core.DevelopmentProposal;
+@@ -33,6 +32,7 @@
+ import org.kuali.rice.core.api.util.KeyValue;
+ import org.kuali.rice.coreservice.framework.parameter.ParameterService;
+ import org.kuali.rice.krad.data.DataObjectService;
++import org.kuali.rice.krad.uif.control.UifKeyValuesFinderBase;
+ import org.kuali.rice.krad.uif.field.InputField;
+ import org.kuali.rice.krad.uif.view.ViewModel;
+ import org.springframework.beans.factory.annotation.Autowired;
+@@ -54,8 +54,13 @@
+  * infrastructure into protected methods to allow unit tests to override with mocks and stub out 
+  * database and service lookups. 
+  */
+-public class ProposalNarrativeTypeValuesFinder  extends FormViewAwareUifKeyValuesFinderBase {
++public class ProposalNarrativeTypeValuesFinder  extends UifKeyValuesFinderBase {
+     private static final org.apache.commons.logging.Log LOG = org.apache.commons.logging.LogFactory.getLog(ProposalNarrativeTypeValuesFinder.class);
++    public static final String NARRATIVE_TYPE_GROUP = "narrativeTypeGroup";
++    public static final String PROPOSAL_NUMBER = "proposalNumber";
++    public static final String FORM_NAME = "formName";
++    public static final String ALL = "ALL";
++    public static final String SELECT = "select";
+ 
+     @Autowired
+     @Qualifier("dataObjectService")
+@@ -65,28 +70,6 @@
+     @Qualifier("parameterService")
+     private ParameterService parameterService;
+ 
+-    public ParameterService getParameterService() {
+-        if (parameterService == null) {
+-            parameterService = KcServiceLocator.getService(ParameterService.class);
+-        }
+-        return parameterService;
+-    }
+-
+-    public void setParameterService(ParameterService parameterService) {
+-        this.parameterService = parameterService;
+-    }
+-
+-    public DataObjectService getDataObjectService() {
+-        if (dataObjectService == null) {
+-            dataObjectService = KcServiceLocator.getService(DataObjectService.class);
+-        }
+-        return dataObjectService;
+-    }
+-
+-    public void setDataObjectService(DataObjectService dataObjectService) {
+-        this.dataObjectService = dataObjectService;
+-    }
+-
+     @Override
+     public List<KeyValue> getKeyValues(ViewModel model, InputField field){
+         DevelopmentProposal developmentProposal = ((ProposalDevelopmentDocumentForm) model).getDevelopmentProposal();
+@@ -107,7 +90,7 @@ public void setDataObjectService(DataObjectService dataObjectService) {
+             throw new RiceRuntimeException("could not retrieve narrative type from the input field", e);
+         }
+ 
+-        return getFilteredKeyValues(allNarrativeTypes,developmentProposal,narrativeTypeCode);
++        return getFilteredKeyValues(allNarrativeTypes, developmentProposal, narrativeTypeCode);
+ 
+     }
+ 
+@@ -115,17 +98,17 @@ public void setDataObjectService(DataObjectService dataObjectService) {
+     public List<KeyValue> getKeyValues(ViewModel model) {
+         DevelopmentProposal developmentProposal = ((ProposalDevelopmentDocumentForm) model).getDevelopmentProposal();
+         Collection<NarrativeType> allNarrativeTypes = loadAllNarrativeTypes(developmentProposal);
+-        return getFilteredKeyValues(allNarrativeTypes,developmentProposal,"");
++        return getFilteredKeyValues(allNarrativeTypes, developmentProposal, "");
+     }
+     
+     public List<KeyValue> getFilteredKeyValues(Collection<NarrativeType> allNarrativeTypes, DevelopmentProposal developmentProposal, String narrativeTypeCode) {
+-        Collection<NarrativeType> filteredCollection = filterCollection(allNarrativeTypes,developmentProposal,narrativeTypeCode);
++        Collection<NarrativeType> filteredCollection = filterCollection(allNarrativeTypes, developmentProposal, narrativeTypeCode);
+         return buildKeyValuesCollection(filteredCollection);
+         
+     }
+ 
+     protected Collection<NarrativeType> filterCollection(Collection<NarrativeType> narrativeTypes, DevelopmentProposal developmentProposal, String narrativeTypeCode) {
+-        Collection<NarrativeType> forRemoval = new ArrayList<NarrativeType>();        
++        Collection<NarrativeType> forRemoval = new ArrayList<>();
+         for (NarrativeType narrativeType : narrativeTypes) {
+             for (Narrative narrative : developmentProposal.getNarratives()) {
+                 if (narrative.getNarrativeType() != null && filterCondition(narrative.getNarrativeType(), narrativeType) &&
+@@ -145,7 +128,7 @@ public void setDataObjectService(DataObjectService dataObjectService) {
+ 
+     private List<KeyValue> buildKeyValuesCollection(Collection<NarrativeType> narrativeTypes) {
+         List<KeyValue> KeyValues = new ArrayList<KeyValue>();
+-        KeyValues.add(new ConcreteKeyValue("", "select"));
++        KeyValues.add(new ConcreteKeyValue(StringUtils.EMPTY, SELECT));
+         for (NarrativeType narrativeType : narrativeTypes) {
+             String key = narrativeType.getCode();
+             String label = narrativeType.getDescription();
+@@ -153,71 +136,82 @@ public void setDataObjectService(DataObjectService dataObjectService) {
+         }
+         return KeyValues;
+     }
+-    
+-    @SuppressWarnings("unchecked")
++
+     protected Collection<NarrativeType> loadAllNarrativeTypes(DevelopmentProposal developmentProposal) {
+-        List<NarrativeType> validS2SFormNarratives = new ArrayList<NarrativeType>();
+-        if(isS2sCandidate(developmentProposal)){
+-            populateValidFormNarratives(developmentProposal,validS2SFormNarratives);
+-            populateGenericValidNarrativeTypes(validS2SFormNarratives);
+-            if (developmentProposal.isChild()) {
+-                populateValidNarrativeTypeFromParentProposal(developmentProposal, validS2SFormNarratives);
+-            }
+-        }else{
+-            String proposalNarrativeTypeGroup = this.getParameterService().getParameterValueAsString(ProposalDevelopmentDocument.class, Constants.PROPOSAL_NARRATIVE_TYPE_GROUP);
+-            Map<String,String> queryMap = new HashMap<String,String>();
+-            queryMap.put("narrativeTypeGroup", proposalNarrativeTypeGroup);
+-            List<ValidNarrForms> validNarrativeForms = (List<ValidNarrForms>)getDataObjectService().findAll(ValidNarrForms.class).getResults();
+-            List<NarrativeType> allNarrativeTypes = (List)getDataObjectService().findMatching(NarrativeType.class, QueryByCriteria.Builder.andAttributes(queryMap).build()).getResults();
+-            validS2SFormNarratives = removeValidNarrativeForms(allNarrativeTypes,validNarrativeForms);
++        List<NarrativeType> narrativeTypes = new ArrayList<>();
++        if(isS2sCandidate(developmentProposal)) {
++            narrativeTypes.addAll(populateNarrativeTypesFrom(developmentProposal));
++        } else if (developmentProposal.isChild()) {
++            narrativeTypes.addAll(populateNarrativeTypesFromParent(developmentProposal.getHierarchyParentProposalNumber()));
++        }
++        narrativeTypes.addAll(populateDefaultNarrativeForms());
++        return narrativeTypes;
++    }
++
++    private Collection<NarrativeType> populateNarrativeTypesFromParent(String hierarchyProposalNumber) {
++        List<NarrativeType> validS2SFormNarratives = new ArrayList<>();
++        DevelopmentProposal parentProposal = getDevelopmentProposal(hierarchyProposalNumber);
++        if (isS2sCandidate(parentProposal)) {
++            validS2SFormNarratives.addAll(populateNarrativeTypesFrom(parentProposal));
+         }
+         return validS2SFormNarratives;
+     }
+ 
++    public DevelopmentProposal getDevelopmentProposal(String proposalNumber) {
++        return getDataObjectService().find(DevelopmentProposal.class,proposalNumber);
++    }
+ 
+-    private List<NarrativeType> removeValidNarrativeForms(List<NarrativeType> narrativeTypes,List<ValidNarrForms> validNarrativeForms) {
+-        List<NarrativeType> filteredNarrativeTypes = new ArrayList<NarrativeType>();
+-        populateGenericValidNarrativeTypes(filteredNarrativeTypes);
++    private boolean isS2sCandidate(DevelopmentProposal developmentProposal) {
++        return !developmentProposal.getS2sOppForms().isEmpty();
++    }
++
++    private List<NarrativeType> populateNarrativeTypesFrom(DevelopmentProposal developmentProposal) {
++        List<NarrativeType> validNarrativeTypes = new ArrayList<>();
++        validNarrativeTypes.addAll(populateValidFormNarratives(developmentProposal));
++        return validNarrativeTypes;
++    }
++
++    private List<NarrativeType> populateDefaultNarrativeForms() {
++        Map<String,String> queryMap = new HashMap<>();
++        queryMap.put(NARRATIVE_TYPE_GROUP, getProposalNarrativeTypeGroup());
++        List<ValidNarrForms> validNarrativeForms = getDataObjectService().findAll(ValidNarrForms.class).getResults();
++        List<NarrativeType> narrativeTypes = getDataObjectService().findMatching(NarrativeType.class, QueryByCriteria.Builder.andAttributes(queryMap).build()).getResults();
++        List<NarrativeType> filteredNarrativeTypes = populateGenericValidNarrativeTypes();
+         for (NarrativeType narrativeType : narrativeTypes) {
+-            boolean exists = false;
+-            for (ValidNarrForms validNarrForm : validNarrativeForms) {
+-                if(validNarrForm.getNarrativeTypeCode().equals(narrativeType.getCode())){
+-                    exists = true;
+-                    break;
+-                }
+-            }
+-            if(!exists){
++            if(!validNarrFormAlreadyExists(validNarrativeForms, narrativeType)){
+                 filteredNarrativeTypes.add(narrativeType);
+             }
+         }
+         return filteredNarrativeTypes;
+     }
+ 
+-    private boolean isS2sCandidate(DevelopmentProposal developmentProposal) {
+-        return !developmentProposal.getS2sOppForms().isEmpty();
++    private boolean validNarrFormAlreadyExists(List<ValidNarrForms> validNarrativeForms, NarrativeType narrativeType) {
++        for (ValidNarrForms validNarrForm : validNarrativeForms) {
++            if(validNarrForm.getNarrativeTypeCode().equals(narrativeType.getCode())){
++               return true;
++            }
++        }
++        return false;
+     }
+ 
+-    public DevelopmentProposal getDevelopmentProposal(String proposalNumber) {
+-        Map<String, String> pk = new HashMap<String, String>();
+-        pk.put("proposalNumber", proposalNumber);
+-        return (DevelopmentProposal) (getDataObjectService().find(DevelopmentProposal.class, proposalNumber));
+-    }
+-    private List<NarrativeType> populateValidFormNarratives(DevelopmentProposal developmentProposal, List<NarrativeType> validaNarrativeTypes) {
++    private List<NarrativeType> populateValidFormNarratives(DevelopmentProposal developmentProposal) {
++        List<NarrativeType> validNarrativeTypes = new ArrayList<>();
+         List<S2sOppForms> s2sOpportunityForms = developmentProposal.getS2sOppForms();
+         for (S2sOppForms oppForms : s2sOpportunityForms) {
+-            Map<String, String> queryMap = new HashMap<String, String>();
+-            queryMap.put("formName", oppForms.getFormName());
+-            List<ValidNarrForms>  validNarrativeForms = (List)getDataObjectService().findMatching(ValidNarrForms.class,QueryByCriteria.Builder.andAttributes(queryMap).build()).getResults();
++            Map<String, String> queryMap = new HashMap<>();
++            queryMap.put(FORM_NAME, oppForms.getFormName());
++            List<ValidNarrForms>  validNarrativeForms = getDataObjectService().findMatching(ValidNarrForms.class,QueryByCriteria.Builder.andAttributes(queryMap).build()).getResults();
+             for (ValidNarrForms validNarrForms : validNarrativeForms) {
+-                if(isProposalGroup(validNarrForms)){
+-                    if(!isNarrativeAlreadyAdded(validaNarrativeTypes,validNarrForms.getNarrativeType()) && !validNarrForms.getNarrativeType().isSystemGenerated()){
+-                        validaNarrativeTypes.add(validNarrForms.getNarrativeType());
++                if(isProposalGroup(validNarrForms.getNarrativeType().getNarrativeTypeGroup())){
++                    if(!isNarrativeAlreadyAdded(validNarrativeTypes,validNarrForms.getNarrativeType()) && !validNarrForms.getNarrativeType().isSystemGenerated()){
++                        validNarrativeTypes.add(validNarrForms.getNarrativeType());
+                     }
+                 }
+             }
+         }
+-        return validaNarrativeTypes;
++        return validNarrativeTypes;
+     }
++
+     private boolean isNarrativeAlreadyAdded(List<NarrativeType> validaNarrativeTypes, NarrativeType validNarrativeType) {
+         for (NarrativeType narrativeType : validaNarrativeTypes) {
+             if(narrativeType.getCode().equals(validNarrativeType.getCode())){
+@@ -226,30 +220,26 @@ private boolean isNarrativeAlreadyAdded(List<NarrativeType> validaNarrativeTypes
+         }
+         return false;
+     }
+-    String proposalNarrativeTypeGroup = this.getParameterService().getParameterValueAsString(ProposalDevelopmentDocument.class, Constants.PROPOSAL_NARRATIVE_TYPE_GROUP);
+ 
+-    private boolean isProposalGroup(ValidNarrForms validNarrForms) {
+-        return proposalNarrativeTypeGroup.equals(validNarrForms.getNarrativeType().getNarrativeTypeGroup());
++    private boolean isProposalGroup(String narrativeTypeCode) {
++        return StringUtils.equals(narrativeTypeCode, getProposalNarrativeTypeGroup());
+     }
+ 
+-
+-    private void populateValidNarrativeTypeFromParentProposal(DevelopmentProposal developmentProposal, List<NarrativeType> validaNarrativeTypes) {
+-            String hierarchyProposalNumber = developmentProposal.getHierarchyParentProposalNumber();
+-            DevelopmentProposal parentProposal = getDevelopmentProposal(hierarchyProposalNumber);
+-            populateValidFormNarratives(parentProposal, validaNarrativeTypes);
++    private String getProposalNarrativeTypeGroup() {
++        return getParameterService().getParameterValueAsString(ProposalDevelopmentDocument.class, Constants.PROPOSAL_NARRATIVE_TYPE_GROUP);
+     }
+ 
+-
+-    private Map<String, String> populateGenericValidNarrativeTypes(List<NarrativeType> validaNarrativeTypes) {
+-        Map<String,String> queryMap = new HashMap<String,String>();
+-        queryMap.put("formName", "ALL");
+-        List<ValidNarrForms> validNarrativeForms = (List)getDataObjectService().findMatching(ValidNarrForms.class, QueryByCriteria.Builder.andAttributes(queryMap).build()).getResults();
++    private List<NarrativeType> populateGenericValidNarrativeTypes() {
++        List<NarrativeType> validNarrativeTypes = new ArrayList<>();
++        Map<String,String> queryMap = new HashMap<>();
++        queryMap.put(FORM_NAME, ALL);
++        List<ValidNarrForms> validNarrativeForms = getDataObjectService().findMatching(ValidNarrForms.class, QueryByCriteria.Builder.andAttributes(queryMap).build()).getResults();
+         for (ValidNarrForms validNarrForms : validNarrativeForms) {
+-            if(isProposalGroup(validNarrForms)){
+-                validaNarrativeTypes.add(validNarrForms.getNarrativeType());
++            if(isProposalGroup(validNarrForms.getNarrativeType().getNarrativeTypeGroup())){
++                validNarrativeTypes.add(validNarrForms.getNarrativeType());
+             }
+         }
+-        return queryMap;
++        return validNarrativeTypes;
+     }
+ 
+     protected boolean filterCondition(NarrativeType documentNarrativeType, NarrativeType narrativeType) {
+@@ -259,4 +249,26 @@ protected boolean filterCondition(NarrativeType documentNarrativeType, Narrative
+     private boolean multiplesNotAllowed(NarrativeType narrativeType) {
+         return !narrativeType.isAllowMultiple();
+     }
++
++    public ParameterService getParameterService() {
++        if (parameterService == null) {
++            parameterService = KcServiceLocator.getService(ParameterService.class);
++        }
++        return parameterService;
++    }
++
++    public void setParameterService(ParameterService parameterService) {
++        this.parameterService = parameterService;
++    }
++
++    public DataObjectService getDataObjectService() {
++        if (dataObjectService == null) {
++            dataObjectService = KcServiceLocator.getService(DataObjectService.class);
++        }
++        return dataObjectService;
++    }
++
++    public void setDataObjectService(DataObjectService dataObjectService) {
++        this.dataObjectService = dataObjectService;
++    }
+ }
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentConstants.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentConstants.java
+index 0ac9044..c5257a6 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentConstants.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentConstants.java
+@@ -30,7 +30,25 @@
+         public static final String COMPLIANCE_ADD_DIALOG = "PropDev-CompliancePage_AddDialog";
+ 
+         public static final String PERSONNEL_QUESTIONNAIRE = "personnelQuestionnaire";
+-	}
++        public static final String PROP_DEV_ATTACHMENTS_PAGE_PROPOSAL_DETAILS = "PropDev-AttachmentsPage-ProposalDetails";
++        public static final String PROP_DEV_ATTACHMENTS_PAGE_PERSONNEL_DETAILS = "PropDev-AttachmentsPage-PersonnelDetails";
++        public static final String PROP_DEV_ATTACHMENTS_PAGE_ABSTRACT_DETAILS = "PropDev-AttachmentsPage-AbstractDetails";
++        public static final String PROP_DEV_ATTACHMENTS_PAGE_INTERNAL_DETAILS = "PropDev-AttachmentsPage-InternalDetails";
++        public static final String PROP_DEV_ATTACHMENTS_PAGE_NOTE_DETAILS = "PropDev-AttachmentsPage-NoteDetails";
++        public static final String PROP_DEV_ATTACHMENT_PAGE_VIEW_EDIT_RIGHT_DIALOG = "PropDev-AttachmentPage-ViewEditRightDialog";
++        public static final String PROP_DEV_ATTACHMENT_PAGE_CONFIRM_ADD_ATTACHMENT_TO_CHILD = "PropDev-AttachmentPage-ConfirmAddAttachmentToChild";
++        public static final String PROP_PER_DOC_TYPE = "propPerDocType";
++        public static final String NARRATIVE_TYPE = "narrativeType";
++        public static final String NARRATIVE_STATUS = "narrativeStatus";
++        public static final String KC_SEND_NOTIFICATION_WIZARD = "Kc-SendNotification-Wizard";
++        public static final String ATTACHMENT_TYPE = "attachmentType";
++        public static final String PROPOSAL_ATTACHMENT = "proposalAttachment";
++        public static final String INSTITUTE_ATTACHMENT = "instituteAttachment";
++        public static final String BINDING_PATH = "bindingPath";
++        public static final String PROPOSAL_DEVELOPMENT_ATTACHMENT_HELPER_NARRATIVE = "proposalDevelopmentAttachmentHelper.narrative";
++        public static final String PROPOSAL_DEVELOPMENT_ATTACHMENT_HELPER_BIOGRAPHY = "proposalDevelopmentAttachmentHelper.biography";
++        public static final String PROPOSAL_DEVELOPMENT_ATTACHMENT_HELPER = "proposalDevelopmentAttachmentHelper";
++    }
+ 
+     public static class Parameters {
+         public static final String KEY_PERSON_CERTIFICATION_SELF_CERTIFY_ONLY = "KEY_PERSON_CERTIFICATION_SELF_CERTIFY_ONLY";
+diff --git a/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/attachment/ProposalAttachmentsPage.xml b/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/attachment/ProposalAttachmentsPage.xml
+index fc303fc..1b49578 100644
+--- a/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/attachment/ProposalAttachmentsPage.xml
++++ b/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/attachment/ProposalAttachmentsPage.xml
+@@ -122,6 +122,8 @@
+             <list>
+                 <bean parent="PropDev-AttachmentPage-LinkField" p:order="10"/>
+                 <bean parent="Uif-InputField" p:propertyName="narrativeTypeCode" p:readOnlyDisplayReplacementPropertyName="narrativeType.description"
++                      p:onChangeScript="Kc.PropDev.Attachments.checkforExistingAttachmentsOnParent(this)"
++                      p:onClickScript="Kc.PropDev.Attachments.capturePreviousNarrativeType(this)"
+                       p:fieldLabel.labelText="Type" p:enableAutoQuickfinder="false" p:width="5%" p:order="20" />
+ 				<bean parent="PropDev-AttachmentPage-ModuleStatus" p:order="30" />
+                 <bean parent="Uif-InputField" p:propertyName="moduleTitle"
+@@ -159,6 +161,8 @@
+             <list>
+                 <bean parent="Uif-InputField" p:propertyName="narrative.narrativeTypeCode"
+                       p:readOnlyDisplayReplacementPropertyName="narrative.narrativeType.description"
++                      p:onChangeScript="Kc.PropDev.Attachments.checkforExistingAttachmentsOnParent(this)"
++                      p:onClickScript="Kc.PropDev.Attachments.capturePreviousNarrativeType(this)"
+                       p:enableAutoQuickfinder="false"
+                       p:order="10" />
+                 <bean parent="Uif-InputField" p:propertyName="narrative.moduleStatusCode"
+@@ -692,4 +696,25 @@
+             </list>
+         </property>
+     </bean>
++
++    <bean id="PropDev-AttachmentPage-ConfirmAddAttachmentToChild" parent="Uif-DialogGroup-OkCancel"
++          p:promptText="The attachment type &quot;@{proposalDevelopmentAttachmentHelper.currentNarrativeTypeDescription}&quot; is already present in the hierarchy. Adding the attachment type &quot;@{proposalDevelopmentAttachmentHelper.currentNarrativeTypeDescription}&quot; will not be synced. Do you want to continue?">
++        <property name="footer.items">
++            <list>
++                <bean parent="Uif-DialogDismissButton" p:actionLabel="Cancel"
++                      p:dialogDismissOption="REQUEST" p:methodToCall="revertToPreviousNarrativeType"/>
++                <bean parent="Uif-DialogConfirmButton" p:actionLabel="OK"/>
++            </list>
++        </property>
++        <property name="header.upperGroup">
++            <bean parent="Uif-SimpleGroup">
++                <property name="items">
++                    <list>
++                        <bean parent="Uif-PrimaryActionButton" p:actionLabel="&amp;times;"
++                              p:dialogDismissOption="REQUEST" p:methodToCall="revertToPreviousNarrativeType" p:libraryCssClasses="close" p:ariaAttributes="hidden:true"/>
++                    </list>
++                </property>
++            </bean>
++        </property>
++    </bean>
+ </beans>
+diff --git a/coeus-webapp/src/main/webapp/scripts/propdev/attachments.js b/coeus-webapp/src/main/webapp/scripts/propdev/attachments.js
+index 10aff8e..11515aa 100644
+--- a/coeus-webapp/src/main/webapp/scripts/propdev/attachments.js
++++ b/coeus-webapp/src/main/webapp/scripts/propdev/attachments.js
+@@ -35,4 +35,15 @@ Kc.PropDev.Attachments = Kc.PropDev.Attachments || {};
+ 
+         });
+     };
++    namespace.checkforExistingAttachmentsOnParent = function(element) {
++        var select = $(element).find("select");
++        var previousValue = $(select).data("previousValue");
++        var currentValue = $(select).val();
++        var propertyPath = $(select).attr("name");
++        ajaxSubmitForm('checkForExistingNarratives',{currentValue:currentValue,previousValue:previousValue,propertyPath:propertyPath});
++    }
++    namespace.capturePreviousNarrativeType = function(element) {
++        var select = $(element).find("select");
++        $(select).data("previousValue",$(select).val());
++    }
+ })(Kc.PropDev.Attachments, jQuery);

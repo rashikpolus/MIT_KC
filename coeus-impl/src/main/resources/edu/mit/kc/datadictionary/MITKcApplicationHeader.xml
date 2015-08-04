@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="Kc-Header-DefaultMenu" parent="Kc-Header-DefaultMenu-parentBean" />
+	<bean id="Kc-Header-DefaultMenu-parentBean" abstract="true"
+		parent="Uif-DropdownToggleMenu" p:toggleCaretClass="">
+		<property name="wrapperCssClasses">
+			<list merge="true">
+				<value>kc-navMenuDropdown</value>
+			</list>
+		</property>
+		<property name="menuGroup">
+			<bean parent="Uif-AppMenuGroup">
+				<property name="layoutManager.defaultItemSizes.smSize"
+					value="4" />
+				<property name="layoutManager.defaultItemSizes.mdSize"
+					value="3" />
+				<property name="items">
+					<list>
+						<bean parent="Kc-Header-Unit-Group1" p:order="10" />
+						<bean parent="Kc-Header-Unit-Group2" p:order="20" />
+						<bean parent="Kc-Header-Unit-Group3" p:order="30" />
+						<bean parent="Kc-Header-Unit-Group4" p:order="40" />
+						<bean parent="Kc-Header-Unit-Group5" p:order="50" />
+						<bean parent="Kc-Header-Unit-Group6" p:order="60" />
+						<bean parent="Kc-Header-Unit-Group7" p:order="70" />
+						<bean parent="Kc-Header-Unit-Group8" p:order="80" />
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="Kc-Header-Unit-Group7" parent="MITKc-Header-Unit-Group7-parentBean" />
+	<bean id="MITKc-Header-Unit-Group7-parentBean" parent="Kc-Header-Unit-Group7-parentBean"
+		p:headerText="Business Rules">
+
+		<property name="items">
+			<list>
+				<bean parent="Kc-Header-IframeMenuAction" p:actionUrl.viewId="Kc-Header-IframeView"
+					p:actionLabel="Agenda" p:order="10">
+					<property name="actionUrl.requestParameters">
+						<map>
+							<entry key="href"
+								value="@{#ConfigProperties['rice.server.url']}/kr-krad/lookup?methodToCall=start&amp;dataObjectClassName=org.kuali.rice.krms.impl.repository.AgendaBo&amp;showMaintenanceLinks=true&amp;returnLocation=@{#ConfigProperties['application.url']}%2Fkc-krad%2FlandingPage%3FviewId%3DKc-LandingPage-RedirectView&amp;hideReturnLink=true" />
+						</map>
+					</property>
+				</bean>
+
+				<bean parent="Kc-Header-IframeMenuAction" p:actionUrl.viewId="Kc-Header-IframeView"
+					p:actionLabel="Business Rule" p:order="20">
+					<property name="actionUrl.requestParameters">
+						<map>
+							<entry key="href"
+								value="@{#ConfigProperties['rice.server.url']}/kr-krad/lookup?methodToCall=start&amp;dataObjectClassName=org.kuali.rice.krms.impl.repository.RuleBo&amp;showMaintenanceLinks=true&amp;returnLocation=@{#ConfigProperties['application.url']}%2Fkc-krad%2FlandingPage%3FviewId%3DKc-LandingPage-RedirectView&amp;hideReturnLink=true" />
+						</map>
+					</property>
+				</bean>
+
+				<bean parent="Kc-Header-IframeMenuAction" p:actionUrl.viewId="Kc-Header-IframeView"
+					p:actionLabel="Context" p:order="30">
+					<property name="actionUrl.requestParameters">
+						<map>
+							<entry key="href"
+								value="@{#ConfigProperties['rice.server.url']}/kr-krad/lookup?methodToCall=start&amp;dataObjectClassName=org.kuali.rice.krms.impl.repository.ContextBo&amp;showMaintenanceLinks=true&amp;returnLocation=@{#ConfigProperties['application.url']}%2Fkc-krad%2FlandingPage%3FviewId%3DKc-LandingPage-RedirectView&amp;hideReturnLink=true" />
+						</map>
+					</property>
+				</bean>
+
+
+				<bean parent="Kc-Header-IframeMenuAction" p:actionUrl.viewId="Kc-Header-IframeView"
+					p:actionLabel="Attribute Definition" p:order="40">
+					<property name="actionUrl.requestParameters">
+						<map>
+							<entry key="href"
+								value="@{#ConfigProperties['rice.server.url']}/kr-krad/lookup?methodToCall=start&amp;dataObjectClassName=org.kuali.rice.krms.impl.repository.KrmsAttributeDefinitionBo&amp;showMaintenanceLinks=true&amp;returnLocation=@{#ConfigProperties['application.url']}%2Fkc-krad%2FlandingPage%3FviewId%3DKc-LandingPage-RedirectView&amp;hideReturnLink=true" />
+						</map>
+					</property>
+				</bean>
+
+				<bean parent="Kc-Header-IframeMenuAction" p:actionUrl.viewId="Kc-Header-IframeView"
+					p:actionLabel="Term" p:order="50">
+					<property name="actionUrl.requestParameters">
+						<map>
+							<entry key="href"
+								value="@{#ConfigProperties['rice.server.url']}/kr-krad/lookup?methodToCall=start&amp;dataObjectClassName=org.kuali.rice.krms.impl.repository.TermBo&amp;showMaintenanceLinks=true&amp;returnLocation=@{#ConfigProperties['application.url']}%2Fkc-krad%2FlandingPage%3FviewId%3DKc-LandingPage-RedirectView&amp;hideReturnLink=true" />
+						</map>
+					</property>
+				</bean>
+
+
+				<bean parent="Kc-Header-IframeMenuAction" p:actionUrl.viewId="Kc-Header-IframeView"
+					p:actionLabel="Term Specification" p:order="60">
+					<property name="actionUrl.requestParameters">
+						<map>
+							<entry key="href"
+								value="@{#ConfigProperties['rice.server.url']}/kr-krad/lookup?methodToCall=start&amp;dataObjectClassName=org.kuali.rice.krms.impl.repository.TermSpecificationBo&amp;showMaintenanceLinks=true&amp;returnLocation=@{#ConfigProperties['application.url']}%2Fkc-krad%2FlandingPage%3FviewId%3DKc-LandingPage-RedirectView&amp;hideReturnLink=true" />
+						</map>
+					</property>
+				</bean>
+
+
+				<bean parent="Kc-Header-IframeMenuAction" p:actionUrl.viewId="Kc-Header-IframeView"
+					p:actionLabel="Category" p:order="70">
+					<property name="actionUrl.requestParameters">
+						<map>
+							<entry key="href"
+								value="@{#ConfigProperties['rice.server.url']}/kr-krad/lookup?methodToCall=start&amp;dataObjectClassName=org.kuali.rice.krms.impl.repository.CategoryBo&amp;showMaintenanceLinks=true&amp;returnLocation=@{#ConfigProperties['application.url']}%2Fkc-krad%2FlandingPage%3FviewId%3DKc-LandingPage-RedirectView&amp;hideReturnLink=true" />
+						</map>
+					</property>
+				</bean>
+
+				<bean parent="Kc-Header-IframeMenuAction" p:actionUrl.viewId="Kc-Header-IframeView"
+					p:actionLabel="KRMS Functions" p:order="80">
+					<property name="actionUrl.requestParameters">
+						<map>
+							<entry key="href"
+								value="@{#ConfigProperties['rice.server.url']}/kr-krad/lookup?methodToCall=start&amp;dataObjectClassName=edu.mit.kc.bo.KrmsFunctions&amp;showMaintenanceLinks=true&amp;returnLocation=@{#ConfigProperties['application.url']}%2Fkc-krad%2FlandingPage%3FviewId%3DKc-LandingPage-RedirectView&amp;hideReturnLink=true" />
+						</map>
+					</property>
+				</bean>
+
+				<bean parent="Kc-Header-IframeMenuAction" p:actionUrl.viewId="Kc-Header-IframeView"
+					p:actionLabel="KRMS Function Params" p:order="90">
+					<property name="actionUrl.requestParameters">
+						<map>
+							<entry key="href"
+								value="@{#ConfigProperties['rice.server.url']}/kr-krad/lookup?methodToCall=start&amp;dataObjectClassName=edu.mit.kc.bo.KrmsFunctionsParams&amp;showMaintenanceLinks=true&amp;returnLocation=@{#ConfigProperties['application.url']}%2Fkc-krad%2FlandingPage%3FviewId%3DKc-LandingPage-RedirectView&amp;hideReturnLink=true" />
+						</map>
+					</property>
+				</bean>
+
+
+			</list>
+		</property>
+	</bean>
+
+	<bean id="Kc-Header-Unit-Group8" parent="Kc-Header-Unit-Group8-parentBean" />
+	<bean id="Kc-Header-Unit-Group8-parentBean" abstract="true"
+		parent="Uif-MenuList" p:headerText="Sap Feeds">
+		<property name="items">
+			<list>
+
+				<bean parent="Uif-MenuAction" p:actionLabel="Sap Feed Maintenance"
+					p:actionUrl.baseUrl="@{#ConfigProperties['application.url']}/kc-pd-krad"
+					p:actionUrl.viewId="SapFeed-DefaultView"
+					p:actionUrl.controllerMapping="/sapFeedsCommon"
+					p:actionUrl.methodToCall="retrieveCollectionPage" p:order="10" />
+
+			</list>
+		</property>
+	</bean>
+
+</beans>

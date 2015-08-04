@@ -1,0 +1,165 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="Workload-Add-Dialog" parent="Uif-DialogGroup" p:retrieveViaAjax="true"
+          p:enterKeyAction="Workload-Add-Button"
+          p:readOnly="@{!canEdit}"
+          p:headerText="Add Contract Administrator" p:refreshWhenChangedPropertyNames="addPersonInfo.tempUserName">
+        <property name="destroyDialogOnHidden" value="true"/>
+        <property name="items">
+            <list>
+                <bean parent="Workload-Simulation-Message"/>
+                <bean parent="Uif-InputField" p:required="true" p:label="Contract Administrator Username"
+                      p:propertyName="addPersonInfo.tempUserName" p:labelLeft="true">
+                    <property name="control">
+                        <bean parent="Uif-TextControl"/>
+                    </property>
+                    <property name="quickfinder">
+                        <bean parent="Uif-QuickFinder" p:returnByScript="true"
+                              p:fieldConversions="personId:addPersonInfo.tempPersonId,fullName:addPersonInfo.tempPersonName,userName:addPersonInfo.tempUserName"
+                              p:dataObjectClassName="org.kuali.coeus.common.framework.person.KcPerson"/>
+                    </property>
+                </bean>
+
+
+                <bean parent="Uif-InputField" p:hidden="@{#form.addPersonInfo.tempPersonId eq ''}"
+                      p:labelLeft="true" p:label="Name"
+                      p:propertyName="addPersonInfo.tempPersonName" p:readOnly="true">
+                </bean>
+
+                <bean parent="Uif-InputField" p:hidden="@{#form.addPersonInfo.tempPersonId eq ''}"
+                      p:labelLeft="true" p:label="Person Id"
+                      p:propertyName="addPersonInfo.tempPersonId" p:readOnly="true">
+                </bean>
+
+
+            </list>
+        </property>
+        <property name="footer.items">
+            <list>
+
+                <bean parent="Uif-DialogDismissButton" p:actionLabel="Cancel"/>
+                <bean id="Workload-Add-Button" parent="Uif-PrimaryActionButton"
+                      p:actionLabel="Add Contract Administrator"
+                      p:methodToCall="addAdministrator"
+                      p:successCallback="Kc.Dialog.closeDialogWithoutError('Workload-Add-Dialog')"
+                      p:refreshId="Workload-Table" p:defaultEnterKeyAction="true"
+                      p:performClientSideValidation="true"/>
+            </list>
+        </property>
+    </bean>
+
+
+    <bean id="Workload-Capacity-Edit" parent="Uif-DialogGroup" p:retrieveViaAjax="true"
+          p:enterKeyAction="Workload-SaveFlex-Button"
+          p:readOnly="@{!canEdit}"
+          p:headerText="@{#form.workloadLineItemEdit.personName}">
+
+        <property name="destroyDialogOnHidden" value="true"/>
+        <property name="items">
+            <list>
+                <bean parent="Workload-Simulation-Message"/>
+                <bean parent="Uif-VerticalBoxSection" p:headerText="Capacity &amp; Flexibility">
+
+                    <property name="header.rightGroup">
+                        <bean parent="Uif-HorizontalBoxGroup" p:additionalCssClasses="well well-sm">
+                            <property name="items">
+                                <list>
+                                    <bean parent="Uif-InputField" p:labelLeft="true" p:label="Total Capacity"
+                                          p:required="true"
+                                          p:propertyName="workloadLineItemEdit.wlCapacity.capacity">
+                                        <property name="validCharactersConstraint">
+                                            <bean parent="IntegerPatternConstraint"/>
+                                        </property>
+                                    </bean>
+                                </list>
+                            </property>
+                        </bean>
+                    </property>
+
+                    <property name="items">
+                        <list>
+                           <ref bean="Workload-Flexibility-Left"/>
+                           <ref bean="Workload-Flexibility-Right"/>
+                        </list>
+                    </property>
+                </bean>
+
+            </list>
+        </property>
+        <property name="footer.items">
+            <list>
+
+                <bean parent="Uif-DialogDismissButton" p:actionLabel="Cancel"/>
+                <bean id="Workload-SaveFlex-Button" parent="Uif-PrimaryActionButton" p:actionLabel="Save Changes"
+                      p:methodToCall="saveFlexCapacity"
+                      p:refreshId="Workload-Table"
+                      p:dialogDismissOption="REQUEST" p:defaultEnterKeyAction="true"
+                      p:performClientSideValidation="true" p:hidden="@{!canEdit}"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Workload-Flexibility-Left" parent="Uif-ListCollectionGroup" p:additionalCssClasses="col-md-6">
+
+        <property name="collectionObjectClass"
+                  value="edu.mit.kc.workloadbalancing.bo.WlFlexibility"/>
+        <property name="propertyName"
+                  value="workloadLineItemEdit.wlflexibilityList"/>
+
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:labelLeft="true"
+                      p:label="@{T(edu.mit.kc.workloadbalancing.util.WorkloadUtils).formatSponsorName(#line.sponsorGroup)}"
+                      p:fieldLabel.renderColon="false"
+                      p:fieldLabel.additionalCssClasses="workload-flexLabel"
+                      p:render="@{#index lt #form.workloadLineItemEdit.flexibilityListHalfIndex}"
+                      p:propertyName="flexibility">
+                    <property name="control">
+                        <bean parent="Uif-SmallTextControl">
+                            <property name="size" value="2"/>
+                        </bean>
+                    </property>
+                    <property name="validCharactersConstraint">
+                        <bean parent="FixedPointPatternConstraint" p:precision="4"
+                              p:scale="2"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+
+    </bean>
+
+    <bean id="Workload-Flexibility-Right" parent="Uif-ListCollectionGroup" p:additionalCssClasses="col-md-6">
+
+        <property name="collectionObjectClass"
+                  value="edu.mit.kc.workloadbalancing.bo.WlFlexibility"/>
+        <property name="propertyName"
+                  value="workloadLineItemEdit.wlflexibilityList"/>
+
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:labelLeft="true"
+                      p:fieldLabel.renderColon="false"
+                      p:fieldLabel.additionalCssClasses="workload-flexLabel"
+                      p:label="@{T(edu.mit.kc.workloadbalancing.util.WorkloadUtils).formatSponsorName(#line.sponsorGroup)}"
+                      p:render="@{#index ge #form.workloadLineItemEdit.flexibilityListHalfIndex}"
+                      p:propertyName="flexibility">
+                    <property name="control">
+                        <bean parent="Uif-SmallTextControl">
+                            <property name="size" value="2"/>
+                        </bean>
+                    </property>
+                    <property name="validCharactersConstraint">
+                        <bean parent="FixedPointPatternConstraint" p:precision="4"
+                              p:scale="2"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+
+    </bean>
+
+</beans>

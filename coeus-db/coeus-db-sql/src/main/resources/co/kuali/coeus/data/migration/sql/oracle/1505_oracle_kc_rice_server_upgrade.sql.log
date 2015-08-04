@@ -1,0 +1,103 @@
+
+1 row created.
+
+
+1 row created.
+
+    (SELECT PERM_ID FROM KRIM_PERM_T WHERE NMSPC_CD = 'KC-SYS' AND NM = 'Open Schema Spy View'),
+     *
+ERROR at line 4:
+ORA-01427: single-row subquery returns more than one row 
+
+
+
+1 row created.
+
+
+1 row updated.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+    VALUES ('KC' || KRIM_ROLE_PERM_ID_S.NEXTVAL,(SELECT ROLE_ID FROM KRIM_ROLE_T WHERE NMSPC_CD = 'KC-UNT' AND ROLE_NM = 'Modify All Dev Proposals'),'KC' || KRIM_PERM_ID_S.CURRVAL,'Y',SYS_GUID(),1)
+                                                        *
+ERROR at line 2:
+ORA-01400: cannot insert NULL into ("KCSO"."KRIM_ROLE_PERM_T"."ROLE_ID") 
+
+
+
+1 row created.
+
+
+Commit complete.
+
+SQL> INSERT INTO KRIM_ROLE_PERM_T (ROLE_PERM_ID,ROLE_ID,PERM_ID,ACTV_IND,OBJ_ID,VER_NBR)
+  2      VALUES ('KC' || KRIM_ROLE_PERM_ID_S.NEXTVAL,(SELECT ROLE_ID FROM KRIM_ROLE_T WHERE NMSPC_CD = 'KC-PD' AND ROLE_NM = 'Modify All Dev Proposals'),'KC' || KRIM_PERM_ID_S.CURRVAL,'Y',SYS_GUID(),1);
+
+1 row created.
+
+SQL> commit;
+
+Commit complete.
+
+SQL> @1505_oracle_kc_upgrade.sql

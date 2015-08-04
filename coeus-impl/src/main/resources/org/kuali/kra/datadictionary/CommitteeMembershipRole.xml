@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="CommitteeMembershipRole" parent="CommitteeMembershipRole-parentBean" />
+    <bean id="CommitteeMembershipRole-parentBean" abstract="true" parent="BusinessObjectEntry">
+        <property name="businessObjectClass" value="org.kuali.coeus.common.committee.impl.bo.CommitteeMembershipRole" />
+		<property name="objectLabel" value="Committee Membership Role" />
+        <property name="inquiryDefinition" >
+            <ref bean="CommitteeMembershipRole-inquiryDefinition" />
+        </property>
+        <property name="lookupDefinition" >
+            <ref bean="CommitteeMembershipRole-lookupDefinition" />
+        </property>
+        <property name="titleAttribute" value="committeeMembershipRoleId" />
+        <property name="attributes" >
+            <list>
+                <ref bean="CommitteeMembershipRole-committeeMembershipRoleId" />
+                <ref bean="CommitteeMembershipRole-committeeMembershipIdFk" />
+                <ref bean="CommitteeMembershipRole-membershipRoleCode" />
+                <ref bean="CommitteeMembershipRole-startDate" />
+                <ref bean="CommitteeMembershipRole-endDate" />
+                <ref bean="CommitteeMembershipRole-versionNumber" />
+            </list>
+        </property>
+    </bean>
+
+    <!-- Attribute Definitions -->
+    <bean id="CommitteeMembershipRole-committeeMembershipRoleId" parent="CommitteeMembershipRole-committeeMembershipRoleId-parentBean" />
+    <bean id="CommitteeMembershipRole-committeeMembershipRoleId-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="committeeMembershipRoleId" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Committee Member Role Id" />
+        <property name="shortLabel" value="Committee Member Role Id" />
+        <property name="maxLength" value="22" />
+        <property name="validationPattern" >
+            <bean parent="NumericValidationPattern" />
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+        <property name="control" >
+      <bean parent="TextControlDefinition" p:size="10"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="10" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="Committee Member Role Id" />
+        <property name="description" value="Committee Member Role Id" />
+    </bean>
+
+    <bean id="CommitteeMembershipRole-committeeMembershipIdFk" parent="CommitteeMembershipRole-committeeMembershipIdFk-parentBean" />
+    <bean id="CommitteeMembershipRole-committeeMembershipIdFk-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="committeeMembershipIdFk" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Committee Membership Id Fk" />
+        <property name="shortLabel" value="Committee Membership Id Fk" />
+        <property name="maxLength" value="22" />
+        <property name="validationPattern" >
+            <bean parent="NumericValidationPattern" />
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+        <property name="control" >
+      <bean parent="TextControlDefinition" p:size="10"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="10" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="Committee Membership Id Fk" />
+        <property name="description" value="Committee Membership Id Fk" />
+    </bean>
+
+    <bean id="CommitteeMembershipRole-membershipRoleCode" parent="CommitteeMembershipRole-membershipRoleCode-parentBean" />
+    <bean id="CommitteeMembershipRole-membershipRoleCode-parentBean" abstract="true" parent="MembershipRole-membershipRoleCode" >
+        <property name="name" value="membershipRoleCode" />
+        <property name="label" value="Committee Membership Role" />
+        <property name="shortLabel" value="Role" />
+        <property name="required" value="true" />
+        <property name="control" >
+      <bean parent="SelectControlDefinition" p:businessObjectClass="org.kuali.coeus.common.committee.impl.bo.MembershipRole" p:valuesFinderClass="org.kuali.coeus.sys.framework.keyvalue.ExtendedPersistableBusinessObjectValuesFinder" p:includeKeyInLabel="false" p:includeBlankRow="false" p:keyAttribute="membershipRoleCode" p:labelAttribute="description"/>
+    </property>
+    <property name="optionsFinder">
+      <bean class="org.kuali.coeus.sys.framework.keyvalue.ExtendedPersistableBusinessObjectValuesFinder">
+        <property name="businessObjectClass" value="org.kuali.coeus.common.committee.impl.bo.MembershipRole"/>
+        <property name="includeKeyInDescription" value="false"/>
+        <property name="includeBlankRow" value="false"/>
+        <property name="keyAttributeName" value="membershipRoleCode"/>
+        <property name="labelAttributeName" value="description"/>
+      </bean>
+    </property>
+    <property name="controlField">
+      <bean parent="Uif-DropdownControl"/>
+        </property>
+    </bean>
+
+    <bean id="CommitteeMembershipRole-startDate" parent="CommitteeMembershipRole-startDate-parentBean" />
+    <bean id="CommitteeMembershipRole-startDate-parentBean" abstract="true" parent="KraAttributeReferenceDummy-genericDate" >
+        <property name="name" value="startDate" />
+        <property name="label" value="Start Date" />
+        <property name="shortLabel" value="Start Date" />
+        <property name="required" value="true" />
+        <property name="summary" value="Start Date" />
+        <property name="description" value="Start Date" />
+    </bean>
+
+    <bean id="CommitteeMembershipRole-endDate" parent="CommitteeMembershipRole-endDate-parentBean" />
+    <bean id="CommitteeMembershipRole-endDate-parentBean" abstract="true" parent="KraAttributeReferenceDummy-genericDate" >
+        <property name="name" value="endDate" />
+        <property name="label" value="End Date" />
+        <property name="shortLabel" value="End Date" />
+        <property name="required" value="true" />
+        <property name="summary" value="End Date" />
+        <property name="description" value="End Date" />
+    </bean>
+
+    <bean id="CommitteeMembershipRole-versionNumber" parent="CommitteeMembershipRole-versionNumber-parentBean" />
+  <bean id="CommitteeMembershipRole-versionNumber-parentBean" abstract="true" parent="AttributeReferenceDummy-versionNumber"/>
+    <!-- Business Object Inquiry Definition -->
+    <bean id="CommitteeMembershipRole-inquiryDefinition" parent="CommitteeMembershipRole-inquiryDefinition-parentBean" />
+  <bean id="CommitteeMembershipRole-InquiryView" parent="CommitteeMembershipRole-InquiryView-parentBean"/>
+    <bean id="CommitteeMembershipRole-inquiryDefinition-parentBean" abstract="true" parent="InquiryDefinition">
+        <property name="title" value="Comm Member Roles Id" />
+        <property name="inquirySections" >
+            <list>
+                <bean parent="InquirySectionDefinition">
+                    <property name="title" value="Committee Membership Role Id" />
+                    <property name="numberOfColumns" value="1" />
+                    <property name="inquiryFields" >
+                        <list>
+              <bean parent="FieldDefinition" p:attributeName="committeeMembershipRoleId" p:forceInquiry="true"/>
+              <bean parent="FieldDefinition" p:attributeName="committeeMembershipIdFk"/>
+              <bean parent="FieldDefinition" p:attributeName="membershipRoleCode"/>
+              <bean parent="FieldDefinition" p:attributeName="startDate"/>
+              <bean parent="FieldDefinition" p:attributeName="endDate"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="CommitteeMembershipRole-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView">
+    <property name="headerText" value="Comm Member Roles Id"/>
+    <property name="dataObjectClassName" value="org.kuali.coeus.common.committee.impl.bo.CommitteeMembershipRole"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-GridSection">
+          <property name="headerText" value="Committee Membership Role Id"/>
+          <property name="layoutManager.numberOfColumns" value="2"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="committeeMembershipRoleId" parent="Uif-DataField"/>
+              <bean p:propertyName="committeeMembershipIdFk" parent="Uif-DataField"/>
+              <bean p:propertyName="membershipRoleCode" parent="Uif-DataField"/>
+              <bean p:propertyName="startDate" parent="Uif-DataField"/>
+              <bean p:propertyName="endDate" parent="Uif-DataField"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Business Object Lookup Definition -->
+    <bean id="CommitteeMembershipRole-lookupDefinition" parent="CommitteeMembershipRole-lookupDefinition-parentBean" />
+  <bean id="CommitteeMembershipRole-LookupView" parent="CommitteeMembershipRole-LookupView-parentBean"/>
+    <bean id="CommitteeMembershipRole-lookupDefinition-parentBean" abstract="true" parent="LookupDefinition">
+        <property name="title" value="Committee Membership Role Lookup" /><property name="defaultSort" >
+      <bean parent="SortDefinition"/>
+        </property>
+        <property name="lookupFields" >
+            <list>
+        <bean parent="FieldDefinition" p:attributeName="committeeMembershipRoleId" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="committeeMembershipIdFk"/>
+        <bean parent="FieldDefinition" p:attributeName="membershipRoleCode"/>
+        <bean parent="FieldDefinition" p:attributeName="startDate"/>
+        <bean parent="FieldDefinition" p:attributeName="endDate"/>
+      </list>
+    </property>
+    <property name="resultFields">
+      <list>
+        <bean parent="FieldDefinition" p:attributeName="committeeMembershipRoleId" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="committeeMembershipIdFk"/>
+        <bean parent="FieldDefinition" p:attributeName="membershipRoleCode"/>
+        <bean parent="FieldDefinition" p:attributeName="startDate"/>
+        <bean parent="FieldDefinition" p:attributeName="endDate"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="CommitteeMembershipRole-LookupView-parentBean" abstract="true" parent="Uif-LookupView">
+    <property name="dataObjectClassName" value="org.kuali.coeus.common.committee.impl.bo.CommitteeMembershipRole"/>
+    <property name="headerText" value="Committee Membership Role Lookup"/>
+    <property name="criteriaFields">
+      <list>
+        <bean p:propertyName="committeeMembershipRoleId" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="committeeMembershipIdFk" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="membershipRoleCode" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="startDate" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="endDate" parent="Uif-LookupCriteriaInputField"/>
+            </list>
+        </property>
+        <property name="resultFields" >
+            <list>
+        <bean p:propertyName="committeeMembershipRoleId" parent="Uif-DataField"/>
+        <bean p:propertyName="committeeMembershipIdFk" parent="Uif-DataField"/>
+        <bean p:propertyName="membershipRoleCode" parent="Uif-DataField"/>
+        <bean p:propertyName="startDate" parent="Uif-DataField"/>
+        <bean p:propertyName="endDate" parent="Uif-DataField"/>
+            </list>
+        </property>
+    </bean>
+</beans>

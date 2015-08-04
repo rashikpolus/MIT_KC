@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="CoiReviewer" parent="CoiReviewer-parentBean" />
+    <bean id="CoiReviewer-parentBean" abstract="true" parent="BusinessObjectEntry">
+        <property name="businessObjectClass" value="org.kuali.kra.coi.CoiReviewer" />
+        <property name="objectLabel" value="Coi Reviewer" />
+        <property name="inquiryDefinition" >
+            <ref bean="CoiReviewer-inquiryDefinition" />
+        </property>
+        <property name="lookupDefinition" >
+            <ref bean="CoiReviewer-lookupDefinition" />
+        </property>
+        <property name="titleAttribute" value="coiReviewer" />
+        <property name="attributes" >
+            <list>
+                <ref bean="CoiReviewer-reviewerCode" />
+                <ref bean="CoiReviewer-description" />
+                <ref bean="CoiReviewer-versionNumber" />
+            </list>
+        </property>
+    </bean>
+
+    <!-- Attribute Definitions -->
+    <bean id="CoiReviewer-reviewerCode" parent="CoiReviewer-reviewerCode-parentBean" />
+    <bean id="CoiReviewer-reviewerCode-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="reviewerCode" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Reviewer Code" />
+        <property name="shortLabel" value="Reviewer Code" />
+        <property name="maxLength" value="3" />
+	    <property name="validationPattern" >
+    	  <bean parent="AlphaNumericValidationPattern" />
+    	</property>
+    <property name="validCharactersConstraint">
+      <bean parent="AlphaNumericPatternConstraint"/>
+    </property>
+        <property name="control" >
+      <bean parent="TextControlDefinition" p:size="3"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="3" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="Reviewer Code" />
+        <property name="description" value="Reviewer Code" />
+    </bean>
+
+    <bean id="CoiReviewer-description" parent="CoiReviewer-description-parentBean" />
+    <bean id="CoiReviewer-description-parentBean" parent="KraAttributeReferenceDummy-description"/>
+    <bean id="CoiReviewer-versionNumber" parent="CoiReviewer-versionNumber-parentBean" />
+  <bean id="CoiReviewer-versionNumber-parentBean" abstract="true" parent="AttributeReferenceDummy-versionNumber"/>
+    <!-- Business Object Inquiry Definition -->
+    <bean id="CoiReviewer-inquiryDefinition" parent="CoiReviewer-inquiryDefinition-parentBean" />
+  <bean id="CoiReviewer-InquiryView" parent="CoiReviewer-InquiryView-parentBean"/>
+    <bean id="CoiReviewer-inquiryDefinition-parentBean" abstract="true" parent="InquiryDefinition">
+        <property name="title" value="Reviewer Code" />
+        <property name="inquirySections" >
+            <list>
+                <bean parent="InquirySectionDefinition">
+                    <property name="title" value="Reviewer Code" />
+                    <property name="numberOfColumns" value="1" />
+                    <property name="inquiryFields" >
+                        <list>
+              <bean parent="FieldDefinition" p:attributeName="reviewerCode" p:forceInquiry="true"/>
+              <bean parent="FieldDefinition" p:attributeName="description"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="CoiReviewer-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView">
+    <property name="headerText" value="Reviewer Code"/>
+    <property name="dataObjectClassName" value="org.kuali.kra.coi.CoiReviewer"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-GridSection">
+          <property name="headerText" value="Reviewer Code"/>
+          <property name="layoutManager.numberOfColumns" value="2"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="reviewerCode" parent="Uif-DataField"/>
+              <bean p:propertyName="description" parent="Uif-DataField"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Business Object Lookup Definition -->
+    <bean id="CoiReviewer-lookupDefinition" parent="CoiReviewer-lookupDefinition-parentBean" />
+  <bean id="CoiReviewer-LookupView" parent="CoiReviewer-LookupView-parentBean"/>
+    <bean id="CoiReviewer-lookupDefinition-parentBean" abstract="true" parent="LookupDefinition">
+        <property name="title" value="Coi Reviewer Lookup" /><property name="defaultSort" >
+      <bean parent="SortDefinition"/>
+        </property>
+        <property name="lookupFields" >
+            <list>
+        <bean parent="FieldDefinition" p:attributeName="reviewerCode" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="description"/>
+      </list>
+    </property>
+    <property name="resultFields">
+      <list>
+        <bean parent="FieldDefinition" p:attributeName="reviewerCode" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="description"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="CoiReviewer-LookupView-parentBean" abstract="true" parent="Uif-LookupView">
+    <property name="dataObjectClassName" value="org.kuali.kra.coi.CoiReviewer"/>
+    <property name="headerText" value="Coi Reviewer Lookup"/>
+    <property name="criteriaFields">
+      <list>
+        <bean p:propertyName="reviewerCode" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="description" parent="Uif-LookupCriteriaInputField"/>
+            </list>
+        </property>
+        <property name="resultFields" >
+            <list>
+        <bean p:propertyName="reviewerCode" parent="Uif-DataField"/>
+        <bean p:propertyName="description" parent="Uif-DataField"/>
+            </list>
+        </property>
+    </bean>
+</beans>

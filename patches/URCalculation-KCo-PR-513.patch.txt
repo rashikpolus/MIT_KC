@@ -1,0 +1,144 @@
+From 5f27596264979828990cab9f9a6f75c04ff1b752 Mon Sep 17 00:00:00 2001
+From: Gayathri Athreya <gathreya@email.arizona.edu>
+Date: Mon, 8 Jun 2015 14:08:42 -0700
+Subject: [PATCH] RESKC-524: Fixing non personnel underrecovery rate
+ calculation. As a user I need to create a budget with a reduced MTDC rate of
+ 10% 'de minimus' rate for an NSF submission. My institution needs to capture
+ the under recovered F&A, so I must set the Budget F&A Rate Type to MTDC (and
+ manually set the rate to 10% as the applied rate) and set the UR Rate Type to
+ FUNSN (which will apply the 56% F&A rate on Salaries and 10% F&A rate on
+ Materials and Services). This follows my institute policy of capturing the UR
+ on the salary&applied eb/fringe/vacation. Steps to reproduce: Create a
+ proposal in Unit 000001 (rates modified) activity type = research Create a
+ budget Budget Settings: select F&A Rate type of MTDC Select UR Rate Type of
+ FUNSN Rates Screen: Edit the Applied rate for MTDC to %10 Review FUNSN rates
+ 56% for Salaries; 10% for M&S Add a person to the Budget; enter a salary
+ amount for the person; apply the person to the first budget period. Add a
+ non-personnel line item, example Travel. for $10,000. Save. Expected Results:
+ The Personnel salary will generate Under Recovered F&A (Difference of the
+ full 56% FUNSN Salary rate less the 10% reduced MTDC rate). The Non-personnel
+ line item will NOT generate UR, because the applied MTDC rate and the
+ standard FUNSN M&S rate are equal. Current Result: Personnel calculate UR
+ correctly. Non-Personnel do NOT calculate correctly and are generating UR. It
+ appears that the first FUNSN rate for Salaries is being applied.
+
+---
+ .../impl/calculator/AbstractBudgetCalculator.java  | 39 +++++++++++++++++-----
+ 1 file changed, 31 insertions(+), 8 deletions(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/common/budget/impl/calculator/AbstractBudgetCalculator.java b/coeus-impl/src/main/java/org/kuali/coeus/common/budget/impl/calculator/AbstractBudgetCalculator.java
+index c354fed..d7a5771 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/common/budget/impl/calculator/AbstractBudgetCalculator.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/common/budget/impl/calculator/AbstractBudgetCalculator.java
+@@ -19,6 +19,7 @@
+ package org.kuali.coeus.common.budget.impl.calculator;
+ 
+ import org.apache.commons.collections4.CollectionUtils;
++import org.apache.commons.lang3.StringUtils;
+ import org.kuali.coeus.common.budget.api.rate.RateClassType;
+ import org.kuali.coeus.common.budget.framework.calculator.*;
+ import org.kuali.coeus.common.budget.framework.query.*;
+@@ -42,8 +43,11 @@
+ import org.kuali.coeus.common.budget.framework.personnel.BudgetPersonnelCalculatedAmount;
+ import org.kuali.coeus.common.budget.framework.personnel.BudgetPersonnelDetails;
+ import org.kuali.coeus.propdev.impl.core.DevelopmentProposal;
++import org.kuali.kra.infrastructure.Constants;
+ import org.kuali.rice.core.api.CoreApiServiceLocator;
+ import org.kuali.rice.core.api.datetime.DateTimeService;
++import org.kuali.rice.coreservice.framework.parameter.ParameterConstants;
++import org.kuali.rice.coreservice.framework.parameter.ParameterService;
+ import org.kuali.rice.krad.service.BusinessObjectService;
+ 
+ import java.sql.Date;
+@@ -55,7 +59,8 @@
+  * Base class for <code>LineItemCalculator</code> and <code>PersonnelLineItemCalculator</code>.
+  */
+ public abstract class AbstractBudgetCalculator {
+-    private static final String UNDER_REECOVERY_RATE_TYPE_CODE = "1";
++    private static final String PERSONNEL_UNDERRECOVERY_RATE_TYPE_CODE = "1";
++    public static final String NON_PERSONNEL_UNDERRECOVERY_RATE_TYPE_CODE = "2";
+     private BusinessObjectService businessObjectService;
+     private DateTimeService dateTimeService;
+     protected Budget budget;
+@@ -66,7 +71,7 @@
+     private QueryList<ValidCeRateType> infltionValidCalcCeRates;
+     private QueryList<BudgetRate> underrecoveryRates;
+     private QueryList<BudgetRate> inflationRates;
+-    private BudgetCalculationService budgetCalcultionService;
++    private BudgetCalculationService budgetCalculationService;
+ 
+     /**
+      * 
+@@ -79,7 +84,7 @@ public AbstractBudgetCalculator(Budget budget, BudgetLineItemBase budgetLineItem
+         this.budgetLineItem = budgetLineItem;
+         businessObjectService = KcServiceLocator.getService(BusinessObjectService.class);
+         dateTimeService = CoreApiServiceLocator.getDateTimeService();
+-        budgetCalcultionService = KcServiceLocator.getService(BudgetCalculationService.class);
++        budgetCalculationService = KcServiceLocator.getService(BudgetCalculationService.class);
+         breakupIntervals = new ArrayList<BreakUpInterval>();
+     }
+     /**
+@@ -162,7 +167,7 @@ private QueryList filterRates(List rates, Date startDate, Date endDate, String a
+             // Add underrecovery rates
+             if(!isUndercoveryMatchesOverhead()){
+                 Equals equalsRC = new Equals("rateClassCode", budget.getUrRateClassCode());
+-                Equals equalsRT = new Equals("rateTypeCode", UNDER_REECOVERY_RATE_TYPE_CODE);
++                Equals equalsRT = new Equals("rateTypeCode", getUnderRecoveryRateTypeCode());
+                 Equals equalsOnOff = new Equals("onOffCampusFlag", budgetLineItem.getOnOffCampusFlag());
+                 And RCandRT = new And(equalsRC, equalsRT);
+                 And RCRTandOnOff = new And(RCandRT, equalsOnOff);
+@@ -543,10 +548,11 @@ protected void createBreakUpInterval() {
+                     breakUpInterval.setBudgetProposalLaRates(qlBreakupPropLARates);
+                     breakupIntervals.add(breakUpInterval);
+                 }
++                String underRecoveryRateTypeCode = getUnderRecoveryRateTypeCode();
+                 // Set the URRates if required
+-                if (!isUndercoveryMatchesOverhead() && hasValidUnderRecoveryRate()) {
++                if (!isUndercoveryMatchesOverhead() && hasValidUnderRecoveryRate(underRecoveryRateTypeCode)) {
+                     Equals equalsRC = new Equals("rateClassCode", budget.getUrRateClassCode());
+-                    Equals equalsRT = new Equals("rateTypeCode", UNDER_REECOVERY_RATE_TYPE_CODE);
++                    Equals equalsRT = new Equals("rateTypeCode", underRecoveryRateTypeCode);
+                     Equals equalsOnOff = new Equals("onOffCampusFlag", budgetLineItem.getOnOffCampusFlag());
+                     And RCandRT = new And(equalsRC, equalsRT);
+                     And RCRTandOnOff = new And(RCandRT, equalsOnOff);
+@@ -569,9 +575,16 @@ protected void createBreakUpInterval() {
+         }
+     }
+ 
+-    private boolean hasValidUnderRecoveryRate() {
++    private String getUnderRecoveryRateTypeCode() {
++        return StringUtils.equalsIgnoreCase(getPersonnelBudgetCategoryTypeCode(), budgetLineItem.getCostElementBO().getBudgetCategory().getBudgetCategoryTypeCode()) ?
++                PERSONNEL_UNDERRECOVERY_RATE_TYPE_CODE : NON_PERSONNEL_UNDERRECOVERY_RATE_TYPE_CODE;
++    }
++
++    private boolean hasValidUnderRecoveryRate(String underRecoveryRateTypeCode) {
+         Equals equalsRC = new Equals("rateClassCode", budget.getUrRateClassCode());
+-        Equals equalsRT = new Equals("rateTypeCode", UNDER_REECOVERY_RATE_TYPE_CODE);
++
++
++        Equals equalsRT = new Equals("rateTypeCode", underRecoveryRateTypeCode);
+         Equals equalsRCT = new Equals("rateClassType", RateClassType.OVERHEAD.getRateClassType());
+         And RCandRT = new And(equalsRC, equalsRT);
+         And RCRTandRCT = new And(RCandRT, equalsRCT);
+@@ -582,6 +595,13 @@ private boolean hasValidUnderRecoveryRate() {
+         return !validCeRateTypes.filter(RCRTandRCT).isEmpty();
+     }
+ 
++    public String getPersonnelBudgetCategoryTypeCode() {
++        return getParameterService().getParameterValueAsString(Constants.MODULE_NAMESPACE_BUDGET, ParameterConstants.DOCUMENT_COMPONENT,Constants.BUDGET_CATEGORY_TYPE_PERSONNEL);
++    }
++
++
++
++
+     /**
+      * Use the combined &amp; sorted Prop &amp; LA rates to create Boundary objects. Each Boundary will contain start date &amp; end date. Check
+      * whether any rate changes, and break at this point to create a new boundary.
+@@ -951,4 +971,7 @@ protected BudgetRatesService getBudgetRateService() {
+     }
+ 
+ 
++    public ParameterService getParameterService() {
++        return KcServiceLocator.getService(ParameterService.class);
++    }
+ }

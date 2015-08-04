@@ -1,0 +1,74 @@
+From 5140c119bb88e8c1d154dc2f78b891d4abf1509e Mon Sep 17 00:00:00 2001
+From: Gayathri <gathreya@email.arizona.edu>
+Date: Fri, 29 May 2015 16:20:15 -0700
+Subject: [PATCH] =?UTF-8?q?RESKC-483:=20Hierarchy=20copy=20fixes=20"Award?=
+ =?UTF-8?q?=20Copy=20+=20Copy=20as=20child=20of"=20and=20"New=20Child=20+?=
+ =?UTF-8?q?=20based=20on=20copy=20from=20parent"=20and=20"selected=20award?=
+ =?UTF-8?q?"=20are=20also=20copying=20the=20budget.=20Create=20an=20Award?=
+ =?UTF-8?q?=20Hierarchy=20Structure=20Test=201:=20New=20Child=20section=20?=
+ =?UTF-8?q?>=20click=20button=20to=20=E2=80=98copy=20from=20parent?=
+ =?UTF-8?q?=E2=80=99,=20then=20click=20[create]=201.=09Start=20with=20an?=
+ =?UTF-8?q?=20existing=20Award=20with=20T&M=20doc.=20(Example:=20000073-00?=
+ =?UTF-8?q?001:2533529)=20(this=20root=20node=20award=20had=20an=20award?=
+ =?UTF-8?q?=20budget)=202.=09Award=20Actions=20>=20Show=20Hierarchy=20Acti?=
+ =?UTF-8?q?ons=20panel=203.=09Expand=20the=20node=20detail=20by=20clicking?=
+ =?UTF-8?q?=20on=20the=20=20beside=20the=20award-node=20number=204.=09In?=
+ =?UTF-8?q?=20the=20New=20Child=20section=20>=20click=20button=20to=20?=
+ =?UTF-8?q?=E2=80=98copy=20from=20parent=E2=80=99,=20then=20click=20[creat?=
+ =?UTF-8?q?e]=20at=20the=20end=20of=20the=20row;=20A=20new=20award=20in=20?=
+ =?UTF-8?q?=E2=80=98initiated=E2=80=99=20status=20will=20open=20in=20the?=
+ =?UTF-8?q?=20screen.=20(my=20test=20=3D=20000073-00002)=205.=09Complete?=
+ =?UTF-8?q?=20the=20required=20fields=20to=20submit:=20a.=09Award=20tab=20?=
+ =?UTF-8?q?=E2=80=93=20i.=09Description=20ii.=09Details=20&=20Dates=20sect?=
+ =?UTF-8?q?ion:=20Change=20title=20to=20make=20this=20easier=20to=20locate?=
+ =?UTF-8?q?;=20otherwise=20all=20fields=20from=20parent=20are=20pre-filled?=
+ =?UTF-8?q?.-save=20Award=20tab=20b.=09Payments/Reports/Terms=20(BUG=3F)?=
+ =?UTF-8?q?=20I=20had=20to=20add=20a=20report=20to=20get=20past=20the=20er?=
+ =?UTF-8?q?ror=20validation.=20But=20often,=20we=20don=E2=80=99t=20want=20?=
+ =?UTF-8?q?to=20have=20reporting=20requirements=20at=20the=20child=20nodes?=
+ =?UTF-8?q?=20=E2=80=93=20so=20no=20types=20should=20be=20required.=20(sep?=
+ =?UTF-8?q?arate=20JIRA=20after=20more=20testing.)=20c.=09Award=20Actions?=
+ =?UTF-8?q?=20Tab=20>=20submit=20Even=20prior=20to=20submit,=20I=20opened?=
+ =?UTF-8?q?=20the=20Budget=20Versions=20tab=20and=20found=20that=20the=20b?=
+ =?UTF-8?q?udget=20version=20from=20the=20root=20node=20were=20copied=20in?=
+ =?UTF-8?q?to=20this=20-00002=20child=20node.=20Test=202:=20Create=20new?=
+ =?UTF-8?q?=20child=20node:=20Hierarchy=20Actions=20>=20New=20Child=20>=20?=
+ =?UTF-8?q?Based=20on=20Selected=20Award=20=3D=20child=20node=202=20(same?=
+ =?UTF-8?q?=20as=20open=20award=20node=20w/award=20budget)=201.=09Search?=
+ =?UTF-8?q?=20and=20open=20award=20*73-00002=20(this=20node=20has=20an=20a?=
+ =?UTF-8?q?ward=20budget=20copied=20from=20the=20root=20node)=202.=09Award?=
+ =?UTF-8?q?=20Actions=20>=20Show=20Hierarchy=20Actions=20panel=203.=09Clic?=
+ =?UTF-8?q?k=20the=20green=20=20beside=20the=20root=20node=20-0000001=20to?=
+ =?UTF-8?q?=20expand=20the=20award=20view=204.=09Click=20the=20green=20=20?=
+ =?UTF-8?q?beside=20the=20child=20-00002=20node=20to=20expand=20the=20copy?=
+ =?UTF-8?q?=20options=205.=09Click=20the=20button=20beside=20=E2=80=9Csele?=
+ =?UTF-8?q?cted=20award=E2=80=9D=20and=20then=20click=20the=20drop-down=20?=
+ =?UTF-8?q?to=20select=20the=20*73-00002=20node=20(same=20as=20open)=20the?=
+ =?UTF-8?q?n=20[create]=206.=09The=20new=20-00003=20award=20node=20will=20?=
+ =?UTF-8?q?present=20in=20the=20screen=20to=20be=20maintained.=20a.=09At?=
+ =?UTF-8?q?=20this=20point,=20you=20can=20click=20on=20Budget=20Versions?=
+ =?UTF-8?q?=20and=20confirm=20that=20versions=20were=20copied=20from=20the?=
+ =?UTF-8?q?=20selected=20node.=207.=09Award=20Actions=20>=20Submit.=208.?=
+ =?UTF-8?q?=09Wait=20for=20processing=20to=20complete=209.=09Click=20on=20?=
+ =?UTF-8?q?Budget=20Versions=20screen.=2010.=09Click=20[open]=20on=20the?=
+ =?UTF-8?q?=20rebudget=20version=20that=20is=20still=20in=20progress?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ .../org/kuali/kra/award/awardhierarchy/AwardHierarchyServiceImpl.java    | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/award/awardhierarchy/AwardHierarchyServiceImpl.java b/coeus-impl/src/main/java/org/kuali/kra/award/awardhierarchy/AwardHierarchyServiceImpl.java
+index 907591a..a1765e2 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/award/awardhierarchy/AwardHierarchyServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/award/awardhierarchy/AwardHierarchyServiceImpl.java
+@@ -379,6 +379,7 @@ Award copyAward(Award award, String nextAwardNumber) {
+             award.setAwardDocument(document);
+             copyAwardAmountDateInfo(award, newAward);
+             award.setBudgets(new ArrayList<>());
++            newAward.setCurrentVersionBudgets(new ArrayList<>());
+ 
+             List<AwardSpecialReview> awardSpecialReviews = new ArrayList<AwardSpecialReview>();
+             newAward.setSpecialReviews(awardSpecialReviews);

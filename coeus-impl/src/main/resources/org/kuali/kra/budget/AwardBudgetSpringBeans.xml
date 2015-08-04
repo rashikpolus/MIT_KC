@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+    <context:annotation-config />
+
+    <bean id="budgetCalculationService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="budgetCalculationService" />
+    </bean>
+    
+    <bean id="budgetDistributionService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="budgetDistributionService" />
+    </bean>
+    
+    <bean id="kcDocumentRejectionService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="kcDocumentRejectionService" />
+    </bean>
+
+    <bean id="budgetRatesService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="budgetRatesService" />
+    </bean>
+    
+    <bean id="pessimisticLockService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="pessimisticLockService" />
+    </bean>  
+    
+    <bean id="fiscalYearMonthService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="fiscalYearMonthService" />
+    </bean>     
+
+	<!-- temporary fix while finishing budget refactoring -->
+	<bean id="budgetService" parent="awardBudgetService"/>
+    <bean id="awardBudgetService"  class="org.kuali.kra.award.budget.AwardBudgetServiceImpl">
+        <property name="parameterService" ref="parameterService" />
+        <property name="businessObjectService" ref="businessObjectService" />
+        <property name="documentService" ref="documentService" />
+        <property name="budgetSummaryService" ref="budgetSummaryService" />
+        <property name="budgetCalculationService" ref="budgetCalculationService" />
+        <property name="awardBudgetCalculationService" ref="awardBudgetCalculationService" />
+        <property name="versionHistoryService" ref="versionHistoryService" />
+        <property name="awardService" ref="awardService" />
+        <property name="dataObjectService" ref="dataObjectService"/>
+        <property name="legacyDataAdapter" ref="legacyDataAdapter"/>
+    </bean>
+    
+    <bean id="awardBudgetCalculationService" class="org.kuali.kra.award.budget.calculator.AwardBudgetCalculationServiceImpl">
+        <property name="businessObjectService" ref="businessObjectService" />
+        <property name="budgetDistributionService" ref="budgetDistributionService" />
+    </bean>
+          
+    <!-- Award Budget Task Authorizers -->
+    
+    <bean id="parentBudgetAuthorizer" abstract="true">
+        <property name="unitAuthorizationService" ref="unitAuthorizationService" />
+        <property name="kraAuthorizationService" ref="kcAuthorizationService" />
+    </bean>
+    
+    <bean id="awardBudgetTaskAuthorizers" class="org.kuali.coeus.common.framework.auth.task.TaskAuthorizerGroup">
+        <property name="groupName" value="awardBudget" />
+        <property name="taskAuthorizers">
+            <list>
+                <bean class="org.kuali.kra.award.budget.document.authorizer.ModifyAwardBudgetAuthorizer" parent="parentBudgetAuthorizer">
+                    <property name="taskName" value="modifyBudget" />
+                    <property name="kraWorkflowService" ref="kcWorkflowService" />
+                </bean>
+                <bean class="org.kuali.kra.award.budget.document.authorizer.ViewAwardBudgetAuthorizer" parent="parentBudgetAuthorizer">
+                    <property name="taskName" value="viewBudget" />
+                </bean>
+                <bean class="org.kuali.kra.award.budget.document.authorizer.SubmitAwardBudgetAuthorizer" parent="parentBudgetAuthorizer">
+                    <property name="taskName" value="submitToWorkflow" />
+                    <property name="kraWorkflowService" ref="kcWorkflowService" />
+                </bean>
+                <bean class="org.kuali.kra.award.budget.document.authorizer.ApproveAwardBudgetAuthorizer" parent="parentBudgetAuthorizer">
+                    <property name="taskName" value="approveAwardBudget" />
+                    <property name="kraWorkflowService" ref="kcWorkflowService" />
+                </bean>
+                <bean class="org.kuali.kra.award.budget.document.authorizer.ApproveAwardBudgetAuthorizer" parent="parentBudgetAuthorizer">
+                    <property name="taskName" value="disapproveAwardBudget" />
+                    <property name="kraWorkflowService" ref="kcWorkflowService" />
+                </bean>
+                <bean class="org.kuali.kra.award.budget.document.authorizer.PostAwardBudgetAuthorizer" parent="parentBudgetAuthorizer">
+                    <property name="taskName" value="postAwardBudget" />
+                </bean>
+                <bean class="org.kuali.kra.award.budget.document.authorizer.ToggleAwardBudgetStatusAuthorizer" parent="parentBudgetAuthorizer">
+                    <property name="taskName" value="toggleAwardBudgetStatus" />
+                </bean>
+                <bean class="org.kuali.kra.award.budget.document.authorizer.RejectAwardBudgetAuthorizer" parent="parentBudgetAuthorizer">
+                    <property name="taskName" value="rejectBudget" />
+                    <property name="requiresWritableDoc" value="true"/>
+                </bean>
+                <bean class="org.kuali.kra.award.budget.document.authorizer.CancelAwardBudgetAuthorizer" parent="parentBudgetAuthorizer">
+                    <property name="taskName" value="cancelBudget" />
+                    <property name="requiresWritableDoc" value="true"/>
+                    <property name="kraDocumentRejectionService" ref="kcDocumentRejectionService"/>
+                </bean>  
+                <bean class="org.kuali.kra.award.budget.document.authorizer.ViewAwardBudgetSalariesAuthorizer" parent="parentBudgetAuthorizer">
+                    <property name="taskName" value="viewSalaries" />
+                </bean>
+            </list>
+        </property>
+    </bean>
+    
+	<bean id="awardBudgetFactBuilderService" class="org.kuali.kra.award.budget.service.impl.AwardBudgetFactBuilderServiceImpl">
+		  <property name="documentService" ref="documentService" />
+	</bean>
+
+</beans>

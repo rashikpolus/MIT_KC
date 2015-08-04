@@ -1,0 +1,29 @@
+From 0562a80508f7fd8783306267106fb7e93a3e9591 Mon Sep 17 00:00:00 2001
+From: Gayathri Athreya <gathreya@email.arizona.edu>
+Date: Tue, 23 Jun 2015 13:36:49 -0700
+Subject: [PATCH] RESKC-559: Do not create pessimistic locks in view mode.
+ Steps: Open proposal from loolup in view mode. Without closing proposal, go
+ to pessimistic locks lookup and search. See the proposal in the lookup.
+
+---
+ .../impl/auth/ProposalDevelopmentDocumentViewAuthorizer.java       | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/auth/ProposalDevelopmentDocumentViewAuthorizer.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/auth/ProposalDevelopmentDocumentViewAuthorizer.java
+index 20996a4..d556358 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/auth/ProposalDevelopmentDocumentViewAuthorizer.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/auth/ProposalDevelopmentDocumentViewAuthorizer.java
+@@ -131,7 +131,12 @@ public boolean canEditGroup(View view, ViewModel model, Group group, String grou
+ 
+     @Override
+     public boolean canEditView(View view, ViewModel model, Person user) {
+-       return super.canEditView(view, model, user) && userHasLock(user, model);
++        ProposalDevelopmentDocumentForm proposalDevelopmentDocumentForm = (ProposalDevelopmentDocumentForm) model;
++        if(!proposalDevelopmentDocumentForm.isViewOnly()) {
++            return super.canEditView(view, model, user) && userHasLock(user, model);
++        }
++
++        return false;
+     }
+ 
+     public boolean userHasLock(Person user, ViewModel model) {

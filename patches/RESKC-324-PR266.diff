@@ -1,0 +1,166 @@
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/sys/impl/workflow/KcDocumentRejectionServiceImpl.java b/coeus-impl/src/main/java/org/kuali/coeus/sys/impl/workflow/KcDocumentRejectionServiceImpl.java
+index fd23821..56cfaf7 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/sys/impl/workflow/KcDocumentRejectionServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/sys/impl/workflow/KcDocumentRejectionServiceImpl.java
+@@ -26,6 +26,9 @@
+ import org.kuali.rice.kew.api.doctype.DocumentTypeService;
+ import org.kuali.rice.kew.api.doctype.RoutePath;
+ import org.kuali.rice.kew.api.document.WorkflowDocumentService;
++import org.kuali.rice.kew.api.exception.InvalidActionTakenException;
++import org.kuali.rice.kew.routeheader.DocumentRouteHeaderValue;
++import org.kuali.rice.kew.routeheader.service.RouteHeaderService;
+ import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.beans.factory.annotation.Qualifier;
+ import org.springframework.stereotype.Component;
+@@ -38,6 +41,11 @@
+     private static final Log LOG = LogFactory.getLog(KcDocumentRejectionServiceImpl.class);
+ 
+     @Autowired
++    @Qualifier("routeHeaderService")
++    private RouteHeaderService routeHeaderService;
++
++
++    @Autowired
+     @Qualifier("documentTypeService")
+     private DocumentTypeService documentTypeService;
+ 
+@@ -57,6 +65,13 @@ public void reject(WorkflowDocument document, String reason, String principalId,
+         }
+ 
+         document.returnToPreviousNode(reason, nodeName);
++        try {
++            DocumentRouteHeaderValue routeHeader = routeHeaderService.getRouteHeader(document.getDocumentId());
++            routeHeader.markDocumentSaved();
++            routeHeaderService.saveRouteHeader(routeHeader);
++        } catch (InvalidActionTakenException e) {
++           throw new RuntimeException(e);
++        }
+         if (appDocStatus != null) {
+             if( LOG.isDebugEnabled() ) {
+                 LOG.debug( String.format( "Setting application document status of document %s to %s", document.getDocumentId(), appDocStatus));
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/sys/impl/workflow/KcWorkflowServiceImpl.java b/coeus-impl/src/main/java/org/kuali/coeus/sys/impl/workflow/KcWorkflowServiceImpl.java
+index 911a217..75b3323 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/sys/impl/workflow/KcWorkflowServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/sys/impl/workflow/KcWorkflowServiceImpl.java
+@@ -25,10 +25,7 @@
+ import org.kuali.rice.kew.api.KewApiConstants;
+ import org.kuali.rice.kew.api.WorkflowDocument;
+ import org.kuali.rice.kew.api.WorkflowDocumentFactory;
+-import org.kuali.rice.kew.api.action.ActionRequest;
+-import org.kuali.rice.kew.api.action.ActionRequestPolicy;
+-import org.kuali.rice.kew.api.action.RoutingReportCriteria;
+-import org.kuali.rice.kew.api.action.WorkflowDocumentActionsService;
++import org.kuali.rice.kew.api.action.*;
+ import org.kuali.rice.kew.api.actionlist.ActionListService;
+ import org.kuali.rice.kew.api.document.DocumentDetail;
+ import org.kuali.rice.kew.api.document.WorkflowDocumentService;
+@@ -45,7 +42,7 @@
+  */
+ @Component("kcWorkflowService")
+ public class KcWorkflowServiceImpl implements KcWorkflowService {
+-    static Log LOG = LogFactory.getLog(KcWorkflowService.class);
++    private static final Log LOG = LogFactory.getLog(KcWorkflowService.class);
+ 
+     @Autowired
+     @Qualifier("workflowDocumentActionsService")
+@@ -59,11 +56,18 @@
+     @Qualifier("actionListService")
+     protected ActionListService actionListService;
+ 
++    private static final List<String> approvalCodes = new ArrayList<>();
++
++    static {
++        approvalCodes.add(ActionRequestType.COMPLETE.getCode());
++        approvalCodes.add(ActionRequestType.APPROVE.getCode());
++    }
++
+     @Override
+     public boolean hasWorkflowPermission(String userId, Document doc) {
+         boolean hasPermission = false;
+         WorkflowDocument workflowDoc = getWorkflowDocument(doc);
+-        if (workflowDoc != null && isInWorkflow(doc)) {
++        if (workflowDoc != null && !isInitiated(doc)) {
+             String routeHeaderId = workflowDoc.getDocumentId();
+             hasPermission = workflowDocumentActionsService.isUserInRouteLog(routeHeaderId, userId, true);
+         }
+@@ -103,7 +107,15 @@ public boolean isInWorkflow(Document doc) {
+         }
+         return isInWorkflow;
+     }
+-    
++
++    public boolean isInitiated(Document doc) {
++        boolean isInitiated = false;
++        WorkflowDocument workflowDoc = getWorkflowDocument(doc);
++        if (workflowDoc != null) {
++            isInitiated = workflowDoc.isInitiated();
++        }
++        return isInitiated;
++    }
+     /**
+      * Get the corresponding workflow document.  
+      * @param doc the document
+@@ -128,10 +140,7 @@ protected WorkflowDocument getWorkflowDocument(Document doc) {
+      
+     /**
+      * This method gets the workflow document using the given principalId.
+-     * 
+-     * @param doc The document you want the workflow document for.
+-     * @param principalId The principalId to use getting the document.  This impacts the return values for isApprovalRequested, etc.
+-     * @return
++     *
+      */
+     protected WorkflowDocument getWorkflowDocument(Document doc, String principalId) {
+         return WorkflowDocumentFactory.loadDocument(principalId, doc.getDocumentHeader().getWorkflowDocument().getDocumentId());
+@@ -160,7 +169,7 @@ public boolean isUserActionRequested(Document doc, String principalId) {
+     
+     @Override
+     public boolean isDocumentOnNode(Document document,String nodeName) {
+-        boolean result = false;
++        boolean result;
+         try {
+             result = document != null && document.getDocumentHeader().getWorkflowDocument().getNodeNames().contains(nodeName);
+             return result;
+@@ -172,7 +181,7 @@ public boolean isDocumentOnNode(Document document,String nodeName) {
+     
+     @Override
+     public boolean isCurrentNode(Document document, String nodeName){
+-        boolean result = false;
++        boolean result;
+         try {
+             result = document != null && document.getDocumentHeader().getWorkflowDocument().getCurrentNodeNames().contains(nodeName);
+             return result;
+@@ -215,7 +224,7 @@ public boolean isUserRouteRespRequestRecipient(Document document, String princip
+     @Override
+     public boolean isFinalApproval(WorkflowDocument workflowDoc) {       
+         RoutingReportCriteria.Builder reportCriteriaBuilder = RoutingReportCriteria.Builder.createByDocumentId(workflowDoc.getDocumentId());
+-        Set<String> approvalNodes = new HashSet<String>();
++        Set<String> approvalNodes = new HashSet<>();
+         String currentRequest = null;
+         
+         DocumentDetail results1 = workflowDocumentActionsService.executeSimulation(reportCriteriaBuilder.build());
+@@ -267,9 +276,6 @@ public boolean requestAlreadyApproved(WorkflowDocument workflowDoc, ActionReques
+        
+     /**
+      * Checks to see if the user has asked to receive future requests or not.
+-     * @param workflowDoc
+-     * @param principalId
+-     * @return true if the user has not asked to NOT receive future requests.
+      */
+     private boolean willReceiveFutureRequests(WorkflowDocument workflowDoc, String principalId) {
+         boolean doNotReceiveFutureRequests = false;    
+@@ -291,13 +297,7 @@ private boolean willReceiveFutureRequests(WorkflowDocument workflowDoc, String p
+         
+         return !doNotReceiveFutureRequests;
+     }
+-    
+-    private static List<String> approvalCodes = new ArrayList<String>();
+-    static {
+-        approvalCodes.add("C");
+-        approvalCodes.add("A");
+-    }
+-    
++
+     public boolean hasPendingApprovalRequests(WorkflowDocument workflowDoc) {
+         return !actionListService.getActionItems(workflowDoc.getDocumentId(), approvalCodes).isEmpty();
+     }

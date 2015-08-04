@@ -1,0 +1,1361 @@
+From 09acbe59aff89744e0411d52b932c1ee77305e97 Mon Sep 17 00:00:00 2001
+From: Travis Schneeberger <leo.herbie@gmail.com>
+Date: Thu, 18 Jun 2015 14:45:47 -0400
+Subject: [PATCH 1/3] RESKC-548: Making "view active" committee open a
+ committee with the highest sequence number that is also on a final document.
+
+---
+ .../CommitteeLookupableHelperServiceImplBase.java  | 46 ++++++++++++++++------
+ .../kra/lookup/KraLookupableHelperServiceImpl.java | 18 +++++----
+ 2 files changed, 46 insertions(+), 18 deletions(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/common/committee/impl/lookup/CommitteeLookupableHelperServiceImplBase.java b/coeus-impl/src/main/java/org/kuali/coeus/common/committee/impl/lookup/CommitteeLookupableHelperServiceImplBase.java
+index e87a5e4..b3c4aab 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/common/committee/impl/lookup/CommitteeLookupableHelperServiceImplBase.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/common/committee/impl/lookup/CommitteeLookupableHelperServiceImplBase.java
+@@ -39,6 +39,7 @@
+ import org.kuali.rice.kns.web.ui.Row;
+ import org.kuali.rice.krad.bo.BusinessObject;
+ import org.kuali.rice.krad.bo.PersistableBusinessObject;
++import org.kuali.rice.krad.document.Document;
+ import org.kuali.rice.krad.lookup.CollectionIncomplete;
+ import org.kuali.rice.krad.service.DocumentService;
+ import org.kuali.rice.krad.service.KRADServiceLocator;
+@@ -48,6 +49,8 @@
+ import java.util.*;
+ import java.util.regex.Matcher;
+ import java.util.regex.Pattern;
++import java.util.stream.Collectors;
++import java.util.stream.Stream;
+ 
+ /**
+  * 
+@@ -63,12 +66,20 @@
+     private static final String PERSON_NAME = "personName";
+     private static final String RESEARCH_AREA_CODE = "researchAreaCode";
+     private static final String DOCHANDLER_LINK = "%s/DocHandler.do?command=displayDocSearchView&docId=%s";
+-    
++
++    private Map<String, String> latestFinalCommitteeMap = new HashMap<>();
++
+     @Override
+-    public List<? extends BusinessObject> getSearchResults(Map<String, String> fieldValues) {
++    public List<CMT> getSearchResults(Map<String, String> fieldValues) {
+         // we set the lookup to only list committees of type chosen
+         fieldValues.put(COMMITTEE_TYPE_CODE_FIELD_NAME, getCommitteeTypeCodeHook());
+-        List<CMT> activeCommittees =  (List<CMT>)getUniqueList(super.getSearchResultsUnbounded(fieldValues), fieldValues);
++
++        final List<CMT> results = (List<CMT>) super.getSearchResultsUnbounded(fieldValues);
++        final List<CMT> unapprovedCommittees = getUnapprovedCommittees(fieldValues);
++        final List<CMT> all = Stream.concat(results.stream(), unapprovedCommittees.stream()).collect(Collectors.toList());
++
++        final List<CMT> activeCommittees = getUniqueList(all);
++        latestFinalCommitteeMap = getLatestFinalDocumentNumber(all);
+         Long matchingResultsCount = new Long(activeCommittees.size());
+         Integer searchResultsLimit = LookupUtils.getSearchResultsLimit(Question.class);
+         
+@@ -104,15 +115,14 @@
+     /*
+      * remove duplicates and get only the one with the highest sequence number from the search results
+      */
+-    @SuppressWarnings("unchecked")
+-    protected List<? extends BusinessObject> getUniqueList(List<? extends BusinessObject> searchResults, Map<String, String> fieldValues) {
++    protected List<CMT> getUniqueList(List<CMT> committees) {
+ 
+         List<CMT> uniqueResults = new ArrayList<CMT>();
+         List<String> committeeIds = new ArrayList<String>();
+-        ((List<CMT>)searchResults).addAll(getUnapprovedCommittees(fieldValues));
+-        if (CollectionUtils.isNotEmpty(searchResults)) {
+-            Collections.sort((List<CMT>) searchResults, Collections.reverseOrder());
+-            for (CMT committee : (List<CMT>) searchResults) {
++
++        if (CollectionUtils.isNotEmpty(committees)) {
++            Collections.sort(committees, Collections.reverseOrder());
++            for (CMT committee : committees) {
+                 if (!committeeIds.contains(committee.getCommitteeId())) {
+                     committee.getCommitteeChair();
+                     uniqueResults.add(committee);
+@@ -122,8 +132,22 @@
+         }
+         return uniqueResults;
+     }
+-    
+-    
++
++    protected Map<String, String> getLatestFinalDocumentNumber(List<CMT> committees) {
++         return committees.stream()
++                 .filter(committee -> committee.getCommitteeDocument().getDocStatusCode().equals(KewApiConstants.ROUTE_HEADER_FINAL_CD))
++             .collect(Collectors.groupingBy(committee -> committee.getCommitteeId())).entrySet().stream()
++                 .collect(Collectors.toMap(Map.Entry::getKey, value -> value.getValue().stream()
++                         .max(Comparator.comparingInt(committee -> committee.getSequenceNumber())).get().getCommitteeDocument().getDocumentNumber()));
++    }
++
++    @Override
++    protected Properties getViewLinkProperties(Document document) {
++        Properties p =  super.getViewLinkProperties(document);
++        p.put("docId", latestFinalCommitteeMap.get(((CommitteeDocumentBase<?,?,?>)document).getCommitteeId()));
++        return p;
++    }
++
+     protected abstract String getHtmlAction();
+     protected abstract String getDocumentTypeName();
+     protected abstract String getCustomResumeEditUrl(final String editCommitteeDocId);
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/lookup/KraLookupableHelperServiceImpl.java b/coeus-impl/src/main/java/org/kuali/kra/lookup/KraLookupableHelperServiceImpl.java
+index cae64ce..c0c0c40 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/lookup/KraLookupableHelperServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/lookup/KraLookupableHelperServiceImpl.java
+@@ -65,19 +65,23 @@ protected void addEditHtmlData(List<HtmlData> htmlDataList, BusinessObject busin
+     protected AnchorHtmlData getViewLink(Document document) {
+         AnchorHtmlData htmlData = new AnchorHtmlData();
+         htmlData.setDisplayText(VIEW);
+-        Properties parameters = new Properties();
++        String href  = UrlFactory.parameterizeUrl("../"+getHtmlAction(), getViewLinkProperties(document));
++        
++        htmlData.setHref(href);
++        return htmlData;
++
++    }
++
++    protected Properties getViewLinkProperties(Document document) {
++        final Properties parameters = new Properties();
+         parameters.put(KRADConstants.DISPATCH_REQUEST_PARAMETER, KRADConstants.DOC_HANDLER_METHOD);
+         parameters.put(KRADConstants.PARAMETER_COMMAND, KewApiConstants.DOCSEARCH_COMMAND);
+         parameters.put(KRADConstants.DOCUMENT_TYPE_NAME, getDocumentTypeName());
+         parameters.put("viewDocument", "true");
+         parameters.put("docId", document.getDocumentNumber());
+-        String href  = UrlFactory.parameterizeUrl("../"+getHtmlAction(), parameters);
+-        
+-        htmlData.setHref(href);
+-        return htmlData;
+-
++        return parameters;
+     }
+-    
++
+     protected AnchorHtmlData getMedusaLink(Document document, Boolean readOnly) {
+         AnchorHtmlData htmlData = new AnchorHtmlData();
+         htmlData.setDisplayText(MEDUSA);
+
+From e74843ed9c2af797585ac54305211e65a235581c Mon Sep 17 00:00:00 2001
+From: Travis Schneeberger <leo.herbie@gmail.com>
+Date: Thu, 18 Jun 2015 15:18:12 -0400
+Subject: [PATCH 2/3] RESKC-548: Code cleanup, removing unnecessary document
+ service call
+
+---
+ .../CommitteeLookupableHelperServiceImplBase.java  | 158 ++++++++++-----------
+ .../kra/lookup/KraLookupableHelperServiceImpl.java |  12 +-
+ 2 files changed, 73 insertions(+), 97 deletions(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/common/committee/impl/lookup/CommitteeLookupableHelperServiceImplBase.java b/coeus-impl/src/main/java/org/kuali/coeus/common/committee/impl/lookup/CommitteeLookupableHelperServiceImplBase.java
+index b3c4aab..e107746 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/common/committee/impl/lookup/CommitteeLookupableHelperServiceImplBase.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/common/committee/impl/lookup/CommitteeLookupableHelperServiceImplBase.java
+@@ -41,10 +41,8 @@
+ import org.kuali.rice.krad.bo.PersistableBusinessObject;
+ import org.kuali.rice.krad.document.Document;
+ import org.kuali.rice.krad.lookup.CollectionIncomplete;
+-import org.kuali.rice.krad.service.DocumentService;
+ import org.kuali.rice.krad.service.KRADServiceLocator;
+ import org.kuali.rice.krad.util.GlobalVariables;
+-import org.kuali.rice.krad.util.KRADConstants;
+ 
+ import java.util.*;
+ import java.util.regex.Matcher;
+@@ -56,7 +54,6 @@
+  * 
+  * This class is for committee lookup.
+  */
+-@SuppressWarnings({ "serial", "deprecation" })
+ public abstract class CommitteeLookupableHelperServiceImplBase<CMT extends CommitteeBase<CMT, CD, ?>,
+                                                            CD extends CommitteeDocumentBase<CD, CMT, ?>> 
+ 
+@@ -65,29 +62,32 @@
+     private static final String COMMITTEE_TYPE_CODE_FIELD_NAME = "committeeTypeCode";
+     private static final String PERSON_NAME = "personName";
+     private static final String RESEARCH_AREA_CODE = "researchAreaCode";
+-    private static final String DOCHANDLER_LINK = "%s/DocHandler.do?command=displayDocSearchView&docId=%s";
+ 
+     private Map<String, String> latestFinalCommitteeMap = new HashMap<>();
+ 
++    private transient RouteHeaderService routeHeaderService;
++    private transient KcAuthorizationService kcAuthorizationService;
++
+     @Override
+     public List<CMT> getSearchResults(Map<String, String> fieldValues) {
+         // we set the lookup to only list committees of type chosen
+         fieldValues.put(COMMITTEE_TYPE_CODE_FIELD_NAME, getCommitteeTypeCodeHook());
+ 
++        @SuppressWarnings("unchecked")
+         final List<CMT> results = (List<CMT>) super.getSearchResultsUnbounded(fieldValues);
+         final List<CMT> unapprovedCommittees = getUnapprovedCommittees(fieldValues);
+         final List<CMT> all = Stream.concat(results.stream(), unapprovedCommittees.stream()).collect(Collectors.toList());
+ 
+         final List<CMT> activeCommittees = getUniqueList(all);
+         latestFinalCommitteeMap = getLatestFinalDocumentNumber(all);
+-        Long matchingResultsCount = new Long(activeCommittees.size());
+-        Integer searchResultsLimit = LookupUtils.getSearchResultsLimit(Question.class);
++        final long matchingResultsCount = (long) activeCommittees.size();
++        final Integer searchResultsLimit = LookupUtils.getSearchResultsLimit(Question.class);
+         
+-        if ((matchingResultsCount == null) || (matchingResultsCount.intValue() <= searchResultsLimit.intValue())) {
+-            return new CollectionIncomplete(activeCommittees, new Long(0));
++        if (matchingResultsCount <= searchResultsLimit) {
++            return new CollectionIncomplete<>(activeCommittees, 0L);
+         } 
+         else {
+-            return new CollectionIncomplete(trimResult(activeCommittees, searchResultsLimit), matchingResultsCount);
++            return new CollectionIncomplete<>(trimResult(activeCommittees, searchResultsLimit), matchingResultsCount);
+         }
+     }
+ 
+@@ -117,18 +117,16 @@
+      */
+     protected List<CMT> getUniqueList(List<CMT> committees) {
+ 
+-        List<CMT> uniqueResults = new ArrayList<CMT>();
+-        List<String> committeeIds = new ArrayList<String>();
++        List<CMT> uniqueResults = new ArrayList<>();
++        List<String> committeeIds = new ArrayList<>();
+ 
+         if (CollectionUtils.isNotEmpty(committees)) {
+             Collections.sort(committees, Collections.reverseOrder());
+-            for (CMT committee : committees) {
+-                if (!committeeIds.contains(committee.getCommitteeId())) {
+-                    committee.getCommitteeChair();
+-                    uniqueResults.add(committee);
+-                    committeeIds.add(committee.getCommitteeId());
+-                }
+-            }
++            committees.stream().filter(committee -> !committeeIds.contains(committee.getCommitteeId())).forEach(committee -> {
++                committee.getCommitteeChair();
++                uniqueResults.add(committee);
++                committeeIds.add(committee.getCommitteeId());
++            });
+         }
+         return uniqueResults;
+     }
+@@ -158,7 +156,7 @@ protected String getKeyFieldName() {
+     
+     @Override
+     public List<HtmlData> getCustomActionUrls(BusinessObject businessObject, List pkNames) {
+-        List<HtmlData> htmlDataList = new ArrayList<HtmlData>();
++        List<HtmlData> htmlDataList = new ArrayList<>();
+         String editCommitteeDocId = getEditedCommitteeDocId((CMT) businessObject);
+         boolean isUnappprovedCommittee = false;
+         if (KewApiConstants.ROUTE_HEADER_SAVED_CD.equals((((CMT) businessObject).getCommitteeDocument().getDocStatusCode())) 
+@@ -166,14 +164,11 @@ protected String getKeyFieldName() {
+             isUnappprovedCommittee = true;
+             editCommitteeDocId = ((CMT) businessObject).getCommitteeDocument().getDocumentNumber();
+         }
+-//        if (getKraAuthorizationService().hasPermission(getUserIdentifier(), (CMT) businessObject,
+-//                PermissionConstants.MODIFY_IACUC_COMMITTEE)) {
++
+         if (getKraAuthorizationService().hasPermission(getUserIdentifier(), (CMT) businessObject, getModifyCommitteePermissionNameHook())) {   
+             htmlDataList = super.getCustomActionUrls(businessObject, pkNames);
+             if (StringUtils.isNotBlank(editCommitteeDocId)) {
+                 AnchorHtmlData htmlData = (AnchorHtmlData) htmlDataList.get(0);
+-                CD document = ((CMT) businessObject).getCommitteeDocument();
+-                String workflowUrl = getKualiConfigurationService().getPropertyValueAsString(KRADConstants.WORKFLOW_URL_KEY);
+                 htmlData.setHref(getCustomResumeEditUrl(editCommitteeDocId));
+                 htmlData.setDisplayText("resume edit");
+             }
+@@ -208,17 +203,10 @@ protected String getEditedCommitteeDocId(CMT committee) {
+      * should only have one if exists
+      */
+     protected List<CD> getCommitteeDocuments(String committeeId) {
+-        Map<String, String> fieldValues = new HashMap<String, String>();
++        Map<String, String> fieldValues = new HashMap<>();
+         fieldValues.put("committeeId", committeeId);
+         List<CD> documents = (List<CD>) getBusinessObjectService().findMatching(getCommitteeDocumentBOClassHook(), fieldValues);
+-        List<CD> result = new ArrayList<CD>();
+-        for (CD commDoc : documents) {
+-            if (KewApiConstants.ROUTE_HEADER_SAVED_CD.equals(commDoc.getDocStatusCode())) {
+-                result.add(commDoc);
+-            }
+-        }
+-        return result;
+-
++        return documents.stream().filter(commDoc -> KewApiConstants.ROUTE_HEADER_SAVED_CD.equals(commDoc.getDocStatusCode())).collect(Collectors.toList());
+     }
+     
+     protected abstract Class<CD> getCommitteeDocumentBOClassHook();
+@@ -229,33 +217,31 @@ protected String getEditedCommitteeDocId(CMT committee) {
+      */
+     protected List<CMT> getUnapprovedCommittees(Map<String, String> criterias) {
+ 
+-        Map<String, String> fieldValues = new HashMap<String, String>();
++        Map<String, String> fieldValues = new HashMap<>();
+         fieldValues.put("docStatusCode", "S");
+ 
+         List<CD> documents = (List<CD>) getBusinessObjectService().findMatching(getCommitteeDocumentBOClassHook(), fieldValues);
+-        List<CMT> result = new ArrayList<CMT>();
++        List<CMT> result = new ArrayList<>();
+         List<String> committeeIds = getCommitteeIds();
+-        for (CD commDoc : documents) {
+-            if (!committeeIds.contains(commDoc.getCommitteeId())) {
+-                try {
+-                    CD workflowCommitteeDoc = (CD) KcServiceLocator
+-                            .getService(DocumentService.class).getByDocumentHeaderId(commDoc.getDocumentNumber());
+-                    // Get XML of workflow document
+-                    String content = KcServiceLocator.getService(RouteHeaderService.class).getContent(
+-                            workflowCommitteeDoc.getDocumentHeader().getWorkflowDocument().getDocumentId()).getDocumentContent();
+-
+-                    // Create committee from XML and add to the document
+-
+-                    commDoc.getCommitteeList().add(populateCommitteeFromXmlDocumentContents(content));
+-                    if (isCriteriaMatched(commDoc.getCommittee(), criterias)) {
+-                        commDoc.getCommittee().setCommitteeDocument(commDoc);
+-                        result.add(commDoc.getCommittee());
+-                    }
+-                } catch (Exception e) {
+-                    LOG.info("CommitteeBase Doc " + commDoc.getDocumentNumber() + " parsing error");
++        // Get XML of workflow document
++        // Create committee from XML and add to the document
++        documents.stream().filter(commDoc -> !committeeIds.contains(commDoc.getCommitteeId())).forEach(commDoc -> {
++            try {
++                // Get XML of workflow document
++                String content = getRouteHeaderService().getContent(
++                        commDoc.getDocumentNumber()).getDocumentContent();
++
++                // Create committee from XML and add to the document
++
++                commDoc.getCommitteeList().add(populateCommitteeFromXmlDocumentContents(content));
++                if (isCriteriaMatched(commDoc.getCommittee(), criterias)) {
++                    commDoc.getCommittee().setCommitteeDocument(commDoc);
++                    result.add(commDoc.getCommittee());
+                 }
++            } catch (Exception e) {
++                LOG.warn("CommitteeBase Doc " + commDoc.getDocumentNumber() + " parsing error", e);
+             }
+-        }
++        });
+         return result;
+ 
+     }
+@@ -293,12 +279,9 @@ protected boolean isCriteriaMatched(CMT committee, Map<String, String> criterias
+ 
+         // researchareacode check
+         if (isMatch && (StringUtils.isNotBlank(criterias.get("committeeResearchAreas.researchAreaCode")))) {
+-            if (CollectionUtils.isNotEmpty(committee.getCommitteeResearchAreas())) {
+-                isMatch = isAreaResearchMatch(criterias.get("committeeResearchAreas.researchAreaCode"), committee.getCommitteeResearchAreas());
+-            } else {
+-                isMatch = false;
+-            }
++            isMatch = CollectionUtils.isNotEmpty(committee.getCommitteeResearchAreas()) && isAreaResearchMatch(criterias.get("committeeResearchAreas.researchAreaCode"), committee.getCommitteeResearchAreas());
+         }
++
+         if (isMatch) {
+             committee.refreshReferenceObject("homeUnit");
+         }
+@@ -353,7 +336,7 @@ protected boolean isAreaResearchMatch(String matchArea, List<CommitteeResearchAr
+      * using reg expression to check if pattern matched
+      */
+     protected boolean isMatching(String patternString, String value) {
+-        boolean isMatch = false;
++        final boolean isMatch;
+         if (StringUtils.isBlank(patternString)) {
+             isMatch = true;
+         }
+@@ -378,15 +361,7 @@ protected boolean isMatching(String patternString, String value) {
+      * check if the selected code matched
+      */
+     protected boolean isMatchingCode(String selectedCode, String value) {
+-        boolean isMatch = false;
+-        if (StringUtils.isBlank(selectedCode)) {
+-            isMatch = true;
+-        }
+-        else {
+-            isMatch = selectedCode.equals(value);
+-        }
+-        return isMatch;
+-
++        return StringUtils.isBlank(selectedCode) || selectedCode.equals(value);
+     }
+ 
+     /*
+@@ -414,12 +389,7 @@ protected PersistableBusinessObject getBusinessObjectFromXML(String xmlDocumentC
+         if (objXml.contains("itemDesctiption")) {
+             objXml = objXml.replaceAll("itemDesctiption", "itemDescription");
+         }
+-        PersistableBusinessObject businessObject = (PersistableBusinessObject) KRADServiceLocator.getXmlObjectSerializerService().fromXml(objXml);
+-        return businessObject;
+-    }
+-
+-    protected KcAuthorizationService getKraAuthorizationService() {
+-        return KcServiceLocator.getService(KcAuthorizationService.class);
++        return (PersistableBusinessObject) KRADServiceLocator.getXmlObjectSerializerService().fromXml(objXml);
+     }
+     
+     /*
+@@ -427,12 +397,10 @@ protected KcAuthorizationService getKraAuthorizationService() {
+      */
+     protected List<String> getCommitteeIds() {
+         List<CMT> committees = (List<CMT>) getBusinessObjectService().findAll(getCommitteeBOClassHook());
+-        List<String> result = new ArrayList<String>();
+-        for (CMT committee : committees) {
+-            if (!result.contains(committee.getCommitteeId())) {
+-                result.add(committee.getCommitteeId());
+-            }
+-        }
++        List<String> result = new ArrayList<>();
++        committees.stream().filter(committee -> !result.contains(committee.getCommitteeId())).forEach(committee -> {
++            result.add(committee.getCommitteeId());
++        });
+         return result;
+     }
+ 
+@@ -447,13 +415,31 @@ protected String getUserIdentifier() {
+      * @return the trimmed result set
+      */
+     protected List<CMT> trimResult(List<CMT> result, Integer trimSize) {
+-        List<CMT> trimedResult = new ArrayList<CMT>();
+-        for (CMT committee : result) {
+-            if (trimedResult.size()< trimSize) {
+-                trimedResult.add(committee); 
+-            }
++        List<CMT> trimmedResult = new ArrayList<>();
++        result.stream().filter(committee -> trimmedResult.size() < trimSize).forEach(trimmedResult::add);
++        return trimmedResult;
++    }
++
++    protected KcAuthorizationService getKraAuthorizationService() {
++        if (kcAuthorizationService == null) {
++            kcAuthorizationService = KcServiceLocator.getService(KcAuthorizationService.class);
+         }
+-        return trimedResult;
++        return kcAuthorizationService;
+     }
+ 
++    public void setKcAuthorizationService(KcAuthorizationService kcAuthorizationService) {
++        this.kcAuthorizationService = kcAuthorizationService;
++    }
++
++    public RouteHeaderService getRouteHeaderService() {
++        if (routeHeaderService == null) {
++            routeHeaderService = KcServiceLocator.getService(RouteHeaderService.class);
++        }
++
++        return routeHeaderService;
++    }
++
++    public void setRouteHeaderService(RouteHeaderService routeHeaderService) {
++        this.routeHeaderService = routeHeaderService;
++    }
+ }
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/lookup/KraLookupableHelperServiceImpl.java b/coeus-impl/src/main/java/org/kuali/kra/lookup/KraLookupableHelperServiceImpl.java
+index c0c0c40..b6f2f8b 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/lookup/KraLookupableHelperServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/lookup/KraLookupableHelperServiceImpl.java
+@@ -98,12 +98,9 @@ protected AnchorHtmlData getMedusaLink(Document document, Boolean readOnly) {
+     }
+     
+     /**
+-     * 
+-     * @param document
++     *
+      * @param methodToCall method to call on action
+-     * @param linkName 
+      * @param readOnly whether the document should be readOnly or not
+-     * @return
+      */
+     protected AnchorHtmlData getCustomLink(Document document, String methodToCall, String linkName, Boolean readOnly) {
+         AnchorHtmlData htmlData = new AnchorHtmlData();
+@@ -123,7 +120,6 @@ protected AnchorHtmlData getCustomLink(Document document, String methodToCall, S
+     
+     /**
+      * To force to it to show action links, such as 'edit' if it is not 'lookup' to search of return value.
+-     * @see org.kuali.core.lookup.AbstractLookupableHelperServiceImpl#performLookup(org.kuali.core.web.struts.form.LookupForm, java.util.Collection, boolean)
+      */
+     @Override
+     public Collection performLookup(LookupForm lookupForm, Collection resultTable, boolean bounded) {
+@@ -138,7 +134,6 @@ public Collection performLookup(LookupForm lookupForm, Collection resultTable, b
+     /**
+      * 
+      * This method to set both fields if child class override getSearchResults
+-     * @param fieldValues
+      */
+     protected void setBackLocationDocFormKey(Map<String, String> fieldValues) {
+ 
+@@ -156,9 +151,6 @@ protected void setBackLocationDocFormKey(Map<String, String> fieldValues) {
+      * 
+      * This method is to set up field definitions for lookup fields.  
+      * These fields does not have a reference object defined for it in repository &amp; bo.
+-     * @param field
+-     * @param keyName
+-     * @param className
+      */
+     protected void updateLookupField(Field field, String keyName, String className) {
+         if (StringUtils.isNotBlank(keyName) && StringUtils.isNotBlank(className)) {
+@@ -179,14 +171,12 @@ protected void updateLookupField(Field field, String keyName, String className)
+     /**
+      * 
+      * This method to set document type of the lookup bo's document
+-     * @return
+      */
+     protected abstract String getDocumentTypeName();
+     
+     /**
+      * 
+      * This method is set the key field to retrieve bo for editing.  May change to  a map if there are multiple fields.
+-     * @return
+      */
+     protected abstract String getKeyFieldName();
+ 
+
+From 5de793e2c61c313ade118771caa85b9f4850619f Mon Sep 17 00:00:00 2001
+From: Travis Schneeberger <leo.herbie@gmail.com>
+Date: Fri, 19 Jun 2015 15:17:18 -0400
+Subject: [PATCH 3/3] RESKC-548: Removing unnecessary logic from committee
+ lookup, cleanup other lookup logic
+
+---
+ .../CommitteeLookupableHelperServiceImplBase.java  | 347 +++------------------
+ ...lopmentProposalLookupableHelperServiceImpl.java |  34 +-
+ .../CommitteeLookupableHelperServiceImpl.java      |   7 +-
+ .../IacucProtocolLookupableHelperServiceImpl.java  |   4 +-
+ .../IacucCommitteeLookupableHelperServiceImpl.java |   7 +-
+ ...utionalProposalLookupableHelperServiceImpl.java |   2 +-
+ .../kra/lookup/KraLookupableHelperServiceImpl.java |  56 +---
+ .../NegotiationLookupableHelperServiceImpl.java    |   2 +-
+ .../ProtocolLookupableHelperServiceImplBase.java   |   4 +-
+ ...lSubmissionLookupableHelperServiceImplBase.java |   2 +-
+ ...nlineReviewLookupableHelperServiceImplBase.java |  16 +-
+ 11 files changed, 104 insertions(+), 377 deletions(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/common/committee/impl/lookup/CommitteeLookupableHelperServiceImplBase.java b/coeus-impl/src/main/java/org/kuali/coeus/common/committee/impl/lookup/CommitteeLookupableHelperServiceImplBase.java
+index e107746..8cdb702 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/common/committee/impl/lookup/CommitteeLookupableHelperServiceImplBase.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/common/committee/impl/lookup/CommitteeLookupableHelperServiceImplBase.java
+@@ -21,51 +21,43 @@
+ import org.apache.commons.collections4.CollectionUtils;
+ import org.apache.commons.lang3.StringUtils;
+ import org.kuali.coeus.common.committee.impl.bo.CommitteeBase;
+-import org.kuali.coeus.common.committee.impl.bo.CommitteeMembershipBase;
+-import org.kuali.coeus.common.committee.impl.bo.CommitteeMembershipRole;
+-import org.kuali.coeus.common.committee.impl.bo.CommitteeResearchAreaBase;
+-import org.kuali.coeus.common.committee.impl.document.CommitteeDocumentBase;
+ import org.kuali.coeus.common.framework.auth.perm.KcAuthorizationService;
+ import org.kuali.coeus.sys.framework.service.KcServiceLocator;
+ import org.kuali.kra.irb.ResearchArea;
+ import org.kuali.kra.lookup.KraLookupableHelperServiceImpl;
+-import org.kuali.coeus.common.questionnaire.framework.question.Question;
+ import org.kuali.rice.kew.api.KewApiConstants;
+-import org.kuali.rice.kew.routeheader.service.RouteHeaderService;
+ import org.kuali.rice.kns.lookup.HtmlData;
+ import org.kuali.rice.kns.lookup.HtmlData.AnchorHtmlData;
+ import org.kuali.rice.kns.lookup.LookupUtils;
+ import org.kuali.rice.kns.web.ui.Field;
+ import org.kuali.rice.kns.web.ui.Row;
+ import org.kuali.rice.krad.bo.BusinessObject;
+-import org.kuali.rice.krad.bo.PersistableBusinessObject;
+-import org.kuali.rice.krad.document.Document;
+ import org.kuali.rice.krad.lookup.CollectionIncomplete;
+-import org.kuali.rice.krad.service.KRADServiceLocator;
+ import org.kuali.rice.krad.util.GlobalVariables;
++import org.kuali.rice.krad.util.KRADConstants;
+ 
+ import java.util.*;
+-import java.util.regex.Matcher;
+-import java.util.regex.Pattern;
+ import java.util.stream.Collectors;
+-import java.util.stream.Stream;
+ 
+ /**
+  * 
+  * This class is for committee lookup.
+  */
+-public abstract class CommitteeLookupableHelperServiceImplBase<CMT extends CommitteeBase<CMT, CD, ?>,
+-                                                           CD extends CommitteeDocumentBase<CD, CMT, ?>> 
++public abstract class CommitteeLookupableHelperServiceImplBase<CMT extends CommitteeBase<CMT, ?, ?>>
+ 
+                                                            extends KraLookupableHelperServiceImpl {
+ 
+     private static final String COMMITTEE_TYPE_CODE_FIELD_NAME = "committeeTypeCode";
+     private static final String PERSON_NAME = "personName";
+     private static final String RESEARCH_AREA_CODE = "researchAreaCode";
++    private static final String COMMITTEE_ID = "committeeId";
++    private static final String VIEW_ACTIVE = "view active";
++    private static final String RESUME_EDIT = "resume edit";
++    private static final String COMMITTEE_MEMBERSHIPS_PERSON_NAME = "committeeMemberships.personName";
++    private static final String COMMITTEE_RESEARCH_AREAS_RESEARCH_AREA_CODE = "committeeResearchAreas.researchAreaCode";
+ 
+     private Map<String, String> latestFinalCommitteeMap = new HashMap<>();
+ 
+-    private transient RouteHeaderService routeHeaderService;
+     private transient KcAuthorizationService kcAuthorizationService;
+ 
+     @Override
+@@ -75,20 +67,15 @@
+ 
+         @SuppressWarnings("unchecked")
+         final List<CMT> results = (List<CMT>) super.getSearchResultsUnbounded(fieldValues);
+-        final List<CMT> unapprovedCommittees = getUnapprovedCommittees(fieldValues);
+-        final List<CMT> all = Stream.concat(results.stream(), unapprovedCommittees.stream()).collect(Collectors.toList());
+ 
+-        final List<CMT> activeCommittees = getUniqueList(all);
+-        latestFinalCommitteeMap = getLatestFinalDocumentNumber(all);
++        final List<CMT> activeCommittees = getUniqueList(results);
++        latestFinalCommitteeMap = getLatestDocumentNumber(results, KewApiConstants.ROUTE_HEADER_FINAL_CD);
++
+         final long matchingResultsCount = (long) activeCommittees.size();
+-        final Integer searchResultsLimit = LookupUtils.getSearchResultsLimit(Question.class);
+-        
+-        if (matchingResultsCount <= searchResultsLimit) {
+-            return new CollectionIncomplete<>(activeCommittees, 0L);
+-        } 
+-        else {
+-            return new CollectionIncomplete<>(trimResult(activeCommittees, searchResultsLimit), matchingResultsCount);
+-        }
++        final Integer searchResultsLimit = LookupUtils.getSearchResultsLimit(getCommitteeBOClassHook());
++
++        return matchingResultsCount <= searchResultsLimit ? activeCommittees :
++                new CollectionIncomplete<>(activeCommittees.stream().limit(searchResultsLimit).collect(Collectors.toList()), matchingResultsCount);
+     }
+ 
+     
+@@ -96,12 +83,12 @@
+ 
+     @Override
+     public List<Row> getRows() {
+-        List<Row> rows =  super.getRows();
++        final List<Row> rows =  super.getRows();
+         for (Row row : rows) {
+             for (Field field : row.getFields()) {
+-                if (field.getPropertyName().equals("committeeResearchAreas.researchAreaCode")) {
++                if (field.getPropertyName().equals(COMMITTEE_RESEARCH_AREAS_RESEARCH_AREA_CODE)) {
+                     super.updateLookupField(field,RESEARCH_AREA_CODE,ResearchArea.class.getName());
+-                } else if (field.getPropertyName().equals("committeeMemberships.personName")) {
++                } else if (field.getPropertyName().equals(COMMITTEE_MEMBERSHIPS_PERSON_NAME)) {
+                     super.updateLookupField(field,PERSON_NAME, getCommitteeMembershipFullyQualifiedClassNameHook());
+                 }
+             }
+@@ -117,8 +104,8 @@
+      */
+     protected List<CMT> getUniqueList(List<CMT> committees) {
+ 
+-        List<CMT> uniqueResults = new ArrayList<>();
+-        List<String> committeeIds = new ArrayList<>();
++        final List<CMT> uniqueResults = new ArrayList<>();
++        final List<String> committeeIds = new ArrayList<>();
+ 
+         if (CollectionUtils.isNotEmpty(committees)) {
+             Collections.sort(committees, Collections.reverseOrder());
+@@ -131,19 +118,12 @@
+         return uniqueResults;
+     }
+ 
+-    protected Map<String, String> getLatestFinalDocumentNumber(List<CMT> committees) {
+-         return committees.stream()
+-                 .filter(committee -> committee.getCommitteeDocument().getDocStatusCode().equals(KewApiConstants.ROUTE_HEADER_FINAL_CD))
+-             .collect(Collectors.groupingBy(committee -> committee.getCommitteeId())).entrySet().stream()
+-                 .collect(Collectors.toMap(Map.Entry::getKey, value -> value.getValue().stream()
+-                         .max(Comparator.comparingInt(committee -> committee.getSequenceNumber())).get().getCommitteeDocument().getDocumentNumber()));
+-    }
+-
+-    @Override
+-    protected Properties getViewLinkProperties(Document document) {
+-        Properties p =  super.getViewLinkProperties(document);
+-        p.put("docId", latestFinalCommitteeMap.get(((CommitteeDocumentBase<?,?,?>)document).getCommitteeId()));
+-        return p;
++    protected Map<String, String> getLatestDocumentNumber(List<CMT> committees, String routeHeaderCode) {
++        return committees.stream()
++                .filter(committee -> committee.getCommitteeDocument().getDocStatusCode().equals(routeHeaderCode))
++                .collect(Collectors.groupingBy(committee -> committee.getCommitteeId())).entrySet().stream()
++                .collect(Collectors.toMap(Map.Entry::getKey, value -> value.getValue().stream()
++                        .max(Comparator.comparingInt(committee -> committee.getSequenceNumber())).get().getCommitteeDocument().getDocumentNumber()));
+     }
+ 
+     protected abstract String getHtmlAction();
+@@ -151,31 +131,29 @@ protected Properties getViewLinkProperties(Document document) {
+     protected abstract String getCustomResumeEditUrl(final String editCommitteeDocId);
+     
+     protected String getKeyFieldName() {
+-        return "committeeId";
++        return COMMITTEE_ID;
+     }
+     
+     @Override
+     public List<HtmlData> getCustomActionUrls(BusinessObject businessObject, List pkNames) {
+-        List<HtmlData> htmlDataList = new ArrayList<>();
+-        String editCommitteeDocId = getEditedCommitteeDocId((CMT) businessObject);
+-        boolean isUnappprovedCommittee = false;
+-        if (KewApiConstants.ROUTE_HEADER_SAVED_CD.equals((((CMT) businessObject).getCommitteeDocument().getDocStatusCode())) 
+-                && ((CMT) businessObject).getSequenceNumber() == 1) {
+-            isUnappprovedCommittee = true;
+-            editCommitteeDocId = ((CMT) businessObject).getCommitteeDocument().getDocumentNumber();
+-        }
+-
+-        if (getKraAuthorizationService().hasPermission(getUserIdentifier(), (CMT) businessObject, getModifyCommitteePermissionNameHook())) {   
+-            htmlDataList = super.getCustomActionUrls(businessObject, pkNames);
+-            if (StringUtils.isNotBlank(editCommitteeDocId)) {
+-                AnchorHtmlData htmlData = (AnchorHtmlData) htmlDataList.get(0);
+-                htmlData.setHref(getCustomResumeEditUrl(editCommitteeDocId));
+-                htmlData.setDisplayText("resume edit");
++        final List<HtmlData> htmlDataList = new ArrayList<>();
++
++        if (getKraAuthorizationService().hasPermission(getUserIdentifier(), (CMT) businessObject, getModifyCommitteePermissionNameHook())){
++            final String editCommitteeDocId = latestFinalCommitteeMap.get(((CMT) businessObject).getCommitteeId());
++            if ((StringUtils.isBlank(editCommitteeDocId) || !editCommitteeDocId.equals(((CMT) businessObject).getCommitteeDocument().getDocumentNumber()))) {
++                final AnchorHtmlData resumeEdit = new AnchorHtmlData(getCustomResumeEditUrl(((CMT) businessObject).getCommitteeDocument().getDocumentNumber()),
++                        KRADConstants.DOC_HANDLER_METHOD, KRADConstants.MAINTENANCE_EDIT_METHOD_TO_CALL);
++                resumeEdit.setDisplayText(RESUME_EDIT);
++                htmlDataList.add(resumeEdit);
++            } else {
++                htmlDataList.add(getEditLink(businessObject));
+             }
+         }
+-        if (!isUnappprovedCommittee && getKraAuthorizationService().hasPermission(getUserIdentifier(), (CMT) businessObject, getViewCommitteePermissionNameHook())) {
+-            AnchorHtmlData htmlData = getViewLink(((CMT) businessObject).getCommitteeDocument());
+-            htmlData.setDisplayText("view active");
++
++        final String finalCommitteeDocId = latestFinalCommitteeMap.get(((CMT) businessObject).getCommitteeId());
++        if (StringUtils.isNotBlank(finalCommitteeDocId) && getKraAuthorizationService().hasPermission(getUserIdentifier(), (CMT) businessObject, getViewCommitteePermissionNameHook())) {
++            final AnchorHtmlData htmlData = getViewLink(finalCommitteeDocId);
++            htmlData.setDisplayText(VIEW_ACTIVE);
+             htmlDataList.add(htmlData);
+         }
+         return htmlDataList;
+@@ -184,242 +162,13 @@ protected String getKeyFieldName() {
+     protected abstract String getViewCommitteePermissionNameHook();
+ 
+     protected abstract String getModifyCommitteePermissionNameHook();
+-
+-
+-    /*
+-     * get the document number of the committee that is being edited.
+-     */
+-    protected String getEditedCommitteeDocId(CMT committee) {
+-        String docId = null;
+-        List<CD> documents = getCommitteeDocuments(committee.getCommitteeId());
+-        if (CollectionUtils.isNotEmpty(documents)) {
+-            docId = documents.get(0).getDocumentNumber();
+-        }
+-        return docId;
+-    }
+-    
+-    /*
+-     * get saved committee documents of the committeeId specified.
+-     * should only have one if exists
+-     */
+-    protected List<CD> getCommitteeDocuments(String committeeId) {
+-        Map<String, String> fieldValues = new HashMap<>();
+-        fieldValues.put("committeeId", committeeId);
+-        List<CD> documents = (List<CD>) getBusinessObjectService().findMatching(getCommitteeDocumentBOClassHook(), fieldValues);
+-        return documents.stream().filter(commDoc -> KewApiConstants.ROUTE_HEADER_SAVED_CD.equals(commDoc.getDocStatusCode())).collect(Collectors.toList());
+-    }
+-    
+-    protected abstract Class<CD> getCommitteeDocumentBOClassHook();
+-
+-    
+-    /*
+-     * Get the committee that is saved, but not approved yet.  basically this is sequence = 1
+-     */
+-    protected List<CMT> getUnapprovedCommittees(Map<String, String> criterias) {
+-
+-        Map<String, String> fieldValues = new HashMap<>();
+-        fieldValues.put("docStatusCode", "S");
+-
+-        List<CD> documents = (List<CD>) getBusinessObjectService().findMatching(getCommitteeDocumentBOClassHook(), fieldValues);
+-        List<CMT> result = new ArrayList<>();
+-        List<String> committeeIds = getCommitteeIds();
+-        // Get XML of workflow document
+-        // Create committee from XML and add to the document
+-        documents.stream().filter(commDoc -> !committeeIds.contains(commDoc.getCommitteeId())).forEach(commDoc -> {
+-            try {
+-                // Get XML of workflow document
+-                String content = getRouteHeaderService().getContent(
+-                        commDoc.getDocumentNumber()).getDocumentContent();
+-
+-                // Create committee from XML and add to the document
+-
+-                commDoc.getCommitteeList().add(populateCommitteeFromXmlDocumentContents(content));
+-                if (isCriteriaMatched(commDoc.getCommittee(), criterias)) {
+-                    commDoc.getCommittee().setCommitteeDocument(commDoc);
+-                    result.add(commDoc.getCommittee());
+-                }
+-            } catch (Exception e) {
+-                LOG.warn("CommitteeBase Doc " + commDoc.getDocumentNumber() + " parsing error", e);
+-            }
+-        });
+-        return result;
+-
+-    }
+-
+-    /*
+-     * This is to check the committee, which is not approved yet, matches the search criteria specified.
+-     * This is a new committee and not persisted to DB yet.  So, this tedious criteria check is needed.
+-     */
+-    protected boolean isCriteriaMatched(CMT committee, Map<String, String> criterias) {
+-        boolean isMatch = isMatching(criterias.get("committeeId"), committee.getCommitteeId())
+-                && isMatching(criterias.get("committeeName"), committee.getCommitteeName())
+-                && isMatching(criterias.get("homeUnitNumber"), committee.getHomeUnitNumber())
+-                && isMatching(criterias.get("committeeDescription"), committee.getCommitteeDescription())
+-                && isMatchingCode(criterias.get("committeeTypeCode"), committee.getCommitteeTypeCode())
+-                && isMatchingCode(criterias.get("reviewTypeCode"), committee.getReviewTypeCode());
+-
+-        // membership check
+-        if (isMatch
+-                && (StringUtils.isNotBlank(criterias.get("committeeMemberships.personName")) || StringUtils.isNotBlank(criterias
+-                        .get("committeeMemberships.membershipRoles.membershipRoleCode")))) {
+-            if (CollectionUtils.isNotEmpty(committee.getCommitteeMemberships())) {
+-                if (StringUtils.isNotBlank(criterias.get("committeeMemberships.personName"))) {
+-                    isMatch = isMemberNameMatch(criterias.get("committeeMemberships.personName"), committee
+-                            .getCommitteeMemberships());
+-
+-                }
+-                if (isMatch && StringUtils.isNotBlank(criterias.get("committeeMemberships.membershipRoles.membershipRoleCode"))) {
+-                    isMatch = isMemberRoleMatch(criterias.get("committeeMemberships.membershipRoles.membershipRoleCode"), committee
+-                            .getCommitteeMemberships());
+-                }
+-            } else {
+-                isMatch = false;
+-            }
+-        }
+-
+-        // researchareacode check
+-        if (isMatch && (StringUtils.isNotBlank(criterias.get("committeeResearchAreas.researchAreaCode")))) {
+-            isMatch = CollectionUtils.isNotEmpty(committee.getCommitteeResearchAreas()) && isAreaResearchMatch(criterias.get("committeeResearchAreas.researchAreaCode"), committee.getCommitteeResearchAreas());
+-        }
+-
+-        if (isMatch) {
+-            committee.refreshReferenceObject("homeUnit");
+-        }
+-        return isMatch;
+-    }
+-    
+-    /*
+-     * check if any member name matched the criteria
+-     */
+-    protected boolean isMemberNameMatch(String matchmember, List<CommitteeMembershipBase> members) {
+-        boolean isMatch = false;
+-        for (CommitteeMembershipBase member : members) {
+-            if (isMatching(matchmember, member.getPersonName())) {
+-                isMatch = true;
+-                break;
+-            }
+-        }
+-        return isMatch;
+-    }
+-
+-    /*
+-     * check if any member role code matched the selected role code
+-     */
+-    protected boolean isMemberRoleMatch(String matchRoleCode, List<CommitteeMembershipBase> members) {
+-        boolean isMatch = false;
+-        for (CommitteeMembershipBase member : members) {
+-            for (CommitteeMembershipRole role : member.getMembershipRoles()) {
+-                if (isMatchingCode(matchRoleCode, role.getMembershipRoleCode())) {
+-                    isMatch = true;
+-                    break;
+-                }
+-            }
+-        }
+-        return isMatch;
+-    }
+-    
+-    /*
+-     * check if any committee research area code matched search criteria
+-     */
+-    protected boolean isAreaResearchMatch(String matchArea, List<CommitteeResearchAreaBase> researchAreas) {
+-        boolean isMatch = false;
+-        for (CommitteeResearchAreaBase researchArea : researchAreas) {
+-            if (isMatching(matchArea, researchArea.getResearchAreaCode())) {
+-                isMatch = true;
+-                break;
+-            }
+-        }
+-        return isMatch;
+-    }
+-    
+-    /*
+-     * using reg expression to check if pattern matched
+-     */
+-    protected boolean isMatching(String patternString, String value) {
+-        final boolean isMatch;
+-        if (StringUtils.isBlank(patternString)) {
+-            isMatch = true;
+-        }
+-        else {
+-            patternString = patternString.replaceAll("\\?", "\\\\?");
+-            patternString = patternString.replaceAll("\\.", "\\\\.");
+-            if (patternString.indexOf("*") == 0) {
+-                patternString = patternString.replaceFirst("\\*", "^*");
+-            }
+-            if (!patternString.endsWith("*")) {
+-                patternString = patternString + "$";
+-            }
+-            Pattern p = Pattern.compile(patternString.toUpperCase());
+-            Matcher m = p.matcher(value.toUpperCase());
+-            isMatch = m.find();
+-        }
+-        return isMatch;
+-
+-    }
+-
+-    /*
+-     * check if the selected code matched
+-     */
+-    protected boolean isMatchingCode(String selectedCode, String value) {
+-        return StringUtils.isBlank(selectedCode) || selectedCode.equals(value);
+-    }
+-
+-    /*
+-     * Create a CommitteeBase object and populate it from the xml.
+-     */
+-    protected CMT populateCommitteeFromXmlDocumentContents(String xmlDocumentContents) {
+-        CMT committee = null;
+-        if (!StringUtils.isEmpty(xmlDocumentContents)) {
+-
+-            committee = (CMT) getBusinessObjectFromXML(xmlDocumentContents, getCommitteeBOClassHook().getName());
+-        }
+-        return committee;
+-    }
+     
+     protected abstract Class<CMT> getCommitteeBOClassHook();
+ 
+-
+-    /*
+-     * Retrieves substring of document contents from maintainable tag name. Then use xml service to translate xml into a business
+-     * object.
+-     */
+-    protected PersistableBusinessObject getBusinessObjectFromXML(String xmlDocumentContents, String objectTagName) {
+-        String objXml = StringUtils.substringBetween(xmlDocumentContents, "<" + objectTagName + ">", "</" + objectTagName + ">");
+-        objXml = "<" + objectTagName + ">" + objXml + "</" + objectTagName + ">";
+-        if (objXml.contains("itemDesctiption")) {
+-            objXml = objXml.replaceAll("itemDesctiption", "itemDescription");
+-        }
+-        return (PersistableBusinessObject) KRADServiceLocator.getXmlObjectSerializerService().fromXml(objXml);
+-    }
+-    
+-    /*
+-     * get the existing approved committee id
+-     */
+-    protected List<String> getCommitteeIds() {
+-        List<CMT> committees = (List<CMT>) getBusinessObjectService().findAll(getCommitteeBOClassHook());
+-        List<String> result = new ArrayList<>();
+-        committees.stream().filter(committee -> !result.contains(committee.getCommitteeId())).forEach(committee -> {
+-            result.add(committee.getCommitteeId());
+-        });
+-        return result;
+-    }
+-
+     protected String getUserIdentifier() {
+          return GlobalVariables.getUserSession().getPrincipalId();
+     }
+ 
+-    /**
+-     * This method trims the search result.
+-     * @param result, the result set to be trimmed
+-     * @param trimSize, the maximum size of the trimmed result set
+-     * @return the trimmed result set
+-     */
+-    protected List<CMT> trimResult(List<CMT> result, Integer trimSize) {
+-        List<CMT> trimmedResult = new ArrayList<>();
+-        result.stream().filter(committee -> trimmedResult.size() < trimSize).forEach(trimmedResult::add);
+-        return trimmedResult;
+-    }
+-
+     protected KcAuthorizationService getKraAuthorizationService() {
+         if (kcAuthorizationService == null) {
+             kcAuthorizationService = KcServiceLocator.getService(KcAuthorizationService.class);
+@@ -430,16 +179,4 @@ protected KcAuthorizationService getKraAuthorizationService() {
+     public void setKcAuthorizationService(KcAuthorizationService kcAuthorizationService) {
+         this.kcAuthorizationService = kcAuthorizationService;
+     }
+-
+-    public RouteHeaderService getRouteHeaderService() {
+-        if (routeHeaderService == null) {
+-            routeHeaderService = KcServiceLocator.getService(RouteHeaderService.class);
+-        }
+-
+-        return routeHeaderService;
+-    }
+-
+-    public void setRouteHeaderService(RouteHeaderService routeHeaderService) {
+-        this.routeHeaderService = routeHeaderService;
+-    }
+ }
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/DevelopmentProposalLookupableHelperServiceImpl.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/DevelopmentProposalLookupableHelperServiceImpl.java
+index c5ab7dc..f0715eb 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/DevelopmentProposalLookupableHelperServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/DevelopmentProposalLookupableHelperServiceImpl.java
+@@ -21,6 +21,7 @@
+ import org.kuali.coeus.common.framework.auth.perm.KcAuthorizationService;
+ import org.kuali.kra.infrastructure.PermissionConstants;
+ import org.kuali.kra.lookup.KraLookupableHelperServiceImpl;
++import org.kuali.rice.kew.api.KewApiConstants;
+ import org.kuali.rice.kim.api.identity.Person;
+ import org.kuali.rice.kns.document.authorization.DocumentAuthorizer;
+ import org.kuali.rice.kns.lookup.HtmlData;
+@@ -29,6 +30,8 @@
+ import org.kuali.rice.krad.bo.BusinessObject;
+ import org.kuali.rice.krad.lookup.CollectionIncomplete;
+ import org.kuali.rice.krad.util.GlobalVariables;
++import org.kuali.rice.krad.util.KRADConstants;
++import org.kuali.rice.krad.util.UrlFactory;
+ import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.beans.factory.annotation.Qualifier;
+ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+@@ -38,6 +41,7 @@
+ import java.util.ArrayList;
+ import java.util.List;
+ import java.util.Map;
++import java.util.Properties;
+ 
+ @Component("proposalDevelopmentLookupableHelperService")
+ @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+@@ -78,7 +82,7 @@
+         boolean canModifyProposal = kraAuthorizationService.hasPermission(currentUser, document, PermissionConstants.MODIFY_PROPOSAL);
+         boolean canViewProposal = kraAuthorizationService.hasPermission(currentUser, document, PermissionConstants.VIEW_PROPOSAL);
+         if(canModifyProposal) {
+-            AnchorHtmlData editHtmlData = getViewLink(document);
++            AnchorHtmlData editHtmlData = getViewLink(document.getDocumentNumber());
+             String href = editHtmlData.getHref();
+             href = href.replace("viewDocument=true", "viewDocument=false");
+             editHtmlData.setHref(href);
+@@ -86,21 +90,41 @@
+             htmlDataList.add(editHtmlData);
+         }
+         if(canViewProposal) {
+-            AnchorHtmlData viewLink = getViewLink(document);
++            AnchorHtmlData viewLink = getViewLink(document.getDocumentNumber());
+             htmlDataList.add(viewLink);
+             
+-            htmlDataList.add(getCustomLink(document, "actions", "copy", !canModifyProposal));
++            htmlDataList.add(getCustomLink(document.getDocumentNumber(), "actions", "copy", !canModifyProposal));
+         }
+         
+         if (canModifyProposal) {
+-            htmlDataList.add(getMedusaLink(document, false));
++            htmlDataList.add(getMedusaLink(document.getDocumentNumber(), false));
+         } else if (canViewProposal) {
+-            htmlDataList.add(getMedusaLink(document, true));
++            htmlDataList.add(getMedusaLink(document.getDocumentNumber(), true));
+         }
+         
+         return htmlDataList;
+     }
+ 
++    /**
++     *
++     * @param methodToCall method to call on action
++     * @param readOnly whether the document should be readOnly or not
++     */
++    protected AnchorHtmlData getCustomLink(String documentNumber, String methodToCall, String linkName, Boolean readOnly) {
++        AnchorHtmlData htmlData = new AnchorHtmlData();
++        htmlData.setDisplayText(linkName);
++        Properties parameters = new Properties();
++        parameters.put(KRADConstants.DISPATCH_REQUEST_PARAMETER, methodToCall);
++        parameters.put(KRADConstants.PARAMETER_COMMAND, KewApiConstants.DOCSEARCH_COMMAND);
++        parameters.put(KRADConstants.DOCUMENT_TYPE_NAME, getDocumentTypeName());
++        parameters.put("viewDocument", readOnly.toString());
++        parameters.put("docId", documentNumber);
++        String href  = UrlFactory.parameterizeUrl("../" + getHtmlAction(), parameters);
++
++        htmlData.setHref(href);
++        return htmlData;
++    }
++
+     @Override
+     protected String getDocumentTypeName() {
+         return "ProposalDevelopmentDocument";
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/committee/lookup/CommitteeLookupableHelperServiceImpl.java b/coeus-impl/src/main/java/org/kuali/kra/committee/lookup/CommitteeLookupableHelperServiceImpl.java
+index 1fe2722..87a5057 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/committee/lookup/CommitteeLookupableHelperServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/committee/lookup/CommitteeLookupableHelperServiceImpl.java
+@@ -31,7 +31,7 @@
+  * 
+  * This class is for committee lookup.
+  */
+-public class CommitteeLookupableHelperServiceImpl extends CommitteeLookupableHelperServiceImplBase<Committee, CommitteeDocument> {
++public class CommitteeLookupableHelperServiceImpl extends CommitteeLookupableHelperServiceImplBase<Committee> {
+ 
+     private static final String DOCHANDLER_LINK = "%s/DocHandler.do?command=displayDocSearchView&docId=%s";
+ 
+@@ -75,11 +75,6 @@ protected String getModifyCommitteePermissionNameHook() {
+     }
+ 
+     @Override
+-    protected Class<CommitteeDocument> getCommitteeDocumentBOClassHook() {
+-        return CommitteeDocument.class;
+-    }
+-
+-    @Override
+     protected Class<Committee> getCommitteeBOClassHook() {
+         return Committee.class;
+     }
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/iacuc/IacucProtocolLookupableHelperServiceImpl.java b/coeus-impl/src/main/java/org/kuali/kra/iacuc/IacucProtocolLookupableHelperServiceImpl.java
+index 512e9f5..b3b1f1b 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/iacuc/IacucProtocolLookupableHelperServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/iacuc/IacucProtocolLookupableHelperServiceImpl.java
+@@ -108,7 +108,7 @@
+         List<HtmlData> htmlDataList = new ArrayList<HtmlData>();
+         if (kraAuthorizationService.hasPermission(getUserIdentifier(), (ProtocolBase) businessObject, PermissionConstants.MODIFY_IACUC_PROTOCOL)) {
+             // Change "edit" to edit same document, NOT initializing a new Doc
+-            AnchorHtmlData editHtmlData = getViewLink(((ProtocolBase) businessObject).getProtocolDocument());
++            AnchorHtmlData editHtmlData = getViewLink(((ProtocolBase) businessObject).getProtocolDocument().getDocumentNumber());
+             String href = editHtmlData.getHref();
+             href = href.replace("viewDocument=true", "viewDocument=false");
+             editHtmlData.setHref(href);
+@@ -121,7 +121,7 @@
+             htmlDataList.add(copyHtmlData);
+         }
+         if (kraAuthorizationService.hasPermission(getUserIdentifier(), (IacucProtocol) businessObject, PermissionConstants.VIEW_IACUC_PROTOCOL)) {
+-            htmlDataList.add(getViewLink(((ProtocolBase) businessObject).getProtocolDocument()));
++            htmlDataList.add(getViewLink(((ProtocolBase) businessObject).getProtocolDocument().getDocumentNumber()));
+         }
+         return htmlDataList;
+     }
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/iacuc/committee/lookup/IacucCommitteeLookupableHelperServiceImpl.java b/coeus-impl/src/main/java/org/kuali/kra/iacuc/committee/lookup/IacucCommitteeLookupableHelperServiceImpl.java
+index a31297e..4e499cf 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/iacuc/committee/lookup/IacucCommitteeLookupableHelperServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/iacuc/committee/lookup/IacucCommitteeLookupableHelperServiceImpl.java
+@@ -27,7 +27,7 @@
+ import org.kuali.kra.iacuc.committee.document.CommonCommitteeDocument;
+ import org.kuali.kra.infrastructure.PermissionConstants;
+ 
+-public class IacucCommitteeLookupableHelperServiceImpl extends CommitteeLookupableHelperServiceImplBase<IacucCommittee, CommonCommitteeDocument> {
++public class IacucCommitteeLookupableHelperServiceImpl extends CommitteeLookupableHelperServiceImplBase<IacucCommittee> {
+ 
+ 
+     private static final String DOCHANDLER_LINK = "%s/%s?methodToCall=docHandler&docId=%s&command=displayDocSearchView";
+@@ -71,11 +71,6 @@ protected String getModifyCommitteePermissionNameHook() {
+     }
+ 
+     @Override
+-    protected Class<CommonCommitteeDocument> getCommitteeDocumentBOClassHook() {
+-        return CommonCommitteeDocument.class;
+-    }
+-
+-    @Override
+     protected Class<IacucCommittee> getCommitteeBOClassHook() {
+         return IacucCommittee.class;
+     }
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/institutionalproposal/service/impl/InstitutionalProposalLookupableHelperServiceImpl.java b/coeus-impl/src/main/java/org/kuali/kra/institutionalproposal/service/impl/InstitutionalProposalLookupableHelperServiceImpl.java
+index 741c7ed..bfd3bdb 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/institutionalproposal/service/impl/InstitutionalProposalLookupableHelperServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/institutionalproposal/service/impl/InstitutionalProposalLookupableHelperServiceImpl.java
+@@ -145,7 +145,7 @@
+         if (includeMergeCustomActionUrls) {
+             htmlDataList.add(getSelectLink((InstitutionalProposal) businessObject));
+         }
+-        htmlDataList.add(getMedusaLink(((InstitutionalProposal) businessObject).getInstitutionalProposalDocument(), false));
++        htmlDataList.add(getMedusaLink(((InstitutionalProposal) businessObject).getInstitutionalProposalDocument().getDocumentNumber(), false));
+         return htmlDataList;
+     }
+     
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/lookup/KraLookupableHelperServiceImpl.java b/coeus-impl/src/main/java/org/kuali/kra/lookup/KraLookupableHelperServiceImpl.java
+index b6f2f8b..e38c6c7 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/lookup/KraLookupableHelperServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/lookup/KraLookupableHelperServiceImpl.java
+@@ -26,7 +26,6 @@
+ import org.kuali.rice.kns.web.struts.form.LookupForm;
+ import org.kuali.rice.kns.web.ui.Field;
+ import org.kuali.rice.krad.bo.BusinessObject;
+-import org.kuali.rice.krad.document.Document;
+ import org.kuali.rice.krad.util.KRADConstants;
+ import org.kuali.rice.krad.util.ObjectUtils;
+ import org.kuali.rice.krad.util.UrlFactory;
+@@ -44,80 +43,58 @@
+      */
+     @Override
+     public List<HtmlData> getCustomActionUrls(BusinessObject businessObject, List pkNames) {
+-        List<HtmlData> htmlDataList = new ArrayList<HtmlData>();
++        List<HtmlData> htmlDataList = new ArrayList<>();
+         addEditHtmlData(htmlDataList, businessObject);
+         return htmlDataList;
+ 
+ }
+     protected void addEditHtmlData(List<HtmlData> htmlDataList, BusinessObject businessObject) {
++        htmlDataList.add(getEditLink(businessObject));
++    }
++
++    protected AnchorHtmlData getEditLink(BusinessObject businessObject) {
+         Properties parameters = new Properties();
+         parameters.put(KRADConstants.DISPATCH_REQUEST_PARAMETER, KRADConstants.DOC_HANDLER_METHOD);
+         parameters.put(KRADConstants.PARAMETER_COMMAND, KewApiConstants.INITIATE_COMMAND);
+         parameters.put(KRADConstants.DOCUMENT_TYPE_NAME, getDocumentTypeName());
+         parameters.put(getKeyFieldName(), ObjectUtils.getPropertyValue(businessObject, getKeyFieldName()).toString());
+         String href = UrlFactory.parameterizeUrl("../"+getHtmlAction(), parameters);
+-        
+-        AnchorHtmlData anchorHtmlData = new AnchorHtmlData(href, 
++
++        return new AnchorHtmlData(href,
+                 KRADConstants.DOC_HANDLER_METHOD, KRADConstants.MAINTENANCE_EDIT_METHOD_TO_CALL);
+-        htmlDataList.add(anchorHtmlData);
+     }
+ 
+-    protected AnchorHtmlData getViewLink(Document document) {
++    protected AnchorHtmlData getViewLink(String documentNumber) {
+         AnchorHtmlData htmlData = new AnchorHtmlData();
+         htmlData.setDisplayText(VIEW);
+-        String href  = UrlFactory.parameterizeUrl("../"+getHtmlAction(), getViewLinkProperties(document));
+-        
+-        htmlData.setHref(href);
+-        return htmlData;
+-
+-    }
+-
+-    protected Properties getViewLinkProperties(Document document) {
+         final Properties parameters = new Properties();
+         parameters.put(KRADConstants.DISPATCH_REQUEST_PARAMETER, KRADConstants.DOC_HANDLER_METHOD);
+         parameters.put(KRADConstants.PARAMETER_COMMAND, KewApiConstants.DOCSEARCH_COMMAND);
+         parameters.put(KRADConstants.DOCUMENT_TYPE_NAME, getDocumentTypeName());
+         parameters.put("viewDocument", "true");
+-        parameters.put("docId", document.getDocumentNumber());
+-        return parameters;
+-    }
+-
+-    protected AnchorHtmlData getMedusaLink(Document document, Boolean readOnly) {
+-        AnchorHtmlData htmlData = new AnchorHtmlData();
+-        htmlData.setDisplayText(MEDUSA);
+-        Properties parameters = new Properties();
+-        parameters.put(KRADConstants.DISPATCH_REQUEST_PARAMETER, "medusa");
+-        parameters.put(KRADConstants.PARAMETER_COMMAND, KewApiConstants.DOCSEARCH_COMMAND);
+-        parameters.put(KRADConstants.DOCUMENT_TYPE_NAME, getDocumentTypeName());
+-        parameters.put("viewDocument", readOnly.toString());
+-        parameters.put("docId", document.getDocumentNumber());
++        parameters.put("docId", documentNumber);
+         String href  = UrlFactory.parameterizeUrl("../"+getHtmlAction(), parameters);
+         
+         htmlData.setHref(href);
+         return htmlData;
++
+     }
+-    
+-    /**
+-     *
+-     * @param methodToCall method to call on action
+-     * @param readOnly whether the document should be readOnly or not
+-     */
+-    protected AnchorHtmlData getCustomLink(Document document, String methodToCall, String linkName, Boolean readOnly) {
++
++    protected AnchorHtmlData getMedusaLink(String documentNumber, Boolean readOnly) {
+         AnchorHtmlData htmlData = new AnchorHtmlData();
+-        htmlData.setDisplayText(linkName);
++        htmlData.setDisplayText(MEDUSA);
+         Properties parameters = new Properties();
+-        parameters.put(KRADConstants.DISPATCH_REQUEST_PARAMETER, methodToCall);
++        parameters.put(KRADConstants.DISPATCH_REQUEST_PARAMETER, "medusa");
+         parameters.put(KRADConstants.PARAMETER_COMMAND, KewApiConstants.DOCSEARCH_COMMAND);
+         parameters.put(KRADConstants.DOCUMENT_TYPE_NAME, getDocumentTypeName());
+         parameters.put("viewDocument", readOnly.toString());
+-        parameters.put("docId", document.getDocumentNumber());
++        parameters.put("docId", documentNumber);
+         String href  = UrlFactory.parameterizeUrl("../"+getHtmlAction(), parameters);
+-        
++
+         htmlData.setHref(href);
+         return htmlData;
+     }
+ 
+-    
+     /**
+      * To force to it to show action links, such as 'edit' if it is not 'lookup' to search of return value.
+      */
+@@ -162,7 +139,6 @@ protected void updateLookupField(Field field, String keyName, String className)
+         
+     }
+ 
+-        
+     /**
+      * htmlaction for 'edit' link
+      */
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/negotiations/lookup/NegotiationLookupableHelperServiceImpl.java b/coeus-impl/src/main/java/org/kuali/kra/negotiations/lookup/NegotiationLookupableHelperServiceImpl.java
+index 244b8b3..d483051 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/negotiations/lookup/NegotiationLookupableHelperServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/negotiations/lookup/NegotiationLookupableHelperServiceImpl.java
+@@ -75,7 +75,7 @@
+     public List<HtmlData> getCustomActionUrls(BusinessObject businessObject, List pkNames) {
+         List<HtmlData> htmlDataList = new ArrayList<HtmlData>();
+         htmlDataList.add(getOpenLink(((Negotiation) businessObject).getDocument()));
+-        htmlDataList.add(getMedusaLink(((Negotiation) businessObject).getDocument(), false));
++        htmlDataList.add(getMedusaLink(((Negotiation) businessObject).getDocument().getDocumentNumber(), false));
+         return htmlDataList;
+     }
+     
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/protocol/ProtocolLookupableHelperServiceImplBase.java b/coeus-impl/src/main/java/org/kuali/kra/protocol/ProtocolLookupableHelperServiceImplBase.java
+index 2ba45e6..e1d3540 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/protocol/ProtocolLookupableHelperServiceImplBase.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/protocol/ProtocolLookupableHelperServiceImplBase.java
+@@ -318,7 +318,7 @@ protected AnchorHtmlData getPerformActionLink(BusinessObject businessObject, Str
+         if (kraAuthorizationService.hasPermission(getUserIdentifier(), (ProtocolBase) businessObject, PermissionConstants.MODIFY_PROTOCOL)) {
+             //htmlDataList = super.getCustomActionUrls(businessObject, pkNames);
+             // Chnage "edit" to edit same document, NOT initializing a new Doc
+-            AnchorHtmlData editHtmlData = getViewLink(((ProtocolBase) businessObject).getProtocolDocument());
++            AnchorHtmlData editHtmlData = getViewLink(((ProtocolBase) businessObject).getProtocolDocument().getDocumentNumber());
+             String href = editHtmlData.getHref();
+             href = href.replace("viewDocument=true", "viewDocument=false");
+             editHtmlData.setHref(href);
+@@ -331,7 +331,7 @@ protected AnchorHtmlData getPerformActionLink(BusinessObject businessObject, Str
+             htmlDataList.add(htmlData);
+         }
+         if (kraAuthorizationService.hasPermission(getUserIdentifier(), (ProtocolBase) businessObject, PermissionConstants.VIEW_PROTOCOL)) {
+-            htmlDataList.add(getViewLink(((ProtocolBase) businessObject).getProtocolDocument()));
++            htmlDataList.add(getViewLink(((ProtocolBase) businessObject).getProtocolDocument().getDocumentNumber()));
+         }
+         return htmlDataList;
+     }
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/protocol/ProtocolSubmissionLookupableHelperServiceImplBase.java b/coeus-impl/src/main/java/org/kuali/kra/protocol/ProtocolSubmissionLookupableHelperServiceImplBase.java
+index cd73eae..f9d649e 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/protocol/ProtocolSubmissionLookupableHelperServiceImplBase.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/protocol/ProtocolSubmissionLookupableHelperServiceImplBase.java
+@@ -58,7 +58,7 @@ public void setBusinessObjectService(BusinessObjectService businessObjectService
+      * create the view link url for protocolsubmission
+      */
+     protected AnchorHtmlData getViewLink(ProtocolSubmissionBase protocolSubmission) {
+-        AnchorHtmlData viewHtmlData = super.getViewLink(protocolSubmission.getProtocol().getProtocolDocument());
++        AnchorHtmlData viewHtmlData = super.getViewLink(protocolSubmission.getProtocol().getProtocolDocument().getDocumentNumber());
+         String submissionIdParam = "&submissionId=" + protocolSubmission.getSubmissionId();
+         String href = viewHtmlData.getHref();
+         href = href.replace(DOC_TYPE_NAME_PARAM, submissionIdParam + DOC_TYPE_NAME_PARAM);
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/protocol/onlinereview/ProtocolOnlineReviewLookupableHelperServiceImplBase.java b/coeus-impl/src/main/java/org/kuali/kra/protocol/onlinereview/ProtocolOnlineReviewLookupableHelperServiceImplBase.java
+index 9f759bb..d3f2579 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/protocol/onlinereview/ProtocolOnlineReviewLookupableHelperServiceImplBase.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/protocol/onlinereview/ProtocolOnlineReviewLookupableHelperServiceImplBase.java
+@@ -164,36 +164,36 @@ protected void addEditHtmlData(List<HtmlData> htmlDataList, BusinessObject busin
+         ProtocolOnlineReviewBase protocolOnlineReview = (ProtocolOnlineReviewBase) businessObject;
+         
+         if (getProtocolOLRSavedStatusCodeHook().equals(protocolOnlineReview.getProtocolOnlineReviewStatusCode())) {
+-            htmlDataList.add(getEditLink(protocolOnlineReview.getProtocolOnlineReviewDocument()));
++            htmlDataList.add(getEditLinkForDocument(protocolOnlineReview.getProtocolOnlineReviewDocument()));
+         } else {
+-            htmlDataList.add(getViewLink(protocolOnlineReview.getProtocolOnlineReviewDocument()));
++            htmlDataList.add(getViewLink(protocolOnlineReview.getProtocolOnlineReviewDocument().getDocumentNumber()));
+         }
+     }
+     
+     protected abstract String getProtocolOLRSavedStatusCodeHook();
+ 
+     @Override
+-    protected AnchorHtmlData getViewLink(Document document) {
+-        Properties parameters = getLinkProperties(document);
++    protected AnchorHtmlData getViewLink(String documentNumber) {
++        Properties parameters = getLinkProperties(documentNumber);
+         parameters.put("viewDocument", "true");
+         String displayText = "view";
+         
+         return getAnchorHtmlData(parameters, displayText);
+     }
+     
+-    private AnchorHtmlData getEditLink(Document document) {
+-        Properties parameters = getLinkProperties(document);
++    private AnchorHtmlData getEditLinkForDocument(Document document) {
++        Properties parameters = getLinkProperties(document.getDocumentNumber());
+         String displayText = KRADConstants.MAINTENANCE_EDIT_METHOD_TO_CALL;
+         
+         return getAnchorHtmlData(parameters, displayText);
+     }
+     
+-    private Properties getLinkProperties(Document document) {
++    private Properties getLinkProperties(String documentNumber) {
+         Properties parameters = new Properties();
+         parameters.put(KRADConstants.DISPATCH_REQUEST_PARAMETER, "redirectToProtocolFromReview");
+         parameters.put(KRADConstants.PARAMETER_COMMAND, "displayDocSearchView");
+         parameters.put(KRADConstants.DOCUMENT_TYPE_NAME, getDocumentTypeName());
+-        parameters.put("docId", document.getDocumentNumber());
++        parameters.put("docId", documentNumber);
+         return parameters;
+     }
+     

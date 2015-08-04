@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+
+	<bean id="PropBudget-BudgetSettings-Dialog" parent="PropBudget-BudgetSettings-Dialog-parent" />
+	<bean id="PropBudget-BudgetSettings-Dialog-parent"
+		abstract="true" parent="Uif-DialogGroup" p:headerText="Budget Settings"
+		p:destroyDialogOnHidden="true">
+		<property name="header.upperGroup">
+            <null/>
+  		</property>
+		<property name="items">
+			<list>
+				<ref bean="PropBudget-BudgetSettings-Section" />
+			</list>
+		</property>
+		<property name="footer">
+			<bean parent="Uif-DialogFooter">
+				<property name="items">
+					<list>
+						<bean parent="Uif-PrimaryActionButton" p:actionLabel="Apply Changes" p:methodToCall="saveBudgetSettings"
+							p:order="10" p:dialogDismissOption="REQUEST" p:performClientSideValidation="true"
+							p:render="@{!#parent.readOnly or #view.editModes.containsKey(T(org.kuali.coeus.propdev.impl.budget.core.ProposalBudgetConstants.AuthConstants).CHANGE_COMPLETE_STATUS)}"/>
+						<bean parent="Uif-SecondaryActionButton" p:actionLabel="Close"
+							p:methodToCall="closeBudgetValidation" p:order="20" p:performClientSideValidation="true" />
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="PropBudget-BudgetSettings-Section" parent="PropBudget-BudgetSettings-Section-parent" />
+	<bean id="PropBudget-BudgetSettings-Section-parent"
+		parent="Uif-CssGridSection-1FieldLabelColumn" p:fieldBindingObjectPath="budget">
+		<property name="items">
+			<list>
+				<bean parent="Uif-DataField" p:propertyName="startDate"
+					p:order="10" p:fieldLabel.renderColon="false"/>
+				<bean parent="Uif-DataField" p:propertyName="endDate"
+					p:order="20" p:fieldLabel.renderColon="false"/>
+				<bean parent="Uif-InputField" p:propertyName="totalDirectCostLimit"
+					p:order="30" p:fieldLabel.renderColon="false"/>
+				<bean parent="Uif-InputField" p:propertyName="budgetStatus"
+					p:order="40" p:fieldLabel.renderColon="false" p:enableAutoQuickfinder="false"
+					p:readOnly="@{!#view.editModes.containsKey(#budgetAuthConsts.CHANGE_COMPLETE_STATUS)}"/>
+				<bean parent="Uif-InputField" p:propertyName="onOffCampusFlag"
+					p:order="50" p:fieldLabel.renderColon="false"/>
+				<bean parent="Uif-InputField" p:propertyName="residualFunds"
+					p:order="60" p:fieldLabel.renderColon="false"/>
+				<bean parent="Uif-InputField" p:propertyName="totalCostLimit"
+					p:order="70" p:fieldLabel.renderColon="false"/>
+				<bean parent="Uif-InputField" p:propertyName="urRateClassCode" p:enableAutoQuickfinder="false"
+					p:order="80" p:fieldLabel.renderColon="false"
+					p:readOnly="@{#parent.readOnly and !#view.editModes.containsKey(#budgetAuthConsts.MODIFY_HIERARCHY_PARENT_BUDGET)}"/>
+				<bean parent="Uif-InputField" p:propertyName="ohRateClassCode" p:enableAutoQuickfinder="false"
+					p:order="90" p:fieldLabel.renderColon="false"
+					p:readOnly="@{#parent.readOnly and !#view.editModes.containsKey(#budgetAuthConsts.MODIFY_HIERARCHY_PARENT_BUDGET)}"/>
+				<bean parent="Uif-InputField" p:propertyName="comments"
+					p:order="100" p:fieldLabel.renderColon="false">
+					<property name="control">
+						<bean parent="Uif-TextAreaControl" />
+					</property>
+				</bean>
+				<bean parent="Uif-InputField" p:propertyName="modularBudgetFlag" p:label="Modular Budget" 
+					p:order="110"
+					p:readOnlyDisplayReplacement="@{#fp.modularBudgetFlag ? 'Yes' : 'No'}" 
+					p:readOnly="@{#parent.readOnly and !#view.editModes.containsKey(#budgetAuthConsts.MODIFY_HIERARCHY_PARENT_BUDGET)}">
+					<property name="control">
+						<bean parent="Uif-CheckboxControl" />
+					</property>
+				</bean>
+				<bean parent="Uif-InputField" p:propertyName="submitCostSharingFlag" p:label="Submit Cost Sharing"
+					p:order="120"
+					p:readOnlyDisplayReplacement="@{#fp.submitCostSharingFlag ? 'Yes' : 'No'}" 
+					p:readOnly="@{#parent.readOnly and !#view.editModes.containsKey(#budgetAuthConsts.MODIFY_HIERARCHY_PARENT_BUDGET)}">
+					<property name="control">
+						<bean parent="Uif-CheckboxControl" />
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>	
+
+  	<bean id="PropBudget-BudgetSettings-ChangeRateDialog" parent="Uif-DialogGroup"
+    	p:headerText ="Please Select"
+		p:promptText ="Changing F&amp;A Rate Type or Unrecovered F&amp;A Rate Type will result in recalculation of budget. You may need to distribute underrecovery. Do you want to change the F&amp;A/Unrecovered F&amp;A Rate Type?"
+    	p:dialogCssClass ="modal-sm" p:destroyDialogOnHidden="true">
+		<property name="footer">
+			<bean parent="Uif-DialogFooter">
+				<property name="items">
+					<list>
+						<bean parent="Uif-PrimaryActionButton" p:actionLabel="Yes" p:methodToCall="confirmBudgetSettings"
+							p:order="10" p:dialogDismissOption="REQUEST"
+							p:successCallback="dismissDialog('PropBudget-BudgetSettings-Dialog');"
+							p:render="@{!#parent.readOnly or #view.editModes.containsKey(T(org.kuali.coeus.propdev.impl.budget.core.ProposalBudgetConstants.AuthConstants).CHANGE_COMPLETE_STATUS)}"/>
+						<bean parent="Uif-SecondaryActionButton" p:actionLabel="No" p:methodToCall="resetBudgetSettings"
+							p:refreshId="PropBudget-BudgetSettings-Dialog" p:dialogDismissOption="REQUEST"
+							p:order="20" />
+					</list>
+				</property>
+			</bean>
+		</property>
+  	</bean>
+
+</beans>

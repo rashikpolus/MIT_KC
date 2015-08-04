@@ -1,0 +1,93 @@
+From 6942ff4c4b8e76d6e799a210d7bb35ed00aa360d Mon Sep 17 00:00:00 2001
+From: Gayathri Athreya <gathreya@email.arizona.edu>
+Date: Wed, 17 Jun 2015 12:55:22 -0700
+Subject: [PATCH] RESKC-555: person bio deletion issues. Tried to delete the
+ Co-Investigator from the proposal and each time got Incident report. Then
+ navigation within proposal was not possible and more incident reports
+ resulted when selecting any tab from left menu. removing bio uploaded for
+ person from db resolved issue. Associated Personnel attachments should be
+ deleted when person is deleted as Coeus did. Step to reproduce: Add a rolodex
+ add personnel attachments which insert records in eps_prop_person and
+ eps_prop_person_bio tables. Delete the person, which delete the person record
+ from eps_prop_person table, but not from eps_prop_person_bio table. So the
+ error.
+
+---
+ .../ProposalDevelopmentPersonnelController.java    | 31 +++++++++++++++-------
+ .../ProposalPersonBiographyServiceImpl.java        |  6 +++--
+ 2 files changed, 26 insertions(+), 11 deletions(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/ProposalDevelopmentPersonnelController.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/ProposalDevelopmentPersonnelController.java
+index 7655e4e..d838419 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/ProposalDevelopmentPersonnelController.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/ProposalDevelopmentPersonnelController.java
+@@ -55,6 +55,7 @@
+ @Controller
+ public class ProposalDevelopmentPersonnelController extends ProposalDevelopmentControllerBase {
+ 
++    public static final String PROPOSAL_PERSONS_PATH = "document.developmentProposal.proposalPersons";
+     @Autowired
+     @Qualifier("wizardControllerService")
+     private WizardControllerService wizardControllerService;
+@@ -155,23 +156,35 @@ public ModelAndView navigateToCreditAllocation(@ModelAttribute("KualiForm") Prop
+     public ModelAndView deletePerson(@ModelAttribute("KualiForm") ProposalDevelopmentDocumentForm form,
+         @RequestParam("actionParameters[" + UifParameters.SELECTED_COLLECTION_PATH + "]") String selectedCollectionPath,
+         @RequestParam("actionParameters[" + UifParameters.SELECTED_LINE_INDEX + "]") String selectedLine) throws Exception {
+-        if (selectedCollectionPath.equals("document.developmentProposal.proposalPersons")) {
++        if (selectedCollectionPath.equals(PROPOSAL_PERSONS_PATH)) {
+             Collection<Object> collection = ObjectPropertyUtils.getPropertyValue(form, selectedCollectionPath);
+-            Object deleteLine = ((List<Object>) collection).get(Integer.parseInt(selectedLine));String personId = ((ProposalPerson)deleteLine).getPersonId();
++            Object deleteLine = ((List<Object>) collection).get(Integer.parseInt(selectedLine));
++            String personId = ((ProposalPerson)deleteLine).getPersonId();
+ 
+-            List<ProposalPersonBiography> tmpBios= new ArrayList<ProposalPersonBiography>();
+-            for (ProposalPersonBiography biography : form.getDevelopmentProposal().getPropPersonBios()) {
+-                if (!biography.getPersonId().equals(personId)) {
++            deleteProposalPersonBios(form.getDevelopmentProposal(), (ProposalPerson) deleteLine, personId);
++        }
++
++        return getCollectionControllerService().deleteLine(form);
++    }
++
++    private void deleteProposalPersonBios(DevelopmentProposal proposal, ProposalPerson deleteLine, String personId) {
++        List<ProposalPersonBiography> tmpBios= new ArrayList<>();
++        for (ProposalPersonBiography biography : proposal.getPropPersonBios()) {
++            if (personId == null) {
++                Integer rolodexId = deleteLine.getRolodexId();
++                if (rolodexId.compareTo(biography.getRolodexId()) != 0) {
+                     tmpBios.add(biography);
+                 }
+             }
+-            form.getDevelopmentProposal().setPropPersonBios(tmpBios);
++            else {
++                if (!biography.getPersonId().equals(personId))
++                    tmpBios.add(biography);
++            }
+         }
+-
+-        return getCollectionControllerService().deleteLine(form);
++        proposal.setPropPersonBios(tmpBios);
+     }
+ 
+-   @Transactional @RequestMapping(value = "/proposalDevelopment", params = "methodToCall=clearAnswers")
++    @Transactional @RequestMapping(value = "/proposalDevelopment", params = "methodToCall=clearAnswers")
+    public ModelAndView clearAnswers(@ModelAttribute("KualiForm") DocumentFormBase form, BindingResult result,
+            HttpServletRequest request, HttpServletResponse response) throws Exception {
+ 	   ProposalDevelopmentDocumentForm pdForm = (ProposalDevelopmentDocumentForm) form;
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/attachment/ProposalPersonBiographyServiceImpl.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/attachment/ProposalPersonBiographyServiceImpl.java
+index da338ae..89809e1 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/attachment/ProposalPersonBiographyServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/attachment/ProposalPersonBiographyServiceImpl.java
+@@ -80,8 +80,10 @@ public void prepareProposalPersonBiographyForSave(DevelopmentProposal developmen
+ 
+         if (biography.getProposalPersonNumber() != null) {
+             ProposalPerson proposalPerson = getPerson(developmentProposal,biography.getProposalPersonNumber() );
+-            biography.setPersonId(proposalPerson.getPersonId());
+-            biography.setRolodexId(proposalPerson.getRolodexId());
++            if (proposalPerson != null) {
++                biography.setPersonId(proposalPerson.getPersonId());
++                biography.setRolodexId(proposalPerson.getRolodexId());
++            }
+         }
+     }
+     /**

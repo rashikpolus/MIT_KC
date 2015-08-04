@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+     http://www.springframework.org/schema/util
+     http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<bean id="PropDev-SubmitPage" parent="MIT-PropDev-SubmitPage-parentBean" />
+	<bean id="MIT-PropDev-SubmitPage-parentBean" parent="PropDev-SubmitPage-parentBean">
+		<property name="footer">
+	 	 <bean  parent="Uif-HorizontalBoxGroup" p:align="left" >
+			<property name="items">
+				<list>
+                    <bean p:actionLabel="Send Adhoc" parent="Uif-PrimaryActionButton" p:methodToCall="sendAdHocRequests"  p:order="5"
+                          p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_SEND_ADHOC_REQUESTS]}"/>
+
+					<bean  p:actionLabel="Submit for Review" parent="Uif-PrimaryActionButton" p:methodToCall="submitForReview"  p:order="10"
+                           p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_ROUTE] and document.documentHeader.workflowDocument.saved}"/>
+
+                    <bean  p:actionLabel="Ad Hoc Recipients" parent="Uif-PrimaryActionButton" p:methodToCall="populateAdHocs"  p:order="20"
+                           p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_ADD_ADHOC_REQUESTS] and !document.developmentProposal.isChild()}" />
+
+
+                    <bean parent="Uif-PrimaryActionButton" p:actionLabel="Approve" p:methodToCall="approve" p:order="30"
+                          p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_APPROVE]}"/>
+
+                    <bean parent="Uif-SecondaryActionButton" p:methodToCall="disapproveProposal" p:actionLabel="Disapprove"
+                          p:preSubmitCall="dirtyFormState.skipDirtyChecks = true; return true;"
+                          p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_DISAPPROVE]}" p:order="40">
+                        <property name="confirmationDialog">
+                            <bean id="DisapproveExplanationDialog" parent="Uif-DialogGroup-OkCancelExpl" p:promptText="Reason for disapprove?"/>
+                        </property>
+                    </bean>
+
+                    <bean parent="Uif-SecondaryActionButton" p:actionLabel="Return" p:methodToCall="reject" p:order="50"
+                          p:render="@{#editModes['rejectProposal']}"/>
+
+                    <bean parent="Uif-LinkField" p:linkText="View Route Log"
+                          p:render="@{!document.developmentProposal.child}"
+                          p:href="@{#ConfigProperties['rice.server.url']}/kew/RouteLog.do?documentId=@{document.developmentProposal.proposalDocument.documentNumber}"  p:order="60"
+                    p:link.openInDialog="true" />
+                    
+                    <bean parent="Uif-RecallAction" p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_RECALL] and !document.developmentProposal.child}"  p:order="70">
+              			<property name="confirmationDialog">
+             				<bean id="ConfirmRecallDialog" parent="Uif-DialogGroup-OkCancelExpl" p:promptText="Reason for recall?"/>
+            			</property>
+           			</bean>
+           			
+
+
+			   		<bean parent="Uif-SecondaryActionButton" p:actionLabel="Cancel proposal" p:methodToCall="cancelProposal" p:order="80"
+						p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_CANCEL]}">
+					 	<property name="confirmationDialog">
+			          		<bean id="ProposalCancelDialog" parent="Uif-DialogGroup-OkCancel" p:promptText="Are you sure you want to cancel ?"/>
+			          	</property>
+					</bean>
+
+					<bean parent="Uif-Space"/><bean parent="Uif-Space"/>
+					 
+					 <bean parent="Uif-SecondaryActionButton" p:actionLabel="Delete Proposal" p:methodToCall="deleteProposal" p:order="90"
+					 	p:render="@{#actionFlags[#{deleteDocument}]}">
+					 	<property name="confirmationDialog">
+			          		<bean id="ProposalDeleteDialog" parent="Uif-DialogGroup-OkCancel" p:promptText="Are you sure you want to delete ?"/>
+			          	</property>
+					 </bean>
+					 
+					<bean id="PropDev-Resumbit-SubmitToSponsorButton" parent="Uif-SecondaryActionButton" p:actionLabel="Submit to Sponsor" p:methodToCall="submitToSponsor" p:order="100"
+					 	p:render="@{#actionFlags[#{submitToSponsor}] and !document.developmentProposal.child}" p:onClickScript="jQuery(this).hide();">
+					</bean>	
+					
+					<bean parent="Uif-SecondaryActionButton" p:actionLabel="Submit to S2S" p:methodToCall="submitToS2s" p:order="110"
+					 	p:render="@{#actionFlags[#{submitToS2s}] and !document.developmentProposal.child}" p:successCallback="jQuery('#PropDev-OpportunityPage-SubmissionDetailsSection_tab').click()">
+					</bean>				
+						
+					<bean parent="Uif-DropdownToggleMenu" p:toggleText="More Actions"  p:align="right" p:order="120">
+					  <property name="menuItems">
+					    <list>
+					      <bean parent="Uif-MenuAction" p:actionLabel="Send Notifications" p:order="10" p:refreshId="Kc-SendNotification-Wizard" p:methodToCall="prepareNotificationWizard"
+                                p:successCallback="showDialog('Kc-SendNotification-Wizard');" p:render="@{!viewOnly}"/>
+					      	 
+					      <bean parent="Uif-MenuAction" p:actionLabel="Reload proposal"  p:methodToCall="reload" p:order="20"  
+					      	p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_RELOAD]}"/>		
+					      				 
+					      <bean parent="Uif-MenuAction" p:actionLabel="Blanket Approve" p:methodToCall="blanketApprove" p:order="30"
+					      		p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_BLANKET_APPROVE] and !document.developmentProposal.child}"/>
+						  <bean parent="Uif-MenuDivider"/>
+					      
+					    </list>
+					  </property>
+					 </bean> 
+					 <bean parent="Uif-SecondaryActionButton" p:ajaxSubmit="true" p:methodToCall="closeWithoutSave" p:actionLabel="Close" p:order="130" />
+				</list>
+			</property>
+		</bean> 
+	
+	 </property>
+	</bean>
+    
+</beans>

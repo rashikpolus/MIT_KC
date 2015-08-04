@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="ProtocolAttachmentTypeGroup" parent="ProtocolAttachmentTypeGroup-parentBean" />
+    <bean id="ProtocolAttachmentTypeGroup-parentBean" abstract="true" parent="BusinessObjectEntry">
+        <property name="businessObjectClass" value="org.kuali.kra.irb.noteattachment.ProtocolAttachmentTypeGroup" />
+		<property name="objectLabel" value="Protocol Attachment Type Group" />
+        <property name="inquiryDefinition" >
+            <ref bean="ProtocolAttachmentTypeGroup-inquiryDefinition" />
+        </property>
+        <property name="lookupDefinition" >
+            <ref bean="ProtocolAttachmentTypeGroup-lookupDefinition" />
+        </property>
+        <property name="titleAttribute" value="id" />
+        <property name="attributes" >
+            <list>
+                <ref bean="ProtocolAttachmentTypeGroup-id" />
+                <ref bean="ProtocolAttachmentTypeGroup-typeCode" />
+                <ref bean="ProtocolAttachmentTypeGroup-groupCode" />
+                <ref bean="ProtocolAttachmentTypeGroup-versionNumber" />
+            </list>
+        </property>
+    </bean>
+
+    <!-- Attribute Definitions -->
+    <bean id="ProtocolAttachmentTypeGroup-id" parent="ProtocolAttachmentTypeGroup-id-parentBean" />
+    <bean id="ProtocolAttachmentTypeGroup-id-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="id" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="id" />
+        <property name="shortLabel" value="id" />
+        <property name="maxLength" value="12" />
+        <property name="validationPattern" >
+            <bean parent="NumericValidationPattern" />
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+        <property name="control" >
+      <bean parent="TextControlDefinition" p:size="15"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="15" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="id" />
+        <property name="description" value="id" />
+    </bean>
+    
+    <bean id="ProtocolAttachmentTypeGroup-typeCode" parent="ProtocolAttachmentTypeGroup-typeCode-parentBean" />
+    <bean id="ProtocolAttachmentTypeGroup-typeCode-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="typeCode" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Type Code" />
+        <property name="shortLabel" value="Type Code" />
+        <property name="maxLength" value="3" />
+        <property name="validationPattern" >
+            <bean parent="NumericValidationPattern" />
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+        <property name="control" >
+      <bean parent="TextControlDefinition" p:size="5"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="5" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="Type Code" />
+        <property name="description" value="Type Code" />
+    </bean>
+    
+    <bean id="ProtocolAttachmentTypeGroup-groupCode" parent="ProtocolAttachmentTypeGroup-groupCode-parentBean" />
+    <bean id="ProtocolAttachmentTypeGroup-groupCode-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="groupCode" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Group Code" />
+        <property name="shortLabel" value="Group Code" />
+        <property name="maxLength" value="3" />
+        <property name="validationPattern" >
+            <bean parent="NumericValidationPattern" />
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+        <property name="control" >
+      <bean parent="TextControlDefinition" p:size="5"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="5" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="Group Code" />
+        <property name="description" value="Group Code" />
+    </bean>
+
+    <bean id="ProtocolAttachmentTypeGroup-versionNumber" parent="ProtocolAttachmentTypeGroup-versionNumber-parentBean" />
+    <bean id="ProtocolAttachmentTypeGroup-versionNumber-parentBean" abstract="true" parent="AttributeReferenceDummy-versionNumber"/>
+    <!-- Business Object Inquiry Definition -->
+    <bean id="ProtocolAttachmentTypeGroup-inquiryDefinition" parent="ProtocolAttachmentTypeGroup-inquiryDefinition-parentBean" />
+  <bean id="ProtocolAttachmentTypeGroup-InquiryView" parent="ProtocolAttachmentTypeGroup-InquiryView-parentBean"/>
+    <bean id="ProtocolAttachmentTypeGroup-inquiryDefinition-parentBean" abstract="true" parent="InquiryDefinition">
+        <property name="title" value="id" />
+        <property name="inquirySections" >
+            <list>
+                <bean parent="InquirySectionDefinition">
+                    <property name="title" value="id" />
+                    <property name="numberOfColumns" value="1" />
+                    <property name="inquiryFields" >
+                        <list>
+              <bean parent="FieldDefinition" p:attributeName="id" p:forceInquiry="true"/>
+              <bean parent="FieldDefinition" p:attributeName="typeCode" p:forceInquiry="true"/>
+              <bean parent="FieldDefinition" p:attributeName="groupCode" p:forceInquiry="true"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="ProtocolAttachmentTypeGroup-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView">
+    <property name="headerText" value="id"/>
+    <property name="dataObjectClassName" value="org.kuali.kra.irb.noteattachment.ProtocolAttachmentTypeGroup"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-GridSection">
+          <property name="headerText" value="id"/>
+          <property name="layoutManager.numberOfColumns" value="2"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="id" parent="Uif-DataField"/>
+              <bean p:propertyName="typeCode" parent="Uif-DataField"/>
+              <bean p:propertyName="groupCode" parent="Uif-DataField"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Business Object Lookup Definition -->
+    <bean id="ProtocolAttachmentTypeGroup-lookupDefinition" parent="ProtocolAttachmentTypeGroup-lookupDefinition-parentBean" />
+  <bean id="ProtocolAttachmentTypeGroup-LookupView" parent="ProtocolAttachmentTypeGroup-LookupView-parentBean"/>
+    <bean id="ProtocolAttachmentTypeGroup-lookupDefinition-parentBean" abstract="true" parent="LookupDefinition">
+        <property name="title" value="Protocol Attachment Type Group Lookup" /><property name="defaultSort" >
+      <bean parent="SortDefinition"/>
+        </property>
+        <property name="lookupFields" >
+            <list>
+        <bean parent="FieldDefinition" p:attributeName="id" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="typeCode" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="groupCode" p:forceInquiry="true"/>
+            </list>
+        </property>
+        <property name="resultFields" >
+            <list>
+        <bean parent="FieldDefinition" p:attributeName="id" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="typeCode" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="groupCode" p:forceInquiry="true"/>
+            </list>
+        </property>
+    </bean>
+
+  <bean id="ProtocolAttachmentTypeGroup-LookupView-parentBean" abstract="true" parent="Uif-LookupView">
+    <property name="dataObjectClassName" value="org.kuali.kra.irb.noteattachment.ProtocolAttachmentTypeGroup"/>
+    <property name="headerText" value="Protocol Attachment Type Group Lookup"/>
+    <property name="criteriaFields">
+      <list>
+        <bean p:propertyName="id" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="typeCode" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="groupCode" parent="Uif-LookupCriteriaInputField"/>
+      </list>
+    </property>
+    <property name="resultFields">
+      <list>
+        <bean p:propertyName="id" parent="Uif-DataField"/>
+        <bean p:propertyName="typeCode" parent="Uif-DataField"/>
+        <bean p:propertyName="groupCode" parent="Uif-DataField"/>
+      </list>
+    </property>
+  </bean>
+
+</beans>

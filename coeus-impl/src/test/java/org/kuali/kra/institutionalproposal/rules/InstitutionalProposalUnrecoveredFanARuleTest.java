@@ -1,0 +1,108 @@
+/*
+ * Kuali Coeus, a comprehensive research administration system for higher education.
+ * 
+ * Copyright 2005-2015 Kuali, Inc.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.kuali.kra.institutionalproposal.rules;
+
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.jmock.integration.junit4.JMock;
+import org.jmock.integration.junit4.JUnit4Mockery;
+import org.jmock.lib.concurrent.Synchroniser;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.kuali.coeus.sys.impl.validation.ErrorReporterImpl;
+import org.kuali.kra.institutionalproposal.IndirectcostRateType;
+import org.kuali.kra.institutionalproposal.home.InstitutionalProposalUnrecoveredFandA;
+import org.kuali.coeus.sys.api.model.ScaleTwoDecimal;
+import org.kuali.rice.krad.service.BusinessObjectService;
+import org.kuali.rice.krad.util.GlobalVariables;
+import org.kuali.rice.krad.util.MessageMap;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+
+@RunWith(JMock.class)
+public class InstitutionalProposalUnrecoveredFanARuleTest {
+
+    final Map<String, Object> queryMap = new HashMap<String, Object>();
+    private Mockery context = new JUnit4Mockery() {{ setThreadingPolicy(new Synchroniser()); }};
+    
+    private static final String TEST_SOURCE = "54321";
+    private static final String TEST_FISCAL_YEAR = "2008";
+    private static final String TEST_INVALID_FISCAL_YEAR = "1000";
+    private static final Integer PERCENTAGE = 50;
+    private static final Integer AMOUNT = 10000;
+    private static final Integer RATE_TYPE_CODE = 1;
+    InstitutionalProposalUnrecoveredFandARuleImpl institutionalProposalUnrecoveredFandARuleImpl;
+    InstitutionalProposalUnrecoveredFandA institutionalProposalUnrecoveredFandA;
+
+
+    @Before
+    public void setUp() throws Exception {
+        institutionalProposalUnrecoveredFandARuleImpl = new InstitutionalProposalUnrecoveredFandARuleImpl();
+        institutionalProposalUnrecoveredFandARuleImpl.setErrorReporter(new ErrorReporterImpl());
+        institutionalProposalUnrecoveredFandA = new InstitutionalProposalUnrecoveredFandA();
+        institutionalProposalUnrecoveredFandA.setApplicableIndirectcostRate(new ScaleTwoDecimal(PERCENTAGE));
+        institutionalProposalUnrecoveredFandA.setFiscalYear(TEST_FISCAL_YEAR);
+        institutionalProposalUnrecoveredFandA.setSourceAccount(TEST_SOURCE);
+        institutionalProposalUnrecoveredFandA.setUnderrecoveryOfIndirectcost(new ScaleTwoDecimal(AMOUNT));
+        institutionalProposalUnrecoveredFandA.setIndirectcostRateTypeCode(RATE_TYPE_CODE);
+        queryMap.put("indirectcostRateTypeCode", 1);
+        GlobalVariables.setMessageMap(new MessageMap());
+    }
+    
+
+    @After
+    public void tearDown() throws Exception {
+        institutionalProposalUnrecoveredFandARuleImpl = null;
+        institutionalProposalUnrecoveredFandA = null;
+    }
+    
+    /**
+     * Test method for {@link org.kuali.kra.award.commitments.AwardCostShareRule#processCommonValidations
+     * (org.kuali.kra.award.commitments.AwardCostShare)}.
+     */
+    @Test
+    public final void testProcessCommonValidations() {
+        final BusinessObjectService MOCKED_BUSINESS_OBJECT_SERVICE;
+        MOCKED_BUSINESS_OBJECT_SERVICE = context.mock(BusinessObjectService.class);
+        context.checking(new Expectations() {{
+            one(MOCKED_BUSINESS_OBJECT_SERVICE).countMatching(IndirectcostRateType.class, queryMap); 
+            will(returnValue(1));
+        }});
+        institutionalProposalUnrecoveredFandARuleImpl.setBusinessObjectService(MOCKED_BUSINESS_OBJECT_SERVICE);
+        Assert.assertTrue(institutionalProposalUnrecoveredFandARuleImpl.processCommonValidations(institutionalProposalUnrecoveredFandA, new ArrayList<InstitutionalProposalUnrecoveredFandA>()));
+    }
+    
+    /**
+     * Test method for {@link org.kuali.kra.award.commitments.AwardCostShareRule#validateCostShareFiscalYearRange
+     * (org.kuali.kra.award.commitments.AwardCostShare)}.
+     */
+    @Test
+    public final void testValidateCostShareFiscalYearRange() {
+        Assert.assertTrue(institutionalProposalUnrecoveredFandARuleImpl.validateUnrecoveredFandAFiscalYearRange(institutionalProposalUnrecoveredFandA));
+        institutionalProposalUnrecoveredFandA.setFiscalYear(TEST_INVALID_FISCAL_YEAR);
+        Assert.assertFalse(institutionalProposalUnrecoveredFandARuleImpl.validateUnrecoveredFandAFiscalYearRange(institutionalProposalUnrecoveredFandA));
+        institutionalProposalUnrecoveredFandA.setSourceAccount(TEST_FISCAL_YEAR);
+    }
+}

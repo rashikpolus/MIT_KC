@@ -1,0 +1,517 @@
+From 0e73976f7dee8c672aaa09465582bc1490fe3708 Mon Sep 17 00:00:00 2001
+From: blackcathacker <douglas.pace@gmail.com>
+Date: Fri, 26 Jun 2015 23:23:40 -0400
+Subject: [PATCH] RESKC-561:Fix award hierarchy/award actions for very large
+ hierarchies
+
+---
+ .../main/java/org/kuali/kra/award/AwardForm.java   |  30 ++++-
+ .../awardhierarchy/AwardHierarchyTempObject.java   | 129 ---------------------
+ .../kra/award/web/struts/action/AwardAction.java   |  57 +++++----
+ .../web/struts/action/AwardActionsAction.java      |  45 +------
+ .../webapp/WEB-INF/tags/award/awardHierarchy.tag   |  14 +--
+ .../src/main/webapp/scripts/awardHierarchy.js      |  39 +++----
+ 6 files changed, 88 insertions(+), 226 deletions(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/award/AwardForm.java b/coeus-impl/src/main/java/org/kuali/kra/award/AwardForm.java
+index 17cd229..c32db12 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/award/AwardForm.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/award/AwardForm.java
+@@ -160,6 +160,9 @@
+     private AwardFundingProposalBean fundingProposalBean;
+     private String awardHierarchy;
+     private String awardNumber;
++    private String awardHierarchyTargetAwardNumber;
++    private String awardHierarchySourceAwardStrList;
++    private String awardHierarchyTargetAwardStrList;
+     private String addRA;    
+     private String deletedRas;
+     private String rootAwardNumber;
+@@ -1499,7 +1502,8 @@ public String determineParentAwardNumber(AwardForm awardForm) {
+         Collections.reverse(results);
+         return results;
+     }
+-	public boolean isValidPrompt() {
++
++    public boolean isValidPrompt() {
+ 		return validPrompt;
+ 	}
+ 
+@@ -1522,4 +1526,28 @@ public boolean isDisplayKeywordPanel() {
+ 	public void setDisplayKeywordPanel(boolean displayKeywordPanel) {
+ 		this.displayKeywordPanel = displayKeywordPanel;
+ 	}
++
++	public String getAwardHierarchyTargetAwardNumber() {
++		return awardHierarchyTargetAwardNumber;
++	}
++
++	public void setAwardHierarchyTargetAwardNumber(String awardHierarchyTargetAwardNumber) {
++		this.awardHierarchyTargetAwardNumber = awardHierarchyTargetAwardNumber;
++	}
++
++	public String getAwardHierarchySourceAwardStrList() {
++		return awardHierarchySourceAwardStrList;
++	}
++
++	public void setAwardHierarchySourceAwardStrList(String awardHierarchySourceAwardStrList) {
++		this.awardHierarchySourceAwardStrList = awardHierarchySourceAwardStrList;
++	}
++
++	public String getAwardHierarchyTargetAwardStrList() {
++		return awardHierarchyTargetAwardStrList;
++	}
++
++	public void setAwardHierarchyTargetAwardStrList(String awardHierarchyTargetAwardStrList) {
++		this.awardHierarchyTargetAwardStrList = awardHierarchyTargetAwardStrList;
++	}
+ }
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/award/awardhierarchy/AwardHierarchyTempObject.java b/coeus-impl/src/main/java/org/kuali/kra/award/awardhierarchy/AwardHierarchyTempObject.java
+index 27cfb20..eec572c 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/award/awardhierarchy/AwardHierarchyTempObject.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/award/awardhierarchy/AwardHierarchyTempObject.java
+@@ -22,10 +22,6 @@
+ 
+ public class AwardHierarchyTempObject implements Serializable{
+     private String awardNumber;
+-    private String awardNumber1;
+-    private String awardNumber2;
+-    private String selectBox1;
+-    private String selectBox2;
+     private String newChildPanelTargetAward;
+     private String copyAwardPanelTargetAward;
+     private Boolean copyDescendants;
+@@ -33,170 +29,46 @@
+     private String createNewChildRadio;
+     
+     public AwardHierarchyTempObject(){
+-        awardNumber1 = "";
+-        awardNumber2 = "";
+-        selectBox1 = "";
+-        selectBox2 = "";
+         newChildPanelTargetAward = "";
+         copyAwardPanelTargetAward = "";
+     }
+ 
+-
+-    /**
+-     * Gets the selectBox1 attribute. 
+-     * @return Returns the selectBox1.
+-     */
+-    public String getSelectBox1() {
+-        return selectBox1;
+-    }
+-    /**
+-     * Sets the selectBox1 attribute value.
+-     * @param selectBox1 The selectBox1 to set.
+-     */
+-    public void setSelectBox1(String selectBox1) {
+-        this.selectBox1 = selectBox1;
+-    }
+-
+-
+-    /**
+-     * Gets the awardNumber1 attribute. 
+-     * @return Returns the awardNumber1.
+-     */
+-    public String getAwardNumber1() {
+-        return awardNumber1;
+-    }
+-
+-
+-    /**
+-     * Sets the awardNumber1 attribute value.
+-     * @param awardNumber1 The awardNumber1 to set.
+-     */
+-    public void setAwardNumber1(String awardNumber1) {
+-        this.awardNumber1 = awardNumber1;
+-    }
+-
+-
+-    /**
+-     * Gets the awardNumber2 attribute. 
+-     * @return Returns the awardNumber2.
+-     */
+-    public String getAwardNumber2() {
+-        return awardNumber2;
+-    }
+-
+-
+-    /**
+-     * Sets the awardNumber2 attribute value.
+-     * @param awardNumber2 The awardNumber2 to set.
+-     */
+-    public void setAwardNumber2(String awardNumber2) {
+-        this.awardNumber2 = awardNumber2;
+-    }
+-
+-
+-    /**
+-     * Gets the newChildPanelTargetAward attribute. 
+-     * @return Returns the newChildPanelTargetAward.
+-     */
+     public String getNewChildPanelTargetAward() {
+         return newChildPanelTargetAward;
+     }
+ 
+-
+-    /**
+-     * Sets the newChildPanelTargetAward attribute value.
+-     * @param newChildPanelTargetAward The newChildPanelTargetAward to set.
+-     */
+     public void setNewChildPanelTargetAward(String newChildPanelTargetAward) {
+         this.newChildPanelTargetAward = newChildPanelTargetAward;
+     }
+ 
+-
+-    /**
+-     * Gets the selectBox2 attribute. 
+-     * @return Returns the selectBox2.
+-     */
+-    public String getSelectBox2() {
+-        return selectBox2;
+-    }
+-
+-
+-    /**
+-     * Sets the selectBox2 attribute value.
+-     * @param selectBox2 The selectBox2 to set.
+-     */
+-    public void setSelectBox2(String selectBox2) {
+-        this.selectBox2 = selectBox2;
+-    }
+-
+-
+-    /**
+-     * Gets the copyAwardPanelTargetAward attribute. 
+-     * @return Returns the copyAwardPanelTargetAward.
+-     */
+     public String getCopyAwardPanelTargetAward() {
+         return copyAwardPanelTargetAward;
+     }
+ 
+-
+-    /**
+-     * Sets the copyAwardPanelTargetAward attribute value.
+-     * @param copyAwardPanelTargetAward The copyAwardPanelTargetAward to set.
+-     */
+     public void setCopyAwardPanelTargetAward(String copyAwardPanelTargetAward) {
+         this.copyAwardPanelTargetAward = copyAwardPanelTargetAward;
+     }
+ 
+-
+-    /**
+-     * Gets the copyDescendants attribute. 
+-     * @return Returns the copyDescendants.
+-     */
+     public Boolean getCopyDescendants() {
+         return copyDescendants;
+     }
+ 
+-
+-    /**
+-     * Sets the copyDescendants attribute value.
+-     * @param copyDescendants The copyDescendants to set.
+-     */
+     public void setCopyDescendants(Boolean copyDescendants) {
+         this.copyDescendants = copyDescendants;
+     }
+ 
+-
+-    /**
+-     * Gets the copyAwardRadio attribute. 
+-     * @return Returns the copyAwardRadio.
+-     */
+     public String getCopyAwardRadio() {
+         return copyAwardRadio;
+     }
+ 
+-
+-    /**
+-     * Sets the copyAwardRadio attribute value.
+-     * @param copyAwardRadio The copyAwardRadio to set.
+-     */
+     public void setCopyAwardRadio(String copyAwardRadio) {
+         this.copyAwardRadio = copyAwardRadio;
+     }
+ 
+-
+-    /**
+-     * Gets the createNewChildRadio attribute. 
+-     * @return Returns the createNewChildRadio.
+-     */
+     public String getCreateNewChildRadio() {
+         return createNewChildRadio;
+     }
+ 
+-
+-    /**
+-     * Sets the createNewChildRadio attribute value.
+-     * @param createNewChildRadio The createNewChildRadio to set.
+-     */
+     public void setCreateNewChildRadio(String createNewChildRadio) {
+         this.createNewChildRadio = createNewChildRadio;
+     }    
+@@ -205,7 +77,6 @@ public String getAwardNumber() {
+         return awardNumber;
+     }
+     
+-    
+     public void setAwardNumber(String awardNumber) {
+         this.awardNumber = awardNumber;
+     }
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/award/web/struts/action/AwardAction.java b/coeus-impl/src/main/java/org/kuali/kra/award/web/struts/action/AwardAction.java
+index 8c36bc4..3253ac9 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/award/web/struts/action/AwardAction.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/award/web/struts/action/AwardAction.java
+@@ -375,27 +375,9 @@ protected void populateAwardHierarchy(ActionForm form) throws WorkflowException
+         List<String> order = new ArrayList<String>();
+         AwardHierarchyBean helperBean = awardForm.getAwardHierarchyBean();
+         AwardHierarchy rootNode = helperBean.getRootNode();
+-        Map<String, AwardHierarchy> awardHierarchyNodes = helperBean.getAwardHierarchy(rootNode, order);
+-        Map<String,AwardHierarchyNode> awardHierarchyNodesMap = new HashMap<String, AwardHierarchyNode>();
+         Award currentAward = awardDocument.getAward();
+         awardForm.setRootAwardNumber(rootNode.getRootAwardNumber());
+-        StringBuilder sb1 = new StringBuilder();
+-        StringBuilder sb2 = new StringBuilder();
+-        for(String str:order){
+-            AwardHierarchy tempAwardNode = awardHierarchyNodes.get(str);
+-            sb1.append(tempAwardNode.getAwardNumber());
+-            sb1.append(KRADConstants.BLANK_SPACE).append("%3A");
+-            if (getVersionHistoryService().findActiveVersion(Award.class, tempAwardNode.getAwardNumber()) != null) {
+-                sb2.append(tempAwardNode.getAwardNumber());
+-                sb2.append(KRADConstants.BLANK_SPACE).append("%3A");
+-            }
+-        }
+-        
+-        for(int i = 0; i < helperBean.getMaxAwardNumber(); i++){
+-            AwardHierarchyTempObject temp = awardForm.getAwardHierarchyTempObjects().get(i);
+-            temp.setSelectBox1(sb1.toString());
+-            temp.setSelectBox2(sb2.toString());
+-        }
++        buildAwardHierarchySourceAndTargetList(awardForm, currentAward);
+     }
+     
+ 
+@@ -546,7 +528,6 @@ public ActionForward blanketApprove(ActionMapping mapping, ActionForm form, Http
+     
+     @Override
+     public ActionForward save(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+-        // TODO: JF Are all of these saves in a single transaction? 
+         ActionForward forward = mapping.findForward(Constants.MAPPING_BASIC);
+         AwardForm awardForm = (AwardForm) form;
+ 
+@@ -554,8 +535,6 @@ public ActionForward save(ActionMapping mapping, ActionForm form, HttpServletReq
+        
+         Award award = awardForm.getAwardDocument().getAward();
+         checkAwardNumber(award);
+-        String userId = GlobalVariables.getUserSession().getPrincipalName();
+-        
+         if (award.getAwardApprovedSubawards() == null || award.getAwardApprovedSubawards().isEmpty()) {
+             award.setSubContractIndicator(Constants.NO_FLAG);
+         } else {
+@@ -2060,5 +2039,37 @@ public TimeAndMoneyVersionService getTimeAndMoneyVersionService() {
+ 	public void setTimeAndMoneyVersionService(TimeAndMoneyVersionService timeAndMoneyVersionService) {
+ 		this.timeAndMoneyVersionService = timeAndMoneyVersionService;
+ 	}
+-  
++	
++	protected void buildAwardHierarchySourceAndTargetList(AwardForm awardForm, Award currentAward) {
++		List<String> order = new ArrayList<String>();
++		if (StringUtils.isBlank(awardForm.getAwardHierarchyTargetAwardNumber())) {
++			awardForm.setAwardHierarchyTargetAwardNumber(currentAward.getAwardNumber());
++		}
++	    Map<String,AwardHierarchyNode> awardHierarchyNodes = new HashMap<String, AwardHierarchyNode>();
++	    Map<String,AwardHierarchy> awardHierarchyItems = 
++	    		awardForm.getAwardHierarchyBean().getAwardHierarchy(awardForm.getAwardHierarchyTargetAwardNumber(), order);
++	    getAwardHierarchyService().populateAwardHierarchyNodes(awardHierarchyItems, awardHierarchyNodes, currentAward.getAwardNumber(), currentAward.getSequenceNumber().toString());
++	    StringBuilder sourceAwardStrList = new StringBuilder();
++	    StringBuilder targetAwardStrList = new StringBuilder();
++	    for(String str:order){
++	        sourceAwardStrList.append("'").append(str).append("',");
++	        if (awardHierarchyNodes.get(str).isAwardDocumentFinalStatus()) {
++	        	targetAwardStrList.append("'").append(str).append("',");
++	        }
++	    }
++	    if (sourceAwardStrList.length() > 1) {
++	    	awardForm.setAwardHierarchySourceAwardStrList(removeTrailingCommaIfExists(sourceAwardStrList.toString()));
++	    }
++	    if (targetAwardStrList.length() > 1) {
++	    	awardForm.setAwardHierarchyTargetAwardStrList(removeTrailingCommaIfExists(targetAwardStrList.toString()));
++	    }
++	}
++	
++	protected String removeTrailingCommaIfExists(final String listStr) {
++		String result = listStr;
++		if (result.endsWith(",")) {
++			result = result.substring(0, result.length()-1);
++		}
++		return result;
++	}
+ }
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/award/web/struts/action/AwardActionsAction.java b/coeus-impl/src/main/java/org/kuali/kra/award/web/struts/action/AwardActionsAction.java
+index 41ab82a..7468165 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/award/web/struts/action/AwardActionsAction.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/award/web/struts/action/AwardActionsAction.java
+@@ -48,7 +48,6 @@
+ import org.kuali.kra.institutionalproposal.home.InstitutionalProposal;
+ import org.kuali.kra.institutionalproposal.service.InstitutionalProposalService;
+ import org.kuali.coeus.common.framework.print.AttachmentDataSource;
+-import org.kuali.kra.timeandmoney.AwardHierarchyNode;
+ import org.kuali.rice.core.api.util.RiceConstants;
+ import org.kuali.rice.kew.api.KewApiConstants;
+ import org.kuali.rice.kew.api.WorkflowDocument;
+@@ -62,6 +61,7 @@
+ 
+ import javax.servlet.http.HttpServletRequest;
+ import javax.servlet.http.HttpServletResponse;
++
+ import java.util.*;
+ 
+ /**
+@@ -553,52 +553,13 @@ private int getActiveHierarchyObjectIndex(HttpServletRequest request) throws Exc
+     public ActionForward refresh(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception{
+         AwardForm awardForm = (AwardForm)form;
+         AwardDocument awardDocument = awardForm.getAwardDocument();
+-        int activeHierarchyObjectIndex = getActiveHierarchyObjectIndex(request);
+-        int loopIndex = 0;
+         Award currentAward = awardDocument.getAward();
+-        
+-        for(AwardHierarchyTempObject temp: awardForm.getAwardHierarchyTempObjects()){ 
+-            List<String> order = new ArrayList<String>();
+-            
+-            if(loopIndex == activeHierarchyObjectIndex-1) {
+-                temp.setAwardNumber2(null);
+-                temp.setAwardNumber(null);
+-            }
+-            
+-            if(StringUtils.isNotBlank(temp.getAwardNumber1())){
+-                Map<String,AwardHierarchy> awardHierarchyItems = awardForm.getAwardHierarchyBean().getAwardHierarchy(temp.getAwardNumber1(), order);
+-                StringBuilder sb = new StringBuilder();
+-                for(String str:order){
+-                    sb.append(awardHierarchyItems.get(str).getAwardNumber());
+-                    sb.append(KRADConstants.BLANK_SPACE).append("%3A");
+-                }
+-                temp.setSelectBox1(sb.toString());
+-                request.setAttribute("selectedAwardNumber", temp.getAwardNumber()); 
+-            }
+-
+-            if(StringUtils.isNotBlank(temp.getAwardNumber2())){
+-                order = new ArrayList<String>();
+-                Map<String,AwardHierarchyNode> awardHierarchyNodes = new HashMap<String, AwardHierarchyNode>();
+-                Map<String,AwardHierarchy> awardHierarchyItems = getAwardHierarchyService().getAwardHierarchy(temp.getAwardNumber2(), order);
+-                getAwardHierarchyService().populateAwardHierarchyNodes(awardHierarchyItems, awardHierarchyNodes, currentAward.getAwardNumber(), currentAward.getSequenceNumber().toString());
+-                StringBuilder sb = new StringBuilder();
+-                for(String str:order){
+-                    AwardHierarchyNode tempAwardNode = awardHierarchyNodes.get(str);
+-                    if(tempAwardNode.isAwardDocumentFinalStatus()) {
+-                        sb.append(tempAwardNode.getAwardNumber());
+-                        sb.append(KRADConstants.BLANK_SPACE).append("%3A");    
+-                    }
+-                }
+-                temp.setSelectBox2(sb.toString());
+-                request.setAttribute("selectedAwardNumber", temp.getAwardNumber()); 
+-            }
+-            loopIndex++;
+-        }
+ 
++        buildAwardHierarchySourceAndTargetList(awardForm, currentAward);
+         return super.refresh(mapping, form, request, response);
+     }
+ 
+-    private AwardHierarchy findTargetNode(HttpServletRequest request, AwardForm awardForm) {
++	private AwardHierarchy findTargetNode(HttpServletRequest request, AwardForm awardForm) {
+         return awardForm.getAwardHierarchyBean().getRootNode().findNodeInHierarchy(getAwardNumber(request));
+     }
+ 
+diff --git a/coeus-webapp/src/main/webapp/WEB-INF/tags/award/awardHierarchy.tag b/coeus-webapp/src/main/webapp/WEB-INF/tags/award/awardHierarchy.tag
+index ec58db5..99ce2ce 100644
+--- a/coeus-webapp/src/main/webapp/WEB-INF/tags/award/awardHierarchy.tag
++++ b/coeus-webapp/src/main/webapp/WEB-INF/tags/award/awardHierarchy.tag
+@@ -92,16 +92,12 @@
+     <input type="hidden" id ="currentAwardNumber" name="document.awardList[0].awardNumber" value="${KualiForm.document.awardList[0].awardNumber}">
+     <input type="hidden" id ="currentSeqNumber" name="document.awardList[0].sequenceNumber" value="${KualiForm.document.awardList[0].sequenceNumber}">
+     <input type="hidden" id = "selectedAwardNumber" name="selectedAwardNumber" value="${(param.selectedAwardNumber == '' or param.selectedAwardNumber == null) ? selectedAwardNumber : param.selectedAwardNumber}">
+-	
++	<script type="text/javascript">
++		var awardHierarchyTargetAwardNumber = '${KualiForm.awardHierarchyTargetAwardNumber}';
++		var awardHierarchySourceAwards = [${KualiForm.awardHierarchySourceAwardStrList}];
++		var awardHierarchyTargetAwards = [${KualiForm.awardHierarchyTargetAwardStrList}];
++	</script>
+ 	<c:forEach var="i" begin="1" end="${KualiForm.awardHierarchyBean.maxAwardNumber}" step="1" varStatus ="status">
+-		<input type="hidden" id = "awardHierarchyTempObject[${i}].awardNumber1" name="awardHierarchyTempObject[${i}].awardNumber1" value="${KualiForm.awardHierarchyTempObjects[i].awardNumber1}">
+-		<c:set var="lookupAwardNumber1" value="methodToCall.performLookup.(!!org.kuali.kra.award.home.Award!!).(((awardNumber:awardHierarchyTempObject[${i}].awardNumber1,awardHierarchyTempObject[${i}].awardNumber1:awardNumber))).((``)).((<>)).(([])).((**)).((^^)).((&&)).((//)).((~~))" />
+-		${kfunc:registerEditableProperty(KualiForm, lookupAwardNumber1)}
+-		<input type="hidden" id = "awardHierarchyTempObject[${i}].selectBox1" name="awardHierarchyTempObject[${i}].selectBox1" value="${KualiForm.awardHierarchyTempObjects[i].selectBox1}">
+-		<input type="hidden" id = "awardHierarchyTempObject[${i}].awardNumber2" name="awardHierarchyTempObject[${i}].awardNumber2" value="${KualiForm.awardHierarchyTempObjects[i].awardNumber2}">
+-		<c:set var="lookupAwardNumber2" value="methodToCall.performLookup.(!!org.kuali.kra.award.home.Award!!).(((awardNumber:awardHierarchyTempObject[${i}].awardNumber2,awardHierarchyTempObject[${i}].awardNumber2:awardNumber))).((``)).((<>)).(([])).((**)).((^^)).((&&)).((//)).((~~))" />
+-		${kfunc:registerEditableProperty(KualiForm, lookupAwardNumber2)}
+-		<input type="hidden" id = "awardHierarchyTempObject[${i}].selectBox2" name="awardHierarchyTempObject[${i}].selectBox2" value="${KualiForm.awardHierarchyTempObjects[i].selectBox2}">
+ 		<input type="hidden" id = "awardHierarchyTempObject[${i}].copyDescendants" name="awardHierarchyTempObject[${i}].copyDescendants" value="${KualiForm.awardHierarchyTempObjects[i].copyDescendants}">
+ 		<input type="hidden" id = "awardHierarchyTempObject[${i}].createNewChildRadio" name="awardHierarchyTempObject[${i}].createNewChildRadio" value="${KualiForm.awardHierarchyTempObjects[i].createNewChildRadio}">
+ 		<input type="hidden" id = "awardHierarchyTempObject[${i}].copyAwardRadio" name="awardHierarchyTempObject[${i}].copyAwardRadio" value="${KualiForm.awardHierarchyTempObjects[i].copyAwardRadio}">
+diff --git a/coeus-webapp/src/main/webapp/scripts/awardHierarchy.js b/coeus-webapp/src/main/webapp/scripts/awardHierarchy.js
+index 54223ff..36393d9 100644
+--- a/coeus-webapp/src/main/webapp/scripts/awardHierarchy.js
++++ b/coeus-webapp/src/main/webapp/scripts/awardHierarchy.js
+@@ -192,21 +192,19 @@ function openSelectedAward(requestTracker) {
+ 	    subTdTag2.html('child of');
+ 	    radio2.appendTo(subTdTag2);
+ 	    
+-	    var lookupField = jQuery('<input type="image" title="Lookup" alt="Lookup" src="static/images/searchicon.gif"/>').attr("name","methodToCall.performLookup.(!!org.kuali.kra.award.home.Award!!).(((awardNumber:awardHierarchyTempObject["+indexForHiddenField+"].awardNumber2,awardHierarchyTempObject["+indexForHiddenField+"].awardNumber2:awardNumber))).((``)).((<>)).(([])).((**)).((^^)).((&&)).((//)).((~~))");
+-	    var selectBoxText = jQuery("#awardHierarchyTempObject\\[" + indexForHiddenField + "\\]\\.selectBox2").attr("value");
++	    var lookupField = jQuery('<input type="image" title="Lookup" alt="Lookup" src="static/images/searchicon.gif"/>').attr("name","methodToCall.performLookup.(!!org.kuali.kra.award.home.Award!!).(((awardNumber:awardHierarchyTargetAwardNumber,awardHierarchyTargetAwardNumber:awardNumber))).((``)).((<>)).(([])).((**)).((^^)).((&&)).((//)).((~~))");
++	    var selectBoxText = awardHierarchyTargetAwards;
+ 	    var selectTag = jQuery('<select />').attr("name","awardHierarchyTempObject["+indexForHiddenField+"].copyAwardPanelTargetAward").attr("id","awardHierarchyTempObject"+indexForHiddenField+"_copyAwardPanelTargetAward");   
+ 	    var optionTag = jQuery("<option> select: </option>").attr("value","0");
+ 	    optionTag.appendTo(selectTag);
+-	    while(selectBoxText.length>1){
+-	    	var optionValue = selectBoxText.substring(0,selectBoxText.indexOf("%3A")).trim();	    	
+-	    	selectBoxText = selectBoxText.substring(selectBoxText.indexOf("%3A")+3, selectBoxText.length).trim();
+-	    	if(jQuery("#awardHierarchyTempObject\\[" + indexForHiddenField + "\\]\\.awardNumber2").attr("value") == optionValue){
+-	    		var optionTag = jQuery("<option>"+optionValue+"</option>").attr("value",optionValue).attr("selected",true);
+-	    	}else{
+-	    		var optionTag = jQuery("<option>"+optionValue+"</option>").attr("value",optionValue);
++	    selectBoxText.forEach(function(award) {
++	    	var option = jQuery("<option>"+award+"</option>").attr("value", award);
++	    	if (award == awardHierarchyTargetAwardNumber) {
++	    		option.attr("selected", true);
+ 	    	}
+-	    	optionTag.appendTo(selectTag);	    	
+-	    }
++	    	option.appendTo(selectTag);
++
++	    });
+ 	    
+ 	    selectTag.appendTo(subTdTag3)
+ 
+@@ -304,21 +302,18 @@ function openSelectedAward(requestTracker) {
+ 	    subTdTag3.html('selected award');
+ 	    radio3.appendTo(subTdTag3);	
+ 
+-	    var lookupField = jQuery('<input type="image" title="Lookup" alt="Lookup" src="static/images/searchicon.gif"/>').attr("name","methodToCall.performLookup.(!!org.kuali.kra.award.home.Award!!).(((awardNumber:awardHierarchyTempObject["+indexForHiddenField+"].awardNumber1,awardHierarchyTempObject["+indexForHiddenField+"].awardNumber1:awardNumber))).((``)).((<>)).(([])).((**)).((^^)).((&&)).((//)).((~~))");
+-	    var selectBoxText = jQuery("#awardHierarchyTempObject\\[" + indexForHiddenField + "\\]\\.selectBox1").attr("value");
++	    var lookupField = jQuery('<input type="image" title="Lookup" alt="Lookup" src="static/images/searchicon.gif"/>').attr("name","methodToCall.performLookup.(!!org.kuali.kra.award.home.Award!!).(((awardNumber:awardHierarchyTargetAwardNumber,awardHierarchyTargetAwardNumber:awardNumber))).((``)).((<>)).(([])).((**)).((^^)).((&&)).((//)).((~~))");
++	    var selectBoxText = awardHierarchySourceAwards;
+ 	    var selectTag = jQuery('<select />').attr("name","awardHierarchyTempObject["+indexForHiddenField+"].newChildPanelTargetAward").attr("id","awardHierarchyTempObject"+indexForHiddenField+"_newChildPanelTargetAward");   
+ 	    var optionTag = jQuery("<option> select: </option>").attr("value","0");
+ 	    optionTag.appendTo(selectTag);
+-	    while(selectBoxText.length>1){
+-	    	var optionValue = selectBoxText.substring(0,selectBoxText.indexOf("%3A")).trim();
+-	    	selectBoxText = selectBoxText.substring(selectBoxText.indexOf("%3A")+3, selectBoxText.length).trim();
+-	    	if(jQuery("#awardHierarchyTempObject\\[" + indexForHiddenField + "\\]\\.awardNumber1").attr("value") == optionValue){
+-	    		var optionTag = jQuery("<option>"+optionValue+"</option>").attr("value",optionValue).attr("selected",true);	    
+-	    	}else{
+-	    		var optionTag = jQuery("<option>"+optionValue+"</option>").attr("value",optionValue);
++	    selectBoxText.forEach(function(award) {
++	    	var option = jQuery("<option>"+award+"</option>").attr("value", award);
++	    	if (award == awardHierarchyTargetAwardNumber) {
++	    		option.attr("selected", true);
+ 	    	}
+-	    	optionTag.appendTo(selectTag);	    	
+-	    } 
++	    	option.appendTo(selectTag);
++	    });
+ 	    jQuery("#awardHierarchyTempObject" +indexForHiddenField+ "_newChildPanelTargetAward").live("change", function() {	    	 
+ 	    	jQuery('input:radio[@name="awardHierarchyTempObject['+indexForHiddenField+'].createNewChildRadio"]').filter('[value="c"]').attr('checked', 'checked');
+ 	 	   	

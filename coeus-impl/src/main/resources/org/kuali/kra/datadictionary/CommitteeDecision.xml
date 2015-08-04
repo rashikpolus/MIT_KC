@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean id="CommitteeDecision" parent="CommitteeDecision-parentBean" />
+	<bean id="CommitteeDecision-parentBean" abstract="true" parent="BusinessObjectEntry">
+		<property name="businessObjectClass" value="org.kuali.kra.irb.actions.decision.CommitteeDecision" />
+		<property name="objectLabel" value="Committee Decision" />
+		<property name="titleAttribute" value="CommitteeDecision-committeeDecisionMotionTypeCode" />
+		<property name="attributes" >
+			<list>
+			    <ref bean="CommitteeDecision-motionTypeCode" />
+			    <ref bean="CommitteeDecision-noCount" />
+			    <ref bean="CommitteeDecision-yesCount" />
+			    <ref bean="CommitteeDecision-abstainCount" />
+			    <ref bean="CommitteeDecision-recusedCount" />
+				<ref bean="CommitteeDecision-votingComments" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- Attribute Definitions -->
+	<bean id="CommitteeDecision-motionTypeCode" parent="CommitteeDecision-motionTypeCode-parentBean" />
+    <bean id="CommitteeDecision-motionTypeCode-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="motionTypeCode" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Motion Type" />
+        <property name="shortLabel" value="Motion Type" />
+        <property name="maxLength" value="3" />
+        <property name="required" value="true" />
+        <property name="control" >
+      <bean parent="SelectControlDefinition" p:valuesFinderClass="org.kuali.coeus.common.committee.impl.lookup.keyvalue.CommitteeDecisionMotionValuesFinder" p:includeKeyInLabel="false"/>
+    </property>
+    <property name="optionsFinder">
+      <bean class="org.kuali.coeus.common.committee.impl.lookup.keyvalue.CommitteeDecisionMotionValuesFinder"/>
+    </property>
+    <property name="controlField">
+      <bean parent="Uif-DropdownControl"/>
+        </property>
+        <property name="summary" value="Motion Type" />
+        <property name="description" value="Motion Type" />
+    </bean> 
+    
+	<bean id="CommitteeDecision-noCount" parent="CommitteeDecision-noCount-parentBean" />
+    <bean id="CommitteeDecision-noCount-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="noCount" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="No" />
+        <property name="shortLabel" value="No" />
+        <property name="maxLength" value="4" />
+        <property name="validationPattern" >
+          <bean parent="NumericValidationPattern" />
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+        <property name="control" >
+      <bean parent="TextControlDefinition" p:size="4"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="4" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="No" />
+        <property name="description" value="No" />
+    </bean>
+    
+    <bean id="CommitteeDecision-yesCount" parent="CommitteeDecision-yesCount-parentBean" />
+    <bean id="CommitteeDecision-yesCount-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="yesCount" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Yes" />
+        <property name="shortLabel" value="Yes" />
+        <property name="maxLength" value="4" />
+        <property name="validationPattern" >
+          <bean parent="NumericValidationPattern" />
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+        <property name="control" >
+      <bean parent="TextControlDefinition" p:size="4"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="4" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="Yes" />
+        <property name="description" value="Yes" />
+    </bean>
+    
+    <bean id="CommitteeDecision-abstainCount" parent="CommitteeDecision-abstainCount-parentBean" />
+    <bean id="CommitteeDecision-abstainCount-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="abstainCount" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Abstain" />
+        <property name="shortLabel" value="Abstain" />
+        <property name="maxLength" value="4" />
+        <property name="validationPattern" >
+          <bean parent="NumericValidationPattern" />
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+        <property name="control" >
+      <bean parent="TextControlDefinition" p:size="4"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="4" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="Abstain" />
+        <property name="description" value="Abstain" />
+    </bean>
+    
+    <bean id="CommitteeDecision-recusedCount" parent="CommitteeDecision-recusedCount-parentBean" />
+    <bean id="CommitteeDecision-recusedCount-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="recusedCount" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Recused" />
+        <property name="shortLabel" value="Recused" />
+        <property name="maxLength" value="4" />
+        <property name="validationPattern" >
+          <bean parent="NumericValidationPattern" />
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+        <property name="control" >
+      <bean parent="TextControlDefinition" p:size="4"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="4" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="Recused" />
+        <property name="description" value="Recused" />
+    </bean>
+    
+    <bean id="CommitteeDecision-votingComments" parent="CommitteeDecision-votingComments-parentBean" />
+	<bean id="CommitteeDecision-votingComments-parentBean" abstract="true" parent="AttributeDefinition" >
+		<property name="name" value="votingComments" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="Voting Comments" />
+		<property name="shortLabel" value="Voting Comments" />
+		<property name="maxLength" value="2000" />
+	    <property name="validationPattern" >
+      <bean parent="AnyCharacterValidationPattern" p:allowWhitespace="true"/>
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AnyCharacterPatternConstraint">
+        <property name="allowWhitespace" value="true"/>
+      </bean>
+        </property>
+		<property name="control" >
+      <bean parent="TextareaControlDefinition" p:rows="4" p:cols="50"/>
+    </property>
+    <property name="controlField">
+      <bean p:rows="4" p:cols="50" parent="Uif-TextAreaControl"/>
+		</property>
+		<property name="summary" value="Voting Comments" />
+		<property name="description" value="Voting Comments" />
+	</bean>	
+
+</beans>

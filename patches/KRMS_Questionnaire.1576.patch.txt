@@ -1,0 +1,156 @@
+From 91236bb356b6aa4745a57024b7f99b768034d8c0 Mon Sep 17 00:00:00 2001
+From: rojlarge <rojlarge@iu.edu>
+Date: Thu, 16 Apr 2015 12:50:27 -0400
+Subject: [PATCH] [KRACOEUS-7230] Re-implementing 5.2.1 QuestionResolver
+ changes in KC 6.x
+
+---
+ .../questionnaire/impl/QuestionResolver.java       | 29 ++++++++++++++++------
+ .../ProposalDevelopmentFactBuilderServiceImpl.java |  2 +-
+ .../kra/award/AwardFactBuilderServiceImpl.java     |  1 +
+ .../coi/CoiDisclosureFactBuilderServiceImpl.java   |  1 +
+ .../iacuc/IacucProtocolFactBuilderServiceImpl.java |  1 +
+ ...nstitutionalProposalFactBuilderServiceImpl.java |  2 +-
+ .../kra/irb/IrbProtocolFactBuilderServiceImpl.java |  1 +
+ 7 files changed, 28 insertions(+), 9 deletions(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/common/questionnaire/impl/QuestionResolver.java b/coeus-impl/src/main/java/org/kuali/coeus/common/questionnaire/impl/QuestionResolver.java
+index 3c98c98..28cc146 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/common/questionnaire/impl/QuestionResolver.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/common/questionnaire/impl/QuestionResolver.java
+@@ -30,7 +30,8 @@
+ 
+     public static final String MODULE_CODE = "moduleCode";
+     public static final String MODULE_ITEM_KEY = "moduleItemKey";
+-    public static final String QUESTIONNAIRE_REF_ID = "Questionnaire Ref ID";
++    public static final String MODULE_SUB_ITEM_KEY = "moduleSubItemKey";
++    public static final String QUESTIONNAIRE_REF_ID = "Questionnaire Seq ID";
+     public static final String QUESTION_SEQ_ID = "Question Seq ID";
+     public static final String MODULE_ITEM_CODE = "moduleItemCode";
+     private String outputName;
+@@ -42,6 +43,7 @@ public QuestionResolver(String outputName, Set<String> params) {
+         this.prereqs = new HashSet<String>();
+         prereqs.add(MODULE_CODE);
+         prereqs.add(MODULE_ITEM_KEY);
++        prereqs.add(MODULE_SUB_ITEM_KEY);
+         if (params == null) {
+             this.params = Collections.emptySet(); 
+         } else {
+@@ -71,11 +73,12 @@ public String resolve(Map<String, Object> resolvedPrereqs, Map<String, String> p
+         String questionId = parameters.get(QUESTION_SEQ_ID);
+         String moduleCode = (String) resolvedPrereqs.get(MODULE_CODE);
+         String moduleItemKey = (String) resolvedPrereqs.get(MODULE_ITEM_KEY);
+-        List<AnswerHeader> answerHeaders = getQuestionnaireAnswers(moduleCode, moduleItemKey);
+-        for (AnswerHeader answerHeader : answerHeaders) {
+-            if (answerHeader.getQuestionnaireId().equals(questionnaireId)) {
++        String moduleSubItemKey = resolvedPrereqs.get(MODULE_SUB_ITEM_KEY).toString();
++        List<AnswerHeader> answerHeaders = getQuestionnaireAnswers(moduleCode, moduleItemKey, moduleSubItemKey);
++        for (AnswerHeader answerHeader : getLatestAnswerVersions(answerHeaders)) {
++            if (answerHeader.getQuestionnaire().getQuestionnaireSeqId().equals(questionnaireId)) {
+                 for (Answer answer : answerHeader.getAnswers()) {
+-                    if (answer.getQuestion().getQuestionSeqId().equals(questionId)) {
++                    if (String.valueOf(answer.getQuestion().getQuestionSeqId()).equals(questionId)) {
+                         return answer.getAnswer();
+                     }
+                 }
+@@ -83,12 +86,24 @@ public String resolve(Map<String, Object> resolvedPrereqs, Map<String, String> p
+         }
+         return "";
+     }
+-    
+-    protected List<AnswerHeader> getQuestionnaireAnswers(String moduleCode, String moduleItemKey) {
++
++    protected Collection<AnswerHeader> getLatestAnswerVersions(List<AnswerHeader> allAnswerHeaders) {
++        Map<String, AnswerHeader> latestAnswerHeaders = new HashMap<String, AnswerHeader>();
++        for (AnswerHeader header : allAnswerHeaders) {
++            AnswerHeader compHeader = latestAnswerHeaders.get(header.getQuestionnaire().getQuestionnaireSeqId());
++            if (compHeader == null || header.getQuestionnaire().getSequenceNumber() > compHeader.getQuestionnaire().getSequenceNumber()) {
++                latestAnswerHeaders.put(header.getQuestionnaire().getQuestionnaireSeqId(), header);
++            }
++        }
++        return latestAnswerHeaders.values();
++    }
++
++    protected List<AnswerHeader> getQuestionnaireAnswers(String moduleCode, String moduleItemKey, String moduleSubItemKey) {
+         BusinessObjectService boService = KcServiceLocator.getService(BusinessObjectService.class);
+         Map<String, String> fieldValues = new HashMap<String, String>();
+         fieldValues.put(MODULE_ITEM_CODE, moduleCode);
+         fieldValues.put(MODULE_ITEM_KEY, moduleItemKey);
++        fieldValues.put(MODULE_SUB_ITEM_KEY, moduleSubItemKey);
+         return (List<AnswerHeader>) boService.findMatching(AnswerHeader.class, fieldValues);
+     }
+ 
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/krms/ProposalDevelopmentFactBuilderServiceImpl.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/krms/ProposalDevelopmentFactBuilderServiceImpl.java
+index 97eb585..f7cdbe5 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/krms/ProposalDevelopmentFactBuilderServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/krms/ProposalDevelopmentFactBuilderServiceImpl.java
+@@ -69,7 +69,7 @@ public void addFacts(Facts.Builder factsBuilder, KrmsRulesContext document) {
+         addProposalFacts(factsBuilder,developmentProposal);
+         factsBuilder.addFact("moduleCode", CoeusModule.PROPOSAL_DEVELOPMENT_MODULE_CODE);
+         factsBuilder.addFact("moduleItemKey", developmentProposal.getProposalNumber());
+-        
++        factsBuilder.addFact("moduleSubItemKey", new Integer(0));
+     }
+     
+     private void addBudgetFacts(Builder factsBuilder, ProposalDevelopmentDocument proposalDevelopmentDocument) {
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/award/AwardFactBuilderServiceImpl.java b/coeus-impl/src/main/java/org/kuali/kra/award/AwardFactBuilderServiceImpl.java
+index 0f88d25..02176b6 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/award/AwardFactBuilderServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/award/AwardFactBuilderServiceImpl.java
+@@ -59,6 +59,7 @@ public void addFacts(Facts.Builder factsBuilder, KrmsRulesContext researchDocume
+         // Questionnaire Prereqs
+         factsBuilder.addFact("moduleCode", CoeusModule.AWARD_MODULE_CODE);
+         factsBuilder.addFact("moduleItemKey", award.getAwardNumber());
++        factsBuilder.addFact("moduleSubItemKey", award.getSequenceNumber());
+     }
+     
+     protected String getElementValue(String docContent, String xpathExpression) {
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/coi/CoiDisclosureFactBuilderServiceImpl.java b/coeus-impl/src/main/java/org/kuali/kra/coi/CoiDisclosureFactBuilderServiceImpl.java
+index 1d93f03..d042cc2 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/coi/CoiDisclosureFactBuilderServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/coi/CoiDisclosureFactBuilderServiceImpl.java
+@@ -65,6 +65,7 @@ public void addFacts(Builder factsBuilder, KrmsRulesContext document){
+         // Questionnaire Prereqs
+         factsBuilder.addFact("moduleCode", CoeusModule.COI_DISCLOSURE_MODULE_CODE);
+         factsBuilder.addFact("moduleItemKey", coiDisclosure.getCoiDisclosureNumber());
++        factsBuilder.addFact("moduleSubItemKey", coiDisclosure.getSequenceNumber());
+     }
+     
+     protected String getElementValue(String docContent, String xpathExpression) {
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/iacuc/IacucProtocolFactBuilderServiceImpl.java b/coeus-impl/src/main/java/org/kuali/kra/iacuc/IacucProtocolFactBuilderServiceImpl.java
+index 7735fa0..8c9b155 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/iacuc/IacucProtocolFactBuilderServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/iacuc/IacucProtocolFactBuilderServiceImpl.java
+@@ -49,6 +49,7 @@ public void addFacts(Facts.Builder factsBuilder, KrmsRulesContext document) {
+         factsBuilder.addFact(KcKrmsConstants.IacucProtocol.IACUC_PROTOCOL, protocol);
+         factsBuilder.addFact("moduleCode", CoeusModule.IACUC_PROTOCOL_MODULE_CODE);
+         factsBuilder.addFact("moduleItemKey", protocol.getProtocolNumber());
++        factsBuilder.addFact("moduleSubItemKey", protocol.getSequenceNumber());
+     }
+ 
+     /**
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/institutionalproposal/service/impl/InstitutionalProposalFactBuilderServiceImpl.java b/coeus-impl/src/main/java/org/kuali/kra/institutionalproposal/service/impl/InstitutionalProposalFactBuilderServiceImpl.java
+index d92879c..cc6a49f 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/institutionalproposal/service/impl/InstitutionalProposalFactBuilderServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/institutionalproposal/service/impl/InstitutionalProposalFactBuilderServiceImpl.java
+@@ -49,7 +49,7 @@ public void addFacts(Facts.Builder factsBuilder, KrmsRulesContext document) {
+         addProposalFacts(factsBuilder,institutionalProposal);
+         factsBuilder.addFact("moduleCode", CoeusModule.INSTITUTIONAL_PROPOSAL_MODULE_CODE);
+         factsBuilder.addFact("moduleItemKey", institutionalProposal.getProposalNumber());
+-        
++        factsBuilder.addFact("moduleSubItemKey", institutionalProposal.getSequenceNumber());
+     }
+     
+     private void addProposalFacts(Builder factsBuilder, InstitutionalProposal institutionalProposal) {
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/irb/IrbProtocolFactBuilderServiceImpl.java b/coeus-impl/src/main/java/org/kuali/kra/irb/IrbProtocolFactBuilderServiceImpl.java
+index 6eef67c..4051af7 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/irb/IrbProtocolFactBuilderServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/irb/IrbProtocolFactBuilderServiceImpl.java
+@@ -49,6 +49,7 @@ public void addFacts(Facts.Builder factsBuilder, KrmsRulesContext document) {
+         factsBuilder.addFact(KcKrmsConstants.IrbProtocol.IRB_PROTOCOL, protocol);
+         factsBuilder.addFact("moduleCode", CoeusModule.IRB_MODULE_CODE);
+         factsBuilder.addFact("moduleItemKey", protocol.getProtocolNumber());
++        factsBuilder.addFact("moduleSubItemKey", protocol.getSequenceNumber());
+     }
+ 
+     /**

@@ -1,0 +1,64 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Mon Mar 9 10:32:18 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+
+'RUNNINGDDLSNAPSHOT'
+--------------------
+running ddl snapshot
+
+
+Table altered.
+
+
+208 rows updated.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+'RUNNINGDMLSNAPSHOT'
+--------------------
+running dml snapshot
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

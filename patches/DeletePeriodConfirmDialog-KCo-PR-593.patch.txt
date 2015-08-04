@@ -1,0 +1,55 @@
+From 91dff255d9fa02474e77ab00d173611b6468cd84 Mon Sep 17 00:00:00 2001
+From: Gayathri Athreya <gathreya@email.arizona.edu>
+Date: Thu, 2 Jul 2015 11:41:03 -0700
+Subject: [PATCH] =?UTF-8?q?RESKC-588:=20Adding=20confirmation=20dialog.=20?=
+ =?UTF-8?q?PD=20Budget=20=E2=80=93=20Need=20a=20confirmation/warning=20pro?=
+ =?UTF-8?q?mpt=20when=20user=20hits=20the=20Delete=20icon=20on=20Periods?=
+ =?UTF-8?q?=20and=20Totals=20We=20have=20had=20multiple=20users=20report?=
+ =?UTF-8?q?=20that=20they=20have=20mistakenly=20deleted=20Period=201=20of?=
+ =?UTF-8?q?=20their=20budget=20by=20clicking=20on=20the=20"trash=20can"=20?=
+ =?UTF-8?q?icon=20under=20the=20Actions=20header=20in=20PD=20Budget=20>=20?=
+ =?UTF-8?q?Periods=20and=20totals.=20There=20is=20no=20warning=20or=20conf?=
+ =?UTF-8?q?irmation=20message=20given=20to=20the=20user,=20and=20the=20del?=
+ =?UTF-8?q?etion=20is=20immediate.?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ .../coeus/propdev/impl/budget/core/ProposalBudgetPeriodsPage.xml    | 6 +++++-
+ .../budget/person/ProposalBudgetAssignPersonnelToPeriodsPage.xml    | 5 ++++-
+ 2 files changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/budget/core/ProposalBudgetPeriodsPage.xml b/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/budget/core/ProposalBudgetPeriodsPage.xml
+index 7cce76f..7a033ec 100644
+--- a/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/budget/core/ProposalBudgetPeriodsPage.xml
++++ b/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/budget/core/ProposalBudgetPeriodsPage.xml
+@@ -108,7 +108,11 @@
+             <list>
+                 <bean parent="Uif-DeleteLineAction-IconOnly" p:order="40"
+                       p:render="@{!#ViewHelper.isBudgetLineItemEditable(#collectionGroup.bindingInfo.bindingPath,#index,editableBudgetLineItems)}" 
+-                      p:iconClass="icon-trash"/>
++                      p:iconClass="icon-trash">
++                        <property name="confirmationDialog">
++                            <bean parent="Uif-DialogGroup-OkCancel" p:promptText="Are you sure you want to delete period?"/>
++                        </property>
++                </bean>
+             </list>
+         </property>
+         <property name="layoutManager.columnCalculations">
+diff --git a/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/budget/person/ProposalBudgetAssignPersonnelToPeriodsPage.xml b/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/budget/person/ProposalBudgetAssignPersonnelToPeriodsPage.xml
+index d9caf22..26de661 100644
+--- a/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/budget/person/ProposalBudgetAssignPersonnelToPeriodsPage.xml
++++ b/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/budget/person/ProposalBudgetAssignPersonnelToPeriodsPage.xml
+@@ -126,7 +126,10 @@
+ 						<map>
+ 							<entry key="budgetPeriodId" value="@{#budgetPeriodId}"/>
+ 						</map>
+-					</property>		
++					</property>
++					<property name="confirmationDialog">
++						<bean parent="Uif-DialogGroup-OkCancel" p:promptText="Are you sure you want to delete the personnel line item?"/>
++					</property>
+ 				</bean>
+ 			</list>
+ 		</property>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                    http://www.springframework.org/schema/util
+                    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	<!-- Proposal Compliance Page -->
+	<bean id="PropDev-BudgetPage" parent="PropDev-BudgetPage-parentBean" />
+	<bean id="PropDev-BudgetPage-parentBean" parent="PropDev-DocumentPage" 
+			p:readOnly="@{!#view.editModes.containsKey(#budgetAuthConsts.MODIFY_BUDGET_EDIT_MODE)}">
+		<property name="items">
+			<list>
+				<ref bean="PropDev-BudgetPage-Collection"/>
+			</list>
+		</property>
+		<property name="header">
+			<bean parent="Uif-PageHeader" />
+		</property>
+	</bean>
+
+	<bean id="PropDev-BudgetPage-Collection" parent="PropDev-BudgetPage-Collection-parentBean"/>
+	<bean id="PropDev-BudgetPage-Collection-parentBean" abstract="true" parent="PropDev-BudgetVersions-GenericCollection"
+		p:propertyName="document.developmentProposal.budgets">
+		<property name="layoutManager.conditionalRowCssClasses">
+            <map>
+                <entry key="@{#line.budgetId == document.developmentProposal.finalBudget?.budgetId}" value="finalBudget"/>
+            </map>
+        </property>
+		<property name="items">
+			<list merge="true">
+				<bean parent="Uif-FieldGroupBase" p:label="Actions" p:order="100">
+					<property name="group">
+						<bean parent="PropDev-BudgetVersions-GenericActions">
+							<property name="listPrototype.items">
+								<list merge="true">
+									<bean parent="Uif-MenuDivider" p:order="40"/>
+									<bean parent="Uif-ActionLink" p:actionLabel="Include for Submission"
+										  p:methodToCall="markForSubmission" p:additionalSubmitData="budgetId:@{#line.budgetId}"
+										  p:iconClass="icon-ok" p:render="@{#line.budgetId != document.developmentProposal.finalBudget?.budgetId and canEditView}" p:order="50"/>
+									<bean parent="Uif-ActionLink" p:actionLabel="Remove from Submission"
+										  p:methodToCall="removeFromSubmission" p:iconClass="icon-ok"
+										  p:render="@{#line.budgetId == document.developmentProposal.finalBudget?.budgetId and canEditView}" p:order="60"/>
+								</list>
+							</property>
+						</bean>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="PropDev-BudgetVersions-Dialog" parent="PropDev-BudgetVersions-Dialog-parentBean"/>
+	<bean id="PropDev-BudgetVersions-Dialog-parentBean" abstract="true" parent="Uif-DialogGroup"
+		p:dialogCssClass="modal-lg" p:headerText="Budgets" p:retrieveViaAjax="true">
+		<property name="items">
+			<list>
+				<bean parent="PropDev-BudgetPage-Collection" p:order="10" p:headerText=""/>
+			</list>
+		</property>
+		<property name="footer.items">
+			<list>
+				<bean parent="Uif-DialogDismissButton" p:actionLabel="Okay"/>
+			</list>
+		</property>
+	</bean>
+</beans>

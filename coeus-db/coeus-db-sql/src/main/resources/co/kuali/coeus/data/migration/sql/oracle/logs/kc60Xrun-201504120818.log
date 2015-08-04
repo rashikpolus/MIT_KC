@@ -1,0 +1,18 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Sun Apr 12 08:23:58 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+SP2-0310: unable to open file "all-kc60X.sql"
+SQL> 
+SQL> ERROR:
+ORA-03135: connection lost contact
+
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options (with complications)

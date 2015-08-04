@@ -1,0 +1,111 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Wed Jan 7 14:06:49 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+
+Sequence created.
+
+
+Sequence created.
+
+
+Sequence created.
+
+
+Sequence created.
+
+
+Sequence created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+8573 rows created.
+
+
+Procedure created.
+
+
+Function created.
+
+
+Warning: Function created with compilation errors.
+
+
+Function created.
+
+
+Package created.
+
+
+Package body created.
+
+
+Function created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Function created.
+
+
+Function created.
+
+
+PL/SQL procedure successfully completed.
+
+
+Table truncated.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

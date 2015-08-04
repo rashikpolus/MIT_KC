@@ -1,0 +1,84 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Thu Feb 5 22:27:42 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+
+'RUNNINGDDLSNAPSHOT'
+--------------------
+running ddl snapshot
+
+
+'RUNNINGDDLSNAPSHOT'
+--------------------
+running ddl snapshot
+
+
+'RUNNINGDMLSNAPSHOT'
+--------------------
+running dml snapshot
+
+INSERT INTO AWARD_BUDGET_STATUS (AWARD_BUDGET_STATUS_CODE,DESCRIPTION,UPDATE_USER,UPDATE_TIMESTAMP,OBJ_ID,VER_NBR) VALUES ('12','Do Not Post','admin',SYSDATE,SYS_GUID(),1)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.AWARD_BUDGET_STATUSP1) violated
+
+
+
+1 row updated.
+
+
+Commit complete.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"> 
+
+  <bean id="Organization-inquiryDefinition" parent="Organization-inquiryDefinition-parentBean"/>
+  <bean id="Organization-InquiryView" parent="Organization-InquiryView-parentBean"/>
+  <bean abstract="true" id="Organization-inquiryDefinition-parentBean" parent="InquiryDefinition">
+    <property name="title" value="Organization"/>
+    <property name="inquirySections">
+      <list>
+        <bean parent="InquirySectionDefinition">
+          <property name="title" value="Organization"/>
+          <property name="numberOfColumns" value="1"/>
+          <property name="inquiryFields">
+            <list>
+              <bean p:attributeName="organizationId" p:forceInquiry="true" parent="FieldDefinition"/>
+              <bean p:attributeName="organizationName" parent="FieldDefinition"/>
+              <bean p:attributeName="contactAddressId" parent="FieldDefinition"/>
+              <bean p:attributeName="rolodex.fullName" parent="FieldDefinition"/>
+              <bean p:attributeName="address" parent="FieldDefinition"/>
+              <bean p:attributeName="cableAddress" parent="FieldDefinition"/>
+              <bean p:attributeName="telexNumber" parent="FieldDefinition"/>
+              <bean p:attributeName="county" parent="FieldDefinition"/>
+              <bean p:attributeName="congressionalDistrict" parent="FieldDefinition"/>
+              <bean p:attributeName="incorporatedIn" parent="FieldDefinition"/>
+              <bean p:attributeName="incorporatedDate" parent="FieldDefinition"/>
+              <bean p:attributeName="numberOfEmployees" parent="FieldDefinition"/>
+              <bean p:attributeName="irsTaxExemption" parent="FieldDefinition"/>
+              <bean p:attributeName="federalEmployerId" parent="FieldDefinition"/>
+              <bean p:attributeName="stateTaxExemptNum" parent="FieldDefinition"/>
+              <bean p:attributeName="agencySymbol" parent="FieldDefinition"/>
+              <bean p:attributeName="comGovEntityCode" parent="FieldDefinition"/>
+              <bean p:attributeName="vendorCode" parent="FieldDefinition"/>
+              <bean p:attributeName="stateEmployeeClaim" parent="FieldDefinition"/>
+              <bean p:attributeName="dunsNumber" parent="FieldDefinition"/>
+              <bean p:attributeName="dunsPlusFourNumber" parent="FieldDefinition"/>
+              <bean p:attributeName="dodacNumber" parent="FieldDefinition"/>
+              <bean p:attributeName="cageNumber" parent="FieldDefinition"/>
+              <bean p:attributeName="humanSubAssurance" parent="FieldDefinition"/>
+              <bean p:attributeName="animalWelfareAssurance" parent="FieldDefinition"/>
+              <bean p:attributeName="scienceMisconductComplDate" parent="FieldDefinition"/>
+              <bean p:attributeName="phsAccount" parent="FieldDefinition"/>
+              <bean p:attributeName="nsfInstitutionalCode" parent="FieldDefinition"/>
+              <bean p:attributeName="indirectCostRateAgreement" parent="FieldDefinition"/>
+              <bean p:attributeName="cognizantAuditor" parent="FieldDefinition"/>
+              <bean p:attributeName="onrResidentRep" parent="FieldDefinition"/>
+            </list>
+          </property>
+        </bean>
+        <bean parent="InquirySectionDefinition">
+          <property name="title" value="Organization Types"/>
+          <property name="numberOfColumns" value="1"/>
+          <property name="inquiryFields">
+            <list>
+              <bean parent="InquiryCollectionDefinition">
+                <property name="attributeName" value="organizationTypes"/>
+                <property name="businessObjectClass" value="org.kuali.coeus.common.framework.org.type.OrganizationType"/>
+                <property name="numberOfColumns" value="1"/>
+                <property name="inquiryFields">
+                  <list>
+                    <bean p:attributeName="organizationTypeList.description" parent="FieldDefinition"/>
+                  </list>
+                </property>
+              </bean>
+            </list>
+          </property>
+        </bean>
+        <bean parent="InquirySectionDefinition">
+          <property name="title" value="Organization Audits"/>
+          <property name="numberOfColumns" value="1"/>
+          <property name="inquiryFields">
+            <list>
+              <bean parent="InquiryCollectionDefinition">
+                <property name="attributeName" value="organizationAudits"/>
+                <property name="businessObjectClass" value="org.kuali.coeus.common.framework.org.audit.OrganizationAudit"/>
+                <property name="numberOfColumns" value="1"/>
+                <property name="inquiryFields">
+                  <list>
+                    <bean p:attributeName="fiscalYear" parent="FieldDefinition"/>
+                    <bean p:attributeName="auditAccepted" parent="FieldDefinition"/>
+                    <bean p:attributeName="auditComment" parent="FieldDefinition"/>
+                  </list>
+                </property>
+              </bean>
+            </list>
+          </property>
+        </bean>
+        <bean parent="InquirySectionDefinition">
+          <property name="title" value="Organization Indirectcosts"/>
+          <property name="numberOfColumns" value="1"/>
+          <property name="inquiryFields">
+            <list>
+              <bean parent="InquiryCollectionDefinition">
+                <property name="attributeName" value="organizationIdcs"/>
+                <property name="businessObjectClass" value="org.kuali.coeus.common.framework.org.OrganizationIndirectcost"/>
+                <property name="numberOfColumns" value="1"/>
+                <property name="inquiryFields">
+                  <list>
+                    <bean p:attributeName="idcNumber" parent="FieldDefinition"/>
+                    <bean p:attributeName="applicableIndirectcostRate" parent="FieldDefinition"/>
+                    <bean p:attributeName="endDate" parent="FieldDefinition"/>
+                    <bean p:attributeName="idcComment" parent="FieldDefinition"/>
+                    <bean p:attributeName="idcRateTypeCode" parent="FieldDefinition"/>
+                    <bean p:attributeName="requestedDate" parent="FieldDefinition"/>
+                    <bean p:attributeName="startDate" parent="FieldDefinition"/>
+                  </list>
+                </property>
+              </bean>
+            </list>
+          </property>
+        </bean>
+        <bean parent="InquirySectionDefinition">
+          <property name="title" value="Organization Ynqs"/>
+          <property name="numberOfColumns" value="1"/>
+          <property name="inquiryFields">
+            <list>
+              <bean parent="InquiryCollectionDefinition">
+                <property name="attributeName" value="organizationYnqs"/>
+                <property name="businessObjectClass" value="org.kuali.coeus.common.framework.org.OrganizationYnq"/>
+                <property name="numberOfColumns" value="1"/>
+                <property name="inquiryFields">
+                  <list>
+                    <bean p:attributeName="questionId" parent="FieldDefinition"/>
+                    <bean p:attributeName="answer" parent="FieldDefinition"/>
+                    <bean p:attributeName="explanation" parent="FieldDefinition"/>
+                    <bean p:attributeName="reviewDate" parent="FieldDefinition"/>
+                  </list>
+                </property>
+              </bean>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="Organization-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView">
+    <property name="headerText" value="Organization"/>
+    <property name="dataObjectClassName" value="org.kuali.coeus.common.framework.org.Organization"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-GridSection">
+          <property name="headerText" value="Organization"/>
+          <property name="layoutManager.numberOfColumns" value="2"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="organizationId" parent="Uif-DataField"/>
+              <bean p:propertyName="organizationName" parent="Uif-DataField"/>
+              <bean p:propertyName="contactAddressId" parent="Uif-DataField"/>
+              <bean p:propertyName="rolodex.fullName" parent="Uif-DataField"/>
+              <bean p:propertyName="address" parent="Uif-DataField"/>
+              <bean p:propertyName="cableAddress" parent="Uif-DataField"/>
+              <bean p:propertyName="telexNumber" parent="Uif-DataField"/>
+              <bean p:propertyName="county" parent="Uif-DataField"/>
+              <bean p:propertyName="congressionalDistrict" parent="Uif-DataField"/>
+              <bean p:propertyName="incorporatedIn" parent="Uif-DataField"/>
+              <bean p:propertyName="incorporatedDate" parent="Uif-DataField"/>
+              <bean p:propertyName="numberOfEmployees" parent="Uif-DataField"/>
+              <bean p:propertyName="irsTaxExemption" parent="Uif-DataField"/>
+              <bean p:propertyName="federalEmployerId" parent="Uif-DataField"/>
+              <bean p:propertyName="stateTaxExemptNum" parent="Uif-DataField"/>
+              <bean p:propertyName="agencySymbol" parent="Uif-DataField"/>
+              <bean p:propertyName="comGovEntityCode" parent="Uif-DataField"/>
+              <bean p:propertyName="vendorCode" parent="Uif-DataField"/>
+              <bean p:propertyName="stateEmployeeClaim" parent="Uif-DataField"/>
+              <bean p:propertyName="dunsNumber" parent="Uif-DataField"/>
+              <bean p:propertyName="dunsPlusFourNumber" parent="Uif-DataField"/>
+              <bean p:propertyName="dodacNumber" parent="Uif-DataField"/>
+              <bean p:propertyName="cageNumber" parent="Uif-DataField"/>
+              <bean p:propertyName="humanSubAssurance" parent="Uif-DataField"/>
+              <bean p:propertyName="animalWelfareAssurance" parent="Uif-DataField"/>
+              <bean p:propertyName="scienceMisconductComplDate" parent="Uif-DataField"/>
+              <bean p:propertyName="phsAccount" parent="Uif-DataField"/>
+              <bean p:propertyName="nsfInstitutionalCode" parent="Uif-DataField"/>
+              <bean p:propertyName="indirectCostRateAgreement" parent="Uif-DataField"/>
+              <bean p:propertyName="cognizantAuditor" parent="Uif-DataField"/>
+              <bean p:propertyName="onrResidentRep" parent="Uif-DataField"/>
+            </list>
+          </property>
+        </bean>
+        <bean parent="Uif-StackedCollectionSection">
+          <property name="headerText" value="Organization Types"/>
+          <property name="layoutManager.lineGroupPrototype.layoutManager.numberOfColumns" value="2"/>
+          <property name="propertyName" value="organizationTypes"/>
+          <property name="collectionObjectClass" value="org.kuali.coeus.common.framework.org.type.OrganizationType"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="organizationTypeList.description" parent="Uif-DataField"/>
+            </list>
+          </property>
+        </bean>
+        <bean parent="Uif-StackedCollectionSection">
+          <property name="headerText" value="Organization Audits"/>
+          <property name="layoutManager.lineGroupPrototype.layoutManager.numberOfColumns" value="2"/>
+          <property name="propertyName" value="organizationAudits"/>
+          <property name="collectionObjectClass" value="org.kuali.coeus.common.framework.org.audit.OrganizationAudit"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="fiscalYear" parent="Uif-DataField"/>
+              <bean p:propertyName="auditAccepted" parent="Uif-DataField"/>
+              <bean p:propertyName="auditComment" parent="Uif-DataField"/>
+            </list>
+          </property>
+        </bean>
+        <bean parent="Uif-StackedCollectionSection">
+          <property name="headerText" value="Organization Indirectcosts"/>
+          <property name="layoutManager.lineGroupPrototype.layoutManager.numberOfColumns" value="2"/>
+          <property name="propertyName" value="organizationIdcs"/>
+          <property name="collectionObjectClass" value="org.kuali.coeus.common.framework.org.OrganizationIndirectcost"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="idcNumber" parent="Uif-DataField"/>
+              <bean p:propertyName="applicableIndirectcostRate" parent="Uif-DataField"/>
+              <bean p:propertyName="endDate" parent="Uif-DataField"/>
+              <bean p:propertyName="idcComment" parent="Uif-DataField"/>
+              <bean p:propertyName="idcRateTypeCode" parent="Uif-DataField"/>
+              <bean p:propertyName="requestedDate" parent="Uif-DataField"/>
+              <bean p:propertyName="startDate" parent="Uif-DataField"/>
+            </list>
+          </property>
+        </bean>
+        <bean parent="Uif-StackedCollectionSection">
+          <property name="headerText" value="Organization Ynqs"/>
+          <property name="layoutManager.lineGroupPrototype.layoutManager.numberOfColumns" value="2"/>
+          <property name="propertyName" value="organizationYnqs"/>
+          <property name="collectionObjectClass" value="org.kuali.coeus.common.framework.org.OrganizationYnq"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="questionId" parent="Uif-DataField"/>
+              <bean p:propertyName="answer" parent="Uif-DataField"/>
+              <bean p:propertyName="explanation" parent="Uif-DataField"/>
+              <bean p:propertyName="reviewDate" parent="Uif-DataField"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+</beans>

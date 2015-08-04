@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean id="KrmsFunctionsParams" parent="KrmsFunctionsParams-parentBean" />
+	<bean id="KrmsFunctionsParams-parentBean" abstract="true" parent="BusinessObjectEntry">
+			<property name="businessObjectClass" value="edu.mit.kc.bo.KrmsFunctionsParams" />
+		<property name="objectLabel" value="Krms Functions Params" />
+		<property name="lookupDefinition">
+			<ref bean="KrmsFunctionsParams-lookupDefinition" />
+		</property>
+		<property name="attributes">
+			<list>
+				<ref bean="KrmsFunctionsParam-functionParamId" />
+				<ref bean="KrmsFunctionsParam-namespace" />
+				<ref bean="KrmsFunctionsParam-description" />
+				<ref bean="KrmsFunctionsParam-type" />
+				<ref bean="KrmsFunctionsParam-functionId" />
+				<ref bean="KrmsFunctionsParam-sequenceNo" />
+			</list>
+		</property>
+	</bean>
+	
+	<!-- Attribute Definitions -->
+	<bean id="KrmsFunctionsParam-functionParamId" parent="KrmsFunctionsParam-functionParamId-parentBean" />
+	<bean id="KrmsFunctionsParam-functionParamId-parentBean" abstract="true"
+		parent="AttributeDefinition" p:name="functionParamId" p:forceUppercase="false"
+		p:label="Function Param Id" p:shortLabel="Function Param Id" p:summary="Function Param Id"
+		p:description="Function Param Id">
+		<property name="validationPattern">
+			<bean parent="AnyCharacterValidationPattern" />
+		</property>
+		<property name="validCharactersConstraint">
+			<bean parent="AnyCharacterPatternConstraint" />
+		</property>
+		<property name="control">
+			<bean parent="TextControlDefinition" p:size="8" />
+		</property>
+		<property name="controlField">
+			<bean parent="Uif-TextControl" p:size="14" />
+		</property>
+	</bean>
+	
+	<bean id="KrmsFunctionsParam-namespace" parent="KrmsFunctionsParam-namespace-parentBean" />
+	<bean id="KrmsFunctionsParam-namespace-parentBean" parent="AttributeDefinition"
+		abstract="true" p:name="namespace" p:forceUppercase="false" p:label="Namespace"
+		p:shortLabel="Namespace" p:summary="Namespace" p:description="Namespace">
+		<property name="validationPattern">
+			<bean parent="AnyCharacterValidationPattern" />
+		</property>
+		<property name="validCharactersConstraint">
+			<bean parent="AnyCharacterPatternConstraint" />
+		</property>
+		
+		<property name="control">
+			<bean parent="TextControlDefinition" p:size="8" />
+		</property>
+		<property name="controlField">
+			<bean parent="Uif-TextControl" p:size="30" />
+		</property>
+	</bean>
+
+	<bean id="KrmsFunctionsParam-description" parent="KrmsFunctionsParam-description-parentBean" />
+	<bean id="KrmsFunctionsParam-description-parentBean" parent="AttributeDefinition"
+		abstract="true" p:name="description" p:forceUppercase="true" p:label="Description"
+		p:shortLabel="Description" p:summary="Description" p:description="Description">
+		<property name="validationPattern">
+			<bean parent="AnyCharacterValidationPattern" />
+		</property>
+		<property name="validCharactersConstraint">
+			<bean parent="AnyCharacterPatternConstraint" />
+		</property>
+		<property name="control">
+			<bean parent="TextControlDefinition" p:size="8" />
+		</property>
+		<property name="controlField">
+			<bean parent="Uif-TextControl" p:size="15" />
+		</property>
+	</bean>
+
+	<bean id="KrmsFunctionsParam-type" parent="KrmsFunctionsParam-type-parentBean" />
+	<bean id="KrmsFunctionsParam-type-parentBean" parent="AttributeDefinition"
+		abstract="true" p:name="type" p:forceUppercase="true" p:label="Type"
+		p:shortLabel="Type" p:summary="Type" p:description="Type">
+		<property name="validationPattern">
+			<bean parent="AnyCharacterValidationPattern" />
+		</property>
+		<property name="validCharactersConstraint">
+			<bean parent="AnyCharacterPatternConstraint" />
+		</property>
+		<property name="control">
+			<bean parent="TextControlDefinition" p:size="8" />
+		</property>
+		<property name="controlField">
+			<bean parent="Uif-TextControl" p:size="15" />
+		</property>
+	</bean>
+	
+	<bean id="KrmsFunctionsParam-functionId" parent="KrmsFunctionsParam-functionId-parentBean" />
+	<bean id="KrmsFunctionsParam-functionId-parentBean" abstract="true"
+		parent="AttributeDefinition" p:name="id" p:forceUppercase="false"
+		p:label="Function Id" p:shortLabel="Function Id" p:summary="Function Id"
+		p:description="Function Id">
+		<property name="validationPattern">
+			<bean parent="AnyCharacterValidationPattern" />
+		</property>
+		<property name="validCharactersConstraint">
+			<bean parent="AnyCharacterPatternConstraint" />
+		</property>
+		<property name="control">
+			<bean parent="TextControlDefinition" p:size="8" />
+		</property>
+		<property name="controlField">
+			<bean parent="Uif-TextControl" p:size="14" />
+		</property>
+	</bean>
+	
+	<bean id="KrmsFunctionsParam-sequenceNo" parent="KrmsFunctionsParam-sequenceNo-parentBean" />
+	<bean id="KrmsFunctionsParam-sequenceNo-parentBean" abstract="true"
+		parent="AttributeDefinition" p:name="sequenceNo" p:forceUppercase="false"
+		p:label="Sequence No" p:shortLabel="Sequence No" p:summary="Sequence No"
+		p:description="Sequence No">
+		<property name="validationPattern">
+			<bean parent="AnyCharacterValidationPattern" />
+		</property>
+		<property name="validCharactersConstraint">
+			<bean parent="AnyCharacterPatternConstraint" />
+		</property>
+		<property name="control">
+			<bean parent="TextControlDefinition" p:size="8" />
+		</property>
+		<property name="controlField">
+			<bean parent="Uif-TextControl" p:size="14" />
+		</property>
+	</bean>
+	
+	<!-- Lookup Definition -->
+	<bean id="KrmsFunctionsParams-lookupDefinition" parent="KrmsFunctionsParams-lookupDefinition-parentBean" />
+	<bean id="KrmsFunctionsParams-LookupView" parent="KrmsFunctionsParams-LookupView-parentBean" />
+	<bean id="KrmsFunctionsParams-lookupDefinition-parentBean" abstract="true"
+		parent="LookupDefinition">
+		<property name="title" value="Krms Functions Params Lookup" />
+		<property name="defaultSort">
+			<bean parent="SortDefinition" />
+		</property>
+		<property name="lookupFields">
+			<list>
+				<bean parent="FieldDefinition" p:attributeName="functionParamId" />
+				<bean parent="FieldDefinition" p:attributeName="namespace" />
+				<bean parent="FieldDefinition" p:attributeName="type" />
+				<bean parent="FieldDefinition" p:attributeName="id" />
+				<bean parent="FieldDefinition" p:attributeName="sequenceNo"/> 
+			</list>
+		</property>
+		<property name="resultFields">
+			<list>
+				<bean parent="FieldDefinition" p:attributeName="functionParamId"
+					p:forceInquiry="true" />
+				<bean parent="FieldDefinition" p:attributeName="namespace" />
+				<bean parent="FieldDefinition" p:attributeName="description" />
+				<bean parent="FieldDefinition" p:attributeName="type" />
+				<bean parent="FieldDefinition" p:attributeName="id"/> 
+				<bean parent="FieldDefinition" p:attributeName="sequenceNo"/> 
+			</list>
+		</property>
+	</bean>
+
+	<bean id="KrmsFunctionsParams-LookupView-parentBean" abstract="true" parent="Uif-LookupView">
+		<property name="dataObjectClassName" value="edu.mit.kc.bo.KrmsFunctionsParams" />
+		<property name="headerText" value="Krms Functions Params Lookup" />
+		<property name="criteriaFields">
+			<list>
+				<bean p:propertyName="functionParamId" parent="Uif-LookupCriteriaInputField" />
+				<bean p:propertyName="namespace" parent="Uif-LookupCriteriaInputField" />
+				<bean p:propertyName="type" parent="Uif-LookupCriteriaInputField" />
+				<bean p:propertyName="id" parent="Uif-LookupCriteriaInputField" />
+			 	<bean p:propertyName="sequenceNo" parent="Uif-LookupCriteriaInputField"/>  
+			</list>
+		</property>
+		<property name="resultFields">
+			<list>
+				<bean p:propertyName="functionParamId" parent="Uif-DataField" />
+				<bean p:propertyName="namespace" parent="Uif-DataField" />
+				<bean p:propertyName="description" parent="Uif-DataField" />
+				<bean p:propertyName="type" parent="Uif-DataField" />
+				<bean p:propertyName="id" parent="Uif-DataField"/> 
+				<bean p:propertyName="sequenceNo" parent="Uif-DataField"/>
+			</list>
+		</property>
+	</bean>
+</beans>
+	

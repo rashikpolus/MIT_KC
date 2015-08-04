@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+		<bean id="CoiDisclosureDocument" parent="CoiDisclosureDocument-parentBean"/>
+		<bean id="CoiDisclosureDocument-parentBean" abstract="true" parent="TransactionalDocumentEntry">
+    	
+    	<property name="usePessimisticLocking" value="true"/>
+    	<property name="useWorkflowPessimisticLocking" value="false"/>
+    	
+    	<property name="documentTypeName" value="CoiDisclosureDocument"/>
+    	<property name="documentClass" value="org.kuali.kra.coi.CoiDisclosureDocument"/>
+    	<property name="businessRulesClass" value="org.kuali.kra.coi.CoiDisclosureDocumentRule"/>
+    	<property name="documentAuthorizerClass" value="org.kuali.kra.coi.auth.CoiDisclosureDocumentAuthorizer"/>
+    	
+    	<property name="allowsCopy" value="true"/>
+    	<property name="headerNavigationList">
+      	<list>
+        	<bean parent="HeaderNavigation">
+	          	<property name="helpDefinition">
+	            	<bean parent="HelpDefinition" p:parameterNamespace="KC-COIDISCLOSURE" p:parameterName="coiDisclosure1Help" p:parameterDetailType="Document"/>
+	          	</property>
+	          	<property name="headerTabDisplayName" value="Disclosure"/>
+	          	<property name="headerTabNavigateTo" value="disclosure"/>
+	        </bean>
+        	<bean parent="HeaderNavigation">
+	          	<property name="helpDefinition">
+	            	<bean parent="HelpDefinition" p:parameterNamespace="KC-COIDISCLOSURE" p:parameterName="disclosureActionsHelp" p:parameterDetailType="Document"/>
+	          	</property>
+	          	<property name="headerTabDisplayName" value="Disclosure Actions"/>
+	          	<property name="headerTabNavigateTo" value="disclosureActions"/>
+        	</bean>
+      	</list>
+    	</property>
+    	
+    	<property name="workflowProperties">
+    		<ref bean="CoiDisclosureDocument-workflowProperties"/>
+        </property>
+    
+		<property name="attributes">
+			<list>
+				<ref bean="CoiDisclosureDocument-versionNumber"/>
+				<ref bean="CoiDisclosureDocument-documentNumber"/>
+			</list>
+		</property>
+	</bean>
+
+	<!-- Attribute Definitions -->
+	
+	<bean id="CoiDisclosureDocument-versionNumber" parent="CoiDisclosureDocument-versionNumber-parentBean"/>
+	<bean id="CoiDisclosureDocument-versionNumber-parentBean" abstract="true" parent="AttributeReferenceDummy-versionNumber">
+	</bean>
+	
+	<bean id="CoiDisclosureDocument-documentNumber" parent="CoiDisclosureDocument-documentNumber-parentBean" />
+	<bean id="CoiDisclosureDocument-documentNumber-parentBean" abstract="true" parent="DocumentHeader-documentNumber">
+		<property name="shortLabel" value="Document Id"/>
+	</bean>
+	
+	<bean id="CoiDisclosureDocument-workflowProperties" parent="CoiDisclosureDocument-workflowProperties-parentBean"/>
+    <bean id="CoiDisclosureDocument-workflowProperties-parentBean" abstract="true" parent="WorkflowProperties" >
+    <property name="workflowPropertyGroups">
+      <list>
+        <bean parent="WorkflowPropertyGroup">
+          <property name="workflowProperties">
+            <list>
+              <bean parent="WorkflowProperty" p:path="documentHeader"/>
+              <bean parent="WorkflowProperty" p:path="coiDisclosureList.coiDisclosureId"/>
+              <bean parent="WorkflowProperty" p:path="coiDisclosureList.coiDisclosureNumber"/>
+			  <bean parent="WorkflowProperty" p:path="coiDisclosureList.sequenceNumber"/>
+			  <bean parent="WorkflowProperty" p:path="coiDisclosureList.certificationText"/>
+			  <bean parent="WorkflowProperty" p:path="coiDisclosureList.disclosurePersons.disclosurePersonUnits.unitNumber" />		  
+            </list>
+          </property>
+        </bean> 
+      </list>
+    </property>
+  </bean>
+</beans>

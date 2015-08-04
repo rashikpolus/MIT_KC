@@ -1,0 +1,84 @@
+From 31c360b35527116983a172ca8c9b3859cbe07a02 Mon Sep 17 00:00:00 2001
+From: Gayathri Athreya <gathreya@email.arizona.edu>
+Date: Thu, 25 Jun 2015 15:09:01 -0700
+Subject: [PATCH] RESKC-575: Fixing attachment removal Application throws STE
+ when attempting to copy proposal with personnel attachment. User is copying
+ the proposal with budget, does not want to copy attachments. Got an STE and
+ the exceptiojn in STE said constraint error on EPS_PROP_PERSON_BIO_ATTACH_FK1
+ - Child row exists. Looks like application is deleting rows from FILE_DATA
+ for source proposal, this should not be happening. Disabled the constraint
+ and copied the proposal, did not get the STE and copy was created. During
+ this process, KC had actually deleted rows from file_data for source proposal
+ and now the referential kep cannot be enabled.
+
+---
+ .../propdev/impl/copy/ProposalCopyServiceImpl.java  | 21 +++++++++++++++------
+ .../person/attachment/ProposalPersonBiography.java  |  2 +-
+ 2 files changed, 16 insertions(+), 7 deletions(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/copy/ProposalCopyServiceImpl.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/copy/ProposalCopyServiceImpl.java
+index 3f7a34b..8f7c641 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/copy/ProposalCopyServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/copy/ProposalCopyServiceImpl.java
+@@ -304,10 +304,10 @@ protected void copyQuestionnaire(ProposalDevelopmentDocument oldDoc, ProposalDev
+ 
+ 
+     protected void removeAttachments(ProposalDevelopmentDocument newDoc) {
+-        newDoc.getDevelopmentProposal().setNarratives(new ArrayList<Narrative>());
+-        newDoc.getDevelopmentProposal().setInstituteAttachments(new ArrayList<Narrative>());
+-        newDoc.getDevelopmentProposal().setProposalAbstracts(new ArrayList<ProposalAbstract>());
+-        newDoc.getDevelopmentProposal().setPropPersonBios(new ArrayList<ProposalPersonBiography>());
++        newDoc.getDevelopmentProposal().setNarratives(new ArrayList<>());
++        newDoc.getDevelopmentProposal().setInstituteAttachments(new ArrayList<>());
++        newDoc.getDevelopmentProposal().setProposalAbstracts(new ArrayList<>());
++        newDoc.getDevelopmentProposal().setPropPersonBios(new ArrayList<>());
+     }
+ 
+     /**
+@@ -446,7 +446,10 @@ protected void copyProposal(ProposalDevelopmentDocument oldDoc, ProposalDevelopm
+         fixNextValues(oldDoc, newDoc);
+ 
+         DevelopmentProposal copy = (DevelopmentProposal) deepCopy(oldDoc.getDevelopmentProposal());
+-        
++        // remove attachments since they cause issues in oracle while persisting. They
++        // are repopulated later at any rate.
++        removeBioAttachments(copy);
++
+         copy.getBudgets().clear();
+         copy.setFinalBudget(null);
+ 
+@@ -456,6 +459,12 @@ protected void copyProposal(ProposalDevelopmentDocument oldDoc, ProposalDevelopm
+ 
+     }
+ 
++    private void removeBioAttachments(DevelopmentProposal copy) {
++        for(ProposalPersonBiography bio : copy.getPropPersonBios()) {
++            bio.setPersonnelAttachment(null);
++        }
++    }
++
+     protected KcDataObject deepCopy(KcDataObject src) throws Exception {
+         return getDataObjectService().copyInstance(src, CopyOption.RESET_PK_FIELDS, CopyOption.RESET_VERSION_NUMBER, CopyOption.RESET_OBJECT_ID );
+     }
+@@ -642,7 +651,7 @@ protected void setPkAndNewUpdateTimestampOnAbstracts(ProposalDevelopmentDocument
+     protected void copyAttachmentFiles(DevelopmentProposal oldProposal, DevelopmentProposal newProposal) {
+         copyNarrativeAttachments(oldProposal.getNarratives(), newProposal.getNarratives());
+         copyNarrativeAttachments(oldProposal.getInstituteAttachments(), newProposal.getInstituteAttachments());
+-        copyPropPersonBiosAttachments(oldProposal.getPropPersonBios(),newProposal.getPropPersonBios());
++        copyPropPersonBiosAttachments(oldProposal.getPropPersonBios(), newProposal.getPropPersonBios());
+     }
+ 
+     protected void copyPropPersonBiosAttachments(List<ProposalPersonBiography> oldBiographies, List<ProposalPersonBiography> newBiographies) {
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/attachment/ProposalPersonBiography.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/attachment/ProposalPersonBiography.java
+index 023815d..2caf8f8 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/attachment/ProposalPersonBiography.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/attachment/ProposalPersonBiography.java
+@@ -457,7 +457,7 @@ public void setKcAttachmentService(KcAttachmentService kcAttachmentService) {
+ 
+     @PostRemove
+     public void removeData() {
+-        if (getPersonnelAttachment().getFileDataId() != null) {
++        if (getPersonnelAttachment() != null && getPersonnelAttachment().getFileDataId() != null) {
+             getKcAttachmentDao().removeData(getPersonnelAttachment().getFileDataId());
+         }
+     }

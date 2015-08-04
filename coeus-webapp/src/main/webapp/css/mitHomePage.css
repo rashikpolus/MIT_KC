@@ -1,0 +1,70 @@
+body {
+    font-size: 14px;
+}
+
+h2 {
+    font-size: 21px;
+    margin-bottom: 20px;
+}
+
+h3 {
+    font-size: 18px;
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+h4 {
+    font-size: 14px;
+    font-weight: normal;
+}
+
+h2:after, h4:after {
+    content: "";
+    display: block;
+    height: 1px;
+    width: 100%;
+    margin-top: 5px;
+    background: #eeeeee;
+    margin-bottom: 5px;
+}
+
+.row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+div[class^="col-"] {
+  padding-left: 0;
+}
+
+.sm-clear-left.col-sm-4 {
+  padding-left: 0;
+}
+
+.kcHome-linkGroup {
+  margin-bottom: 30px;
+  padding-right: 15px;
+}
+
+.searchTasks-input {
+  width: 95%;
+  margin-bottom: 20px;
+}
+
+.searchTasks-input input {
+    background-color: white;
+    padding: 10px 16px;
+    font-size: 18px;
+    line-height: 1.33;
+    border-radius: 0px;
+    height: 45px !important;
+}
+
+.ui-autocomplete {
+    max-height: 200px;
+}
+
+span.osp-ind {
+  float: right;
+  color: #999999;
+}

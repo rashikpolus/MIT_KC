@@ -1,0 +1,125 @@
+Index: coeus-webapp/src/main/webapp/WEB-INF/ftl/workloadbalancing/wlTable.ftl
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- coeus-webapp/src/main/webapp/WEB-INF/ftl/workloadbalancing/wlTable.ftl	(date 1432838212000)
++++ coeus-webapp/src/main/webapp/WEB-INF/ftl/workloadbalancing/wlTable.ftl	(revision )
+@@ -163,7 +163,7 @@
+                     </td>
+ 
+                     <#list row.wlflexibilityList as cell>
+-                        <td id="wl-balance-vertical">
++                        <td class="wl-balance-vertical">
+                             <#if cell.flexibility?? >
+                                 ${cell.flexibility}
+                               </#if>
+Index: coeus-webapp/src/main/webapp/scripts/workloadbalancing/workloadBalancing.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- coeus-webapp/src/main/webapp/scripts/workloadbalancing/workloadBalancing.js	(date 1432838212000)
++++ coeus-webapp/src/main/webapp/scripts/workloadbalancing/workloadBalancing.js	(revision )
+@@ -1,24 +1,12 @@
+-function hideDiv() {
++function setupColumnHover() {
++    jQuery(document).on("mouseenter", "td.wl-balance-vertical", function () {
++        var index = jQuery(this).index() + 1;
++        jQuery("table").find("tr td:nth-of-type(" + index + ")").addClass("wl-hover-color");
+ 
+-    if (/firefox/.test(window.navigator.userAgent.toLowerCase())) {
++    });
+ 
+-        var tds = document.getElementsByTagName('td');
+-
+-        for (var index = 0; index < tds.length; index++) {
+-            tds[index].innerHTML = '<div class="ff-fix">' + tds[index].innerHTML + '</div>';
+-        }
+-        ;
+-
+-        var style = '<style>'
+-            + 'td { padding: 0 !important; }'
+-            + 'td:hover::before, td:hover::after { background-color: transparent !important; }'
+-            + '</style>';
+-        document.head.insertAdjacentHTML('beforeEnd', style);
+-
+-    }
+-
+-}
+-
+-function enableOverflow() {
+-    document.getElementById("myTable").style.overflow = "visible";
++    jQuery(document).on("mouseleave", "td.wl-balance-vertical", function () {
++        var index = jQuery(this).index() + 1;
++        jQuery("table").find("tr td:nth-of-type(" + index + ")").removeClass("wl-hover-color");
++    });
+-}
+\ No newline at end of file
++}
+Index: coeus-impl/src/main/resources/edu/mit/kc/workloadbalancing/WorkloadBalancingView.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- coeus-impl/src/main/resources/edu/mit/kc/workloadbalancing/WorkloadBalancingView.xml	(date 1432838212000)
++++ coeus-impl/src/main/resources/edu/mit/kc/workloadbalancing/WorkloadBalancingView.xml	(revision )
+@@ -25,6 +25,7 @@
+                 <value>rice-contrib/multiselect.js</value>
+                 <value>scripts/propdev/core.js</value>
+                 <value>scripts/common/dialog.js</value>
++                <value>scripts/workloadbalancing/workloadBalancing.js</value>
+             </list>
+         </property>
+         <property name="additionalCssFiles">
+@@ -36,6 +37,7 @@
+ 
+             </list>
+         </property>
++        <property name="onDocumentReadyScript" value="setupColumnHover();"/>
+         <property name="header">
+             <null/>
+         </property>
+\ No newline at end of file
+Index: coeus-webapp/src/main/webapp/css/workloadbalancing/workload_matrix.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- coeus-webapp/src/main/webapp/css/workloadbalancing/workload_matrix.css	(date 1432838212000)
++++ coeus-webapp/src/main/webapp/css/workloadbalancing/workload_matrix.css	(revision )
+@@ -27,7 +27,7 @@
+ table {
+     border-spacing: 0;
+     border-collapse: collapse;
+-    overflow: hidden;
++    overflow: visible;
+     font-weight: normal;
+ }
+ 
+@@ -53,15 +53,8 @@
+     position: relative;
+ }
+ 
+-td:hover::after, .ff-fix:hover::after {
++.wl-hover-color {
+     background-color: #fcf4cc !important;
+-    content: '\00a0';
+-    height: 10000px;
+-    left: 0;
+-    position: absolute;
+-    top: -5000px;
+-    width: 100%;
+-    z-index: -1;
+ }
+ 
+ .bgWhite {
+@@ -296,7 +289,7 @@
+     background-color: #f5f5f5;
+ }
+ 
+-#wl-balance-vertical td:hover {
++.wl-balance-vertical td:hover {
+     background-color: #fcf4cc;
+ }
+ 

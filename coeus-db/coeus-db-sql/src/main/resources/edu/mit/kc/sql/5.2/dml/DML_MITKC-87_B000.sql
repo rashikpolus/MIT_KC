@@ -1,0 +1,4 @@
+INSERT INTO PROTOCOL_ATTACHMENT_TYPE_GROUP(TYPE_GROUP_ID,TYPE_CD,GROUP_CD,VER_NBR,UPDATE_TIMESTAMP,UPDATE_USER,OBJ_ID)
+select ((select max(TYPE_GROUP_ID) from PROTOCOL_ATTACHMENT_TYPE_GROUP)+rownum) as TYPE_GROUP_ID,TYPE_CD,1,1,sysdate,UPDATE_USER,SYS_GUID() FROM PROTOCOL_ATTACHMENT_TYPE 
+WHERE DESCRIPTION IN ('Debriefing Statement','Parental Consent Form','Interview Consent Form','Standard Application','Exempt Application','Survey/Questionnaire')
+/

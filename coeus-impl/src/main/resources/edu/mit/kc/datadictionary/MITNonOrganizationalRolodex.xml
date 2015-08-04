@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <bean id="NonOrganizationalRolodex-inquiryDefinition" parent="NonOrganizationalRolodex-inquiryDefinition-parentBean" />
+  <bean id="NonOrganizationalRolodex-InquiryView" parent="NonOrganizationalRolodex-InquiryView-parentBean"/>
+  <bean id="NonOrganizationalRolodex-inquiryDefinition-parentBean" abstract="true" parent="InquiryDefinition">
+    <property name="title" value="Address Book" />
+    <property name="inquirySections" >
+      <list>
+        <bean parent="InquirySectionDefinition">
+          <property name="title" value="Address Book" />
+          <property name="numberOfColumns" value="1" />
+          <property name="inquiryFields" >
+            <list>
+              <bean parent="FieldDefinition" p:attributeName="rolodexId" p:forceInquiry="true"/>
+              <bean parent="FieldDefinition" p:attributeName="lastName"/>
+              <bean parent="FieldDefinition" p:attributeName="firstName"/>
+              <bean parent="FieldDefinition" p:attributeName="middleName"/>
+              <bean parent="FieldDefinition" p:attributeName="suffix"/>
+              <bean parent="FieldDefinition" p:attributeName="prefix"/>
+              <bean parent="FieldDefinition" p:attributeName="title"/>
+              <bean parent="FieldDefinition" p:attributeName="sponsor.sponsorName"/>
+              <bean parent="FieldDefinition" p:attributeName="sponsorAddressFlag"/>
+              <bean parent="FieldDefinition" p:attributeName="organization"/>
+              <bean parent="FieldDefinition" p:attributeName="unit.unitName"/>
+              <bean parent="FieldDefinition" p:attributeName="addressLine1"/>
+              <bean parent="FieldDefinition" p:attributeName="addressLine2"/>
+              <bean parent="FieldDefinition" p:attributeName="addressLine3"/>
+              <bean parent="FieldDefinition" p:attributeName="city"/>
+              <bean parent="FieldDefinition" p:attributeName="county"/>
+              <bean parent="FieldDefinition" p:attributeName="state"/>
+              <bean parent="FieldDefinition" p:attributeName="postalCode"/>
+              <bean parent="FieldDefinition" p:attributeName="countryCode"/>
+              <bean parent="FieldDefinition" p:attributeName="phoneNumber"/>
+              <bean parent="FieldDefinition" p:attributeName="emailAddress"/>
+              <bean parent="FieldDefinition" p:attributeName="faxNumber"/>
+              <bean parent="FieldDefinition" p:attributeName="deleteFlag"/>
+              <bean parent="FieldDefinition" p:attributeName="comments"/>
+             </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="NonOrganizationalRolodex-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView">
+    <property name="headerText" value="Address Book"/>
+    <property name="dataObjectClassName" value="org.kuali.coeus.common.framework.rolodex.NonOrganizationalRolodex"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-GridSection">
+          <property name="headerText" value="Address Book"/>
+          <property name="layoutManager.numberOfColumns" value="2"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="rolodexId" parent="Uif-DataField"/>
+              <bean p:propertyName="lastName" parent="Uif-DataField"/>
+              <bean p:propertyName="firstName" parent="Uif-DataField"/>
+              <bean p:propertyName="middleName" parent="Uif-DataField"/>
+              <bean p:propertyName="suffix" parent="Uif-DataField"/>
+              <bean p:propertyName="prefix" parent="Uif-DataField"/>
+              <bean p:propertyName="title" parent="Uif-DataField"/>
+              <bean p:propertyName="sponsor.sponsorName" parent="Uif-DataField"/>
+              <bean p:propertyName="sponsorAddressFlag" parent="Uif-DataField"/>
+              <bean p:propertyName="organization" parent="Uif-DataField"/>
+              <bean p:propertyName="unit.unitName" parent="Uif-DataField"/>
+              <bean p:propertyName="addressLine1" parent="Uif-DataField"/>
+              <bean p:propertyName="addressLine2" parent="Uif-DataField"/>
+              <bean p:propertyName="addressLine3" parent="Uif-DataField"/>
+              <bean p:propertyName="city" parent="Uif-DataField"/>
+              <bean p:propertyName="county" parent="Uif-DataField"/>
+              <bean p:propertyName="state" parent="Uif-DataField"/>
+              <bean p:propertyName="postalCode" parent="Uif-DataField"/>
+              <bean p:propertyName="countryCode" parent="Uif-DataField"/>
+              <bean p:propertyName="phoneNumber" parent="Uif-DataField"/>
+              <bean p:propertyName="emailAddress" parent="Uif-DataField"/>
+              <bean p:propertyName="faxNumber" parent="Uif-DataField"/>
+              <bean p:propertyName="deleteFlag" parent="Uif-DataField"/>
+              <bean p:propertyName="comments" parent="Uif-DataField"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+  
+</beans>
+  

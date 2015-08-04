@@ -1,0 +1,90 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Mon Feb 16 14:31:36 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+
+'RUNNINGDDLSNAPSHOT'
+--------------------
+running ddl snapshot
+
+SP2-0310: unable to open file "ddl/DDL_MITKC-532_02162015.sql"
+
+Commit complete.
+
+
+Commit complete.
+
+
+'RUNNINGDMLSNAPSHOT'
+--------------------
+running dml snapshot
+
+insert into KRMS_TYP_T(TYP_ID,NM,NMSPC_CD,SRVC_NM,ACTV,VER_NBR) values ('KCMIT1002','MIT Custom Award Budget Java Function Term Service','KC-AB','mitAwardBudgetJavaFunctionKrmsTermService','Y',1)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRMS_TYP_TC1) violated
+
+
+insert into KRMS_FUNC_T (FUNC_ID,NM,DESC_TXT,RTRN_TYP,VER_NBR,ACTV,TYP_ID,NMSPC_CD)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRMS_FUNC_TC1) violated
+
+
+
+1 row created.
+
+insert into KRMS_TERM_SPEC_T (TERM_SPEC_ID, NMSPC_CD, NM, DESC_TXT, TYP, ACTV, VER_NBR)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRMS_TERM_SPEC_TC1) violated
+
+
+
+1 row created.
+
+
+1 row created.
+
+insert into KRMS_TERM_SPEC_CTGRY_T (TERM_SPEC_ID, CTGRY_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.SYS_C0053456) violated
+
+
+insert into KRMS_TERM_RSLVR_T (TERM_RSLVR_ID, NMSPC_CD, NM, TYP_ID, OUTPUT_TERM_SPEC_ID, ACTV, VER_NBR)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRMS_TERM_RSLVR_TC1) violated
+
+
+
+1 row created.
+
+VALUES (KRIM_ROLE_PERM_ID_S.NEXTVAL, SYS_GUID(), 1, 'Award Lead Unit OSP Administrator', 'KC-AWARD', 'Award Lead Unit OSP Administrator', (SELECT KIM_TYP_ID FROM KRIM_TYP_T WHERE NMSPC_CD = 'KC-AWARD' AND NM = 'Derived Role: Award Lead Unit OSP Administrator'), 'Y', SYSDATE)
+                                                                                                                                           *
+ERROR at line 2:
+ORA-01427: single-row subquery returns more than one row
+
+
+INSERT INTO KRCR_PARM_T(NMSPC_CD, CMPNT_CD, PARM_NM, OBJ_ID, VER_NBR, PARM_TYP_CD, VAL, PARM_DESC_TXT, EVAL_OPRTR_CD, APPL_ID) VALUES
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+SP2-0310: unable to open file "dml/DML_MITKC-799_02162015.sql"
+
+Commit complete.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

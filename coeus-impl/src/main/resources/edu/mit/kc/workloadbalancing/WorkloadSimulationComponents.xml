@@ -1,0 +1,81 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="Workload-Simulation-Message" p:render="@{simulationMode}" p:additionalCssClasses="workload-simMessage"
+          parent="Uif-Message"
+          p:messageText="[span class='icon-info2'][/span] Changes made on this screen are only for simulation"/>
+
+    <bean id="Workload-Simulation-SaveGroup"
+          p:render="@{#form.simulationMode}"
+          parent="Uif-HorizontalBoxGroup">
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:required="true" p:label="Simulation Description"
+                      p:propertyName="simulation.description">
+                </bean>
+                <bean parent="Uif-HorizontalFieldGroup" p:label="Simulation Date Range">
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-InputField" p:required="true" p:fieldLabel.render="false"
+                                  p:propertyName="simulation.startDate">
+                                <property name="control">
+                                    <bean parent="Uif-DateControl"/>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-Message" p:messageText="To"/>
+                            <bean parent="Uif-InputField" p:required="true" p:fieldLabel.render="false"
+                                  p:propertyName="simulation.endDate">
+                                <property name="control">
+                                    <bean parent="Uif-DateControl"/>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="Uif-PrimaryActionButton" p:actionLabel="Save &amp; Run New Simulation"
+                      p:methodToCall="saveSimulation"
+                      p:refreshId="Workload-Table"
+                      p:performClientSideValidation="true"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Workload-LoadSimulation-Dialog" parent="Uif-DialogGroup" p:retrieveViaAjax="true"
+          p:headerText="Load Simulation">
+        <property name="destroyDialogOnHidden" value="true"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="simulation.simId"
+                      p:label="Simulation Id" p:required="true"
+                      p:enableAutoDirectInquiry="false">
+                    <property name="quickfinder">
+                        <bean parent="Uif-QuickFinder" p:returnByScript="true"
+                              p:fieldConversions="simId:simulation.simId"
+                              p:dataObjectClassName="edu.mit.kc.workloadbalancing.bo.WlSimHeader"/>
+                    </property>
+                    <property name="propertyNamesForAdditionalDisplay"
+                              value="simulation.description"/>
+                    <property name="attributeQuery">
+                        <bean parent="Uif-AttributeQueryConfig"
+                              p:dataObjectClassName="edu.mit.kc.workloadbalancing.bo.WlSimHeader"
+                              p:queryFieldMapping="simulation.simId:simId"
+                              p:returnFieldMapping="description:simulation.description"/>
+                    </property>
+                </bean>
+
+            </list>
+        </property>
+        <property name="footer.items">
+            <list>
+
+                <bean parent="Uif-DialogDismissButton" p:actionLabel="Cancel"/>
+                <bean parent="Uif-PrimaryActionButton" p:actionLabel="Load Simulation" p:methodToCall="loadSimulation"
+                      p:refreshId="WorkloadBalancing-Page"
+                      p:dialogDismissOption="REQUEST"
+                      p:performClientSideValidation="true"/>
+            </list>
+        </property>
+    </bean>
+</beans>

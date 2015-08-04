@@ -1,0 +1,109 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Tue Mar 31 15:24:56 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+SP2-0103: Nothing in SQL buffer to run.
+
+Table altered.
+
+
+Index dropped.
+
+
+36082 rows updated.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+Index created.
+
+
+Table altered.
+
+DROP TABLE OSP$AWARD_KEY_PERS_CONFIRM
+           *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+
+Table created.
+
+
+1611 rows created.
+
+
+Commit complete.
+
+
+7569 rows created.
+
+
+Commit complete.
+
+
+9180 rows updated.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+DROP TABLE OSP$AWARD_KEY_PERS_REMOVED
+           *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+
+Table created.
+
+
+51 rows created.
+
+
+Commit complete.
+
+
+51 rows updated.
+
+
+Commit complete.
+
+
+568859 rows created.
+
+
+Commit complete.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

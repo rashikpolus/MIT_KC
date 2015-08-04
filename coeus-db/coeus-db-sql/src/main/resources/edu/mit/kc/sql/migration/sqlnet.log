@@ -1,0 +1,94 @@
+
+
+***********************************************************************
+Fatal NI connect error 12170.
+
+  VERSION INFORMATION:
+	TNS for MacOS X Server: Version 10.2.0.4.0 - Production
+	TCP/IP NT Protocol Adapter for MacOS X Server: Version 10.2.0.4.0 - Production
+  Time: 09-JAN-2015 10:06:40
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12535
+    TNS-12535: Message 12535 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 505
+    TNS-00505: Message 505 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 60
+    nt OS err code: 0
+  Client address: <unknown>
+
+
+***********************************************************************
+Fatal NI connect error 12505, connecting to:
+ (DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=kc-stage-db.mit.edu)(PORT=1521))(CONNECT_DATA=(SID=KCSTAGE)(CID=(PROGRAM=sqlplus)(HOST=localhost)(USER=geo))))
+
+  VERSION INFORMATION:
+	TNS for MacOS X Server: Version 10.2.0.4.0 - Production
+	TCP/IP NT Protocol Adapter for MacOS X Server: Version 10.2.0.4.0 - Production
+  Time: 12-JAN-2015 21:40:07
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12564
+    TNS-12564: Message 12564 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 0
+    nt main err code: 0
+    nt secondary err code: 0
+    nt OS err code: 0
+
+
+***********************************************************************
+Fatal NI connect error 12170.
+
+  VERSION INFORMATION:
+	TNS for MacOS X Server: Version 10.2.0.4.0 - Production
+	TCP/IP NT Protocol Adapter for MacOS X Server: Version 10.2.0.4.0 - Production
+  Time: 19-MAR-2015 18:09:49
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12535
+    TNS-12535: Message 12535 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 505
+    TNS-00505: Message 505 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 60
+    nt OS err code: 0
+  Client address: <unknown>
+
+
+***********************************************************************
+Fatal NI connect error 12170.
+
+  VERSION INFORMATION:
+	TNS for MacOS X Server: Version 10.2.0.4.0 - Production
+	TCP/IP NT Protocol Adapter for MacOS X Server: Version 10.2.0.4.0 - Production
+  Time: 08-APR-2015 18:38:43
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12535
+    TNS-12535: Message 12535 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 505
+    TNS-00505: Message 505 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 60
+    nt OS err code: 0
+  Client address: (ADDRESS=(PROTOCOL=tcp)(HOST=18.1.41.35)(PORT=1521))
+
+
+***********************************************************************
+Fatal NI connect error 12170.
+
+  VERSION INFORMATION:
+	TNS for MacOS X Server: Version 10.2.0.4.0 - Production
+	TCP/IP NT Protocol Adapter for MacOS X Server: Version 10.2.0.4.0 - Production
+  Time: 21-APR-2015 19:18:41
+  Tracing not turned on.
+  Tns error struct:
+    ns main err code: 12535
+    TNS-12535: Message 12535 not found; No message file for product=network, facility=TNS
+    ns secondary err code: 12560
+    nt main err code: 505
+    TNS-00505: Message 505 not found; No message file for product=network, facility=TNS
+    nt secondary err code: 60
+    nt OS err code: 0
+  Client address: <unknown>

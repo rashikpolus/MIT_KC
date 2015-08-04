@@ -1,0 +1,518 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Sun Nov 30 09:00:11 2014
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+
+Package created.
+
+
+Package body created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+1 row updated.
+
+
+Table created.
+
+
+Sequence created.
+
+
+Table created.
+
+
+Table created.
+
+
+Sequence created.
+
+
+Sequence created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table altered.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+CREATE TABLE RCR_APPOINTMENTS_DROPPED
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+2525 rows created.
+
+
+2376 rows created.
+
+
+503 rows created.
+
+
+Commit complete.
+
+
+6975 rows created.
+
+
+1 row created.
+
+
+1 row created.
+
+INSERT INTO RCR_NOTIF_TYPE(
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.PK_RCR_NOTIF_TYPE) violated
+
+
+
+1 row created.
+
+INSERT INTO RCR_NOTIF_TYPE(
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.PK_RCR_NOTIF_TYPE) violated
+
+
+
+1 row created.
+
+INSERT INTO RCR_NOTIF_TYPE(
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.PK_RCR_NOTIF_TYPE) violated
+
+
+
+1 row created.
+
+INSERT INTO RCR_NOTIF_TYPE(
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.PK_RCR_NOTIF_TYPE) violated
+
+
+
+PL/SQL procedure successfully completed.
+
+
+   NEXTVAL
+----------
+       505
+
+
+Sequence altered.
+
+
+PL/SQL procedure successfully completed.
+
+
+Warning: Function created with compilation errors.
+
+
+Package created.
+
+
+Package body created.
+
+
+Trigger created.
+
+
+Trigger created.
+
+
+Sequence created.
+
+
+Sequence created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Sequence created.
+
+CREATE SEQUENCE SEQ_SAP_FEED_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+	TRANSACTION_ID,
+	*
+ERROR at line 22:
+ORA-01654: unable to extend index KCSO.PK_SAP_FEED_DETAILS by 128 in tablespace
+KCSO_DATA_TS01
+
+
+
+PL/SQL procedure successfully completed.
+
+
+   NEXTVAL
+----------
+	 1
+
+
+Sequence altered.
+
+
+1 row created.
+
+
+1 row created.
+
+
+445 rows created.
+
+	UPDATE_USER,
+	*
+ERROR at line 26:
+ORA-01653: unable to extend table KCSO.EVERIFY_NOTIF_DETAILS by 8 in tablespace
+KCSO_DATA_TS01
+
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+   NEXTVAL
+----------
+       462
+
+
+Sequence altered.
+
+
+1 row updated.
+
+
+Package created.
+
+
+Package body created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Package created.
+
+
+Package body created.
+
+
+Trigger created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row created.
+
+
+1 row updated.
+
+
+Package created.
+
+
+Package body created.
+
+
+Trigger created.
+
+
+Table created.
+
+
+Sequence created.
+
+
+Table created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Package created.
+
+
+Warning: Package Body created with compilation errors.
+
+
+Trigger created.
+
+
+Trigger created.
+
+
+Sequence created.
+
+
+Table created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Table truncated.
+
+	COMPLETION_DATE,
+	*
+ERROR at line 18:
+ORA-01658: unable to create INITIAL extent for segment in tablespace
+KCSO_DATA_TS01
+
+
+
+Commit complete.
+
+declare
+*
+ERROR at line 1:
+ORA-01722: invalid number
+ORA-06512: at line 7
+
+
+
+   NEXTVAL
+----------
+	 1
+
+
+Sequence altered.
+
+
+Warning: Function created with compilation errors.
+
+
+Warning: Trigger created with compilation errors.
+
+
+Table created.
+
+
+Sequence created.
+
+
+Table created.
+
+CREATE TABLE  CAC_LOG_DATA
+              *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+INSERT INTO NOTIFICATION_TYPE(
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.UNQ_MODULE_ACTION_CODE) violated
+
+
+
+1 row created.
+
+declare
+*
+ERROR at line 1:
+ORA-01658: unable to create INITIAL extent for segment in tablespace
+KCSO_DATA_TS01
+ORA-06512: at line 54
+
+
+
+Package created.
+
+
+Package body created.
+
+
+Table created.
+
+
+Table created.
+
+
+Sequence created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+Package created.
+
+
+Package body created.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

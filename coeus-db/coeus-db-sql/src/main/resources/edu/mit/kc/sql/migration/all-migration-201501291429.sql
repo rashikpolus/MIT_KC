@@ -1,0 +1,5 @@
+@add_perm_NOTIFY_PROPOSAL_PERSONS.sql
+@DML_MITKC-796_01282015.sql
+commit;
+EXIT
+/

@@ -1,0 +1,244 @@
+From b3488496f6b224525b13f433eb95cdaae2a865b0 Mon Sep 17 00:00:00 2001
+From: Joe Williams <jwillia@iastate.edu>
+Date: Wed, 11 Mar 2015 13:24:19 -0500
+Subject: [PATCH] RESKC-2:fix attachment deletion on copy and hierarchy
+
+---
+ .../sql/mysql/kc/bootstrap/V602_002__RESKC-2.sql   | 27 +++++++
+ .../sql/oracle/kc/bootstrap/V602_002__RESKC-2.sql  | 25 +++++++
+ .../impl/attachment/KcAttachmentDataDaoImpl.java   | 87 ++++++++++++++++++++--
+ .../coeus/propdev/impl/attachment/Narrative.java   |  2 +-
+ .../person/attachment/ProposalPersonBiography.java |  2 +-
+ 5 files changed, 135 insertions(+), 8 deletions(-)
+ create mode 100644 coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/mysql/kc/bootstrap/V602_002__RESKC-2.sql
+ create mode 100644 coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/oracle/kc/bootstrap/V602_002__RESKC-2.sql
+
+diff --git a/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/mysql/kc/bootstrap/V602_002__RESKC-2.sql b/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/mysql/kc/bootstrap/V602_002__RESKC-2.sql
+new file mode 100644
+index 0000000..0ef8d07
+--- /dev/null
++++ b/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/mysql/kc/bootstrap/V602_002__RESKC-2.sql
+@@ -0,0 +1,27 @@
++--
++-- Kuali Coeus, a comprehensive research administration system for higher education.
++--
++-- Copyright 2005-2015 Kuali, Inc.
++--
++-- This program is free software: you can redistribute it and/or modify
++-- it under the terms of the GNU Affero General Public License as
++-- published by the Free Software Foundation, either version 3 of the
++-- License, or (at your option) any later version.
++--
++-- This program is distributed in the hope that it will be useful,
++-- but WITHOUT ANY WARRANTY; without even the implied warranty of
++-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++-- GNU Affero General Public License for more details.
++--
++-- You should have received a copy of the GNU Affero General Public License
++-- along with this program.  If not, see <http://www.gnu.org/licenses/>.
++--
++
++DELIMITER /
++alter table narrative_attachment
++	add foreign key narrative_attachment_fk1 (file_data_id) references file_data (id)
++/
++alter table eps_prop_person_bio_attachment
++	add foreign key eps_prop_person_bio_attach_fk1 (file_data_id) references file_data (id)
++/
++DELIMITER ;
+diff --git a/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/oracle/kc/bootstrap/V602_002__RESKC-2.sql b/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/oracle/kc/bootstrap/V602_002__RESKC-2.sql
+new file mode 100644
+index 0000000..80f215f
+--- /dev/null
++++ b/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/oracle/kc/bootstrap/V602_002__RESKC-2.sql
+@@ -0,0 +1,25 @@
++--
++-- Kuali Coeus, a comprehensive research administration system for higher education.
++--
++-- Copyright 2005-2015 Kuali, Inc.
++--
++-- This program is free software: you can redistribute it and/or modify
++-- it under the terms of the GNU Affero General Public License as
++-- published by the Free Software Foundation, either version 3 of the
++-- License, or (at your option) any later version.
++--
++-- This program is distributed in the hope that it will be useful,
++-- but WITHOUT ANY WARRANTY; without even the implied warranty of
++-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++-- GNU Affero General Public License for more details.
++--
++-- You should have received a copy of the GNU Affero General Public License
++-- along with this program.  If not, see <http://www.gnu.org/licenses/>.
++--
++
++alter table narrative_attachment
++	add foreign key narrative_attachment_fk1 (file_data_id) references file_data (id)
++/
++alter table eps_prop_person_bio_attachment
++	add foreign key eps_prop_person_bio_attach_fk1 (file_data_id) references file_data (id)
++/
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/common/impl/attachment/KcAttachmentDataDaoImpl.java b/coeus-impl/src/main/java/org/kuali/coeus/common/impl/attachment/KcAttachmentDataDaoImpl.java
+index bbc111f..b155397 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/common/impl/attachment/KcAttachmentDataDaoImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/common/impl/attachment/KcAttachmentDataDaoImpl.java
+@@ -20,6 +20,8 @@
+ 
+ import org.apache.commons.lang3.ArrayUtils;
+ import org.apache.commons.lang3.StringUtils;
++import org.apache.commons.lang3.builder.EqualsBuilder;
++import org.apache.commons.lang3.builder.HashCodeBuilder;
+ import org.apache.commons.logging.Log;
+ import org.apache.commons.logging.LogFactory;
+ import org.kuali.coeus.common.framework.attachment.KcAttachmentDataDao;
+@@ -34,6 +36,8 @@
+ import java.sql.PreparedStatement;
+ import java.sql.ResultSet;
+ import java.sql.SQLException;
++import java.util.HashSet;
++import java.util.Set;
+ import java.util.UUID;
+ 
+ @Component("kcAttachmentDataDao")
+@@ -45,6 +49,8 @@
+     @Qualifier("dataSource")
+     private DataSource dataSource;
+ 
++    private Set<TableReference> tableReferences;
++
+     @Override
+     public byte[] getData(String id) {
+     	if (LOG.isDebugEnabled()) {
+@@ -81,9 +87,6 @@ public String saveData(byte[] attachmentData, String id) {
+         }
+ 
+         try (Connection connection = getDataSource().getConnection()) {
+-        	if (StringUtils.isNotBlank(id)) {
+-        		deleteAttachment(connection, id);
+-        	}
+         	try (PreparedStatement stmt = connection.prepareStatement("insert into file_data (id, data) values (?, ?)")) {
+ 	        	String newId = UUID.randomUUID().toString();
+ 	        	stmt.setString(1, newId);
+@@ -94,6 +97,10 @@ public String saveData(byte[] attachmentData, String id) {
+                     LOG.debug("Created attachment data, new id: " + newId);
+                 }
+ 
++            	if (StringUtils.isNotBlank(id)) {
++            		deleteAttachment(connection, id);
++            	}
++
+                 return newId;
+         	}
+         } catch (SQLException e) {
+@@ -117,10 +124,46 @@ public void removeData(String id) {
+     }
+         
+     protected void deleteAttachment(Connection conn, String id) throws SQLException {
+-    	try (PreparedStatement stmt = conn.prepareStatement("delete from file_data where id = ?")) {
+-    		stmt.setString(1, id);
+-    		stmt.executeUpdate();
++    	if (countReferences(conn, id) == 0) {
++	    	try (PreparedStatement stmt = conn.prepareStatement("delete from file_data where id = ?")) {
++	    		stmt.setString(1, id);
++	    		stmt.executeUpdate();
++	    	}
++    	}
++    }
++
++    protected int countReferences(Connection conn, String id) throws SQLException {
++    	if (tableReferences == null) {
++            populateReferences(conn);
++        }
++    	int count = 0;
++    	for (TableReference ref : tableReferences) {
++        	try (PreparedStatement stmt = conn.prepareStatement("select count(*) from "
++        			+ ref.tableName + " where " + ref.columnName + " = ?")) {
++        		stmt.setString(1, id);
++        		try (ResultSet rs = stmt.executeQuery()) {
++        			if (rs.next()) {
++        				count += rs.getInt(1);
++        			}
++        		}
++        	}
+     	}
++    	return count;
++    }
++    
++    protected void populateReferences(Connection conn) throws SQLException {
++    	tableReferences = new HashSet<>();
++        String schema = null;
++        String catalog = conn.getCatalog();
++        if (conn.getMetaData().getSchemas().next()) {
++            schema = conn.getSchema();
++        } else {
++            schema = catalog;
++        }
++        ResultSet rs = conn.getMetaData().getExportedKeys(catalog,schema,"file_data");
++        while (rs.next()) {
++            tableReferences.add(new TableReference(rs.getString("FKTABLE_NAME"), rs.getString("FKCOLUMN_NAME")));
++        }
+     }
+ 
+     public DataSource getDataSource() {
+@@ -130,4 +173,36 @@ public DataSource getDataSource() {
+     public void setDataSource(DataSource dataSource) {
+         this.dataSource = dataSource;
+     }
++    
++    class TableReference {
++    	public String tableName;
++		public String columnName;
++    	public TableReference(String tableName, String columnName) {
++			this.tableName = tableName;
++			this.columnName = columnName;
++		}
++    	@Override
++		public int hashCode() {
++    		return new HashCodeBuilder(17, 37).append(tableName).append(columnName).toHashCode();
++		}
++		@Override
++		public boolean equals(Object obj) {
++			if (this == obj)
++				return true;
++			if (obj == null)
++				return false;
++			if (getClass() != obj.getClass())
++				return false;
++			final TableReference other = (TableReference) obj;
++			return new EqualsBuilder().append(tableName, other.tableName).append(columnName, other.columnName).isEquals();
++		}
++    }
++
++	public Set<TableReference> getTableReferences() {
++		return tableReferences;
++	}
++
++	public void setTableReferences(Set<TableReference> tableReferences) {
++		this.tableReferences = tableReferences;
++	}
+ }
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/Narrative.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/Narrative.java
+index e47366d..9b5276e 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/Narrative.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/Narrative.java
+@@ -736,7 +736,7 @@ public void setKcAttachmentService(KcAttachmentService kcAttachmentService) {
+         this.kcAttachmentService = kcAttachmentService;
+     }
+ 
+-    @PreRemove
++    @PostRemove
+     public void removeData() {
+         if (getNarrativeAttachment().getFileDataId() != null) {
+             getKcAttachmentDao().removeData(getNarrativeAttachment().getFileDataId());
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/attachment/ProposalPersonBiography.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/attachment/ProposalPersonBiography.java
+index dace061..b2e2dc5 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/attachment/ProposalPersonBiography.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/attachment/ProposalPersonBiography.java
+@@ -497,7 +497,7 @@ public void setKcAttachmentService(KcAttachmentService kcAttachmentService) {
+         this.kcAttachmentService = kcAttachmentService;
+     }
+ 
+-    @PreRemove
++    @PostRemove
+     public void removeData() {
+         if (getPersonnelAttachment().getFileDataId() != null) {
+             getKcAttachmentDao().removeData(getPersonnelAttachment().getFileDataId());

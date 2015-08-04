@@ -1,0 +1,1 @@
+@../feed/sap/all_sap_feed_recompile.sql

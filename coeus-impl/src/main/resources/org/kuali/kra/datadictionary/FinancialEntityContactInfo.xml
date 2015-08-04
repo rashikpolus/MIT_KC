@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans.xsd">
+  <bean id="FinancialEntityContactInfo" parent="FinancialEntityContactInfo-parentBean"/>
+  <bean abstract="true" id="FinancialEntityContactInfo-parentBean" parent="BusinessObjectEntry">
+    <property name="businessObjectClass" value="org.kuali.kra.coi.personfinancialentity.FinancialEntityContactInfo"/>
+        <property name="objectLabel" value="FinancialEntityContactInfo"/>
+    <property name="inquiryDefinition">
+      <ref bean="FinancialEntityContactInfo-inquiryDefinition"/>
+    </property>
+    <property name="lookupDefinition">
+      <ref bean="FinancialEntityContactInfo-lookupDefinition"/>
+    </property>
+    <property name="titleAttribute" value="financialEntityContactInfoId"/>
+    <property name="attributes">
+      <list>
+        <ref bean="FinancialEntityContactInfo-financialEntityContactInfoId"/>
+        <ref bean="FinancialEntityContactInfo-addressLine1"/>
+        <ref bean="FinancialEntityContactInfo-addressLine2"/>
+        <ref bean="FinancialEntityContactInfo-addressLine3"/>
+        <ref bean="FinancialEntityContactInfo-webAddress1"/>
+        <ref bean="FinancialEntityContactInfo-webAddress2"/>
+       <ref bean="FinancialEntityContactInfo-postalCode"/>
+       <ref bean="FinancialEntityContactInfo-city"/>
+        <ref bean="FinancialEntityContactInfo-state"/>
+        <ref bean="FinancialEntityContactInfo-countryCode"/>
+        <ref bean="FinancialEntityContactInfo-versionNumber"/>
+      </list>
+    </property>
+  </bean>
+
+<!-- Attribute Definitions -->
+
+
+  <bean id="FinancialEntityContactInfo-financialEntityContactInfoId" parent="FinancialEntityContactInfo-financialEntityContactInfoId-parentBean"/>
+
+  <bean abstract="true" id="FinancialEntityContactInfo-financialEntityContactInfoId-parentBean" parent="AttributeDefinition">
+    <property name="name" value="financialEntityContactInfoId"/>
+    <property name="forceUppercase" value="false"/>
+    <property name="label" value="Entity Contact Info Id"/>
+    <property name="shortLabel" value="Entity Contact Info Id"/>
+    <property name="maxLength" value="12"/>
+    <property name="validationPattern">
+      <bean parent="NumericValidationPattern"/>
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+    <property name="control">
+      <bean p:size="6" parent="TextControlDefinition"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="6" parent="Uif-TextControl"/>
+    </property>
+    <property name="summary" value="Entity Contact Info Id"/>
+    <property name="description" value="Entity Contact Info Id"/>
+  </bean>
+
+  <bean id="FinancialEntityContactInfo-addressLine1" parent="FinancialEntityContactInfo-addressLine1-parentBean"/>
+  <bean abstract="true" id="FinancialEntityContactInfo-addressLine1-parentBean" parent="AttributeDefinition">
+    <property name="name" value="addressLine1"/>
+    <property name="forceUppercase" value="false"/>
+    <property name="label" value="Address Line 1"/>
+    <property name="shortLabel" value="Address Line 1"/>
+    <property name="required" value="true" />
+    <property name="maxLength" value="80"/>
+    <property name="validationPattern">
+      <bean p:allowWhitespace="true" parent="AnyCharacterValidationPattern"/>
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AnyCharacterPatternConstraint">
+        <property name="allowWhitespace" value="true"/>
+      </bean>
+    </property>
+    <property name="control">
+      <bean p:size="80" parent="TextControlDefinition"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="80" parent="Uif-TextControl"/>
+    </property>
+    <property name="summary" value="Address Line 1"/>
+    <property name="description" value="Address Line 1"/>
+  </bean>
+
+  <bean id="FinancialEntityContactInfo-addressLine2" parent="FinancialEntityContactInfo-addressLine2-parentBean"/>
+  <bean abstract="true" id="FinancialEntityContactInfo-addressLine2-parentBean" parent="AttributeDefinition">
+    <property name="name" value="addressLine2"/>
+    <property name="forceUppercase" value="false"/>
+    <property name="label" value="Address Line 2"/>
+    <property name="shortLabel" value="Address Line 2"/>
+    <property name="maxLength" value="80"/>
+    <property name="validationPattern">
+      <bean p:allowWhitespace="true" parent="AnyCharacterValidationPattern"/>
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AnyCharacterPatternConstraint">
+        <property name="allowWhitespace" value="true"/>
+      </bean>
+    </property>
+    <property name="control">
+      <bean p:size="80" parent="TextControlDefinition"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="80" parent="Uif-TextControl"/>
+    </property>
+    <property name="summary" value="Address Line 2"/>
+    <property name="description" value="Address Line 2"/>
+  </bean>
+
+  <bean id="FinancialEntityContactInfo-addressLine3" parent="FinancialEntityContactInfo-addressLine3-parentBean"/>
+  <bean abstract="true" id="FinancialEntityContactInfo-addressLine3-parentBean" parent="AttributeDefinition">
+    <property name="name" value="addressLine3"/>
+    <property name="forceUppercase" value="false"/>
+    <property name="label" value="Address Line 3"/>
+    <property name="shortLabel" value="Address Line 3"/>
+    <property name="maxLength" value="80"/>
+    <property name="validationPattern">
+      <bean p:allowWhitespace="true" parent="AnyCharacterValidationPattern"/>
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AnyCharacterPatternConstraint">
+        <property name="allowWhitespace" value="true"/>
+      </bean>
+    </property>
+    <property name="control">
+      <bean p:size="80" parent="TextControlDefinition"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="80" parent="Uif-TextControl"/>
+    </property>
+    <property name="summary" value="Address Line 3"/>
+    <property name="description" value="Address Line 3"/>
+  </bean>
+  
+  <bean id="FinancialEntityContactInfo-webAddress1" parent="FinancialEntityContactInfo-webAddress1-parentBean"/>
+  <bean abstract="true" id="FinancialEntityContactInfo-webAddress1-parentBean" parent="AttributeDefinition">
+    <property name="name" value="webAddress1"/>
+    <property name="forceUppercase" value="false"/>
+    <property name="label" value="Web Site 1"/>
+    <property name="shortLabel" value="Web Site 1"/>
+    <property name="maxLength" value="200"/>
+    <property name="validationPattern">
+      <bean p:allowWhitespace="true" parent="AnyCharacterValidationPattern"/>
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AnyCharacterPatternConstraint">
+        <property name="allowWhitespace" value="true"/>
+      </bean>
+    </property>
+    <property name="control">
+      <bean p:size="80" parent="TextControlDefinition"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="80" parent="Uif-TextControl"/>
+    </property>
+    <property name="summary" value="Web Site 1"/>
+    <property name="description" value="Web Site 1"/>
+  </bean>
+  
+  <bean id="FinancialEntityContactInfo-webAddress2" parent="FinancialEntityContactInfo-webAddress2-parentBean"/>
+  <bean abstract="true" id="FinancialEntityContactInfo-webAddress2-parentBean" parent="AttributeDefinition">
+    <property name="name" value="webAddress2"/>
+    <property name="forceUppercase" value="false"/>
+    <property name="label" value="Web Site 2"/>
+    <property name="shortLabel" value="Web Site 2"/>
+    <property name="maxLength" value="200"/>
+    <property name="validationPattern">
+      <bean p:allowWhitespace="true" parent="AnyCharacterValidationPattern"/>
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AnyCharacterPatternConstraint">
+        <property name="allowWhitespace" value="true"/>
+      </bean>
+    </property>
+    <property name="control">
+      <bean p:size="80" parent="TextControlDefinition"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="80" parent="Uif-TextControl"/>
+    </property>
+    <property name="summary" value="Web Site 2"/>
+    <property name="description" value="Web Site 2"/>
+  </bean>
+  
+  <bean id="FinancialEntityContactInfo-postalCode" parent="FinancialEntityContactInfo-postalCode-parentBean"/>
+  <bean abstract="true" id="FinancialEntityContactInfo-postalCode-parentBean" parent="AttributeDefinition">
+    <property name="name" value="postalCode"/>
+    <property name="forceUppercase" value="false"/>
+    <property name="label" value="Postal Code"/>
+    <property name="shortLabel" value="Postal Code"/>
+    <property name="required" value="true" />
+    <property name="maxLength" value="15"/>
+    <property name="validationPattern">
+      <bean parent="AnyCharacterValidationPattern" p:allowWhitespace="true" />
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AnyCharacterPatternConstraint">
+        <property name="allowWhitespace" value="true"/>
+      </bean>
+    </property>
+    <property name="control">
+      <bean p:size="15" parent="TextControlDefinition"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="15" parent="Uif-TextControl"/>
+    </property>
+    <property name="summary" value="Postal Code"/>
+    <property name="description" value="Postal Code"/>
+  </bean>
+
+  <bean id="FinancialEntityContactInfo-city" parent="FinancialEntityContactInfo-city-parentBean"/>
+  <bean abstract="true" id="FinancialEntityContactInfo-city-parentBean" parent="KraAttributeReferenceDummy-city">
+        <property name="required" value="true" />
+  </bean>
+
+  <bean id="FinancialEntityContactInfo-state" parent="FinancialEntityContactInfo-state-parentBean"/>
+  <bean abstract="true" id="FinancialEntityContactInfo-state-parentBean" parent="KraAttributeReferenceDummy-state"/>
+  <bean id="FinancialEntityContactInfo-countryCode" parent="FinancialEntityContactInfo-countryCode-parentBean"/>
+  <bean abstract="true" id="FinancialEntityContactInfo-countryCode-parentBean" parent="KraAttributeReferenceDummy-countryCode">
+        <property name="required" value="true" />
+  </bean>
+  
+  <bean id="FinancialEntityContactInfo-versionNumber" parent="FinancialEntityContactInfo-versionNumber-parentBean"/>
+  <bean abstract="true" id="FinancialEntityContactInfo-versionNumber-parentBean" parent="AttributeReferenceDummy-versionNumber"/>
+<!-- Business Object Inquiry Definition -->
+  <bean id="FinancialEntityContactInfo-inquiryDefinition" parent="FinancialEntityContactInfo-inquiryDefinition-parentBean"/>
+  <bean id="FinancialEntityContactInfo-InquiryView" parent="FinancialEntityContactInfo-InquiryView-parentBean"/>
+  <bean abstract="true" id="FinancialEntityContactInfo-inquiryDefinition-parentBean" parent="InquiryDefinition">
+    <property name="title" value="FinancialEntityContactInfo"/>
+    <property name="inquirySections">
+      <list>
+        <bean parent="InquirySectionDefinition">
+          <property name="title" value="Address Book"/>
+          <property name="numberOfColumns" value="1"/>
+          <property name="inquiryFields">
+            <list>
+              <bean p:attributeName="financialEntityContactInfoId" p:forceInquiry="true" parent="FieldDefinition"/>
+              <bean p:attributeName="addressLine1" parent="FieldDefinition"/>
+              <bean p:attributeName="addressLine2" parent="FieldDefinition"/>
+              <bean p:attributeName="addressLine3" parent="FieldDefinition"/>
+              <bean p:attributeName="city" parent="FieldDefinition"/>
+              <bean p:attributeName="countryCode" parent="FieldDefinition"/>
+              <bean p:attributeName="state" parent="FieldDefinition"/>
+              <bean p:attributeName="webAddress1" parent="FieldDefinition"/>
+              <bean p:attributeName="webAddress2" parent="FieldDefinition"/>
+             </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="FinancialEntityContactInfo-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView">
+    <property name="headerText" value="FinancialEntityContactInfo"/>
+    <property name="dataObjectClassName" value="org.kuali.kra.coi.personfinancialentity.FinancialEntityContactInfo"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-GridSection">
+          <property name="headerText" value="Address Book"/>
+          <property name="layoutManager.numberOfColumns" value="2"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="financialEntityContactInfoId" parent="Uif-DataField"/>
+              <bean p:propertyName="addressLine1" parent="Uif-DataField"/>
+              <bean p:propertyName="addressLine2" parent="Uif-DataField"/>
+              <bean p:propertyName="addressLine3" parent="Uif-DataField"/>
+              <bean p:propertyName="city" parent="Uif-DataField"/>
+              <bean p:propertyName="countryCode" parent="Uif-DataField"/>
+              <bean p:propertyName="state" parent="Uif-DataField"/>
+              <bean p:propertyName="webAddress1" parent="Uif-DataField"/>
+              <bean p:propertyName="webAddress2" parent="Uif-DataField"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <!-- Business Object Lookup Definition -->
+  <bean id="FinancialEntityContactInfo-lookupDefinition" parent="FinancialEntityContactInfo-lookupDefinition-parentBean"/>
+  <bean id="FinancialEntityContactInfo-LookupView" parent="FinancialEntityContactInfo-LookupView-parentBean"/>
+  <bean abstract="true" id="FinancialEntityContactInfo-lookupDefinition-parentBean" parent="LookupDefinition">
+    <property name="title" value="Address Book Lookup"/><property name="defaultSort">
+      <bean parent="SortDefinition"/>
+    </property>
+    <property name="lookupFields">
+      <list>
+        <bean p:attributeName="financialEntityContactInfoId" parent="FieldDefinition"/>
+        <bean p:attributeName="addressLine1" parent="FieldDefinition"/>
+        <bean p:attributeName="addressLine2" parent="FieldDefinition"/>
+        <bean p:attributeName="addressLine3" parent="FieldDefinition"/>
+        <bean p:attributeName="city" parent="FieldDefinition"/>
+        <bean p:attributeName="state" parent="FieldDefinition"/>
+        <bean p:attributeName="countryCode" parent="FieldDefinition"/>
+        <bean p:attributeName="postalCode" parent="FieldDefinition"/>
+        <bean p:attributeName="webAddress1" parent="FieldDefinition"/>
+        <bean p:attributeName="webAddress2" parent="FieldDefinition"/>
+      </list>
+    </property>
+    <property name="resultFields">
+      <list>
+        <bean p:attributeName="financialEntityContactInfoId" p:forceInquiry="true" parent="FieldDefinition"/>
+        <bean p:attributeName="addressLine1" parent="FieldDefinition"/>
+        <bean p:attributeName="addressLine2" parent="FieldDefinition"/>
+        <bean p:attributeName="addressLine3" parent="FieldDefinition"/>
+        <bean p:attributeName="city" parent="FieldDefinition"/>
+        <bean p:attributeName="state" parent="FieldDefinition"/>
+        <bean p:attributeName="countryCode" parent="FieldDefinition"/>
+        <bean p:attributeName="postalCode" parent="FieldDefinition"/>
+        <bean p:attributeName="webAddress1" parent="FieldDefinition"/>
+        <bean p:attributeName="webAddress2" parent="FieldDefinition"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="FinancialEntityContactInfo-LookupView-parentBean" abstract="true" parent="Uif-LookupView">
+    <property name="dataObjectClassName" value="org.kuali.kra.coi.personfinancialentity.FinancialEntityContactInfo"/>
+    <property name="headerText" value="Address Book Lookup"/>
+    <property name="criteriaFields">
+      <list>
+        <bean p:propertyName="financialEntityContactInfoId" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="addressLine1" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="addressLine2" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="addressLine3" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="city" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="state" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="countryCode" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="postalCode" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="webAddress1" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="webAddress2" parent="Uif-LookupCriteriaInputField"/>
+      </list>
+    </property>
+    <property name="resultFields">
+      <list>
+        <bean p:propertyName="financialEntityContactInfoId" parent="Uif-DataField"/>
+        <bean p:propertyName="addressLine1" parent="Uif-DataField"/>
+        <bean p:propertyName="addressLine2" parent="Uif-DataField"/>
+        <bean p:propertyName="addressLine3" parent="Uif-DataField"/>
+        <bean p:propertyName="city" parent="Uif-DataField"/>
+        <bean p:propertyName="state" parent="Uif-DataField"/>
+        <bean p:propertyName="countryCode" parent="Uif-DataField"/>
+        <bean p:propertyName="postalCode" parent="Uif-DataField"/>
+        <bean p:propertyName="webAddress1" parent="Uif-DataField"/>
+        <bean p:propertyName="webAddress2" parent="Uif-DataField"/>
+      </list>
+    </property>
+  </bean>
+
+</beans>

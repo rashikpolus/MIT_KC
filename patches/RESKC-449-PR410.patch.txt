@@ -1,0 +1,67 @@
+From 549c441d856b0bedc5e5d63de4b17b9394fa9d42 Mon Sep 17 00:00:00 2001
+From: Gayathri <gathreya@email.arizona.edu>
+Date: Tue, 19 May 2015 11:50:53 -0700
+Subject: [PATCH] RESKC-449: budget personnel STE Steps to reproduce Create a
+ new proposal Add several persons to the Key Personnel screen for budget use
+ Create a new detailed budget version Define the budget persons with
+ appointment types & salaries On Assign Personnel to Period> select a person,
+ maintain the required fields, click Save. STE appears.
+ java.util.ConcurrentModificationException at
+ java.util.Vector$Itr.checkForComodification(Vector.java:1184) at
+ java.util.Vector$Itr.next(Vector.java:1137) at
+ org.eclipse.persistence.indirection.IndirectList$1.next(IndirectList.java:618)
+ at
+ org.kuali.coeus.common.budget.impl.calculator.SalaryCalculator.filterBudgetPersons(SalaryCalculator.java:159)
+ at
+
+---
+ .../budget/impl/calculator/SalaryCalculator.java     | 20 ++++----------------
+ 1 file changed, 4 insertions(+), 16 deletions(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/common/budget/impl/calculator/SalaryCalculator.java b/coeus-impl/src/main/java/org/kuali/coeus/common/budget/impl/calculator/SalaryCalculator.java
+index 3083b0f..36d6630 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/common/budget/impl/calculator/SalaryCalculator.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/common/budget/impl/calculator/SalaryCalculator.java
+@@ -59,13 +59,7 @@
+     private List<String> warningList;
+     private QueryList<BudgetRate> inflationRates;
+ 
+-    /**
+-     * 
+-     * Constructs a SalaryCalculator.java.
+-     * 
+-     * @param budget
+-     * @param personnelLineItem
+-     */
++
+     public SalaryCalculator(Budget budget, BudgetPersonnelDetails personnelLineItem) {
+         this.budget = budget;
+         this.personnelLineItem = personnelLineItem;
+@@ -138,16 +132,9 @@ public SalaryCalculator(Budget budget, BudgetPersonnelDetails personnelLineItem)
+ 
+     }
+ 
+-    /**
+-     * 
+-     * This method filter the budget persons with respect to start date and end date
+-     * 
+-     * @return list of BudgetPerson
+-     */
+-    @SuppressWarnings({ "rawtypes", "unchecked" })
+     private QueryList<BudgetPerson> filterBudgetPersons() {
+         QueryList<BudgetPerson> filteredPersons = new QueryList<BudgetPerson>();
+-        List<BudgetPerson> savedBudgetPersons = budget.getBudgetPersons();
++        List<BudgetPerson> savedBudgetPersons = new ArrayList<>(budget.getBudgetPersons());
+ 
+         if (savedBudgetPersons.isEmpty()){
+         	return filteredPersons;
+@@ -156,7 +143,8 @@ public SalaryCalculator(Budget budget, BudgetPersonnelDetails personnelLineItem)
+         int i = 0;
+         boolean personInDocument = false;
+         List<BudgetPerson> documentBudgetPersons = new ArrayList<BudgetPerson>();
+-        for (BudgetPerson savedPerson : savedBudgetPersons) {
++
++        for(BudgetPerson savedPerson : savedBudgetPersons) {
+             personInDocument = false;
+             for (BudgetPerson docPerson : budget.getBudgetPersons()) {
+                 if (savedPerson.getPersonSequenceNumber().intValue() == docPerson.getPersonSequenceNumber().intValue()) {

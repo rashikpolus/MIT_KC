@@ -1,0 +1,263 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <bean id="Workload-Absentee-Edit" parent="Uif-DialogGroup" p:retrieveViaAjax="true"
+          p:headerText="@{#form.workloadLineItemEdit.personName}" p:dialogCssClass="modal-lg">
+        <property name="destroyDialogOnHidden" value="true"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-VerticalBoxSection" p:headerText="Absent Tracker">
+                    <property name="items">
+                        <list>
+                            <ref bean="Workload-Absentee-Collection"/>
+                        </list>
+                    </property> 
+                </bean>
+
+            </list>
+        </property>
+        <property name="footer.items">
+            <list>
+                <bean parent="Uif-DialogDismissButton" p:actionLabel="Close"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Workload-Absentee-Collection" parent="Uif-TableCollectionSection"
+          p:addWithDialog="true">
+        <property name="collectionObjectClass"
+                  value="edu.mit.kc.workloadbalancing.bo.AbsenteeWrapper"/>
+        <property name="propertyName" value="absenteeListEdit"/>
+        <property name="layoutManager.renderSequenceField" value="false"/>
+        <property name="layoutManager.generateAutoSequence" value="false"/>
+        <property name="layoutManager.richTable.render" value="false"/>
+        <property name="addWithDialogAction">
+            <bean parent="Uif-AddWithDialogAction" p:actionLabel="Add Absence"
+                  p:iconClass="icon-plus" p:hidden="@{!canEdit}"/>
+        </property>
+
+        <property name="lineActions">
+            <list>
+                <bean parent="Uif-Action"
+                      p:actionScript="writeHiddenToForm('absenceEditItem', @{#index}); showDialog('Workload-AbsenceEdit-Dialog')"
+                      p:actionLabel="Edit" p:render="@{(#line.absentee.leaveStartDate).getTime() > T(java.lang.System).currentTimeMillis()}"
+                      p:additionalCssClasses="btn-default btn-xs" p:hidden="@{!canEdit}"/>
+                <bean parent="Uif-Action" p:methodToCall="deleteAbsence"
+                      p:actionLabel="Delete" p:render="@{(#line.absentee.leaveStartDate).getTime() > T(java.lang.System).currentTimeMillis()}"
+                      p:additionalCssClasses="btn-default btn-xs" p:hidden="@{!canEdit}"/>
+            </list>
+        </property>
+
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:label="From" p:required="true" p:readOnly="true" p:fieldLabel.render="false"
+                      p:propertyName="absentee.leaveStartDate">
+                    <property name="control">
+                        <bean parent="Uif-DateControl"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:label="To" p:required="true" p:readOnly="true" p:fieldLabel.render="false"
+                      p:propertyName="absentee.leaveEndDate">
+                    <property name="control">
+                        <bean parent="Uif-DateControl"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+
+        <property name="addLineDialog">
+            <bean id="Workload-Absentee-Add-Dialog" parent="Uif-AddLineDialog" p:headerText="Add Absence"
+                  p:enterKeyAction="Workload-Absentee-Collection_add">
+                <property name="items">
+                    <list>
+                        <bean parent="Workload-FromDate"/>
+                        <bean parent="Workload-ToDate"/>
+                    </list>
+                </property>
+                <property name="footer.items">
+                    <list>
+                        <bean parent="Uif-AddLineAction-Dialog" p:dialogDismissOption="" p:preSubmitCall="jQuery('#Workload-Absentee-Add-Dialog').removeClass('uif-hasError'); return true;"
+                              p:methodToCall="addAbsence" p:successCallback=" if(jQuery('#Workload-Absentee-Add-Dialog').find('.uif-hasError').length == 0) {jQuery('#Workload-Absentee-Add-Dialog').detach();} Kc.Dialog.closeDialogWithoutError('Workload-Absentee-Add-Dialog');"
+                              p:actionLabel="Add Absence"/>
+                        <bean parent="Uif-DialogDismissButton" p:actionLabel="Cancel"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+
+    </bean>
+
+    <bean id="Workload-AbsenceEdit-Dialog" parent="Uif-DialogGroup" p:retrieveViaAjax="true"
+          p:headerText="Edit Absence" p:fieldBindingObjectPath="absenteeEdit"
+          p:enterKeyAction="Workload-EditAbsence-Button">
+        <property name="destroyDialogOnHidden" value="true"/>
+        <property name="items">
+            <list>
+                <bean parent="Workload-FromDate"/>
+                <bean parent="Workload-ToDate"/>
+            </list>
+        </property>
+        <property name="footer.items">
+            <list>
+                <bean parent="Uif-DialogDismissButton" p:actionLabel="Cancel"/>
+                <bean id="Workload-EditAbsence-Button" parent="Uif-PrimaryActionButton"
+                      p:actionLabel="Save Changes" p:methodToCall="updateAbsence"
+                      p:refreshId="Workload-Absentee-Collection"
+                      p:dialogDismissOption=""
+                      p:successCallback="Kc.Dialog.closeDialogWithoutError('Workload-AbsenceEdit-Dialog');"
+                      p:performClientSideValidation="true"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Workload-FromDate" parent="Uif-HorizontalFieldGroup" p:label="From">
+        <property name="group.validationMessages.displayMessages" value="false"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:required="true" p:fieldLabel.render="false"
+                      p:propertyName="absentee.leaveStartDate">
+
+                    <property name="control">
+                        <bean parent="Uif-DateControl"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:required="true"
+                      p:defaultValue="5:00PM"
+                      p:propertyName="leaveStartHour">
+                    <property name="control">
+                        <bean parent="Uif-DropdownControl"
+                              p:options-ref="Workload-Absentee-Times"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Workload-ToDate" parent="Uif-HorizontalFieldGroup" p:label="To">
+        <property name="group.validationMessages.displayMessages" value="false"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:required="true" p:fieldLabel.render="false"
+                      p:propertyName="absentee.leaveEndDate">
+                    <property name="control">
+                        <bean parent="Uif-DateControl"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:required="true"
+                      p:defaultValue="8:00AM"
+                      p:propertyName="leaveEndHour">
+                    <property name="control">
+                        <bean parent="Uif-DropdownControl"
+                              p:options-ref="Workload-Absentee-Times"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <util:list id="Workload-Absentee-Times">
+
+        <bean parent="Uif-KeyLabelPair" p:key="12:00AM" p:value="Midnight"/>
+        <bean parent="Uif-KeyLabelPair" p:key="12:15AM" p:value="12:15 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="12:30AM" p:value="12:30 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="12:45AM" p:value="12:45 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="1:00AM" p:value="1:00 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="1:15AM" p:value="1:15 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="1:30AM" p:value="1:30 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="1:45AM" p:value="1:45 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="2:00AM" p:value="2:00 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="2:15AM" p:value="2:15 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="2:30AM" p:value="2:30 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="2:45AM" p:value="2:45 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="3:00AM" p:value="3:00 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="3:15AM" p:value="3:15 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="3:30AM" p:value="3:30 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="3:45AM" p:value="3:45 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="4:00AM" p:value="4:00 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="4:15AM" p:value="4:15 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="4:30AM" p:value="4:30 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="4:45AM" p:value="4:45 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="5:00AM" p:value="5:00 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="5:15AM" p:value="5:15 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="5:30AM" p:value="5:30 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="5:45AM" p:value="5:45 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="6:00AM" p:value="6:00 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="6:15AM" p:value="6:15 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="6:30AM" p:value="6:30 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="6:45AM" p:value="6:45 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="7:00AM" p:value="7:00 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="7:15AM" p:value="7:15 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="7:30AM" p:value="7:30 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="7:45AM" p:value="7:45 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="8:00AM" p:value="8:00 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="8:15AM" p:value="8:15 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="8:30AM" p:value="8:30 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="8:45AM" p:value="8:45 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="9:00AM" p:value="9:00 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="9:15AM" p:value="9:15 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="9:30AM" p:value="9:30 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="9:45AM" p:value="9:45 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="10:00AM" p:value="10:00 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="10:15AM" p:value="10:15 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="10:30AM" p:value="10:30 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="10:45AM" p:value="10:45 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="11:00AM" p:value="11:00 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="11:15AM" p:value="11:15 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="11:30AM" p:value="11:30 AM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="11:45AM" p:value="11:45 AM"/>
+
+        <bean parent="Uif-KeyLabelPair" p:key="12:00PM" p:value="Noon"/>
+        <bean parent="Uif-KeyLabelPair" p:key="12:15PM" p:value="12:15 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="12:30PM" p:value="12:30 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="12:45PM" p:value="12:45 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="1:00PM" p:value="1:00 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="1:15PM" p:value="1:15 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="1:30PM" p:value="1:30 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="1:45PM" p:value="1:45 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="2:00PM" p:value="2:00 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="2:15PM" p:value="2:15 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="2:30PM" p:value="2:30 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="2:45PM" p:value="2:45 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="3:00PM" p:value="3:00 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="3:15PM" p:value="3:15 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="3:30PM" p:value="3:30 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="3:45PM" p:value="3:45 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="4:00PM" p:value="4:00 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="4:15PM" p:value="4:15 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="4:30PM" p:value="4:30 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="4:45PM" p:value="4:45 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="5:00PM" p:value="5:00 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="5:15PM" p:value="5:15 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="5:30PM" p:value="5:30 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="5:45PM" p:value="5:45 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="6:00PM" p:value="6:00 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="6:15PM" p:value="6:15 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="6:30PM" p:value="6:30 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="6:45PM" p:value="6:45 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="7:00PM" p:value="7:00 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="7:15PM" p:value="7:15 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="7:30PM" p:value="7:30 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="7:45PM" p:value="7:45 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="8:00PM" p:value="8:00 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="8:15PM" p:value="8:15 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="8:30PM" p:value="8:30 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="8:45PM" p:value="8:45 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="9:00PM" p:value="9:00 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="9:15PM" p:value="9:15 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="9:30PM" p:value="9:30 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="9:45PM" p:value="9:45 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="10:00PM" p:value="10:00 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="10:15PM" p:value="10:15 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="10:30PM" p:value="10:30 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="10:45PM" p:value="10:45 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="11:00PM" p:value="11:00 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="11:15PM" p:value="11:15 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="11:30PM" p:value="11:30 PM"/>
+        <bean parent="Uif-KeyLabelPair" p:key="11:45PM" p:value="11:45 PM"/>
+
+    </util:list>
+
+</beans>

@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+
+
+    <bean id="GlobalTheme" parent="Kc-Theme"/>
+
+    <bean id="Kc-Theme" parent="Kc-Theme-parentBean"/>
+    <bean id="Kc-Theme-parentBean" abstract="true" parent="Uif-KbootTheme">
+        <property name="cssFiles">
+            <list merge="true">
+                <value>css/common/core.css</value>
+                <value>rice-contrib/plugins/bootstrap-select/bootstrap-select.css</value>
+                <value>rice-contrib/multiselect.css</value>
+            </list>
+        </property>
+        <property name="scriptFiles">
+            <list merge="true">
+            	<value>scripts/common/global.js</value>
+                <value>rice-contrib/plugins/bootstrap-select/bootstrap-select.js</value>
+                <value>rice-contrib/multiselect.js</value>
+                <value>scripts/common/lineItemTable.js</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Uif-GlobalApplicationHeader" parent="Kc-ApplicationHeader"/>
+    <bean id="Kc-ApplicationHeader" parent="Kc-ApplicationHeader-parentBean"/>
+    <bean id="Kc-ApplicationHeader-parentBean" parent="Uif-ApplicationHeaderBase">
+        <property name="onDocumentReadyScript" value="Kc.Global.attachRedirectHandler();"/>
+        <property name="applicationNavigation">
+            <bean parent="Kc-ApplicationHeader-NavigationBar"/>
+        </property>
+        <property name="applicationToolbar.items">
+            <list>
+                <bean parent="Kc-Header-ApplicationToolbar"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Uif-GlobalApplicationFooter" parent="Kc-ApplicationFooter"/>
+    <bean id="Kc-ApplicationFooter" parent="Kc-ApplicationFooter-parentBean"/>
+    <bean id="Kc-ApplicationFooter-parentBean" abstract="true" parent="Uif-FooterBase" p:cssClasses="kc-applicationFooter">
+        <property name="onDocumentReadyScript" value="Kc.Global.makeApplicationFooterSticky();"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-Message" p:messageText="Copyright 2005-2015 Kuali, Inc. All rights reserved. Portions of Kuali are copyrighted by other parties as described in the [link='@{#ConfigProperties['application.url']}/acknowledgments.jsp']Acknowledgments[/link] screen." p:renderWrapperTag="false"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Uif-BuildFooter" parent="Kc-BuildFooter"/>
+    <bean id="Kc-BuildFooter" parent="Kc-BuildFooter-parentBean"/>
+    <bean id="Kc-BuildFooter-parentBean" abstract="true" parent="Uif-GroupBase" p:render="false"/>
+
+    <bean id="Uif-MitNavigationBar" parent="Uif-NavigationBar-parentBean"
+   		class="edu.mit.kc.header.MitNavigationBarCustomLink">
+       	<property name="template" value="/WEB-INF/ftl/krad/components/element/navigationBar.ftl"/>
+   	</bean>
+
+
+    <bean id="Kc-ApplicationHeader-NavigationBar" parent="Kc-ApplicationHeader-NavigationBar-parentBean"/>
+    <bean id="Kc-ApplicationHeader-NavigationBar-parentBean" abstract="true"
+          parent="Uif-MitNavigationBar">
+        <property name="brandImageLink">
+            <bean parent="Uif-HorizontalBoxGroup" p:additionalCssClasses="header-logoGroup">
+                <property name="items">
+                    <list>
+                        <bean parent="Uif-ActionLink" p:additionalCssClasses="header-logoGroup-action">
+                            <property name="actionUrl">
+                                <bean parent="Uif-Url" p:baseUrl="@{#ConfigProperties['application.url']}/kc-krad"
+                                      p:controllerMapping="/landingPage"/>
+                            </property>
+                            <property name="actionImage" ref="Kc-Header-ApplicationLogo"/>
+                        </bean>
+                        
+         <bean parent="Uif-ActionImage"  p:actionScript="window.open('@{#ConfigProperties['mit.website.url']}', '_blank');">
+           <property name="actionImage" ref="Kc-Header-ApplicationLogo2"/>
+        </bean>
+                        
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="items">
+            <list>
+           
+            <bean parent="Uif-ActionLink" p:actionLabel="HOME" p:order="10">
+					<property name="actionUrl">
+						<bean parent="Uif-Url"
+							p:baseUrl="@{#ConfigProperties['application.url']}/kc-krad"
+							p:controllerMapping="/landingPage" />
+					</property>
+				</bean>
+            
+                
+              <bean parent="Uif-ActionLink" p:actionLabel="DASHBOARD"
+					p:order="20">
+					<property name="actionUrl">
+						<bean parent="Uif-Url"
+							p:baseUrl="@{#ConfigProperties['application.url']}/kc-pd-krad"
+							p:viewId="Dashboard-View"
+							p:controllerMapping="/dashboard" />
+					</property>
+				</bean>
+
+				 <bean parent="Uif-Link" p:href="../portal.do"
+                    p:render="@{T(edu.mit.kc.header.MitHeaderHelper).renderSysAdminHeaderLink()}"
+                    p:wrapperCssClasses="pull-right" p:target="_new"
+                    p:linkText="SYSTEM ADMIN PORTAL" p:order="30"/>
+            </list>
+        </property>
+    </bean>
+
+
+    <bean id="Kc-Header-ApplicationToolbar" parent="Kc-Header-ApplicationToolbar-parentBean"/>
+    <bean id="Kc-Header-ApplicationToolbar-parentBean" abstract="true"
+          parent="Uif-ListGroup" p:layoutManager.additionalCssClasses="nav,pull-right">
+        <property name="items">
+            <list>
+				
+                <bean parent="Uif-Link" p:href="@{#ConfigProperties['feedback.link.url']}"
+                      p:wrapperCssClasses="pull-right" p:target="_new"
+                      p:render="@{#ConfigProperties['feedback.link.url'] != ''}"
+                      p:linkText="Get Help"/>
+                <bean parent="Kc-Header-IframeMenuAction" p:actionUrl.viewId="Kc-Header-ActionListView"
+                      p:wrapperCssClasses="pull-right" p:actionLabel="Action List"/>
+                <bean parent="Kc-Header-IframeMenuAction" p:actionUrl.viewId="Kc-Header-DocSearchView"
+                      p:wrapperCssClasses="pull-right" p:actionLabel="Doc Search"/>
+                <bean parent="Kc-Header-User"
+                      p:toggleText="User: @{#userSession == null ? '' : #userSession.getLoggedInUserPrincipalName()}"
+                      p:render="@{#userSession != null}">
+                    <property name="wrapperCssClasses">
+                        <list merge="true">
+                            <value>pull-right</value>
+                        </list>
+                    </property>
+                </bean>
+				 <bean parent="Uif-Message" p:messageText="@{#ConfigProperties['version']} ">
+					<property name="wrapperCssClasses">
+						<list merge="true">
+							<value>pull-right</value>
+						</list>
+					</property>
+				</bean>
+            </list>
+        </property>
+    </bean>
+
+
+    <bean id="Kc-Header-IframeMenuAction" parent="Kc-Header-IframeMenuAction-parentBean"/>
+    <bean id="Kc-Header-IframeMenuAction-parentBean" abstract="true"
+          parent="Uif-MenuAction" p:actionUrl.baseUrl="@{#ConfigProperties['application.url']}/kc-krad"
+          p:actionUrl.controllerMapping="/landingPage"/>
+
+    <bean id="Kc-Header-IframeView" parent="Kc-Header-IframeView-parentBean"/>
+    <bean id="Kc-Header-IframeView-parentBean" abstract="true" class="org.kuali.kra.web.krad.CustomHrefIframeView"
+          parent="Uif-IframeView" p:location.baseUrl="@{#ConfigProperties['application.url']}"/>
+
+    <bean id="Kc-Header-ActionListView" parent="Kc-Header-ActionListView-parentBean"/>
+    <bean id="Kc-Header-ActionListView-parentBean" abstract="true"
+          parent="Kc-Header-IframeView" p:location.baseUrl="@{#ConfigProperties['rice.server.url']}" p:location.controllerMapping="/kew/ActionList.do"/>
+    <bean id="Kc-Header-DocSearchView" parent="Kc-Header-DocSearchView-parentBean"/>
+    <bean id="Kc-Header-DocSearchView-parentBean" abstract="true"
+         parent="Kc-Header-IframeView" p:location.baseUrl="@{#ConfigProperties['rice.server.url']}" p:location.controllerMapping="/kew/DocumentSearch.do"/>
+    <bean id="Kc-Header-ApplicationLogo" parent="Kc-Header-ApplicationLogo-parentBean"/>
+    <bean id="Kc-Header-ApplicationLogo-parentBean" parent="Uif-Image"
+          abstract="true" p:source="../static/images/logo-mit1.png"/>
+    <bean id="Kc-Header-ApplicationLogo2" parent="Kc-Header-ApplicationLogo2-parentBean"/>
+    <bean id="Kc-Header-ApplicationLogo2-parentBean" parent="Uif-Image"
+          abstract="true" p:source="../static/images/logo-mit2.png"/>
+
+   
+    <bean id="Kc-Header-Actionlist" parent="Kc-Header-Actionlist-parentBean"/>
+    <bean id="Kc-Header-Actionlist-parentBean" abstract="true"
+          parent="Uif-DropdownToggleMenu">
+        <property name="menuItems">
+            <list>
+                <bean parent="Uif-MenuAction" p:actionLabel="Approve: Doc #5547"/>
+                <bean parent="Uif-MenuAction" p:actionLabel="Approve: Doc #5547"/>
+                <bean parent="Uif-MenuAction" p:actionLabel="Approve: Doc #5547"/>
+                <bean parent="Uif-MenuAction" p:actionLabel="Approve: Doc #5547"/>
+                <bean parent="Uif-MenuAction" p:actionLabel="Approve: Doc #5547"/>
+                <bean parent="Uif-MenuAction" p:actionLabel="Approve: Doc #5547"/>
+                <bean parent="Uif-MenuAction" p:actionLabel="Approve: Doc #5547"/>
+                <bean parent="Uif-MenuAction" p:actionLabel="Approve: Doc #5547"/>
+                <bean parent="Uif-MenuAction" p:actionLabel="Approve: Doc #5547"/>
+                <bean parent="Uif-MenuAction" p:actionLabel="Approve: Doc #5547"/>
+                <bean parent="Uif-MenuAction" p:actionLabel="Approve: Doc #5547"/>
+                <bean parent="Uif-MenuAction" p:actionLabel="Approve: Doc #5547"/>
+                <bean parent="Uif-MenuDivider"/>
+                <bean parent="Uif-MenuAction" p:actionLabel="Full Action List"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Kc-Header-User" parent="Kc-Header-User-parentBean"/>
+    <bean id="Kc-Header-User-parentBean" abstract="true"
+          parent="Uif-DropdownToggleMenu">
+        <property name="menuItems">
+            <list>
+                <bean parent="Kc-Header-IframeMenuAction" p:actionLabel="Preferences" p:actionUrl.viewId="Kc-Header-IframeView">
+                    <property name="actionUrl.requestParameters">
+                        <map>
+                            <entry key="href" value="@{#ConfigProperties['rice.server.url']}/kew/Preferences.do?returnLocation=@{#ConfigProperties['application.url']}%2Fkc-krad%2FlandingPage%3FviewId%3DKc-LandingPage-RedirectView"/>
+                        </map>
+                    </property>
+                </bean>
+                <bean parent="Uif-MenuAction" p:actionLabel="Logout" p:actionUrl.viewId="DummyLoginView"
+                      p:actionUrl.controllerMapping="/login" p:actionUrl.methodToCall="logout"/>
+            </list>
+        </property>
+    </bean>
+
+</beans>

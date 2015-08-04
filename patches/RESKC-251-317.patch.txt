@@ -1,0 +1,333 @@
+From f03dc89bc3732fbfc12ac87ead09987350ff8b84 Mon Sep 17 00:00:00 2001
+From: blackcathacker <douglas.pace@gmail.com>
+Date: Wed, 29 Apr 2015 17:58:30 -0700
+Subject: [PATCH 1/2] RESKC-251:Use awardDocument updated info instead of award
+
+Award Time and Money - T&M updates should not alter Award Version update timestamp and user
+The History view should not reflect the update of the T&M change, but maintain when the award was last updated.
+Using the awardDocument update timestamp accomplishes this.
+---
+ .../coeus/coeus-xml/2/TimeAndMoneyDocument.xml     |  2 +-
+ .../main/java/org/kuali/kra/award/home/Award.java  | 37 ++++++++++++----------
+ .../impl/TimeAndMoneyHistoryServiceImpl.java       | 27 +---------------
+ 3 files changed, 23 insertions(+), 43 deletions(-)
+
+diff --git a/coeus-db/coeus-db-xml/src/main/resources/org/kuali/coeus/coeus-xml/2/TimeAndMoneyDocument.xml b/coeus-db/coeus-db-xml/src/main/resources/org/kuali/coeus/coeus-xml/2/TimeAndMoneyDocument.xml
+index 618a2b2..3493ee5 100644
+--- a/coeus-db/coeus-db-xml/src/main/resources/org/kuali/coeus/coeus-xml/2/TimeAndMoneyDocument.xml
++++ b/coeus-db/coeus-db-xml/src/main/resources/org/kuali/coeus/coeus-xml/2/TimeAndMoneyDocument.xml
+@@ -23,7 +23,7 @@
+ 			<name>TimeAndMoneyDocument</name>
+ 			<description>Manage TimeAndMoney</description>
+ 			<label>KC TimeAndMoney</label>
+-			<postProcessorName>org.kuali.rice.krad.workflow.postprocessor.KualiPostProcessor</postProcessorName>
++			<postProcessorName>org.kuali.coeus.sys.framework.workflow.KcPostProcessor</postProcessorName>
+ 			<superUserWorkgroupName>KC-WKFLW:KcAdmin</superUserWorkgroupName>
+ 			<blanketApproveWorkgroupName>KC-WKFLW:KcAdmin</blanketApproveWorkgroupName>
+ 			<defaultExceptionWorkgroupName>KC-WKFLW:KcAdmin</defaultExceptionWorkgroupName>
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/award/home/Award.java b/coeus-impl/src/main/java/org/kuali/kra/award/home/Award.java
+index 1c4d5d0..5bbf6bb 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/award/home/Award.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/award/home/Award.java
+@@ -107,6 +107,7 @@
+     public static final String DEFAULT_AWARD_NUMBER = "000000-00000";
+     public static final String BLANK_COMMENT = "";
+     public static final String ICR_RATE_CODE_NONE = "ICRNONE";
++    private static final String NONE = "None";
+ 
+     private static final String NO_FLAG = "N";
+     private static final int TOTAL_STATIC_REPORTS = 5;
+@@ -3360,28 +3361,32 @@ public void setUpdateTimestamp(Timestamp updateTimestamp) {
+     }
+ 
+     public String getAwardDescriptionLine() {
+-        AwardAmountInfo aai = getLastAwardAmountInfo();
+-        String transactionTypeDescription;
+-        String versionNumber;
+-        if(aai == null || aai.getOriginatingAwardVersion() == null) {
+-            versionNumber = getSequenceNumber().toString();
+-        }else {
+-            versionNumber = aai.getOriginatingAwardVersion().toString();
+-        }
+-        if(!(getAwardTransactionType() == null)) {
+-            transactionTypeDescription = getAwardTransactionType().getDescription();
+-        }else {
+-            transactionTypeDescription = "None";
+-        }
+-        return "Award Version " + versionNumber + ", " + transactionTypeDescription + ", updated " + getUpdateTimeAndUser(); 
++		String noticeDate;
++		String transactionTypeDescription;
++		String versionNumber;
++
++		versionNumber = getSequenceNumber().toString();
++
++		if (!(getNoticeDate() == null)) {
++			noticeDate = getNoticeDate().toString();
++		} else {
++			noticeDate = NONE;
++		}
++		if (!(getAwardTransactionType() == null)) {
++			transactionTypeDescription = getAwardTransactionType().getDescription();
++		} else {
++			transactionTypeDescription = NONE;
++		}
++		return "Award Version " + versionNumber + ", " + transactionTypeDescription + ", notice date: " + noticeDate + ", updated " + getUpdateTimeAndUser() + ". Comments:"
++				+ (getAwardCurrentActionComments().getComments() == null ? NONE + "." : getAwardCurrentActionComments().getComments());
+     }
+ 
+     public String getUpdateTimeAndUser() {
+         String createDateStr = null;
+         String updateUser = null;
+         if (getUpdateTimestamp() != null) {
+-            createDateStr = CoreApiServiceLocator.getDateTimeService().toString(getUpdateTimestamp(), "hh:mm a MM/dd/yyyy");
+-            updateUser = getUpdateUser().length() > 30 ? getUpdateUser().substring(0, 30) : getUpdateUser(); 
++            createDateStr = CoreApiServiceLocator.getDateTimeService().toString(awardDocument.getUpdateTimestamp(), "hh:mm a MM/dd/yyyy");
++            updateUser = awardDocument.getUpdateUser().length() > 30 ? getUpdateUser().substring(0, 30) : getUpdateUser(); 
+         }
+         return createDateStr + ", by " + updateUser;
+     }
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/service/impl/TimeAndMoneyHistoryServiceImpl.java b/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/service/impl/TimeAndMoneyHistoryServiceImpl.java
+index 7dfa775..fff4a6e 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/service/impl/TimeAndMoneyHistoryServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/service/impl/TimeAndMoneyHistoryServiceImpl.java
+@@ -87,7 +87,7 @@ public void buildTimeAndMoneyHistoryObjects(String awardNumber, List<AwardVersio
+ 		for (Award award : awardVersionList) {
+ 			AwardVersionHistory awardVersionHistory = new AwardVersionHistory(award);
+ 			awardVersionHistory.setDocumentUrl(buildForwardUrl(award.getAwardDocument().getDocumentNumber()));
+-			awardVersionHistory.setAwardDescriptionLine(buildNewAwardDescriptionLine(award));
++			awardVersionHistory.setAwardDescriptionLine(award.getAwardDescriptionLine());
+ 			awardVersionHistory.setTimeAndMoneyDocumentHistoryList(getDocHistoryAndValidInfosAssociatedWithAwardVersion(docs, award.getAwardAmountInfos(), award));
+ 
+ 			awardVersionHistoryCollection.add(awardVersionHistory);
+@@ -317,31 +317,6 @@ public String getRootAwardNumberForDocumentSearch(String awardNumber) {
+ 		returnString.append(ROOT_AWARD_NUMBER_VAL);
+ 		return returnString.toString();
+ 	}
+-	
+-	protected String buildNewAwardDescriptionLine(Award award) {
+-		String noticeDate;
+-		String transactionTypeDescription;
+-		String versionNumber;
+-
+-		versionNumber = award.getSequenceNumber().toString();
+-
+-		if (!(award.getNoticeDate() == null)) {
+-			noticeDate = award.getNoticeDate().toString();
+-		} else {
+-			noticeDate = NONE;
+-		}
+-		if (!(award.getAwardTransactionType() == null)) {
+-			transactionTypeDescription = award.getAwardTransactionType().getDescription();
+-		} else {
+-			transactionTypeDescription = NONE;
+-		}
+-		return "Award Version " + versionNumber + ", " + transactionTypeDescription + ", notice date: " + noticeDate + ", updated " + getUpdateTimeAndUser(award) + ". Comments:"
+-				+ (award.getAwardCurrentActionComments().getComments() == null ? NONE + "." : award.getAwardCurrentActionComments().getComments());
+-	}
+-
+-	protected String getUpdateTimeAndUser(Award award) {
+-		return award.getUpdateTimeAndUser();
+-	}
+ 
+ 	protected String getUpdateTimeAndUser(TimeAndMoneyDocument doc) {
+ 		String createDateStr = null;
+
+From 31c692bece2a7316e85c62af70b319d7f9d5ef3a Mon Sep 17 00:00:00 2001
+From: blackcathacker <douglas.pace@gmail.com>
+Date: Wed, 29 Apr 2015 20:11:52 -0700
+Subject: [PATCH 2/2] RESKC-251: Refactoring and small unit test to exercise
+ code
+
+---
+ .../main/java/org/kuali/kra/award/home/Award.java  | 15 ++-------
+ .../service/TimeAndMoneyHistoryService.java        |  2 +-
+ .../impl/TimeAndMoneyHistoryServiceImpl.java       | 23 +++++++++++---
+ .../web/struts/action/TimeAndMoneyAction.java      |  2 +-
+ .../impl/TimeAndMoneyHistoryServiceImplTest.java   | 37 +++++++++++++++++++++-
+ 5 files changed, 60 insertions(+), 19 deletions(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/award/home/Award.java b/coeus-impl/src/main/java/org/kuali/kra/award/home/Award.java
+index 5bbf6bb..b54eda5 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/award/home/Award.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/award/home/Award.java
+@@ -1515,26 +1515,17 @@ public AwardComment getAwardProposalIPReviewComment() {
+         return getAwardCommentByType( Constants.PROPOSAL_IP_REVIEW_COMMENT_TYPE_CODE,Constants.AWARD_COMMENT_EXCLUDE_FROM_CHECKLIST, true );
+     }
+ 
+-    /*
+-     * Get a comment by type. If it does not exist, then create it.
+-     */
+-
+-    public AwardComment getAwardCommentByType(String awardTypeCode, Boolean checklistPrintFlag, boolean createNew) {
++    public AwardComment getAwardCommentByType(String awardCommentTypeCode, Boolean checklistPrintFlag, boolean createNew) {
+         AwardCommentFactory awardCommentFactory = new AwardCommentFactory();
+-        AwardComment awardComment = getCommentMap().get(awardTypeCode);
++        AwardComment awardComment = getCommentMap().get(awardCommentTypeCode);
+         if ((awardComment == null && createNew)) {
+-            awardComment = awardCommentFactory.createAwardComment(awardTypeCode, (checklistPrintFlag == null ? false : checklistPrintFlag.booleanValue()));
++            awardComment = awardCommentFactory.createAwardComment(awardCommentTypeCode, (checklistPrintFlag == null ? false : checklistPrintFlag.booleanValue()));
+             add(awardComment);
+             commentMap.put(awardComment.getCommentType().getCommentTypeCode(), awardComment);
+         }
+         return awardComment;
+     }
+ 
+-
+-    /*
+-     * Get a sponsor term by sponsor term id.
+-     */
+-
+     public AwardSponsorTerm getAwardSponsorTermByTemplateTerm(AwardTemplateTerm templateTerm, boolean createNew) {
+         AwardSponsorTerm result = null;
+         for (AwardSponsorTerm term : this.getAwardSponsorTerms()) {
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/service/TimeAndMoneyHistoryService.java b/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/service/TimeAndMoneyHistoryService.java
+index ff40ffc..dae2fac 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/service/TimeAndMoneyHistoryService.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/service/TimeAndMoneyHistoryService.java
+@@ -29,7 +29,7 @@
+ 
+ public interface TimeAndMoneyHistoryService {
+ 
+-    void buildTimeAndMoneyHistoryObjects(String awardNumber, List<AwardVersionHistory> awardVersionHistoryCollection) throws WorkflowException;
++    List<AwardVersionHistory> buildTimeAndMoneyHistoryObjects(String awardNumber) throws WorkflowException;
+     
+     public List<TimeAndMoneyDocumentHistory> getDocHistoryAndValidInfosAssociatedWithAwardVersion(List<TimeAndMoneyDocument> docs,
+             List<AwardAmountInfo> awardAmountInfos, Award award) throws WorkflowException;
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/service/impl/TimeAndMoneyHistoryServiceImpl.java b/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/service/impl/TimeAndMoneyHistoryServiceImpl.java
+index fff4a6e..6dc5d4e 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/service/impl/TimeAndMoneyHistoryServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/service/impl/TimeAndMoneyHistoryServiceImpl.java
+@@ -72,8 +72,8 @@
+ 	private DateTimeService dateTimeService;
+ 	private GlobalVariableService globalVariableService;
+ 
+-	
+-	public void buildTimeAndMoneyHistoryObjects(String awardNumber, List<AwardVersionHistory> awardVersionHistoryCollection) throws WorkflowException {
++	@Override
++	public List<AwardVersionHistory> buildTimeAndMoneyHistoryObjects(String awardNumber) throws WorkflowException {
+ 		List<Award> awardVersionList = (List<Award>) businessObjectService.findMatchingOrderBy(Award.class, getHashMapToFindActiveAward(awardNumber), SEQUENCE_NUMBER, true);
+ 		// we want the list in reverse chronological order.
+ 		Collections.reverse(awardVersionList);
+@@ -84,6 +84,11 @@ public void buildTimeAndMoneyHistoryObjects(String awardNumber, List<AwardVersio
+ 		List<TimeAndMoneyDocument> docs = (List<TimeAndMoneyDocument>) businessObjectService.findMatchingOrderBy(TimeAndMoneyDocument.class, fieldValues1, DOCUMENT_NUMBER, true);
+ 		// we don't want canceled docs to show in history.
+ 		removeCanceledDocs(docs);
++		return buildAwardVersionHistoryList(awardVersionList, docs);
++	}
++
++	List<AwardVersionHistory> buildAwardVersionHistoryList(List<Award> awardVersionList, List<TimeAndMoneyDocument> docs) throws WorkflowException {
++		List<AwardVersionHistory> awardVersionHistoryCollection = new ArrayList<>();
+ 		for (Award award : awardVersionList) {
+ 			AwardVersionHistory awardVersionHistory = new AwardVersionHistory(award);
+ 			awardVersionHistory.setDocumentUrl(buildForwardUrl(award.getAwardDocument().getDocumentNumber()));
+@@ -92,6 +97,7 @@ public void buildTimeAndMoneyHistoryObjects(String awardNumber, List<AwardVersio
+ 
+ 			awardVersionHistoryCollection.add(awardVersionHistory);
+ 		}
++		return awardVersionHistoryCollection;
+ 	}
+ 
+ 	public List<TimeAndMoneyDocumentHistory> getDocHistoryAndValidInfosAssociatedWithAwardVersion(List<TimeAndMoneyDocument> docs, List<AwardAmountInfo> awardAmountInfos, Award award)
+@@ -335,7 +341,7 @@ protected String getUpdateTimeAndUser(TimeAndMoneyDocument doc) {
+ 	 * @return String
+ 	 */
+ 	protected String buildForwardUrl(String documentNumber) {
+-		String forward = getDocHandlerService().getDocHandlerUrl(documentNumber);
++		String forward = getDocHandlerUrl(documentNumber);
+ 		forward = forward.replaceFirst(DEFAULT_TAB, ALTERNATE_OPEN_TAB);
+ 		if (forward.contains("?")) {
+ 			forward += "?";
+@@ -344,13 +350,22 @@ protected String buildForwardUrl(String documentNumber) {
+ 		}
+ 		forward += KewApiConstants.DOCUMENT_ID_PARAMETER + "=" + documentNumber;
+ 		forward += "&" + KewApiConstants.COMMAND_PARAMETER + "=" + NotificationConstants.NOTIFICATION_DETAIL_VIEWS.DOC_SEARCH_VIEW;
+-		if (globalVariableService.getUserSession().isBackdoorInUse()) {
++		if (isBackdoorUserInUse()) {
+ 			forward += "&" + KewApiConstants.BACKDOOR_ID_PARAMETER + "=" + globalVariableService.getUserSession().getPrincipalName();
+ 		}
+ 
+ 		return "<a href=\"" + forward + "\"target=\"_blank\">" + documentNumber + "</a>";
+ 	}
+ 
++	boolean isBackdoorUserInUse() {
++		return globalVariableService.getUserSession().isBackdoorInUse();
++	}
++
++	String getDocHandlerUrl(String documentNumber) {
++		String forward = getDocHandlerService().getDocHandlerUrl(documentNumber);
++		return forward;
++	}
++
+ 	public DocumentService getDocumentService() {
+ 		return documentService;
+ 	}
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/web/struts/action/TimeAndMoneyAction.java b/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/web/struts/action/TimeAndMoneyAction.java
+index a0d4d0c..9bc8aa2 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/web/struts/action/TimeAndMoneyAction.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/timeandmoney/web/struts/action/TimeAndMoneyAction.java
+@@ -825,7 +825,7 @@ private void populateOtherPanels(AwardAmountTransaction newAwardAmountTransactio
+         timeAndMoneyDocument.setAward(award);
+ 
+         timeAndMoneyDocument.getAwardVersionHistoryList().clear();
+-        getTimeAndMoneyHistoryService().buildTimeAndMoneyHistoryObjects(award.getAwardNumber(), timeAndMoneyDocument.getAwardVersionHistoryList());
++        timeAndMoneyDocument.setAwardVersionHistoryList(getTimeAndMoneyHistoryService().buildTimeAndMoneyHistoryObjects(award.getAwardNumber()));
+         timeAndMoneyDocument.getTimeAndMoneyActionSummaryItems().clear();
+         getTimeAndMoneyActionSummaryService().populateActionSummary(timeAndMoneyDocument.getTimeAndMoneyActionSummaryItems(), goToAwardNumber);
+         
+diff --git a/coeus-impl/src/test/java/org/kuali/kra/timeandmoney/service/impl/TimeAndMoneyHistoryServiceImplTest.java b/coeus-impl/src/test/java/org/kuali/kra/timeandmoney/service/impl/TimeAndMoneyHistoryServiceImplTest.java
+index 9321306..eff06c2 100644
+--- a/coeus-impl/src/test/java/org/kuali/kra/timeandmoney/service/impl/TimeAndMoneyHistoryServiceImplTest.java
++++ b/coeus-impl/src/test/java/org/kuali/kra/timeandmoney/service/impl/TimeAndMoneyHistoryServiceImplTest.java
+@@ -3,10 +3,18 @@
+ import java.util.*;
+ 
+ import org.junit.Test;
++import org.kuali.kra.award.document.AwardDocument;
++import org.kuali.kra.award.home.Award;
+ import org.kuali.kra.award.home.AwardAmountInfo;
++import org.kuali.kra.award.home.AwardComment;
++import org.kuali.kra.bo.CommentType;
++import org.kuali.kra.infrastructure.Constants;
+ import org.kuali.kra.timeandmoney.AwardAmountInfoHistory;
++import org.kuali.kra.timeandmoney.AwardVersionHistory;
++import org.kuali.kra.timeandmoney.document.TimeAndMoneyDocument;
+ import org.kuali.kra.timeandmoney.history.TransactionDetail;
+ import org.kuali.kra.timeandmoney.history.TransactionDetailType;
++import org.kuali.rice.kew.api.exception.WorkflowException;
+ 
+ import static org.junit.Assert.*;
+ 
+@@ -88,4 +96,31 @@ public void test_captureMoneyInfos_withIntermediate() {
+ 		assertEquals(1, captureMoneyInfos.get(0).getIntermediateDetails().size());
+ 		
+ 	}
+-}
++	
++	@Test
++	public void test_buildAwardVersionHistoryList_withoutTimeAndMoney() throws WorkflowException {
++ 		TimeAndMoneyHistoryServiceImpl timeAndMoneyHistoryServiceImpl = new TimeAndMoneyHistoryServiceImpl() {
++ 			@Override
++ 			String getDocHandlerUrl(String documentNumber) {
++ 				return "http://foobar";
++ 			}
++ 			@Override
++ 			boolean isBackdoorUserInUse() {
++ 				return false;
++ 			}
++ 		};
++ 		List<Award> awardList = new ArrayList<Award>() {{
++ 			Award award1 = new Award();
++ 			award1.setSequenceNumber(1);
++ 			award1.setAwardDocument(new AwardDocument());
++ 			CommentType commentType = new CommentType();
++ 			commentType.setCommentTypeCode(Constants.CURRENT_ACTION_COMMENT_TYPE_CODE);
++			award1.add(new AwardComment(commentType, "Test"));
++ 			add(award1);
++ 		}};
++		List<AwardVersionHistory> awardVersionHistoryList = timeAndMoneyHistoryServiceImpl.buildAwardVersionHistoryList(awardList, new ArrayList<TimeAndMoneyDocument>());
++		assertEquals(1, awardVersionHistoryList.size());
++		assertTrue("AwardVersionHistory timeAndMoneyDocumentHistoryList is not empty", awardVersionHistoryList.get(0).getTimeAndMoneyDocumentHistoryList().isEmpty());
++		assertTrue("AwardVersionHistory description line is empty", awardVersionHistoryList.get(0).getAwardDescriptionLine().length() > 0);
++	}
++}
+\ No newline at end of file

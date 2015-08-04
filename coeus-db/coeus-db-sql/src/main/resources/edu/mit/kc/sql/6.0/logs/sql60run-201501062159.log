@@ -1,0 +1,802 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Tue Jan 6 22:02:32 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+
+Sequence created.
+
+
+Sequence created.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+ALTER TABLE  award_person_remove MODIFY UPDATE_TIMESTAMP_CONFIRM  NULL
+                                        *
+ERROR at line 1:
+ORA-01451: column to be modified to NULL cannot be modified to NULL
+
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+Sequence created.
+
+
+Sequence created.
+
+
+Table created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table created.
+
+
+Table altered.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Sequence created.
+
+
+Sequence created.
+
+
+Sequence created.
+
+
+Sequence created.
+
+
+Sequence created.
+
+
+Sequence created.
+
+
+Sequence created.
+
+
+Sequence created.
+
+
+Sequence created.
+
+
+Sequence created.
+
+
+Sequence created.
+
+
+Sequence created.
+
+
+Sequence created.
+
+
+Sequence created.
+
+
+Sequence created.
+
+
+Sequence created.
+
+
+Sequence created.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+0 rows updated.
+
+
+104260 rows updated.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+129995 rows updated.
+
+
+0 rows updated.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+Number of awards deleted while cleaning up key person table with NO indicator :
+0
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+Number of proposal deleted while cleaning up key person table with NO indicator
+: 0
+Number of proposal deleted while cleaning up key person table with NO indicator
+: 0
+Number of proposal deleted while cleaning up key person table with NO indicator
+: 0
+Number of proposal deleted while cleaning up key person table with NO indicator
+: 0
+Number of proposal deleted while cleaning up key person table with NO indicator
+: 0
+Number of proposal deleted while cleaning up key person table with NO indicator
+: 0
+Number of proposal deleted while cleaning up key person table with NO indicator
+: 0
+Number of proposal deleted while cleaning up key person table with NO indicator
+: 0
+Number of proposal deleted while cleaning up key person table with NO indicator
+: 0
+Number of proposal deleted while cleaning up key person table with NO indicator
+: 0
+Number of proposal deleted while cleaning up key person table with NO indicator
+: 0
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+Error while updating kim_typ_id Subaward Requisitioner Review Approver.
+Exception is ORA-01403: no data found
+Error while updating kim_typ_id Maintain Award Report Tracking. Exception is
+ORA-01403: no data found
+Error while updating kim_typ_id Maintain IRB Questionnaire. Exception is
+ORA-01403: no data found
+Error while updating kim_typ_id Maintain IACUC Questionnaire. Exception is
+ORA-01403: no data found
+Error while updating kim_typ_id Maintain COI Questionnaire. Exception is
+ORA-01403: no data found
+Error while updating kim_typ_id Maintain Proposal Questionnaire. Exception is
+ORA-01403: no data found
+Error while updating kim_typ_id COI Reporter. Exception is ORA-01403: no data
+found
+
+PL/SQL procedure successfully completed.
+
+
+15123 rows updated.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+0 rows updated.
+
+
+1 row updated.
+
+
+Commit complete.
+
+
+1 row updated.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+2 rows updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+2 rows updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+ERROR:
+ORA-03114: not connected to ORACLE
+
+
+declare
+*
+ERROR at line 1:
+ORA-12152: TNS:unable to send break message
+
+
+
+SQL> SQL> SQL> SP2-0042: unknown command ":q" - rest of line ignored.
+SQL> SP2-0042: unknown command ":q!" - rest of line ignored.
+SQL> Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

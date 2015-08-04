@@ -1,0 +1,1 @@
+<DBUSER>/<PASSWD>@<TNS-NAME>

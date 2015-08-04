@@ -1,0 +1,19 @@
+@constraints/KC_FK1_BUDGET_SUB_AWARD_ATT.sql
+@sequences/KC_SEQ_COMMITTEE_SCHEDULE_ATTACHMENT_ID.sql
+@dml/KC_DML_01_KRACOEUS-8027_B000.sql
+@dml/KR_DML_01_KRACOEUS-7589_B000.sql
+@dml/KR_DML_01_KRACOEUS-8001_B000.sql
+
+delete from krim_role_t where role_nm='View Institutionally Maintained Salaries Document Level';
+/
+INSERT INTO KRIM_ROLE_T (ROLE_ID, ROLE_NM, NMSPC_CD, DESC_TXT, ACTV_IND, KIM_TYP_ID, OBJ_ID, VER_NBR, LAST_UPDT_DT)
+VALUES ('KC' || KRIM_ROLE_ID_S.NEXTVAL, 'View Institutionally Maintained Salaries Document Level','KC-PD','View Institutionally Maintained Salaries','Y', (SELECT KIM_TYP_ID FROM KRIM_TYP_T WHERE NM = 'Derived Role: Document Access' AND NMSPC_CD = 'KC-SYS'), SYS_GUID(), 1, SYSDATE)
+/
+INSERT INTO KRIM_ROLE_PERM_T (ROLE_PERM_ID, OBJ_ID, VER_NBR, ROLE_ID, PERM_ID, ACTV_IND)
+VALUES ('KC' || KRIM_ROLE_PERM_ID_S.NEXTVAL, SYS_GUID(), 1, (SELECT ROLE_ID FROM KRIM_ROLE_T WHERE ROLE_NM = 'View Institutionally Maintained Salaries Document Level' AND NMSPC_CD = 'KC-PD'), (SELECT PERM_ID FROM KRIM_PERM_T WHERE NM = 'VIEW_INSTITUTIONAL_SALARIES' AND NMSPC_CD = 'KC-PD'), 'Y')
+/
+INSERT INTO KRIM_ROLE_PERM_T (ROLE_PERM_ID, OBJ_ID, VER_NBR, ROLE_ID, PERM_ID, ACTV_IND)
+VALUES ('KC' || KRIM_ROLE_PERM_ID_S.NEXTVAL, SYS_GUID(), 1, (SELECT ROLE_ID FROM KRIM_ROLE_T WHERE ROLE_NM = 'View Institutionally Maintained Salaries Document Level' AND NMSPC_CD = 'KC-PD'), (SELECT PERM_ID FROM KRIM_PERM_T WHERE NM = 'View Personnel Salaries' AND NMSPC_CD = 'KC-B'), 'Y')
+/
+commit
+/

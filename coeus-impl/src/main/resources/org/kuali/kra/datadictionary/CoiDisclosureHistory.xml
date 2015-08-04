@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="CoiDisclosureHistory" parent="CoiDisclosureHistory-parentBean" />
+    <bean id="CoiDisclosureHistory-parentBean" abstract="true" parent="BusinessObjectEntry">
+        <property name="businessObjectClass" value="org.kuali.kra.coi.CoiDisclosureHistory" />
+		<property name="objectLabel" value="CoiDisclosureHistory" />
+        <property name="inquiryDefinition" >
+            <ref bean="CoiDisclosureHistory-inquiryDefinition" />
+        </property>
+        <property name="lookupDefinition" >
+            <ref bean="CoiDisclosureHistory-lookupDefinition" />
+        </property>
+        <property name="attributes" >
+            <list>
+                <ref bean="CoiDisclosureHistory-coiDisclosureId" />
+                <ref bean="CoiDisclosureHistory-coiDisclosureHistoryId" />
+                <ref bean="CoiDisclosureHistory-coiDisclosureNumber" />
+                <ref bean="CoiDisclosureHistory-sequenceNumber" />
+                <ref bean="CoiDisclosureHistory-disclosureStatus" />
+                <ref bean="CoiDisclosureHistory-disclosureDispositionStatus" />
+                <ref bean="CoiDisclosureHistory-versionNumber" />
+            </list>
+        </property>
+    </bean>
+
+    <!-- Attribute Definitions -->
+    <bean id="CoiDisclosureHistory-coiDisclosureId" parent="CoiDisclosureHistory-coiDisclosureId-parentBean" />
+    <bean id="CoiDisclosureHistory-coiDisclosureId-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="coiDisclosureId" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Coi Disclosure Id" />
+        <property name="shortLabel" value="Coi Disclosure Id" />
+        <property name="maxLength" value="12" />
+        <property name="validationPattern" >
+            <bean parent="NumericValidationPattern" />
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+        <property name="control" >
+      <bean parent="TextControlDefinition" p:size="12"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="12" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="Coi Disclosure Id" />
+        <property name="description" value="Coi Disclosure Id" />
+    </bean>
+
+    <bean id="CoiDisclosureHistory-coiDisclosureHistoryId" parent="CoiDisclosureHistory-coiDisclosureHistoryId-parentBean" />
+    <bean id="CoiDisclosureHistory-coiDisclosureHistoryId-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="coiDisclosureHistoryId" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Coi Disclosure History Id" />
+        <property name="shortLabel" value="Coi Disclosure History Id" />
+        <property name="maxLength" value="12" />
+        <property name="validationPattern" >
+            <bean parent="NumericValidationPattern" />
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+        <property name="control" >
+      <bean parent="TextControlDefinition" p:size="12"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="12" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="Coi Disclosure History Id" />
+        <property name="description" value="Coi Disclosure History Id" />
+    </bean>
+
+    <bean id="CoiDisclosureHistory-coiDisclosureNumber" parent="CoiDisclosureHistory-coiDisclosureNumber-parentBean" />
+    <bean id="CoiDisclosureHistory-coiDisclosureNumber-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="coiDisclosureNumber" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Coi Disclosure Number" />
+        <property name="shortLabel" value="Coi Disclosure Number" />
+        <property name="maxLength" value="20" />
+        <property name="validationPattern" >
+            <bean parent="AlphaNumericValidationPattern" />
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AlphaNumericPatternConstraint"/>
+    </property>
+        <property name="control" >
+      <bean parent="TextControlDefinition" p:size="10"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="10" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="Coi Disclosure Number" />
+        <property name="description" value="Coi Disclosure Number" />
+    </bean>
+
+    <bean id="CoiDisclosureHistory-sequenceNumber" parent="CoiDisclosureHistory-sequenceNumber-parentBean" />
+    <bean id="CoiDisclosureHistory-sequenceNumber-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="sequenceNumber" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Sequence Number" />
+        <property name="shortLabel" value="Sequence Number" />
+        <property name="maxLength" value="22" />
+        <property name="validationPattern" >
+            <bean parent="NumericValidationPattern" />
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+        <property name="control" >
+      <bean parent="TextControlDefinition" p:size="10"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="10" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="Sequence Number" />
+        <property name="description" value="Sequence Number" />
+    </bean>
+
+    <bean id="CoiDisclosureHistory-disclosureStatus" parent="CoiDisclosureHistory-disclosureStatus-parentBean" />
+    <bean id="CoiDisclosureHistory-disclosureStatus-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="disclosureStatus" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Disclosure Status" />
+        <property name="shortLabel" value="Disclosure Status" />
+        <property name="maxLength" value="100" />
+        <property name="validationPattern" >
+            <bean parent="AlphaNumericValidationPattern" />
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AlphaNumericPatternConstraint"/>
+    </property>
+        <property name="control" >
+      <bean parent="TextControlDefinition" p:size="10"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="10" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="Disclosure Status" />
+        <property name="description" value="Disclosure Status" />
+    </bean>
+
+    <bean id="CoiDisclosureHistory-disclosureDispositionStatus" parent="CoiDisclosureHistory-disclosureDispositionStatus-parentBean" />
+    <bean id="CoiDisclosureHistory-disclosureDispositionStatus-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="disclosureDispositionStatus" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Disclosure Disposition Status" />
+        <property name="shortLabel" value="Disclosure Disposition Status" />
+        <property name="maxLength" value="20" />
+        <property name="validationPattern" >
+            <bean parent="AlphaNumericValidationPattern" />
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AlphaNumericPatternConstraint"/>
+    </property>
+        <property name="control" >
+      <bean parent="TextControlDefinition" p:size="10"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="10" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="Disclosure Disposition Status" />
+        <property name="description" value="Disclosure Disposition Status" />
+    </bean>
+
+    <bean id="CoiDisclosureHistory-versionNumber" parent="CoiDisclosureHistory-versionNumber-parentBean" />
+  <bean id="CoiDisclosureHistory-versionNumber-parentBean" abstract="true" parent="AttributeReferenceDummy-versionNumber"/>
+    <!-- Business Object Inquiry Definition -->
+    <bean id="CoiDisclosureHistory-inquiryDefinition" parent="CoiDisclosureHistory-inquiryDefinition-parentBean" />
+  <bean id="CoiDisclosureHistory-InquiryView" parent="CoiDisclosureHistory-InquiryView-parentBean"/>
+    <bean id="CoiDisclosureHistory-inquiryDefinition-parentBean" abstract="true" parent="InquiryDefinition">
+        <property name="inquirySections" >
+            <list>
+                <bean parent="InquirySectionDefinition">
+                    <property name="numberOfColumns" value="1" />
+                    <property name="inquiryFields" >
+                        <list>
+              <bean parent="FieldDefinition" p:attributeName="coiDisclosureNumber"/>
+              <bean parent="FieldDefinition" p:attributeName="sequenceNumber"/>
+              <bean parent="FieldDefinition" p:attributeName="disclosureStatus"/>
+              <bean parent="FieldDefinition" p:attributeName="disclosureDispositionStatus"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="CoiDisclosureHistory-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView">
+    <property name="dataObjectClassName" value="org.kuali.kra.coi.CoiDisclosureHistory"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-GridSection">
+          <property name="layoutManager.numberOfColumns" value="2"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="coiDisclosureNumber" parent="Uif-DataField"/>
+              <bean p:propertyName="sequenceNumber" parent="Uif-DataField"/>
+              <bean p:propertyName="disclosureStatus" parent="Uif-DataField"/>
+              <bean p:propertyName="disclosureDispositionStatus" parent="Uif-DataField"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Business Object Lookup Definition -->
+    <bean id="CoiDisclosureHistory-lookupDefinition" parent="CoiDisclosureHistory-lookupDefinition-parentBean" />
+  <bean id="CoiDisclosureHistory-LookupView" parent="CoiDisclosureHistory-LookupView-parentBean"/>
+    <bean id="CoiDisclosureHistory-lookupDefinition-parentBean" abstract="true" parent="LookupDefinition">
+        <property name="title" value="Coi Disclosure History Lookup" /><property name="defaultSort" >
+      <bean parent="SortDefinition"/>
+        </property>
+        <property name="lookupFields" >
+            <list>
+        <bean parent="FieldDefinition" p:attributeName="coiDisclosureNumber"/>
+        <bean parent="FieldDefinition" p:attributeName="sequenceNumber"/>
+        <bean parent="FieldDefinition" p:attributeName="disclosureStatus"/>
+        <bean parent="FieldDefinition" p:attributeName="disclosureDispositionStatus"/>
+      </list>
+    </property>
+    <property name="resultFields">
+      <list>
+        <bean parent="FieldDefinition" p:attributeName="coiDisclosureNumber"/>
+        <bean parent="FieldDefinition" p:attributeName="sequenceNumber"/>
+        <bean parent="FieldDefinition" p:attributeName="disclosureStatus"/>
+        <bean parent="FieldDefinition" p:attributeName="disclosureDispositionStatus"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="CoiDisclosureHistory-LookupView-parentBean" abstract="true" parent="Uif-LookupView">
+    <property name="dataObjectClassName" value="org.kuali.kra.coi.CoiDisclosureHistory"/>
+    <property name="headerText" value="Coi Disclosure History Lookup"/>
+    <property name="criteriaFields">
+      <list>
+        <bean p:propertyName="coiDisclosureNumber" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="sequenceNumber" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="disclosureStatus" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="disclosureDispositionStatus" parent="Uif-LookupCriteriaInputField"/>
+            </list>
+        </property>
+        <property name="resultFields" >
+            <list>
+        <bean p:propertyName="coiDisclosureNumber" parent="Uif-DataField"/>
+        <bean p:propertyName="sequenceNumber" parent="Uif-DataField"/>
+        <bean p:propertyName="disclosureStatus" parent="Uif-DataField"/>
+        <bean p:propertyName="disclosureDispositionStatus" parent="Uif-DataField"/>
+            </list>
+        </property>
+    </bean>
+</beans>

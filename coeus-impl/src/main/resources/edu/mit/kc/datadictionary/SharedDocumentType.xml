@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean id="SharedDocumentType" parent="SharedDocumentType-parentBean" />
+	<bean id="SharedDocumentType-parentBean" abstract="true" parent="BusinessObjectEntry">
+		 <property name="businessObjectClass" value="edu.mit.kc.bo.SharedDocumentType" />
+		<property name="objectLabel" value="Award" />
+		 <property name="inquiryDefinition" >
+      <ref bean="SharedDocumentType-inquiryDefinition" />
+    </property> 
+    <property name="lookupDefinition" >
+      <ref bean="SharedDocumentType-lookupDefinition" />
+    </property>
+		 <property name="titleAttribute" value="sharedDocumentTypeId"/>
+ 		<property name="attributes">
+			<list>
+			     <ref bean="SharedDocumentType-sharedDocumentTypeId" />
+				<ref bean="SharedDocumentType-moduleCode" />
+				<ref bean="SharedDocumentType-coeusModule.description" />
+				<ref bean="SharedDocumentType-documentTypeCode" />			
+			</list>
+		</property>
+		<property name="relationships">
+	      <list>
+		     <bean parent="RelationshipDefinition">
+			    <property name="objectAttributeName" value="coeusModule" />
+			      <property name="primitiveAttributes">
+				    <list>
+					    <bean parent="PrimitiveAttributeDefinition" p:sourceName="moduleCode"
+						      p:targetName="moduleCode" />
+				     </list>
+			       </property>
+		        </bean>
+	        </list>
+        </property>
+	</bean>
+
+	<!-- Attribute Definitions -->
+		<bean id="SharedDocumentType-sharedDocumentTypeId" parent="SharedDocumentType-sharedDocumentTypeId-parentBean" />
+	<bean id="SharedDocumentType-sharedDocumentTypeId-parentBean" abstract="true"
+		parent="AttributeDefinition" p:name="sharedDocumentTypeId" p:forceUppercase="false"
+		p:label="Shared Document Type Id" p:shortLabel="Shared Document Type Id" p:summary="Shared Document Type Id"
+		p:description="">
+		<property name="validationPattern">
+			<bean parent="NumericValidationPattern" />
+		</property>
+		<property name="maxLength" value="3" />
+				<property name="control">
+			<bean parent="TextControlDefinition" p:size="8" />
+		</property>
+		<property name="controlField">
+			<bean parent="Uif-TextControl" p:size="14" />
+		</property>
+	</bean>
+	<bean id="SharedDocumentType-moduleCode" parent="SharedDocumentType-moduleCode-parentBean" />
+	<bean id="SharedDocumentType-moduleCode-parentBean" abstract="true"
+		parent="AttributeDefinition" p:name="moduleCode" p:forceUppercase="false"
+		p:label="Module Code" p:shortLabel="Module Code" p:summary="Module Code"
+		p:description="">
+		<property name="validationPattern">
+			<bean parent="NumericValidationPattern" />
+		</property>
+		<property name="maxLength" value="3" />
+		<property name="control" >
+      <bean parent="SelectControlDefinition" p:businessObjectClass="org.kuali.coeus.common.framework.module.CoeusModule" p:valuesFinderClass="org.kuali.coeus.sys.framework.keyvalue.ExtendedPersistableBusinessObjectValuesFinder" p:includeKeyInLabel="false" p:includeBlankRow="false" p:keyAttribute="moduleCode" p:labelAttribute="description" p:script="updateNotificationRecipients(this.value)"/>
+    </property>
+    <property name="optionsFinder">
+      <bean class="org.kuali.coeus.sys.framework.keyvalue.ExtendedPersistableBusinessObjectValuesFinder">
+        <property name="businessObjectClass" value="org.kuali.coeus.common.framework.module.CoeusModule"/>
+        <property name="includeKeyInDescription" value="false"/>
+        <property name="includeBlankRow" value="false"/>
+        <property name="keyAttributeName" value="moduleCode"/>
+        <property name="labelAttributeName" value="description"/>
+      </bean>
+    </property>
+	<property name="controlField">
+		<bean parent="Uif-DropdownControl" />
+	</property>
+				<!-- <property name="control">
+			<bean parent="TextControlDefinition" p:size="8" />
+		</property>
+		<property name="controlField">
+			<bean parent="Uif-TextControl" p:size="14" />
+		</property> -->
+	</bean>
+	<bean id="SharedDocumentType-coeusModule.description" parent="SharedDocumentType-coeusModule.description-parentBean" />
+    <bean id="SharedDocumentType-coeusModule.description-parentBean" abstract="true" parent="KraAttributeReferenceDummy-description">
+      <property name="name" value="coeusModule.description" />
+      <property name="label" value="Module Name" />
+      <property name="shortLabel" value="Module Name" />
+    </bean> 
+<bean id="SharedDocumentType-documentTypeCode" parent="SharedDocumentType-documentTypeCode-parentBean" />
+	<bean id="SharedDocumentType-documentTypeCode-parentBean" parent="AttributeDefinition"
+		abstract="true" p:name="documentTypeCode" p:forceUppercase="true" p:label="Document Type"
+		p:shortLabel="Document Type" p:summary="Document Type" p:description="Document Type">
+		<property name="validationPattern">
+			<bean parent="NumericValidationPattern" />
+		</property>		
+		<property name="control">
+			<bean parent="TextControlDefinition" p:size="8" />
+		</property>
+		<property name="maxLength" value="3" />
+		<property name="controlField">
+			<bean parent="Uif-TextControl" p:size="15" />
+		</property>
+	</bean>
+	
+	
+   <!-- Inquiry Definition -->
+     <bean id="SharedDocumentType-inquiryDefinition" parent="SharedDocumentType-inquiryDefinition-parentBean" />
+   <bean id="SharedDocumentType-InquiryView" parent="SharedDocumentType-InquiryView-parentBean"/>
+     <bean id="SharedDocumentType-inquiryDefinition-parentBean" abstract="true" parent="InquiryDefinition">
+      <property name="title" value="Shared Document Type" />
+    <property name="inquirySections" >
+      <list>
+        <bean parent="InquirySectionDefinition">
+          <property name="title" value="Shared Document Type" />
+          <property name="numberOfColumns" value="1" />
+          <property name="inquiryFields" >
+            <list>
+              <bean parent="FieldDefinition" p:attributeName="sharedDocumentTypeId"/>
+              <bean parent="FieldDefinition" p:attributeName="moduleCode"/>
+              <bean parent="FieldDefinition" p:attributeName="documentTypeCode"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean> 
+  <bean id="SharedDocumentType-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView">
+    <property name="headerText" value="Shared Document Type"/>
+    <property name="dataObjectClassName" value="edu.mit.kc.bo.SharedDocumentType"/>
+    <property name="singlePageView" value="true"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-VerticalBoxSection">
+          <property name="header.headerText" value="Shared Document Type" />
+          <property name="items">
+          <list>
+          <bean parent="FieldDefinition" p:attributeName="sharedDocumentTypeId"/>
+              <bean parent="FieldDefinition" p:attributeName="moduleCode"/>
+              <bean parent="FieldDefinition" p:attributeName="documentTypeCode"/>
+           <!--  <ref bean="SharedDocumentType-InquiryView-id"/>
+            <ref bean="SharedDocumentType-InquiryView-parameters"/>  -->
+          </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+   </bean>  
+  
+  <!--  <bean id="PiAppointmentType-InquiryView-parameters" parent="PiAppointmentType-InquiryView-parameters-parentBean"/>
+   <bean id="PiAppointmentType-InquiryView-parameters-parentBean" abstract="true" parent="Uif-TableCollectionSection" p:layoutManager.numberOfColumns="3">
+     <property name="headerText" value="Krms Function Parameters"/>
+     <property name="collectionObjectClass" value="edu.mit.kc.bo.KrmsFunctionsParams"/>
+     <property name="propertyName" value="functionsParams"/>
+     <property name="layoutManager.renderSequenceField" value="false"/>
+     <property name="items">
+       <list>
+         <bean parent="Uif-InputField" p:propertyName="functionParamId"/>
+         <bean parent="Uif-InputField" p:propertyName="namespace"/>
+         <bean parent="Uif-InputField" p:propertyName="description"/>
+         <bean parent="Uif-InputField" p:propertyName="type"/>
+        </list>
+     </property>
+    </bean>
+   -->
+	<!-- Lookup Definition -->
+	
+	<bean id="SharedDocumentType-lookupDefinition" parent="SharedDocumentType-lookupDefinition-parentBean" />  
+	<bean id="SharedDocumentType-LookupView" parent="SharedDocumentType-LookupView-parentBean" />
+	<bean id="SharedDocumentType-lookupDefinition-parentBean" abstract="true" parent="LookupDefinition">
+	   <property name="title" value="Shared Document TypeLookup" /><property name="defaultSort" >
+      <bean parent="SortDefinition"/>
+    </property>
+    <property name="lookupFields" >
+      <list>
+        <bean parent="FieldDefinition" p:attributeName="sharedDocumentTypeId"/>
+        <bean parent="FieldDefinition" p:attributeName="moduleCode"/>
+        <bean parent="FieldDefinition" p:attributeName="documentTypeCode"/>       
+      </list>
+    </property>
+    <property name="resultFields">
+      <list>
+        <bean parent="FieldDefinition" p:attributeName="sharedDocumentTypeId"/>
+        <bean parent="FieldDefinition" p:attributeName="moduleCode"/>
+        <bean parent="FieldDefinition" p:attributeName="coeusModule.description"/>       
+        <bean parent="FieldDefinition" p:attributeName="documentTypeCode"/>       
+      </list>
+    </property>
+  </bean>	
+	
+	<bean id="SharedDocumentType-LookupView-parentBean" abstract="true"
+		parent="Uif-LookupView" p:headerText="Shared Document Type"
+		p:dataObjectClassName="edu.mit.kc.bo.SharedDocumentType">
+		<property name="defaultSortAttributeNames">
+			<list>
+				<value>moduleCode</value>
+			</list>
+		</property>
+		<property name="criteriaFields">  
+			<list>
+			<bean parent="Uif-LookupCriteriaInputField" p:propertyName="sharedDocumentTypeId"
+					p:order="10" />
+				<bean parent="Uif-LookupCriteriaInputField" p:propertyName="moduleCode"
+					p:order="10" />
+				<bean parent="Uif-LookupCriteriaInputField" p:propertyName="documentTypeCode"
+					p:order="20" />			
+			</list>
+		</property>
+		<property name="resultFields">
+			<list>
+			<bean parent="Uif-LookupCriteriaInputField" p:propertyName="sharedDocumentTypeId"
+					p:order="10" />
+				<bean parent="Uif-DataField" p:propertyName="moduleCode"
+					p:order="10" />
+				<bean parent="Uif-DataField" p:propertyName="coeusModule.description"
+					p:order="10" />	
+					<bean parent="Uif-DataField" p:propertyName="documentTypeCode"
+					p:order="20" />			
+			</list>
+		</property>
+	</bean>
+</beans>

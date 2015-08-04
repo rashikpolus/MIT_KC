@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean id="ReportClass" parent="ReportClass-parentBean"/>
+	<bean abstract="true" id="ReportClass-parentBean" parent="BusinessObjectEntry">
+		<property name="businessObjectClass" value="org.kuali.kra.award.paymentreports.ReportClass"/>
+		<property name="objectLabel" value="Report Class"/>
+		<property name="inquiryDefinition">
+			<ref bean="ReportClass-inquiryDefinition"/>
+		</property>
+		<property name="lookupDefinition">
+			<ref bean="ReportClass-lookupDefinition"/>
+		</property>
+		<property name="titleAttribute" value="reportClassCode"/>
+		<property name="attributes">
+			<list>
+				<ref bean="ReportClass-reportClassCode"/>
+				<ref bean="ReportClass-description"/>
+				<ref bean="ReportClass-generateReportRequirements"/>
+				<ref bean="ReportClass-active"/>
+				<ref bean="ReportClass-versionNumber"/>
+			</list>
+		</property>
+	</bean>
+
+	<!-- Attribute Definitions -->
+	<bean id="ReportClass-reportClassCode" parent="ReportClass-reportClassCode-parentBean"/>
+	<bean abstract="true" id="ReportClass-reportClassCode-parentBean" parent="AttributeDefinition">
+		<property name="name" value="reportClassCode"/>
+		<property name="forceUppercase" value="false"/>
+		<property name="label" value="Report Class Code"/>
+		<property name="shortLabel" value="Report Class Code"/>
+		<property name="maxLength" value="3"/>
+		<property name="validationPattern">
+			<bean parent="NumericValidationPattern"/>
+		</property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+		<property name="control">
+			<bean p:size="10" parent="TextControlDefinition"/>
+		</property>
+    <property name="controlField">
+      <bean p:size="10" parent="Uif-TextControl"/>
+    </property>
+		<property name="summary" value="Report Class Code"/>
+		<property name="description" value="Report Class Code"/>
+	</bean>
+
+	<bean id="ReportClass-description" parent="ReportClass-description-parentBean"/>
+	<bean abstract="true" id="ReportClass-description-parentBean" parent="AttributeDefinition">
+		<property name="name" value="description"/>
+		<property name="forceUppercase" value="false"/>
+		<property name="label" value="Description"/>
+		<property name="shortLabel" value="Description"/>
+		<property name="maxLength" value="200"/>
+    <property name="validationPattern">
+      <bean p:allowWhitespace="true" parent="AnyCharacterValidationPattern"/>
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AnyCharacterPatternConstraint">
+        <property name="allowWhitespace" value="true"/>
+      </bean>
+    </property>
+		<property name="control">
+			<bean p:size="10" parent="TextControlDefinition"/>
+		</property>
+    <property name="controlField">
+      <bean p:size="10" parent="Uif-TextControl"/>
+    </property>
+		<property name="summary" value="Description"/>
+		<property name="description" value="Description"/>
+	</bean>
+
+	<bean id="ReportClass-generateReportRequirements" parent="ReportClass-generateReportRequirements-parentBean"/>
+	<bean abstract="true" id="ReportClass-generateReportRequirements-parentBean" parent="AttributeReferenceDummy-genericBoolean">
+		<property name="name" value="generateReportRequirements"/>
+		<property name="label" value="Generate Report Tracking"/>
+		<property name="shortLabel" value="Generate Report Tracking"/>
+		<property name="summary" value="Generate Report Tracking"/>
+		<property name="description" value="Generate Report Tracking"/>
+	</bean>
+	
+	<bean id="ReportClass-active" parent="ReportClass-active-parentBean" />
+	<bean id="ReportClass-active-parentBean" abstract="true" parent="AttributeReferenceDummy-genericBoolean">
+	    <property name="name" value="active" />
+	    <property name="forceUppercase" value="false" />
+	    <property name="label" value="Active" />
+	    <property name="shortLabel" value="Active" />
+	    <property name="maxLength" value="1" />
+	    <property name="summary" value="Active" />
+	    <property name="description" value="Active" />
+	</bean>		
+
+	<bean id="ReportClass-versionNumber" parent="ReportClass-versionNumber-parentBean"/>
+  <bean abstract="true" id="ReportClass-versionNumber-parentBean" parent="AttributeReferenceDummy-versionNumber"/>
+	<!-- Business Object Inquiry Definition -->
+	<bean id="ReportClass-inquiryDefinition" parent="ReportClass-inquiryDefinition-parentBean"/>
+  <bean id="ReportClass-InquiryView" parent="ReportClass-InquiryView-parentBean"/>
+	<bean abstract="true" id="ReportClass-inquiryDefinition-parentBean" parent="InquiryDefinition">
+		<property name="title" value="Report Class Code"/>
+		<property name="inquirySections">
+			<list>
+				<bean parent="InquirySectionDefinition">
+					<property name="title" value="Report Class Code"/>
+					<property name="numberOfColumns" value="1"/>
+					<property name="inquiryFields">
+						<list>
+							<bean p:attributeName="reportClassCode" p:forceInquiry="true" parent="FieldDefinition"/>
+							<bean p:attributeName="description" parent="FieldDefinition"/>
+							<bean p:attributeName="generateReportRequirements" parent="FieldDefinition"/>
+							<bean p:attributeName="active" parent="FieldDefinition"/>
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+  <bean id="ReportClass-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView">
+    <property name="headerText" value="Report Class Code"/>
+    <property name="dataObjectClassName" value="org.kuali.kra.award.paymentreports.ReportClass"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-GridSection">
+          <property name="headerText" value="Report Class Code"/>
+          <property name="layoutManager.numberOfColumns" value="2"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="reportClassCode" parent="Uif-DataField"/>
+              <bean p:propertyName="description" parent="Uif-DataField"/>
+              <bean p:propertyName="generateReportRequirements" parent="Uif-DataField"/>
+              <bean p:propertyName="active" parent="Uif-DataField"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+	<!-- Business Object Lookup Definition -->
+	<bean id="ReportClass-lookupDefinition" parent="ReportClass-lookupDefinition-parentBean"/>
+  <bean id="ReportClass-LookupView" parent="ReportClass-LookupView-parentBean"/>
+	<bean abstract="true" id="ReportClass-lookupDefinition-parentBean" parent="LookupDefinition">
+		<property name="title" value="Report Class Lookup"/><property name="defaultSort">
+      <bean parent="SortDefinition"/>
+		</property>
+		<property name="helpDefinition" >
+      <bean parent="HelpDefinition" p:parameterNamespace="KC-M" p:parameterName="reportClassMaintenanceHelp" p:parameterDetailType="Document"/>
+    	</property>  			
+		<property name="lookupFields">
+			<list>
+				<bean p:attributeName="reportClassCode" p:forceInquiry="true" parent="FieldDefinition"/>
+				<bean p:attributeName="description" parent="FieldDefinition"/>
+				<bean p:attributeName="generateReportRequirements" parent="FieldDefinition"/>
+				<bean p:attributeName="active" parent="FieldDefinition"/>
+			</list>
+		</property>
+		<property name="resultFields">
+			<list>
+				<bean p:attributeName="reportClassCode" p:forceInquiry="true" parent="FieldDefinition"/>
+				<bean p:attributeName="description" parent="FieldDefinition"/>
+				<bean p:attributeName="generateReportRequirements" parent="FieldDefinition"/>
+				<bean p:attributeName="active" parent="FieldDefinition"/>
+			</list>
+		</property>
+	</bean>
+
+  <bean id="ReportClass-LookupView-parentBean" abstract="true" parent="Uif-LookupView">
+    <property name="dataObjectClassName" value="org.kuali.kra.award.paymentreports.ReportClass"/>
+    <property name="headerText" value="Report Class Lookup"/>
+    <property name="criteriaFields">
+      <list>
+        <bean p:propertyName="reportClassCode" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="description" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="generateReportRequirements" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="active" parent="Uif-LookupCriteriaInputField"/>
+      </list>
+    </property>
+    <property name="resultFields">
+      <list>
+        <bean p:propertyName="reportClassCode" parent="Uif-DataField"/>
+        <bean p:propertyName="description" parent="Uif-DataField"/>
+        <bean p:propertyName="generateReportRequirements" parent="Uif-DataField"/>
+        <bean p:propertyName="active" parent="Uif-DataField"/>
+      </list>
+    </property>
+  </bean>
+
+</beans>

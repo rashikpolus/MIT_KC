@@ -1,0 +1,547 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses />.
+ -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.kuali.coeus</groupId>
+        <artifactId>coeus</artifactId>
+        <version>1505.70</version>
+    </parent>
+    <artifactId>coeus-webapp</artifactId>
+    <packaging>war</packaging>
+    <name>Kuali Coeus Webapp</name>
+    <description>
+        The Kuali Coeus Webapp module contains web artifacts for the Kuali Coeus application.
+    </description>
+
+    <prerequisites>
+        <maven>${require.maven.version}</maven>
+    </prerequisites>
+
+    <properties>
+        <build.rice.kr.additionalSpringFiles />
+        <build.rice.krad.dev.mode>false</build.rice.krad.dev.mode>
+        <build.rice.krad.script.cleanup>true</build.rice.krad.script.cleanup>
+
+        <!-- jetty & tomcat properties -->
+        <kc.context.path>/kc-${build.environment}</kc.context.path>
+        <kc.port>8080</kc.port>
+        <jetty.context.file>${basedir}/src/main/webapp/WEB-INF/jetty-web.xml</jetty.context.file>
+		<jetty.memOpts>-Xmx1536m -XX:MaxPermSize=512m</jetty.memOpts>
+        <jetty.argLine>${jetty.memOpts} ${javaagent.arg}</jetty.argLine>
+
+        <generated.web.sources>${project.build.directory}/generated-web-sources</generated.web.sources>
+        <help.web.sources>${project.build.directory}/generated-web-sources/help-web-sources</help.web.sources>
+        <rice.web.sources>${project.build.directory}/generated-web-sources/rice-web-sources</rice.web.sources>
+
+        <rice.web.excludes>
+            <!-- Exclude for the time being to use local file -->
+            rice-portal/scripts/easyXDM/resize_intermediate.html,
+            META-INF/,
+            WEB-INF/classes/,
+            WEB-INF/lib/,
+
+            WEB-INF/tags/rice-portal/mainTab.tag,
+            WEB-INF/struts-config.xml,
+            WEB-INF/validator-rules.xml,
+            WEB-INF/web.xml,
+
+            acknowledgments.jsp,
+            index.jsp,
+            WEB-INF/tags/rice-portal/portalBody.tag,
+            WEB-INF/tags/rice-portal/portalTabs.tag,
+            kr/WEB-INF/jsp/KualiLookup.jsp,
+            kr/WEB-INF/jsp/KualiMultipleValueLookup.jsp,
+            WEB-INF/tags/kr/page.tag
+        </rice.web.excludes>
+
+        <rice.output.dir>${project.build.directory}/rice-server</rice.output.dir>
+        <rice.war.file>${rice.output.dir}/rice-standalone.war</rice.war.file>
+        <rice.war.dir>${rice.output.dir}/rice-standalone</rice.war.dir>
+		<timestamp>${maven.build.timestamp}</timestamp>
+  		<maven.build.timestamp.format>yyyy-MM-dd HH:mm a</maven.build.timestamp.format>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.kuali.coeus</groupId>
+            <artifactId>coeus-impl</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+      	<dependency>
+	    	<groupId>org.jasig.cas.client</groupId>
+	    	<artifactId>cas-client-core</artifactId>
+    	</dependency>
+    </dependencies>
+
+
+    <!--
+     Using dependency unpack as opposed to war overlay for a number of reasons
+     1) overlay requires the packaging phase - tomcat plugin run goal does not work with overlays.
+     2) overlayed resources are not placed in a directory (like generated code) making
+     it difficult for developers to look at the overlayed resources
+     3) our unit test's jetty lifecycle assume all web content resides in directories (see point 3)
+     -->
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <filtering>true</filtering>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>META-INF/kc-config-build.xml</include>
+                </includes>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack-help-web-sources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.kuali.coeus</groupId>
+                                    <artifactId>coeus-help</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${help.web.sources}/static/help</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>unpack-rice-web-sources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.kuali.rice</groupId>
+                                    <artifactId>rice-standalone</artifactId>
+                                    <version>${rice.version}</version>
+                                    <type>war</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${rice.web.sources}</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                            <includes>*/**</includes>
+                            <excludes>${rice.web.excludes}</excludes>
+                        </configuration>
+                    </execution>
+
+                    <!--
+                        these executions places the dependant rice war in the target directory to make it easier to
+                        launch a standalone server
+                    -->
+                    <execution>
+                        <id>copy-rice-war</id>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.kuali.rice</groupId>
+                                    <artifactId>rice-standalone</artifactId>
+                                    <version>${rice.version}</version>
+                                    <type>war</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${rice.output.dir}</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                            <stripVersion>true</stripVersion>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>copy-rice-war-unpack</id>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.kuali.rice</groupId>
+                                    <artifactId>rice-standalone</artifactId>
+                                    <version>${rice.version}</version>
+                                    <type>war</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${rice.war.dir}</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <webResources>
+                        <resource>
+                            <directory>${help.web.sources}</directory>
+                        </resource>
+                        <resource>
+                            <directory>${rice.web.sources}</directory>
+                        </resource>
+                    </webResources>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>${db.groupId}</groupId>
+                        <artifactId>${db.artifactId}</artifactId>
+                        <version>${db.version}</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-instrument-tomcat</artifactId>
+                        <version>${spring.version}</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <classLoaderClass>org.springframework.instrument.classloading.tomcat.TomcatInstrumentableClassLoader</classLoaderClass>
+                    <port>${kc.port}</port>
+                    <path>${kc.context.path}</path>
+                    <addWarDependenciesInClassloader>false</addWarDependenciesInClassloader>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>${jetty-maven-plugin.groupId}</groupId>
+                <artifactId>${jetty-maven-plugin.artifactId}</artifactId>
+                <version>${jetty-maven-plugin.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>${db.groupId}</groupId>
+                        <artifactId>${db.artifactId}</artifactId>
+                        <version>${db.version}</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <webAppConfig>
+                        <contextPath>${kc.context.path}</contextPath>
+                        <descriptor>${basedir}/src/main/webapp/WEB-INF/web.xml</descriptor>
+                        <baseResource implementation="org.eclipse.jetty.util.resource.ResourceCollection">
+                            <resourcesAsCSV>src/main/webapp,${help.web.sources},${rice.web.sources}</resourcesAsCSV>
+                        </baseResource>
+                    </webAppConfig>
+                    <connectors>
+                        <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+                            <port>${kc.port}</port>
+                            <maxIdleTime>60000</maxIdleTime>
+                        </connector>
+                    </connectors>
+                    <contextXml>${jetty.context.file}</contextXml>
+                    <systemProperties>
+                        <systemProperty>
+                            <name>metadata-complete</name>
+                            <value>true</value>
+                        </systemProperty>
+                    </systemProperties>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <profiles>
+
+        <!--
+         This profile defines plugins for running a rice standalone server.
+
+         This profile is sort of a hack as the jetty & tomcat plugins are meant
+         for running "this" application and not an external application. The maven
+         cargo plugin might be better suited for this kind of task if they would
+         support embedded tomcat.
+
+         Since this is not really the maven way to do things, once we have an alternate
+         structure this will no longer be needed.  we will do the following:
+         1) have a new child module called kc-rice-standalone.  It will be an empty overlay of rice-standalone.
+         2) configure all the jetty/tomcat stuff in a central place under pluginManagement
+         3) to run kc you go to the kc web module and invoke jetty or tomcat
+         4) to run rice you go to the kc-rice-standalone and invoke jetty or tomcat
+         -->
+        <profile>
+            <id>rice-server</id>
+            <properties>
+                <enforcer.phase>none</enforcer.phase>
+                <rice.context.path>/kr-${build.environment}</rice.context.path>
+                <rice.port>8090</rice.port>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>${jetty-maven-plugin.groupId}</groupId>
+                        <artifactId>${jetty-maven-plugin.artifactId}</artifactId>
+                        <version>${jetty-maven-plugin.version}</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>${db.groupId}</groupId>
+                                <artifactId>${db.artifactId}</artifactId>
+                                <version>${db.version}</version>
+                                <scope>runtime</scope>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <excludedGoals>
+                                <excludedGoal>deploy-war</excludedGoal>
+                                <excludedGoal>start</excludedGoal>
+                                <excludedGoal>stop</excludedGoal>
+                            </excludedGoals>
+                            <reload>manual</reload>
+                            <war>${rice.war.file}</war>
+                            <webXml>${rice.war.dir}/WEB-INF/web.xml</webXml>
+                            <webAppSourceDirectory>${rice.war.dir}</webAppSourceDirectory>
+                            <classesDirectory>${rice.war.dir}/WEB-INF/classes</classesDirectory>
+                            <contextXml>${jetty.context.file}</contextXml>
+                            <webApp>
+                                <contextPath>${rice.context.path}</contextPath>
+                            </webApp>
+                            <connectors>
+                                <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+                                    <port>${rice.port}</port>
+                                    <maxIdleTime>60000</maxIdleTime>
+                                </connector>
+                            </connectors>
+                            <systemProperties>
+                                <systemProperty>
+                                    <name>metadata-complete</name>
+                                    <value>true</value>
+                                </systemProperty>
+                            </systemProperties>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.tomcat.maven</groupId>
+                        <artifactId>tomcat7-maven-plugin</artifactId>
+                        <version>${tomcat7-maven-plugin.version}</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>${db.groupId}</groupId>
+                                <artifactId>${db.artifactId}</artifactId>
+                                <version>${db.version}</version>
+                                <scope>runtime</scope>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.springframework</groupId>
+                                <artifactId>spring-instrument-tomcat</artifactId>
+                                <version>${spring.version}</version>
+                                <scope>runtime</scope>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <classLoaderClass>
+                                org.springframework.instrument.classloading.tomcat.TomcatInstrumentableClassLoader
+                            </classLoaderClass>
+                            <port>${rice.port}</port>
+                            <path>${rice.context.path}</path>
+                            <warDirectory>${rice.war.file}</warDirectory>
+                            <warSourceDirectory>${rice.war.dir}</warSourceDirectory>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>precompile-jsp-tomcat-7</id>
+            <properties>
+                <tomcat.version>7.0.59</tomcat.version>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <version>${maven-resources-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>copy-resources-for-precompile</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/precompiletomcat</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${basedir}/src/main/webapp</directory>
+                                            <filtering>false</filtering>
+                                        </resource>
+                                        <resource>
+                                            <directory>${rice.web.sources}</directory>
+                                            <filtering>false</filtering>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.jasig.mojo.jspc</groupId>
+                        <artifactId>jspc-maven-plugin</artifactId>
+                        <version>${jspc-maven-plugin.version}</version>
+                        <configuration>
+                            <sources>
+                                <directory>${project.build.directory}/precompiletomcat</directory>
+                                <includes>
+                                    <include>**/*.jsp</include>
+                                </includes>
+                            </sources>
+                            <verbose>10</verbose>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.jasig.mojo.jspc</groupId>
+                                <artifactId>jspc-compiler-tomcat7</artifactId>
+                                <version>${jspc-maven-plugin.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.slf4j</groupId>
+                                <artifactId>slf4j-api</artifactId>
+                                <version>${slf4j.version}</version>
+                                <scope>runtime</scope>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.slf4j</groupId>
+                                <artifactId>slf4j-simple</artifactId>
+                                <version>${slf4j.version}</version>
+                                <scope>runtime</scope>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.apache.tomcat</groupId>
+                                <artifactId>tomcat-annotations-api</artifactId>
+                                <version>${tomcat.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.apache.tomcat</groupId>
+                                <artifactId>tomcat-jasper</artifactId>
+                                <version>${tomcat.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>precompile-jsp-jetty-9</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>${jetty-maven-plugin9.groupId}</groupId>
+                        <artifactId>jetty-jspc-maven-plugin</artifactId>
+                        <version>${jetty9.version}</version>
+                        <executions>
+                            <execution>
+                                <id>jspc</id>
+                                <goals>
+                                    <goal>jspc</goal>
+                                </goals>
+                                <configuration>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.slf4j</groupId>
+                                <artifactId>slf4j-api</artifactId>
+                                <version>${slf4j.version}</version>
+                                <scope>runtime</scope>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.slf4j</groupId>
+                                <artifactId>slf4j-simple</artifactId>
+                                <version>${slf4j.version}</version>
+                                <scope>runtime</scope>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <build.rice.kr.additionalSpringFiles>classpath:org/kuali/rice/krad/devtools/datadictionary/ReloadingDataDictionarySpringBeans.xml</build.rice.kr.additionalSpringFiles>
+                <build.rice.krad.dev.mode>true</build.rice.krad.dev.mode>
+                <build.rice.krad.script.cleanup>false</build.rice.krad.script.cleanup>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.kuali.rice</groupId>
+                    <artifactId>rice-development-tools</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>org.kuali.rice</groupId>
+                    <artifactId>rice-krad-development-tools</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>oracle</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.eclipse.persistence</groupId>
+                    <artifactId>org.eclipse.persistence.oracle</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+</project>

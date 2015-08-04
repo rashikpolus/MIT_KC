@@ -1,0 +1,176 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Wed Jan 28 12:54:31 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+DELETE FROM NEGOTIATION_ACTIVITY WHERE NEGOTIATION_ACTIVITY_ID IN(SELECT NEGOTIATION_ACTIVITY_ID FROM TEMP_NEGOTIATION_ACT_ID)
+                                                                                                      *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+DELETE FROM NEGOTIATION_ATTACHMENT WHERE ACTIVITY_ID IN(SELECT NEGOTIATION_ACTIVITY_ID FROM TEMP_NEGOTIATION_ACT_ID)
+                                                                                            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+
+0 rows deleted.
+
+TRUNCATE TABLE TEMP_NEGOTIATION_ACT_ID
+               *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+
+Table created.
+
+
+PL/SQL procedure successfully completed.
+
+SELECT NEGOTIATION_ID INTO li_neg_id FROM TEMP_NEGOTIATION_ID WHERE  NEGOTIATION_NUMBER=r_neg_activity.NEGOTIATION_NUMBER;
+                                          *
+ERROR at line 31:
+ORA-06550: line 31, column 43:
+PL/SQL: ORA-00942: table or view does not exist
+ORA-06550: line 31, column 1:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 52, column 13:
+PL/SQL: ORA-00942: table or view does not exist
+ORA-06550: line 52, column 1:
+PL/SQL: SQL Statement ignored
+
+
+SELECT NEGOTIATION_NUMBER,ACTIVITY_NUMBER,FILE_NAME,DOCUMENT,UPDATE_TIMESTAMP,UPDATE_USER,MIME_TYPE FROM TEMP_NEGOTIATION_DOC;
+                                                                                                         *
+ERROR at line 11:
+ORA-06550: line 11, column 106:
+PL/SQL: ORA-00942: table or view does not exist
+ORA-06550: line 11, column 1:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 9, column 8:
+PLS-00341: declaration of cursor 'C_ATTACHMENT' is incomplete or malformed
+ORA-06550: line 12, column 14:
+PL/SQL: Item ignored
+ORA-06550: line 21, column 25:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 21, column 1:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 30, column 18:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 30, column 1:
+PL/SQL: Statement ignored
+ORA-06550: line 35, column 44:
+PL/SQL: ORA-00942: table or view does not exist
+ORA-06550: line 35, column 1:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 38, column 112:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 38, column 1:
+PL/SQL: Statement ignored
+ORA-06550: line 41, column 53:
+PL/SQL: ORA-00942: table or view doe
+
+
+
+Table dropped.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Commit complete.
+
+INSERT INTO PROPOSAL_ATTACHMENT_TYPE(
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+
+Commit complete.
+
+
+Table created.
+
+li_prp_att_data_id  proposal_attachments_data.proposal_attachments_data_id%type;
+                    *
+ERROR at line 5:
+ORA-06550: line 5, column 21:
+PLS-00201: identifier 'PROPOSAL_ATTACHMENTS_DATA.PROPOSAL_ATTACHMENTS_DATA_ID'
+must be declared
+ORA-06550: line 5, column 21:
+PL/SQL: Item ignored
+ORA-06550: line 40, column 5:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 40, column 5:
+PL/SQL: Statement ignored
+ORA-06550: line 42, column 17:
+PL/SQL: ORA-00942: table or view does not exist
+ORA-06550: line 42, column 5:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 71, column 17:
+PL/SQL: ORA-00942: table or view does not exist
+ORA-06550: line 71, column 5:
+PL/SQL: SQL Statement ignored
+
+
+
+Commit complete.
+
+SP2-0734: unknown command beginning "﻿set ser..." - rest of line ignored.
+
+PL/SQL procedure successfully completed.
+
+
+2 rows deleted.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

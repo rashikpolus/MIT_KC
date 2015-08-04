@@ -1,0 +1,209 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Sat Feb 7 12:56:47 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+SP2-0734: unknown command beginning "﻿ALTER T..." - rest of line ignored.
+SP2-0103: Nothing in SQL buffer to run.
+SP2-0103: Nothing in SQL buffer to run.
+delete from proposal_attachments where (proposal_number,attachment_number) in ( select proposal_number , attachment_number from osp$proposal_attachments)
+                                                                                                                                *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+
+Commit complete.
+
+delete from proposal_attachments_data where ( proposal_id,attachment_number) in ( select proposal_number , attachment_number from osp$proposal_attachments)
+                                                                                                                                  *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+
+Commit complete.
+
+ls_proposal_number  osp$proposal_attachments.proposal_number%type;
+                    *
+ERROR at line 2:
+ORA-06550: line 2, column 21:
+PLS-00201: identifier 'OSP$PROPOSAL_ATTACHMENTS.PROPOSAL_NUMBER' must be
+declared
+ORA-06550: line 2, column 21:
+PL/SQL: Item ignored
+ORA-06550: line 3, column 21:
+PLS-00201: identifier 'OSP$PROPOSAL_ATTACHMENTS.SEQUENCE_NUMBER' must be
+declared
+ORA-06550: line 3, column 21:
+PL/SQL: Item ignored
+ORA-06550: line 10, column 78:
+PL/SQL: ORA-00942: table or view does not exist
+ORA-06550: line 9, column 1:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 8, column 8:
+PLS-00341: declaration of cursor 'C_PROP' is incomplete or malformed
+ORA-06550: line 11, column 8:
+PL/SQL: Item ignored
+ORA-06550: line 16, column 64:
+PL/SQL: ORA-00942: table or view does not exist
+ORA-06550: line 14, column 1:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 13, column 8:
+PLS-00341: declaration of cursor 'C_PROP_ATT' is incomplete or malformed
+ORA-06550: line 20, column 12:
+PL/SQL: Item ignored
+ORA-06550: line 25, column 20:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+
+
+
+Commit complete.
+
+select count(PROPOSAL_PERSON_UNIT_ID) into li_count where PROPOSAL_PERSON_ID=li_prop_pers_id and UNIT_NUMBER=r_pers_units.UNIT_NUMBER AND LEAD_UNIT_FLAG='N';
+                                                    *
+ERROR at line 61:
+ORA-06550: line 61, column 53:
+PL/SQL: ORA-00923: FROM keyword not found where expected
+ORA-06550: line 61, column 1:
+PL/SQL: SQL Statement ignored
+
+
+
+Table dropped.
+
+
+Table dropped.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+002577-01217 1
+002577-01219 1
+002577-01217 2
+002577-01219 2
+002577-01247 1
+002577-01217 3
+002577-01247 2
+002577-01217 4
+023950-00001 2
+023984-00002 1
+023990-00001 2
+022405-00011 1
+020624-00011 2
+020624-00012 2
+023955-00001 2
+023898-00002 2
+019547-00009 2
+023967-00001 1
+002577-01219 4
+023956-00001 2
+022852-00003 1
+023951-00001 1
+023984-00001 1
+023991-00001 1
+023991-00001 2
+002577-01217 5
+002577-01217 6
+023984-00002 2
+023990-00001 1
+024007-00001 1
+020624-00011 1
+023956-00001 3
+023950-00001 1
+023877-00001 3
+023877-00002 3
+023987-00001 4
+023944-00001 3
+023987-00001 3
+023999-00001 1
+002577-01219 5
+024014-00001 1
+002577-01217 7
+002577-01219 3
+002577-01247 3
+023944-00001 2
+023955-00001 1
+020624-00012 1
+023910-00001 5
+023910-00002 2
+023987-00001 2
+022739-00003 1
+024014-00002 1
+024014-00001 2
+024014-00002 2
+024026-00001 1
+002577-01247 4
+023980-00001 1
+023987-00001 1
+023898-00001 2
+022852-00003 2
+020624-00013 1
+
+PL/SQL procedure successfully completed.
+
+023950-00001 2
+023984-00002 1
+023990-00001 2
+022405-00011 1
+024001-00002 1
+023955-00001 2
+023898-00002 2
+023967-00001 1
+023956-00001 2
+022852-00003 1
+023993-00001 1
+023951-00001 1
+023984-00001 1
+023991-00001 1
+023991-00001 2
+023985-00001 2
+023984-00002 2
+023990-00001 1
+024007-00001 1
+023923-00001 2
+023956-00001 3
+023950-00001 1
+023877-00001 3
+023877-00002 3
+023992-00001 1
+023994-00001 1
+023999-00001 1
+023923-00001 3
+023955-00001 1
+023910-00001 5
+023910-00002 2
+023985-00001 3
+024001-00001 1
+024026-00001 1
+023923-00001 4
+023985-00001 1
+023898-00001 2
+022852-00003 2
+023979-00001 1
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

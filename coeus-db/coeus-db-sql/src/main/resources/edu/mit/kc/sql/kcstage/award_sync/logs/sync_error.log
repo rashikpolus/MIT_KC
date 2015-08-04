@@ -1,0 +1,688 @@
+
+Started syncing, start time: 26-JAN-15 07.08.26.938134 AM                       
+
+insert bo: 26-JAN-15 07.08.27.210663 AM                                         
+
+Completed bo : 26-JAN-15 07.08.30.405778 AM                                     
+
+Completed bo : 26-JAN-15 07.08.30.529555 AM                                     
+
+insert award: 26-JAN-15 07.08.40.025320 AM                                      
+CREATE INDEX OSP$PERSON_I ON OSP$PERSON(PERSON_ID)
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object 
+
+
+
+ Started AWARD                                                                  
+alter table award add constraint UQ_AWARD unique(AWARD_NUMBER,SEQUENCE_NUMBER)
+                                          *
+ERROR at line 1:
+ORA-02261: such unique or primary key already exists in the table 
+
+
+alter table proposal add constraint UQ_PROPOSAL unique(PROPOSAL_NUMBER,SEQUENCE_NUMBER)
+                                                *
+ERROR at line 1:
+ORA-02261: such unique or primary key already exists in the table 
+
+
+
+     24004                                                                      
+
+ Ended AWARD                                                                    
+
+ Started VERSION_HISTORY                                                        
+Completed VERSION_HISTORY!!!                                                    
+
+ Ended VERSION_HISTORY                                                          
+
+ Started AWARD_SPECIAL_REVIEW                                                   
+
+ Ended AWARD_SPECIAL_REVIEW                                                     
+
+ Started AWARD_SPECIAL_REVIEW Update                                            
+
+ EndedAWARD_SPECIAL_REVIEW Update                                               
+
+ Started AWARD_COST_SHARE                                                       
+
+ Ended AWARD_COST_SHARE                                                         
+
+ Started AWARD_APPROVED_EQUIPMENT                                               
+
+ Ended AWARD_APPROVED_EQUIPMENT                                                 
+
+ Started AWARD_APPROVED_FOREIGN_TRAVEL                                          
+
+ Ended AWARD_APPROVED_FOREIGN_TRAVEL script                                     
+
+ Started AWARD_PAYMENT_SCHEDULE                                                 
+
+ Ended AWARD_PAYMENT_SCHEDULE                                                   
+
+ Started AWARD_SCIENCE_KEYWORD                                                  
+
+ Ended AWARD_SCIENCE_KEYWORD script                                             
+
+ Started AWARD_IDC_RATE script                                                  
+
+ Ended AWARD_IDC_RATE script                                                    
+
+ Started AWARD_APPROVED_SUBAWARDS                                               
+ERROR IN AWARD_APPROVED_SUBAWARDS.                                              
+AWARD_NUMBER,SEQUENCE_NUMBER017120-00001,34-ORA-20100: Error generating         
+Subcontract notificationsORA-04091: table KCSO.AWARD_APPROVED_SUBAWARDS is      
+mutating, trigger/function may not see it
+ORA-06512: at                         
+"KCSO.T_AWD_APPR_SUB_BFR_IN_ROW", line 60
+ORA-04088: error during execution of  
+trigger 'KCSO.T_AWD_APPR_SUB_BFR_IN_ROW'                                        
+ERROR IN AWARD_APPROVED_SUBAWARDS.                                              
+AWARD_NUMBER,SEQUENCE_NUMBER021978-00001,54-ORA-20100: Error generating         
+Subcontract notificationsORA-04091: table KCSO.AWARD_APPROVED_SUBAWARDS is      
+mutating, trigger/function may not see it
+ORA-06512: at                         
+"KCSO.T_AWD_APPR_SUB_BFR_IN_ROW", line 60
+ORA-04088: error during execution of  
+trigger 'KCSO.T_AWD_APPR_SUB_BFR_IN_ROW'                                        
+
+ Ended AWARD_APPROVED_SUBAWARDS                                                 
+
+ Started AWARD_TRANSFERRING_SPONSOR                                             
+
+ Ended AWARD_TRANSFERRING_SPONSOR                                               
+
+ Started AWARD_PERSONS(Key Person)                                              
+
+ Ended AWARD_PERSONS(Key Person)                                                
+
+ Started AWARD_PERSONS(Investigators)                                           
+
+ Ended AWARD_PERSONS(Investigators)                                             
+
+ Started AWARD_SPONSOR_TERM                                                     
+
+ Ended AWARD_SPONSOR_TERM                                                       
+
+ Started AWARD_ATTACHMENT                                                       
+Completed AWARD_ATTACHMENT!!!                                                   
+
+ Ended AWARD_ATTACHMENT                                                         
+
+ Started AWARD_ATTACHMENT VERSIONNING                                           
+
+ Ended AWARD_ATTACHMENT VERSIONNING                                             
+
+ Started AWARD_CUSTOM_DATA                                                      
+
+ Ended AWARD_CUSTOM_DATA                                                        
+CREATE INDEX AWARD_COMMENT_I1 ON AWARD_COMMENT(AWARD_NUMBER,SEQUENCE_NUMBER,COMMENT_TYPE_CODE)
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object 
+
+
+
+ Started AWARD_COMMENT                                                          
+
+ Ended AWARD_COMMENT                                                            
+
+ Started AWARD_CLOSEOUT                                                         
+
+ Ended AWARD_CLOSEOUT                                                           
+
+ Started AWARD_PERSON_UNITS                                                     
+Error in "insert_award_person_units.sql" 015962-00001,22,900049032 - ORA-01422: 
+exact fetch returns more than requested number of rows                          
+Error in "insert_award_person_units.sql" 018159-00001,18,929572678 - ORA-01422: 
+exact fetch returns more than requested number of rows                          
+Error in "insert_award_person_units.sql" 021566-00123,6,900023872 - ORA-01422:  
+exact fetch returns more than requested number of rows                          
+Error in "insert_award_person_units.sql" 021566-00123,6,999203536 - ORA-01422:  
+exact fetch returns more than requested number of rows                          
+Error in "insert_award_person_units.sql" 021978-00001,54,924653902 - ORA-01422: 
+exact fetch returns more than requested number of rows                          
+Error in "insert_award_person_units.sql" 021978-00001,54,900021282 - ORA-01422: 
+exact fetch returns more than requested number of rows                          
+Error in "insert_award_person_units.sql" 021978-00001,54,900022891 - ORA-01422: 
+exact fetch returns more than requested number of rows                          
+Error in "insert_award_person_units.sql" 021978-00001,54,900029114 - ORA-01422: 
+exact fetch returns more than requested number of rows                          
+Error in "insert_award_person_units.sql" 021978-00001,54,969230492 - ORA-01422: 
+exact fetch returns more than requested number of rows                          
+Error in "insert_award_person_units.sql" 021978-00001,54,900041188 - ORA-01422: 
+exact fetch returns more than requested number of rows                          
+Error in "insert_award_person_units.sql" 022953-00001,8,969555039 - ORA-01422:  
+exact fetch returns more than requested number of rows                          
+Error in "insert_award_person_units.sql" 023554-00001,4,980636691 - ORA-01422:  
+exact fetch returns more than requested number of rows                          
+Error in "insert_award_person_units.sql" 023902-00001,3,991226101 - ORA-01422:  
+exact fetch returns more than requested number of rows                          
+Error in "insert_award_person_units.sql" 023949-00001,4,958229274 - ORA-01403:  
+no data found                                                                   
+Error in "insert_award_person_units.sql" 023961-00002,3,920195761 - ORA-01403:  
+no data found                                                                   
+Error in "insert_award_person_units.sql" 023975-00001,3,900049386 - ORA-01403:  
+no data found                                                                   
+Error in "insert_award_person_units.sql" 023984-00001,2,900027107 - ORA-01403:  
+no data found                                                                   
+Error in "insert_award_person_units.sql" 023984-00001,3,900027107 - ORA-01403:  
+no data found                                                                   
+Error in "insert_award_person_units.sql" 023984-00002,3,900027107 - ORA-01403:  
+no data found                                                                   
+Error in "insert_award_person_units.sql" 023984-00002,4,900027107 - ORA-01403:  
+no data found                                                                   
+Error in "insert_award_person_units.sql" 023987-00001,5,993100184 - ORA-01403:  
+no data found                                                                   
+Error in "insert_award_person_units.sql" 023987-00001,5,971165554 - ORA-01403:  
+no data found                                                                   
+Error in "insert_award_person_units.sql" 023987-00001,5,998444521 - ORA-01403:  
+no data found                                                                   
+
+ Ended AWARD_PERSON_UNITS                                                       
+
+ Started AWARD_NOTEPAD                                                          
+Completed AWARD_NOTEPAD!!!                                                      
+
+ Ended AWARD_NOTEPAD                                                            
+
+ Started AWARD_SPONSOR_CONTACTS                                                 
+
+ Ended AWARD_SPONSOR_CONTACTS                                                   
+
+ Started AWARD_REPORT_TERMS,AWARD_REP_TERMS_RECNT                               
+Error in "insert_award_report_terms.sql" 023984-00001,2,3 - ORA-02291: integrity
+constraint (KCSO.FK9_AWARD_REPORT_TERMS) violated - parent key not found        
+Error in "insert_award_report_terms.sql" 023984-00001,3,3 - ORA-02291: integrity
+constraint (KCSO.FK9_AWARD_REPORT_TERMS) violated - parent key not found        
+Error in "insert_award_report_terms.sql" 023984-00002,3,3 - ORA-02291: integrity
+constraint (KCSO.FK9_AWARD_REPORT_TERMS) violated - parent key not found        
+Error in "insert_award_report_terms.sql" 023984-00002,4,3 - ORA-02291: integrity
+constraint (KCSO.FK9_AWARD_REPORT_TERMS) violated - parent key not found        
+
+ Ended AWARD_REPORT_TERMS,AWARD_REP_TERMS_RECNT                                 
+
+ Started AWARD_REPORT_TRACKING script                                           
+
+ Ended AWARD_REPORT_TRACKING                                                    
+SP2-0027: Input is too long (> 2499 characters) - line ignored
+
+ Started AWARD_UNIT_CONTACTS                                                    
+
+ Ended AWARD_UNIT_CONTACTS                                                      
+
+ Started AWARD_HIERARCHY script                                                 
+Completed AWARD_HIERARCHY!!!                                                    
+
+ Ended AWARD_HIERARCHY script                                                   
+
+ Started AWARD_AMOUNT_TRANSACTION                                               
+Completed AWARD_AMOUNT_INFO!!!                                                  
+
+ Ended AWARD_AMOUNT_TRANSACTION                                                 
+
+ Started AWARD_AMOUNT_INFO                                                      
+
+ Ended AWARD_AMOUNT_INFO                                                        
+
+update award: 26-JAN-15 07.15.15.054895 AM                                      
+
+ Stared UPDATE_AWARD                                                            
+
+ Ended UPDATE_AWARD                                                             
+
+ Started UPDATE_AWARD_SPECIAL_REVIEW                                            
+
+ Ended UPDATE_AWARD_SPECIAL_REVIEW                                              
+
+ Started AWARD_SPECIAL_REVIEW Update                                            
+
+ Ended AWARD_SPECIAL_REVIEW Update                                              
+
+ Started UPDATE_AWARD_COST_SHARE                                                
+
+ Ended UPDATE_AWARD_COST_SHARE                                                  
+
+ Started UPDATE_AWARD_APPROVED_EQUIPMENT                                        
+
+ Ended UPDATE_AWARD_APPROVED_EQUIPMENT                                          
+
+ Started UPDATE_AWARD_APPROVED_FOREIGN_TRAVEL                                   
+
+ Ended UPDATE_AWARD_APPROVED_FOREIGN_TRAVEL                                     
+
+ Started UPDATE_AWARD_PAYMENT_SCHEDULE                                          
+
+ Ended UPDATE_AWARD_PAYMENT_SCHEDULE                                            
+
+ Started UPDATE_AWARD_SCIENCE_KEYWORD                                           
+
+ Ended UPDATE_AWARD_SCIENCE_KEYWORD                                             
+
+Started UPDATE_AWARD_IDC_RATE                                                   
+
+Ended UPDATE_AWARD_IDC_RATE                                                     
+
+ Started UPDATE_AWARD_APPROVED_SUBAWARDS                                        
+
+ Ended UPDATE_AWARD_APPROVED_SUBAWARDS                                          
+
+ Started UPDATE_AWARD_TRANSFERRING_SPONSOR                                      
+
+ Ended UPDATE_AWARD_TRANSFERRING_SPONSOR                                        
+
+ Started UPDATE_AWARD_PERSONS                                                   
+
+ Ended UPDATE_AWARD_PERSONS                                                     
+
+ Started UPDATE_AWARD_PERSONS                                                   
+
+ Ended UPDATE_AWARD_PERSONS                                                     
+
+ Started UPDATE_AWARD_ATTACHMENT                                                
+Completed AWARD_ATTACHMENT!!!                                                   
+
+ Ended UPDATE_AWARD_ATTACHMENT                                                  
+
+ Started UPDATE_AWARD_CUSTOM_DATA                                               
+
+ Ended UPDATE_AWARD_CUSTOM_DATA                                                 
+
+ Started UPDATE_AWARD_COMMENT                                                   
+
+ Ended UPDATE_AWARD_COMMENT                                                     
+
+ Started UPDATE_AWARD_CLOSEOUT                                                  
+
+ Ended UPDATE_AWARD_CLOSEOUT                                                    
+
+ Started UPDATE_AWARD_PERSON_UNITS                                              
+
+ Ended UPDATE_AWARD_PERSON_UNITS                                                
+
+ Started UPDATE_AWARD_NOTEPAD                                                   
+DECLARE
+*
+ERROR at line 1:
+ORA-06502: PL/SQL: numeric or value error: character string buffer too small 
+ORA-06512: at line 29 
+
+
+
+ Ended UPDATE_AWARD_NOTEPAD                                                     
+
+ Started UPDATE_AWARD_SPONSOR_CONTACTS                                          
+
+ Ended UPDATE_AWARD_SPONSOR_CONTACTS                                            
+
+ Started UPDATE_AWARD_REP_TERMS_RECNT                                           
+
+ Ended UPDATE_AWARD_REP_TERMS_RECNT                                             
+
+ Started UPDATE_AWARD_SPONSOR_TERM                                              
+
+ Ended UPDATE_AWARD_SPONSOR_TERM                                                
+
+ Started UPDATE_AWARD_REPORT_TRACKING                                           
+
+ Ended UPDATE_AWARD_REPORT_TRACKING                                             
+
+ Started UPDATE_AWARD_FUNDING_PROPOSALS                                         
+
+ Ended UPDATE_AWARD_FUNDING_PROPOSALS                                           
+
+ Started UPDATE_AWARD_UNIT_CONTACTS                                             
+
+ Ended UPDATE_AWARD_UNIT_CONTACTS                                               
+
+ Started UPDATE_AWARD_AMOUNT_INFO                                               
+Completed AWARD_AMOUNT_INFO!!!                                                  
+
+ Ended UPDATE_AWARD_AMOUNT_INFO                                                 
+
+ Started UPDATE_AWARD_AMOUNT_TRANSACTION                                        
+
+ Ended UPDATE_AWARD_AMOUNT_TRANSACTION                                          
+
+ Started UPDATE_AWARD_AMT_FNA_DISTRIBUTION                                      
+
+ Ended UPDATE_AWARD_AMT_FNA_DISTRIBUTION                                        
+
+ Started award_sequence_status_update                                           
+
+ Ended award_sequence_status_update                                             
+
+Completed Award : 26-JAN-15 07.19.40.595286 AM                                  
+
+Completed Award : 26-JAN-15 07.19.40.689606 AM                                  
+
+insert development proposal: 26-JAN-15 07.19.40.980437 AM                       
+
+ Start time of insert to EPS_PROPOSAL is                                        
+
+                                                                               
+Successfully inserted EPS_PROPOSAL and EPS_PROPOSAL_DOCUMENT                    
+
+     25312                                                                      
+
+ End time of insert to EPS_PROPOSAL is                                          
+
+ Started insert to EPS_PROPOSAL                                                 
+
+ Ended updating EPS_PROPOSAL                                                    
+
+Completed development proposal: 26-JAN-15 07.19.44.769847 AM                    
+
+insert budget proposal: 26-JAN-15 07.19.44.882936 AM                            
+
+ Started BUDGET                                                                 
+
+ Ended BUDGET                                                                   
+	SELECT  PROPOSAL_NUMBER,VERSION_NUMBER,SUB_AWARD_NUMBER,CONTENT_ID,CONTENT_TYPE,ATTACHMENT,UPDATE_TIMESTAMP,UPDATE_USER  FROM OSP$BUDGET_SUB_AWARD_ATT@coeus.kuali
+	                                                                   *
+ERROR at line 2:
+ORA-12899: value too large for column 
+"KCSO"."TEMP_BUD_SUB_AWD_ATT"."CONTENT_TYPE" (actual: 65, maximum: 30) 
+
+
+
+ Started BUDGET_PERIODS                                                         
+
+ Ended BUDGET_PERIODS                                                           
+
+ Started BUDGET_MODULAR                                                         
+
+ Ended BUDGET_MODULAR                                                           
+
+ Started BUDGET_MODULAR_IDC                                                     
+
+ Ended BUDGET_MODULAR_IDC                                                       
+
+ Started BUDGET_PERSONS                                                         
+DECLARE
+*
+ERROR at line 1:
+ORA-01722: invalid number 
+ORA-06512: at line 106 
+
+
+
+ Ended BUDGET_PERSONS                                                           
+
+ Started BUDGET_DETAILS,BUDGET_DETAILS_CAL_AMTS,BUDGET_RATE_AND_BASE            
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 22860 ,Version Number is 1 and Budget Period is 2 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 22860 ,Version Number is 1 and Budget Period is 2 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 22860 ,Version Number is 1 and Budget Period is 2 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 22860 ,Version Number is 1 and Budget Period is 2 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 22860 ,Version Number is 1 and Budget Period is 2 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 22860 ,Version Number is 1 and Budget Period is 2 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 22860 ,Version Number is 1 and Budget Period is 2 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 22860 ,Version Number is 1 and Budget Period is 2 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 22860 ,Version Number is 1 and Budget Period is 3 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 22860 ,Version Number is 1 and Budget Period is 3 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 22860 ,Version Number is 1 and Budget Period is 3 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 22860 ,Version Number is 1 and Budget Period is 3 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 22860 ,Version Number is 1 and Budget Period is 3 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 22860 ,Version Number is 1 and Budget Period is 3 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 22860 ,Version Number is 1 and Budget Period is 3 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 22860 ,Version Number is 1 and Budget Period is 4 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 22860 ,Version Number is 1 and Budget Period is 4 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 22860 ,Version Number is 1 and Budget Period is 4 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 22860 ,Version Number is 1 and Budget Period is 4 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 22860 ,Version Number is 1 and Budget Period is 4 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 22860 ,Version Number is 1 and Budget Period is 5 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 22860 ,Version Number is 1 and Budget Period is 4 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 22860 ,Version Number is 1 and Budget Period is 5 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 22860 ,Version Number is 1 and Budget Period is 5 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 22860 ,Version Number is 1 and Budget Period is 5 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 22860 ,Version Number is 1 and Budget Period is 5 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 22860 ,Version Number is 1 and Budget Period is 5 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 1 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 1 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 1 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 1 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 1 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 1 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 1 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 1 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 2 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 2 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 2 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 2 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 2 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 2 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 2 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 2 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 3 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 3 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 3 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 3 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 3 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 3 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 3 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 4 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 4 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 4 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 4 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 4 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 4 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 5 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 5 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 5 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 5 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 5 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 4 and Budget Period is 5 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 3 and Budget Period is 1 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 3 and Budget Period is 1 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 3 and Budget Period is 1 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 3 and Budget Period is 1 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 3 and Budget Period is 1 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 3 and Budget Period is 1 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 3 and Budget Period is 1 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+Missing data in BUDGET or BUDGET_PERIODS while inserting into BUDGET_DETAILS ,  
+Proposal Number is 25078 ,Version Number is 3 and Budget Period is 1 .ORA-02291:
+integrity constraint (KCSO.FK2_BUDGET_DETAILS) violated - parent key not found  
+
+ Ended BUDGET_DETAILS,BUDGET_DETAILS_CAL_AMTS,BUDGET_RATE_AND_BASE              
+
+ Started BUDGET_PERSONNEL_DETAILS,BUDGET_PERSONNEL_CAL_AMTS,BUDGET_PER_DET_RATE_
+AND_BASE                                                                        
+                                                                                
+
+ Ended BUDGET_PERSONNEL_DETAILS,BUDGET_PERSONNEL_CAL_AMTS,BUDGET_PER_DET_RATE_AN
+D_BASE                                                                          
+                                                                                
+
+ Started BUDGET_PROJECT_INCOME                                                  
+
+ Ended BUDGET_PROJECT_INCOME                                                    
+
+ Started EPS_PROP_COST_SHARING                                                  
+
+ Ended of EPS_PROP_COST_SHARING                                                 
+
+ Started EPS_PROP_RATES, EPS_PROP_LA_RATES                                      
+
+ Ended EPS_PROP_RATES, EPS_PROP_LA_RATES                                        
+
+ Started EPS_PROP_IDC_RATE script                                               
+
+ Ended EPS_PROP_IDC_RATE script                                                 
+
+Completed budget : 26-JAN-15 07.22.33.014499 AM                                 
+
+Completed budget : 26-JAN-15 07.22.33.130682 AM                                 
+
+insert Institute proposal: 26-JAN-15 07.22.33.431962 AM                         
+
+ Started PROPOSAL                                                               
+Completed PROPOSAL  AND ITS INDICATOR TABLES!!!                                 
+
+  99122109                                                                      
+
+ Ended PROPOSAL KREW TABLES                                                     
+
+ Ended PROPOSAL                                                                 
+
+ Started PROPOSAL_ADMIN_DETAILS                                                 
+
+ Ended PROPOSAL_ADMIN_DETAILS                                                   
+
+ Started insert_proposal_version_history                                        
+Completed VERSION_HISTORY !!!                                                   
+
+ Ended insert_proposal_version_history                                          
+
+ Started update PROPOSAL                                                        
+
+ Ended update PROPOSAL                                                          
+
+ Started update PROPOSAL_ADMIN_DETAILS                                          
+
+ Ended Update PROPOSAL_ADMIN_DETAILS                                            
+
+Completed Institute proposal : 26-JAN-15 07.22.37.674685 AM                     
+
+Completed Institute proposal : 26-JAN-15 07.22.37.773973 AM                     
+
+Completed syncing, end time: 26-JAN-15 07.22.40.505007 AM                       

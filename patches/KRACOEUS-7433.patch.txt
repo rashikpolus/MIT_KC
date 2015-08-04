@@ -1,0 +1,23 @@
+From 40308ad66a571a41f4917efa5766fa4d96d2a8b7 Mon Sep 17 00:00:00 2001
+From: Joe Williams <jwillia@iastate.edu>
+Date: Wed, 14 Jan 2015 14:10:42 -0600
+Subject: [PATCH] KRACOEUS-7433:fixed issue of agendas not running for all
+ units on a proposal
+
+---
+ .../kuali/coeus/propdev/impl/krms/ProposalDevelopmentKRMSAuditRule.java | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/krms/ProposalDevelopmentKRMSAuditRule.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/krms/ProposalDevelopmentKRMSAuditRule.java
+index 67d88b2..f848c6f 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/krms/ProposalDevelopmentKRMSAuditRule.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/krms/ProposalDevelopmentKRMSAuditRule.java
+@@ -26,7 +26,7 @@
+     public boolean processRunAuditBusinessRules(Document document) {
+         boolean valid = true;
+         ProposalDevelopmentDocument pdDocument = (ProposalDevelopmentDocument) document;
+-        List<Map<String,String>> krmsErrors = getKrmsRulesExecutionService().processUnitKcValidations(pdDocument.getLeadUnitNumber(),pdDocument);
++        List<Map<String,String>> krmsErrors = getKrmsRulesExecutionService().processUnitKcValidations(pdDocument.getDevelopmentProposal().getAllUnitNumbers(),pdDocument);
+         for (Map<String,String> error: krmsErrors) {
+             valid = false;
+             String areaName = error.get(KcKrmsConstants.ValidationAction.VALIDATIONS_ACTION_AREA_ATTRIBUTE);

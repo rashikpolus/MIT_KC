@@ -1,0 +1,339 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <bean id="SapFeedSearch-View" parent="SapFeedSearch-View-parentBean"/>
+    <bean id="SapFeedSearch-View-parentBean" abstract="true"
+          parent="Uif-FormView" p:headerText="Sap Feed Maintenance"
+          p:formClass="edu.mit.kc.sapfeed.core.SapFeedSearchForm"
+          p:stickyFooter="true">
+        <property name="breadcrumbs.render" value="false"/>
+        <property name="header">
+          <bean parent="Uif-ViewHeader" p:areaTitleText="Central Administration"/>
+        </property>
+        <property name="unifiedHeader" value="false"/>
+        <property name="contentContainerCssClasses">
+            <list>
+                <value>container</value>
+            </list>
+        </property>
+        <property name="additionalScriptFiles">
+            <list>
+                <value>scripts/propdev/core.js</value>
+                <value>scripts/common/dialog.js</value>
+                <value>scripts/sapFeedSearch.js</value>
+            </list>
+        </property>
+        <property name="additionalCssFiles">
+            <list>
+                <value>css/sapFeedSearch.css</value>
+            </list>
+        </property>
+        <property name="items">
+            <list>
+                <ref bean="SapFeedSearch-StartPage"/>
+                <ref bean="SapFeedSearch-BatchPage"/>
+                <ref bean="SapFeedSearch-DetailsPage"/>
+            </list>
+        </property>
+        <property name="dialogs">
+            <list>
+                <ref bean="SapFeedSearch-ResendBatchDialog"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="SapFeedSearch-ResendBatchDialog" parent="Uif-DialogGroup" p:retrieveViaAjax="true"
+          p:headerText="Resend Batch">
+        <property name="destroyDialogOnHidden" value="true"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:required="true" p:label="Select Batch"
+                      p:propertyName="resendBatchType">
+                    <property name="control">
+                    <bean parent="Uif-VerticalRadioControl">
+                      <property name="options">
+                        <list>
+                          <bean parent="Uif-KeyLabelPair" p:key="ONE" p:value="Resend Batch"/>
+                          <bean parent="Uif-KeyLabelPair" p:key="ALL" p:value="Resend Batch And All Subsequent Batches"/>
+                        </list>
+                      </property>
+                    </bean>
+                  </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:required="true" p:label="Target Directory"
+                      p:propertyName="resendTargetDirectory">
+                    <property name="control">
+                    <bean parent="Uif-VerticalRadioControl">
+                      <property name="options">
+                        <list>
+                          <bean parent="Uif-KeyLabelPair" p:key="SAP.PRODUCTION.PATH" p:value="Production"/>
+                          <bean parent="Uif-KeyLabelPair" p:key="SAP.TEST.PATH" p:value="Test"/>
+                        </list>
+                      </property>
+                    </bean>
+                  </property>
+                </bean>
+
+            </list>
+        </property>
+        <property name="footer.items">
+            <list>
+
+                <bean parent="Uif-DialogDismissButton" p:actionLabel="Close"/>
+                <bean parent="Uif-PrimaryActionButton"
+                      p:actionLabel="Resend Batch"
+                      p:methodToCall="resendBatch"
+                      p:successCallback="Kc.Dialog.closeDialogWithoutError('SapFeedSearch-ResendBatchDialog')"
+                      p:refreshId="SapFeedSearch-BatchPage" p:defaultEnterKeyAction="true"
+                      p:performClientSideValidation="true"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="SapFeedSearch-StartPage" parent="Uif-Page" p:headerText="Feed Search">
+        <property name="items">
+            <list>
+                <bean id="SapFeedSearch-StartSearch" parent="Uif-VerticalBoxGroup">
+                    <property name="items">
+                        <list>
+                            <ref bean="SapFeedSearch-SearchGroup"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="SapFeedSearch-BatchPage" parent="Uif-Page"
+          p:headerText="Search Results @{#form.searchSummary}">
+        <property name="items">
+            <list>
+                <ref bean="SapFeedSearch-ModifySearchLinks"/>
+                <ref bean="SapFeedSearch-RefineSearch"/>
+                <ref bean="SapFeedSearch-BatchResults"/>
+            </list>
+        </property>
+
+    </bean>
+
+    <bean id="SapFeedSearch-DetailsPage" parent="Uif-Page"
+          p:headerText="Search Results @{#form.searchSummary}">
+        <property name="items">
+            <list>
+                <ref bean="SapFeedSearch-ModifySearchLinks"/>
+                <ref bean="SapFeedSearch-RefineSearch"/>
+                <ref bean="SapFeedSearch-DetailsResults"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="SapFeedSearch-ModifySearchLinks" parent="Uif-LinkGroup" p:groupBeginDelimiter="" p:groupEndDelimiter=""
+          p:linkSeparator="|">
+        <property name="items">
+            <list>
+                <bean parent="Uif-NavigationActionLink" p:actionLabel="New Search"
+                      p:navigateToPageId="SapFeedSearch-StartPage"/>
+                <bean parent="Uif-ActionLink" p:actionLabel="Refine Search"
+                      p:actionScript="jQuery('#SapFeedSearch-RefineSearch').toggle()"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="SapFeedSearch-BatchResults" parent="Uif-StackedCollectionSection">
+        <property name="collectionObjectClass" value="org.kuali.coeus.propdev.impl.sapfeed.SapFeedBatchDetails"/>
+        <property name="propertyName" value="batchSearchResults"/>
+        <property name="readOnly" value="true"/>
+        <property name="layoutManager.lineGroupPrototype.disclosure.render" value="@{#line.sapFeedDetailsList.size() gt 0}"/>
+        <property name="layoutManager.summaryTitle"
+                  value="[span class='sapSearch-batchId']Batch ID: #@{#line.batchId}[/span] [span class='sapSearch-batchTime']@{#line.batchTimeStamp}[/span]"/>
+        <property name="layoutManager.lineGroupPrototype.disclosure.defaultOpen" value="false"/>
+        <property name="layoutManager.lineGroupPrototype.disclosure.ajaxRetrievalWhenOpened" value="true"/>
+        <property name="layoutManager.lineGroupPrototype.header.rightGroup">
+            <bean parent="Uif-HeaderRightGroup">
+                <property name="items">
+                    <list>
+                        <bean parent="Uif-DropdownToggleMenu" p:additionalCssClasses="btn btn-default btn-xs" p:toggleText="Info">
+                            <property name="menuGroup">
+                                <bean parent="Uif-DropdownTable" p:additionalCssClasses="sapFeed-batchInfo">
+                                    <property name="items">
+                                        <list>
+                                            <bean parent="Uif-MessageField" p:label="Batch ID" p:messageText="@{#line.batchId}"/>
+                                            <bean parent="Uif-MessageField" p:label="Batch File Name"
+                                                  p:messageText="@{#line.batchFileName}"/>
+                                            <bean parent="Uif-MessageField" p:label="Records Fed"
+                                                  p:messageText="@{#line.noOfRecords}"/>
+                                            <bean parent="Uif-MessageField" p:label="Timestamp"
+                                                  p:messageText="@{#line.batchTimeStamp}"/>
+                                            <bean parent="Uif-MessageField" p:label="User" p:messageText="@{#line.updateUser}"/>
+                                        </list>
+                                    </property>
+                                </bean>
+                            </property>
+                        </bean>
+
+                        <bean parent="Uif-DropdownToggleMenu" p:additionalCssClasses="btn btn-default btn-xs" p:toggleText="Actions">
+                            <property name="menuItems">
+                                <list>
+                                    <bean parent="Uif-MenuAction" p:actionLabel="Resend Batch"
+                                          p:actionScript="writeHiddenToForm('resendBatchId', @{#line.batchId}); writeHiddenToForm('resendSapFeedBatchId', @{#line.sapFeedBatchId}); showDialog('SapFeedSearch-ResendBatchDialog');"/>
+                                </list>
+                            </property>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="subCollections">
+            <list>
+                <bean id="SapFeedSearch-SubDetails" parent="Uif-TableCollectionGroup">
+                    <property name="collectionObjectClass"
+                              value="org.kuali.coeus.propdev.impl.sapfeed.SapFeedDetails"/>
+                    <property name="propertyName" value="sapFeedDetailsList"/>
+                    <property name="layoutManager.renderSequenceField" value="false"/>
+                    <property name="layoutManager.generateAutoSequence" value="false"/>
+
+                    <!-- enable DataTables and server paging -->
+                    <property name="layoutManager.richTable.render" value="true"/>
+                    <property name="readOnly" value="true"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-DataField" p:additionalCssClasses="feedId" p:label="Feed ID" p:propertyName="feedId"/>
+                            <bean parent="Uif-DataField" p:label="Transaction ID" p:propertyName="tranId"/>
+                            <bean parent="Uif-DataField" p:label="Award" p:propertyName="awardNumber"/>
+                            <bean parent="Uif-DataField" p:label="Seq" p:propertyName="sequenceNumber"/>
+                            <bean parent="Uif-DataField" p:label="Type" p:propertyName="feedTypeName"/>
+                            <bean parent="Uif-DataField" p:label="Status" p:propertyName="feedStatusName"/>
+                            <bean parent="Uif-DataField" p:label="Date" p:propertyName="updateTimestamp"/>
+                            <bean parent="Uif-DataField" p:label="User" p:propertyName="updateUser"/>
+                            <ref bean="SapFeedSearch-DetailsActions"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="SapFeedSearch-DetailsResults" parent="Uif-LightTableGroup">
+        <property name="propertyName" value="detailsSearchResults"/>
+        <property name="onDocumentReadyScript" value="setupLightTableCss();"/>
+        <property name="readOnly" value="true"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-DataField" p:additionalCssClasses="feedId" p:label="Feed ID" p:propertyName="feedId"/>
+                <bean parent="Uif-DataField" p:label="Transaction ID" p:propertyName="tranId"/>
+                <bean parent="Uif-DataField" p:label="Award" p:propertyName="awardNumber"/>
+                <bean parent="Uif-DataField" p:label="Seq" p:propertyName="sequenceNumber"/>
+                <bean parent="Uif-DataField" p:label="Type" p:propertyName="feedTypeName"/>
+                <bean parent="Uif-DataField" p:label="Status" p:propertyName="feedStatusName"/>
+                <bean parent="Uif-DataField" p:label="Date" p:propertyName="updateTimestamp"/>
+                <bean parent="Uif-DataField" p:label="User" p:propertyName="updateUser"/>
+                <ref bean="SapFeedSearch-DetailsActions"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="SapFeedSearch-DetailsActions" parent="Uif-HorizontalFieldGroup" p:label="Actions"
+          p:group.validationMessages.displayMessages="false">
+        <property name="items">
+            <list>
+                <bean parent="Uif-DropdownToggleMenu" p:additionalCssClasses="btn btn-default btn-xs" p:toggleText="Actions">
+                    <property name="menuItems">
+                        <list>
+                            <bean parent="Uif-MenuAction" p:actionLabel="Reject This Feed" p:actionScript="rejectFeed(this);"/>
+                            <bean parent="Uif-MenuAction" p:actionLabel="Restore This Feed" p:actionScript="restoreFeed(this);"/>
+                            <bean parent="Uif-MenuAction" p:actionLabel="Cancel This Feed" p:actionScript="cancelFeed(this);"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="SapFeedSearch-RefineSearch" p:additionalCssClasses="well well-form"
+          p:style="display: none;" parent="Uif-VerticalBoxSection"
+          p:headerText="Refine Search">
+        <property name="header.rightGroup">
+            <bean parent="Uif-HeaderRightGroup">
+                <property name="items">
+                    <list>
+                        <bean parent="Uif-ActionLink" p:additionalCssClasses="icon-cancel-circle"
+                              p:style="font-size: 16px; color: #999; text-decoration: none;"
+                              p:actionScript="jQuery('#SapFeedSearch-RefineSearch').hide()"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="SapFeedSearch-SearchGroup" p:additionalCssClasses="sapFeed-searchGroup"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="SapFeedSearch-SearchGroup" p:additionalCssClasses="sapFeed-searchGroup well well-form"
+          parent="Uif-CssGridSection-1FieldLabelColumn" p:header.render="false">
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:label="Feed Search" p:propertyName="searchType">
+                    <property name="control">
+                        <bean parent="Uif-DropdownControl"
+                              p:options-ref="SapFeedSearch-Types"/>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:label="Batch ID" p:progressiveRender="@{#form.searchType eq 'BATCH'}"
+                      p:propertyName="batchId">
+                </bean>
+
+                <bean parent="Uif-HorizontalFieldGroup" p:progressiveRender="@{#form.searchType eq 'BATCH'}"
+                      p:label="Date Range">
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-InputField" p:fieldLabel.render="false"
+                                  p:propertyName="batchStartDate">
+                                <property name="control">
+                                    <bean parent="Uif-DateControl"/>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-Message" p:additionalCssClasses="toDate" p:messageText="To"/>
+                            <bean parent="Uif-InputField"
+                                  p:propertyName="batchEndDate">
+                                <property name="control">
+                                    <bean parent="Uif-DateControl"/>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-InputField" p:label="Award Number"
+                      p:progressiveRender="@{#form.searchType eq 'DETAILS_AWARD'}"
+                      p:propertyName="awardNumber">
+                </bean>
+            </list>
+        </property>
+        <property name="footer">
+            <bean id="SapFeedSearch-SearchFooter" p:progressiveRender="@{#form.searchType ne ''}"
+                  parent="Uif-HorizontalBoxGroup">
+                <property name="items">
+                    <list>
+                        <bean parent="Uif-PrimaryActionButton" p:methodToCall="search" p:actionLabel="Search"></bean>
+                        <bean parent="Uif-SecondaryActionButton" p:actionLabel="Clear"
+                              p:actionScript="jQuery('#SapFeedSearch-SearchGroup').find('.uif-textControl,.uif-dateControl').val('');"></bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <util:list id="SapFeedSearch-Types">
+        <bean parent="Uif-KeyLabelPair" p:key="" p:value=""/>
+        <bean parent="Uif-KeyLabelPair" p:key="BATCH" p:value="In a Batch"/>
+        <bean parent="Uif-KeyLabelPair" p:key="DETAILS_AWARD" p:value="By Award Number"/>
+        <bean parent="Uif-KeyLabelPair" p:key="DETAILS_PENDING" p:value="By Status is Pending"/>
+    </util:list>
+</beans>

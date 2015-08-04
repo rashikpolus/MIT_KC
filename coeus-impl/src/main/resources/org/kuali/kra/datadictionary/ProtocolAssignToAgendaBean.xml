@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans                      http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean id="ProtocolAssignToAgendaBean" parent="ProtocolAssignToAgendaBean-parentBean" />
+	<bean id="ProtocolAssignToAgendaBean-parentBean" abstract="true" parent="BusinessObjectEntry">
+		<property name="businessObjectClass" value="org.kuali.kra.irb.actions.assignagenda.ProtocolAssignToAgendaBean" />
+		<property name="objectLabel" value="Protocol Assign To Agenda Bean" />
+		<property name="titleAttribute" value="ProtocolAssignToAgendaBean-committeeId" />
+		<property name="attributes" >
+			<list>
+				<ref bean="ProtocolAssignToAgendaBean-committeeId" />
+				<ref bean="ProtocolAssignToAgendaBean-committeeName" />
+				<ref bean="ProtocolAssignToAgendaBean-scheduleDate" />
+				<ref bean="ProtocolAssignToAgendaBean-doAssignment" />
+				<ref bean="ProtocolAssignToAgendaBean-comments" />
+				<ref bean="ProtocolAssignToAgendaBean-actionDate" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- Attribute Definitions -->
+	<bean id="ProtocolAssignToAgendaBean-committeeId" parent="CommitteeAttribute-CommitteeId" >
+		<property name="name" value="committeeId" />
+	</bean>
+	
+	<bean id="ProtocolAssignToAgendaBean-committeeName" parent="CommitteeAttribute-CommitteeName" >
+		<property name="name" value="committeName" />
+	</bean>
+	
+	<bean id="ProtocolAssignToAgendaBean-scheduleDate" parent="ProtocolAssignToAgendaBean-scheduleDate-parentBean" />
+	<bean id="ProtocolAssignToAgendaBean-scheduleDate-parentBean" abstract="true" parent="AttributeDefinition" >
+		<property name="name" value="scheduleDate" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="Schedule Date" />
+		<property name="shortLabel" value="Schedule Date" />
+		<property name="maxLength" value="10" />
+		<property name="required" value="false" />
+		<property name="control" >
+      <bean parent="TextControlDefinition" p:size="52"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="52" parent="Uif-TextControl"/>
+        </property>
+		<property name="summary" value="Schedule Date" />
+		<property name="description" value="Schedule Date" />
+	</bean>
+	
+	<bean id="ProtocolAssignToAgendaBean-doAssignment" parent="ProtocolAssignToAgendaBean-doAssignment-parentBean" />
+	<bean id="ProtocolAssignToAgendaBean-doAssignment-parentBean" abstract="true" parent="AttributeDefinition" >
+		<property name="name" value="protocolAssigned" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="Assign this protocol to an agenda" />
+		<property name="shortLabel" value="assign agenda" />
+		<property name="maxLength" value="10" />
+		<property name="required" value="true" />
+		<property name="control" >
+      		<bean parent="CheckboxControlDefinition" />
+		</property>
+    <property name="controlField">
+      <bean parent="Uif-CheckboxControl"/>
+    </property>
+		<property name="summary" value="assign agenda" />
+		<property name="description" value="assign agenda" />
+	</bean>
+	
+	<bean id="ProtocolAssignToAgendaBean-comments" parent="ProtocolAssignToAgendaBean-comments-parentBean" />
+	<bean id="ProtocolAssignToAgendaBean-comments-parentBean" abstract="true" parent="ProtocolGenericActionBean-comments" >
+		<property name="control" >
+      <bean parent="TextareaControlDefinition" p:rows="4" p:cols="40"/>
+    </property>
+    <property name="controlField">
+      <bean p:rows="4" p:cols="40" parent="Uif-TextAreaControl"/>
+		</property>
+	</bean>
+	
+	<bean id="ProtocolAssignToAgendaBean-actionDate" parent="ProtocolAssignToAgendaBean-actionDate-parentBean" />
+    <bean id="ProtocolAssignToAgendaBean-actionDate-parentBean" abstract="true" parent="ProtocolGenericActionBean-actionDate" />
+
+</beans>

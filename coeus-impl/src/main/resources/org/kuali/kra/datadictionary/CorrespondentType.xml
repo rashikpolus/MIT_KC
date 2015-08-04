@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!-- Attribute Definitions -->
+    <bean id="CorrespondentType-correspondentTypeCode" parent="CorrespondentType-correspondentTypeCode-parentBean" />
+    <bean id="CorrespondentType-correspondentTypeCode-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="correspondentTypeCode" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Correspondent Type Code" />
+        <property name="shortLabel" value="Correspondent Type Code" />
+        <property name="maxLength" value="3" />
+        <property name="validationPattern" >
+            <bean parent="NumericValidationPattern" />
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+        <property name="control" >
+      <bean parent="TextControlDefinition" p:size="3"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="3" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="Correspondent Type Code" />
+        <property name="description" value="Correspondent Type Code" />
+    </bean>
+
+    <bean id="CorrespondentType-description" parent="CorrespondentType-description-parentBean" />
+    <bean id="CorrespondentType-description-parentBean" abstract="true" parent="KraAttributeReferenceDummy-description" />
+
+    <bean id="CorrespondentType-qualifier" parent="CorrespondentType-qualifier-parentBean" />
+    <bean id="CorrespondentType-qualifier-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="qualifier" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Qualifier" />
+        <property name="shortLabel" value="Qualifier" />
+        <property name="maxLength" value="1" />
+        <property name="validationPattern" >
+            <bean parent="AlphaNumericValidationPattern" />
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AlphaNumericPatternConstraint"/>
+    </property>
+        <property name="required" value="true" />
+        <property name="control" >
+      <bean parent="SelectControlDefinition" p:valuesFinderClass="org.kuali.kra.irb.correspondence.CorrespondentTypeQualifierValuesFinder" p:includeKeyInLabel="false"/>
+    </property>
+    <property name="optionsFinder">
+      <bean class="org.kuali.kra.irb.correspondence.CorrespondentTypeQualifierValuesFinder"/>
+    </property>
+    <property name="controlField">
+      <bean parent="Uif-DropdownControl"/>
+        </property>
+        <property name="summary" value="Qualifier" />
+        <property name="description" value="Qualifier" />
+    </bean>
+
+    <bean id="CorrespondentType-versionNumber" parent="CorrespondentType-versionNumber-parentBean" />
+  <bean id="CorrespondentType-versionNumber-parentBean" abstract="true" parent="AttributeReferenceDummy-versionNumber"/>
+</beans>

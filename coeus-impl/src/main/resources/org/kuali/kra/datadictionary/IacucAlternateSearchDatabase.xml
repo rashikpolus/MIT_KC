@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="IacucAlternateSearchDatabase" parent="IacucAlternateSearchDatabase-parentBean"/>
+    <bean abstract="true" id="IacucAlternateSearchDatabase-parentBean" parent="BusinessObjectEntry">
+        <property name="businessObjectClass" value="org.kuali.kra.iacuc.threers.IacucAlternateSearchDatabase"/>
+		<property name="objectLabel" value="IACUC Alternate Search Database"/>
+        <property name="inquiryDefinition">
+            <ref bean="IacucAlternateSearchDatabase-inquiryDefinition"/>
+        </property>
+        <property name="lookupDefinition">
+            <ref bean="IacucAlternateSearchDatabase-lookupDefinition"/>
+        </property>
+        <property name="titleAttribute" value="alternateSearchDbCode"/>
+        <property name="attributes">
+            <list>
+                <ref bean="IacucAlternateSearchDatabase-alternateSearchDbCode"/>
+                <ref bean="IacucAlternateSearchDatabase-alternateSearchDbName"/>
+                <ref bean="IacucAlternateSearchDatabase-versionNumber"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Attribute Definitions -->
+    <bean id="IacucAlternateSearchDatabase-alternateSearchDbCode" parent="IacucAlternateSearchDatabase-alternateSearchDbCode-parentBean"/>
+    <bean abstract="true" id="IacucAlternateSearchDatabase-alternateSearchDbCode-parentBean" parent="AttributeDefinition">
+        <property name="name" value="alternateSearchDbCode"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="label" value="Code"/>
+        <property name="shortLabel" value="Code"/>
+        <property name="maxLength" value="3"/>
+        <property name="required" value="true"/>
+        <property name="validationPattern">
+            <bean parent="NumericValidationPattern"/>
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+        <property name="control">
+            <bean p:size="5" parent="TextControlDefinition"/>
+        </property>
+    <property name="controlField">
+      <bean p:size="5" parent="Uif-TextControl"/>
+    </property>
+        <property name="summary" value="Code"/>
+        <property name="description" value="Code"/>
+    </bean>
+    
+    <bean id="IacucAlternateSearchDatabase-alternateSearchDbName" parent="IacucAlternateSearchDatabase-alternateSearchDbName-parentBean"/>
+    <bean abstract="true" id="IacucAlternateSearchDatabase-alternateSearchDbName-parentBean" parent="AttributeDefinition">
+        <property name="name" value="alternateSearchDbName"/>
+        <property name="forceUppercase" value="false"/>
+        <property name="label" value="Name"/>    
+    	<property name="required" value="true"/>
+        <property name="maxLength" value="2000"/>
+        <property name="validationPattern" >
+      <bean parent="AnyCharacterValidationPattern" p:allowWhitespace="true"/>
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AnyCharacterPatternConstraint">
+        <property name="allowWhitespace" value="true"/>
+      </bean>
+        </property>
+        <property name="control">
+            <bean p:size="5" parent="TextareaControlDefinition"/>
+        </property>
+    <property name="controlField">
+      <bean parent="Uif-TextAreaControl"/>
+    </property>
+        <property name="summary" value="Name"/>
+        <property name="description" value="Name"/>        
+    </bean>
+
+    <bean id="IacucAlternateSearchDatabase-versionNumber" parent="IacucAlternateSearchDatabase-versionNumber-parentBean"/>
+    <bean abstract="true" id="IacucAlternateSearchDatabase-versionNumber-parentBean" parent="AttributeReferenceDummy-versionNumber"/>
+    <!-- Business Object Inquiry Definition -->
+    <bean id="IacucAlternateSearchDatabase-inquiryDefinition" parent="IacucAlternateSearchDatabase-inquiryDefinition-parentBean"/>
+  <bean id="IacucAlternateSearchDatabase-InquiryView" parent="IacucAlternateSearchDatabase-InquiryView-parentBean"/>
+    <bean abstract="true" id="IacucAlternateSearchDatabase-inquiryDefinition-parentBean" parent="InquiryDefinition">
+        <property name="title" value="Code"/>
+        <property name="inquirySections">
+            <list>
+                <bean parent="InquirySectionDefinition">
+                    <property name="title" value="Code"/>
+                    <property name="numberOfColumns" value="1"/>
+                    <property name="inquiryFields">
+                        <list>
+                            <bean p:attributeName="alternateSearchDbCode" p:forceInquiry="true" parent="FieldDefinition"/>
+                            <bean p:attributeName="alternateSearchDbName" parent="FieldDefinition"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+  <bean id="IacucAlternateSearchDatabase-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView">
+    <property name="headerText" value="Code"/>
+    <property name="dataObjectClassName" value="org.kuali.kra.iacuc.threers.IacucAlternateSearchDatabase"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-GridSection">
+          <property name="headerText" value="Code"/>
+          <property name="layoutManager.numberOfColumns" value="2"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="alternateSearchDbCode" parent="Uif-DataField"/>
+              <bean p:propertyName="alternateSearchDbName" parent="Uif-DataField"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+    <!-- Business Object Lookup Definition -->
+    <bean id="IacucAlternateSearchDatabase-lookupDefinition" parent="IacucAlternateSearchDatabase-lookupDefinition-parentBean"/>
+  <bean id="IacucAlternateSearchDatabase-LookupView" parent="IacucAlternateSearchDatabase-LookupView-parentBean"/>
+    <bean abstract="true" id="IacucAlternateSearchDatabase-lookupDefinition-parentBean" parent="LookupDefinition">
+        <property name="title" value="IACUC Alternate Search Database Lookup"/><property name="defaultSort">
+      <bean parent="SortDefinition"/>
+        </property>
+        <property name="lookupFields">
+            <list>
+                <bean p:attributeName="alternateSearchDbCode" p:forceInquiry="true" parent="FieldDefinition"/>
+                <bean p:attributeName="alternateSearchDbName" parent="FieldDefinition"/>
+            </list>
+        </property>
+        <property name="resultFields">
+            <list>
+                <bean p:attributeName="alternateSearchDbCode" p:forceInquiry="true" parent="FieldDefinition"/>
+                <bean p:attributeName="alternateSearchDbName" parent="FieldDefinition"/>
+            </list>
+        </property>
+    </bean>
+
+  <bean id="IacucAlternateSearchDatabase-LookupView-parentBean" abstract="true" parent="Uif-LookupView">
+    <property name="dataObjectClassName" value="org.kuali.kra.iacuc.threers.IacucAlternateSearchDatabase"/>
+    <property name="headerText" value="IACUC Alternate Search Database Lookup"/>
+    <property name="criteriaFields">
+      <list>
+        <bean p:propertyName="alternateSearchDbCode" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="alternateSearchDbName" parent="Uif-LookupCriteriaInputField"/>
+      </list>
+    </property>
+    <property name="resultFields">
+      <list>
+        <bean p:propertyName="alternateSearchDbCode" parent="Uif-DataField"/>
+        <bean p:propertyName="alternateSearchDbName" parent="Uif-DataField"/>
+      </list>
+    </property>
+  </bean>
+
+</beans>

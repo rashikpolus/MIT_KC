@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<!-- Proposal Document View -->
+	<bean id="PropBudget-DefaultView" parent="PropBudget-DefaultView-parentBean" />
+	<bean id="PropBudget-DefaultView-parentBean" abstract="true"
+		parent="Uif-FormView" class="org.kuali.coeus.propdev.impl.budget.core.ProposalBudgetView"
+        p:headerText="Budget #@{budget.budgetVersionNumber}: @{budget.name}"
+		p:viewHelperService="#{#getService('proposalBudgetViewHelperService')}"
+		p:authorizer="#{#getService('proposalBudgetAuthorizer')}"
+		p:stickyApplicationHeader="true" p:stickyFooter="true"
+		p:breadcrumbs.render="false" p:cssClasses="uif-formView"
+		p:unifiedHeader="false" p:defaultBindingObjectPath=""
+		p:readOnly="@{!#view.editModes.containsKey(T(org.kuali.coeus.propdev.impl.budget.core.ProposalBudgetConstants.AuthConstants).MODIFY_BUDGET_EDIT_MODE)}"
+		p:render="@{#view.editModes.containsKey(T(org.kuali.coeus.propdev.impl.budget.core.ProposalBudgetConstants.AuthConstants).VIEW_BUDGET_EDIT_MODE)}">
+		<property name="context">
+			<map>
+				<entry key="budgetAuthConsts" value="@{T(org.kuali.coeus.propdev.impl.budget.core.ProposalBudgetConstants.AuthConstants)}"/>
+			</map>
+		</property>
+		<property name="additionalScriptFiles">
+			<list>
+				<value>scripts/common/dialog.js</value>
+                <value>scripts/common/wizard.js</value>
+				<value>scripts/common/inlineEdit.js</value>
+				<value>scripts/propdev/budget.js</value>
+			</list>
+		</property>
+		<property name="additionalCssFiles">
+			<list>
+				<value>css/common/inlineEdit.css</value>
+                <value>css/propdev/person.css</value>
+				<value>css/propdev/budget.css</value>
+				<value>css/common/lineItemTable.css</value>
+			</list>
+		</property>
+		<property name="header" ref="PropBudget-DocumentHeader" />
+		<property name="footer"><null/></property>
+		<property name="navigation" ref="PropBudget-Menu" />
+		<property name="entryPageId" value="PropBudget-PeriodsPage"/>
+		<property name="items">
+			<list>
+				<ref bean="PropBudget-PeriodsPage" />
+				<ref bean="PropBudget-RatesPage" />
+				<ref bean="PropBudget-ProjectPersonnelPage" />
+				<ref bean="PropBudget-AssignPersonnelToPeriodsPage" />
+				<ref bean="PropBudget-NonPersonnelCostsPage" />
+				
+				<ref bean="PropBudget-SinglePointEntryPage" />
+				
+				<ref bean="PropBudget-SubawardsPage" />
+				<ref bean="PropBudget-CostSharingPage" />
+                <ref bean="PropBudget-UnrecoveredFandAPage" />
+                <ref bean="PropBudget-ProjectIncomePage" />
+				<ref bean="PropBudget-ModularPage" />
+				<ref bean="PropBudget-NotesPage" />
+				<ref bean="PropBudget-SummaryPage" />
+                <ref bean="PropBudget-HierarchySummaryPage"/>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="PropBudget-Menu" parent="PropBudget-Menu-parentBean" />
+	<bean id="PropBudget-Menu-parentBean" abstract="true"
+		parent="Uif-MenuNavigationGroup" p:defaultItemIconClass="">
+		<property name="items">
+			<list>
+				<bean id="PropBudget-Menu-ReturnToProposal" parent="Uif-SecondaryActionButton-Mini"
+                      p:performClientSideValidation="true"
+                      p:methodToCall="openProposal" p:actionLabel="« Return to proposal"/>
+				<bean parent="PropBudget-NavigationMenu-PeriodsAndTotals" p:order="10" />
+				<bean parent="PropBudget-NavigationMenu-Rates" p:order="20" p:render="@{!budget.developmentProposal.isParent()}"/>
+				<bean parent="PropBudget-NavigationMenu-PersonnelCosts" p:order="30" />
+				<bean parent="PropBudget-NavigationMenu-NonPersonnelCosts" p:order="40" />
+				
+				<bean parent="PropBudget-NavigationMenu-SinglePointEntry" p:order="45" /> 
+				<!-- <bean parent="PropBudget-NavigationMenu-SinglePointEntry" p:order="45" p:render="@{isSPEEnabled()}"  /> -->
+				<bean parent="PropBudget-NavigationMenu-Subawards" p:order="50" />
+				<bean parent="PropBudget-NavigationMenu-InstitutionalCommitments" p:order="60" />
+				<bean parent="PropBudget-NavigationMenu-ProjectIncome" p:order="70" />
+				<bean parent="PropBudget-NavigationMenu-Modular" p:order="80" />
+				<bean parent="PropBudget-NavigationMenu-Notes" p:order="90" />
+				<bean parent="PropBudget-NavigationMenu-Summary" p:order="100" />
+                <bean parent="PropBudget-NavigationMenu-HierarchySummary" p:order="110" p:render="@{budget.developmentProposal.isInHierarchy()}" />
+			</list>
+		</property>
+	</bean>
+	<bean id="PropBudget-NavigationMenu-PeriodsAndTotals" parent="PropBudget-NavigationMenu-PeriodsAndTotals-parentBean" />
+	<bean id="PropBudget-NavigationMenu-PeriodsAndTotals-parentBean" abstract="true"
+		parent="Kc-MenuAction" p:navigateToPageId="PropBudget-PeriodsPage"
+		p:actionLabel="Periods &amp; Totals" p:iconClass="icon-sort-by-attributes-alt" />
+	<bean id="PropBudget-NavigationMenu-Rates" parent="PropBudget-NavigationMenu-Rates-parentBean" />
+	<bean id="PropBudget-NavigationMenu-Rates-parentBean" abstract="true"
+		parent="Kc-MenuAction" p:navigateToPageId="PropBudget-RatesPage"
+		p:actionLabel="Rates" p:iconClass="icon-tasks" />
+	<bean id="PropBudget-NavigationMenu-PersonnelCosts" parent="PropBudget-NavigationMenu-PersonnelCosts-parentBean" />
+	<bean id="PropBudget-NavigationMenu-PersonnelCosts-parentBean" abstract="true"
+		parent="Uif-SidebarToggleMenu" p:toggleText="Personnel Costs" p:iconClass="icon-user3">
+		<property name="menuItems">
+			<list>
+				<bean parent="Kc-MenuAction" p:navigateToPageId="PropBudget-ProjectPersonnelPage"
+					p:actionLabel="Project Personnel" p:order="10" />
+				<bean parent="Kc-MenuAction" p:navigateToPageId="PropBudget-AssignPersonnelToPeriodsPage"
+					p:actionLabel="Assign Personnel to Periods" p:order="20" />
+			</list>
+		</property>
+	</bean>
+	<bean id="PropBudget-NavigationMenu-NonPersonnelCosts" parent="PropBudget-NavigationMenu-NonPersonnelCosts-parentBean" />
+	<bean id="PropBudget-NavigationMenu-NonPersonnelCosts-parentBean" abstract="true"
+		parent="Kc-MenuAction" p:navigateToPageId="PropBudget-NonPersonnelCostsPage"
+		p:actionLabel="Non-Personnel Costs" p:iconClass="icon-file" />
+		
+	<bean id="PropBudget-NavigationMenu-SinglePointEntry" parent="PropBudget-NavigationMenu-SinglePointEntry-parentBean" />
+	<bean id="PropBudget-NavigationMenu-SinglePointEntry-parentBean" abstract="true"
+		parent="Uif-MenuAction" p:navigateToPageId="PropBudget-SinglePointEntryPage"
+		p:actionLabel="Single Point Entry" p:iconClass="icon-bell2" />
+		
+		
+	<bean id="PropBudget-NavigationMenu-Subawards" parent="PropBudget-NavigationMenu-Subawards-parentBean" />
+	<bean id="PropBudget-NavigationMenu-Subawards-parentBean" abstract="true"
+		parent="Kc-MenuAction" p:navigateToPageId="PropBudget-SubawardsPage"
+        p:actionLabel="Subawards" p:iconClass="icon-paper-clip"/>
+	<bean id="PropBudget-NavigationMenu-InstitutionalCommitments" parent="PropBudget-NavigationMenu-InstitutionalCommitments-parentBean" />
+	<bean id="PropBudget-NavigationMenu-InstitutionalCommitments-parentBean" abstract="true"
+		parent="Uif-SidebarToggleMenu" p:toggleText="Institutional Commitments" p:iconClass="icon-bell2">
+		<property name="menuItems">
+			<list>
+				<bean parent="Kc-MenuAction" p:navigateToPageId="PropBudget-CostSharingPage"
+					p:actionLabel="Cost Sharing" p:order="10" />
+				<bean parent="Kc-MenuAction" p:navigateToPageId="PropBudget-UnrecoveredFandAPage"
+					p:actionLabel="Unrecovered F &amp; A" p:order="20" />
+			</list>
+		</property>
+	</bean>      
+	<bean id="PropBudget-NavigationMenu-ProjectIncome" parent="PropBudget-NavigationMenu-ProjectIncome-parentBean" />
+	<bean id="PropBudget-NavigationMenu-ProjectIncome-parentBean"
+		abstract="true" parent="Kc-MenuAction" p:navigateToPageId="PropBudget-ProjectIncomePage"
+		p:actionLabel="Project Income" p:iconClass="icon-money" />
+	<bean id="PropBudget-NavigationMenu-Modular" parent="PropBudget-NavigationMenu-Modular-parentBean" />
+	<bean id="PropBudget-NavigationMenu-Modular-parentBean" parent="Kc-MenuAction"
+		p:navigateToPageId="PropBudget-ModularPage" p:actionLabel="Modular"
+		p:iconClass="icon-ok" />
+	<bean id="PropBudget-NavigationMenu-Notes" parent="PropBudget-NavigationMenu-Notes-parentBean" />
+	<bean id="PropBudget-NavigationMenu-Notes-parentBean"
+		abstract="true" parent="Kc-MenuAction" p:navigateToPageId="PropBudget-NotesPage"
+		p:actionLabel="Budget Notes" p:iconClass="icon-th-list" />
+	<bean id="PropBudget-NavigationMenu-Summary" parent="PropBudget-NavigationMenu-Summary-parentBean" />
+	<bean id="PropBudget-NavigationMenu-Summary-parentBean" parent="Kc-MenuAction"
+		p:navigateToPageId="PropBudget-SummaryPage" p:actionLabel="Budget Summary" p:iconClass="icon-file"/>
+
+    <bean id="PropBudget-NavigationMenu-HierarchySummary" parent="PropBudget-NavigationMenu-HierarchySummary-parentBean" />
+    <bean id="PropBudget-NavigationMenu-HierarchySummary-parentBean" parent="Kc-MenuAction"
+          p:navigateToPageId="PropBudget-HierarchySummaryPage" p:actionLabel="Hierarchy Summary" p:iconClass="icon-list-ol"/>
+
+    <bean id="PropBudget-DocumentHeader" parent="PropBudget-DocumentHeader-parentBean" />
+	<bean id="PropBudget-DocumentHeader-parentBean" abstract="true"
+		parent="Uif-ViewHeader" p:headerText="Budget: Version 1"
+		p:areaTitleText="[action=openProposal]Proposal #@{budget.developmentProposal.proposalNumber}[/action] &gt; Budget #@{budget.budgetVersionNumber}">
+		<property name="rightGroup">
+			<bean parent="Uif-VerticalBoxGroup" p:additionalCssClasses="uif-documentInfo">
+				<property name="items">
+					<list>
+						<bean parent="Uif-MessageField" p:label="Marked For Submission"
+							p:messageText="@{#ViewHelper.isBudgetMarkedForSubmission(developmentProposal.finalBudget, budget) ? 'Yes' : 'No'}" p:order="10" />
+                        <bean parent="Uif-MessageField" p:messageText="@{#ViewHelper.getDateFromTimeStamp(budget.createTimestamp)}"
+                            p:label="Created" p:order="20" />
+						<bean parent="Uif-MessageField" p:label="Proposal"
+							p:messageText="#@{budget.developmentProposal.proposalNumber}"
+							p:order="30" />
+						<bean parent="PropBudget-DocumentHeader-MoreInfo" p:order="40" />
+					</list>
+				</property>
+			</bean>
+		</property>
+		<property name="lowerGroup">
+			<bean parent="Uif-ActionBar">
+				<property name="items">
+					<list>
+                        <bean parent="Uif-Message" p:renderWrapperTag="false" p:refreshWhenChangedPropertyNames="auditActivated" p:order="10">
+                            <property name="messageText" value="[0] @{auditActivated?'[color=#090](on)[/color]':'[color=red](off)[/color]'}"/>
+                            <property name="inlineComponents">
+                                <list>
+                                    <bean parent="Uif-ActionLink" p:methodToCall="validateData"
+                                          p:actionLabel="Data Validation"
+                                          p:iconClass="icon-ok"
+                                          p:style="padding-left:0px;margin-right:0px"
+                                          p:order="10"
+                                          p:performClientSideValidation="true"
+										  p:refreshId="DataValidationSection"/>
+                                </list>
+                            </property>
+                        </bean>
+						<bean parent="Uif-ActionLink" p:actionScript="showDialog('PropBudget-BudgetSettings-Dialog');"
+							p:actionLabel="Budget Settings" p:iconClass="icon-cog" p:order="20" />
+						<bean parent="Uif-ActionLink" p:actionLabel="Hierarchy @{budget.developmentProposal.isChild() ? '(C)' : budget.developmentProposal.isParent() ? '(P)' : ''}" 
+							p:render="@{(#parent.readOnly and budget.developmentProposal.inHierarchy) or not #parent.readOnly}"
+							p:iconClass="icon-list-ol" p:order="30"  p:actionScript="showDialog('PropBudget-HierachySection');" />							
+						<bean parent="Uif-ActionLink" p:actionLabel="Summary" p:methodToCall="populateBudgetSummary" p:additionalSubmitData="budgetId:@{budget.budgetId}"
+							p:iconClass="icon-eye" p:order="40" />
+						<bean parent="Uif-ActionLink" p:actionLabel="Budget Versions" p:actionScript="showDialog('PropBudget-BudgetVersions-Dialog');"
+							p:iconClass="icon-money" p:order="50" />
+						<bean parent="Uif-ActionLink" p:actionLabel="Autocalculate Periods" p:methodToCall="generateAllPeriods"
+							  p:render="@{!#ViewHelper.budgetLineItemsExistInLaterPeriods(budget.budgetPeriods) and !viewOnly and canEditView}"
+							  p:iconClass="icon-stack" p:order="60">
+								<property name="confirmationDialog">
+									<bean parent="Uif-DialogGroup-YesNo"
+										  p:promptText="Have you completed your period 1 budget?  Once you Autocalculate all periods you will not be able to take this action again unless you delete the line items from all periods after Period 1." />
+								</property>
+								</bean>
+                        <bean parent="PropBudget-HelpMenu" p:order="70"/>
+                    </list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="PropBudget-DocumentHeader-MoreInfo" parent="PropBudget-DocumentHeader-MoreInfo-parentBean" />
+	<bean id="PropBudget-DocumentHeader-MoreInfo-parentBean" abstract="true"
+		parent="Uif-DropdownToggleMenu" p:toggleText="more..."
+		p:toggleCaretClass="">
+		<property name="menuGroup">
+			<bean parent="Uif-DropdownTable"
+				p:layoutManager.libraryCssClasses="table,table-condensed"
+				p:headerText="Budget Info">
+				<property name="items">
+					<list>
+						<bean parent="Uif-MessageField"
+							p:messageText="@{budget.developmentProposal.principalInvestigatorName}"
+							p:fieldLabel.renderColon="false" p:label="PI" p:order="10" />
+						<bean parent="Uif-MessageField" p:messageText="@{budget.createTimestamp}"
+							p:fieldLabel.renderColon="false" p:label="Created" p:order="20" />
+                        <bean parent="Uif-MessageField" p:messageText="@{budget.createUser}"
+                              p:fieldLabel.renderColon="false" p:label="Created By" p:order="30" />
+						<bean parent="Uif-MessageField" p:messageText="@{budget.updateTimestamp}"
+							p:fieldLabel.renderColon="false" p:label="Updated" p:order="40" />
+                        <bean parent="Uif-MessageField" p:messageText="@{budget.updateUser}"
+                              p:fieldLabel.renderColon="false" p:label="Updated By" p:order="50" />
+						<bean parent="Uif-MessageField" p:messageText="@{budget.developmentProposal.proposalNumber}"
+							p:fieldLabel.renderColon="false" p:label="Proposal Nbr" p:order="60" />
+						<bean parent="Uif-MessageField"
+							p:messageText="@{budget.developmentProposal.sponsorName}"
+							p:fieldLabel.renderColon="false" p:label="Sponsor Name" p:order="70" />
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="PropBudget-UnderDevelopmentPage" parent="PropBudget-UnderDevelopmentPage-parentBean" />
+	<bean id="PropBudget-UnderDevelopmentPage-parentBean" abstract="true"
+		parent="Uif-DocumentPage">
+		<property name="items">
+			<list merge="false">
+				<bean parent="Uif-HeaderOne" p:headerText="Under Construction" />
+			</list>
+		</property>
+		<property name="header">
+			<bean parent="Uif-PageHeader" />
+		</property>
+		<property name="footer">
+			<null />
+		</property>
+	</bean>
+	
+	<bean id="PropBudget-BudgetVersions-Dialog" parent="PropBudget-BudgetVersions-Dialog-parentBean"/>
+	<bean id="PropBudget-BudgetVersions-Dialog-parentBean" abstract="true" parent="Uif-DialogGroup"
+		p:dialogCssClass="modal-lg" p:headerText="Budgets">
+		<property name="items">
+			<list>
+				<bean parent="PropBudget-BudgetVersions-Collection" p:order="10"/>
+			</list>
+		</property>
+		<property name="footer.items">
+			<list>
+				<bean parent="Uif-DialogDismissButton" p:actionLabel="Okay"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="PropBudget-BudgetVersions-Collection" parent="PropBudget-BudgetVersions-Collection-parentBean"/>
+	<bean id="PropBudget-BudgetVersions-Collection-parentBean" abstract="true" parent="PropDev-BudgetVersions-GenericCollection"
+		p:propertyName="budget.budgetParent.budgets" p:headerText="" p:readOnly="@{#parent.readOnly}">
+		<property name="layoutManager.conditionalRowCssClasses">
+           <map>
+               <entry key="@{#line.budgetId == developmentProposal.finalBudget?.budgetId}" value="finalBudget"/>
+           </map>
+		</property>
+	</bean>
+	
+	<bean id="PropBudget-ActivityTypeChanged-Dialog" parent="PropBudget-ActivityTypeChanged-Dialog-parentBean"/>
+	<bean id="PropBudget-ActivityTypeChanged-Dialog-parentBean" abstract="true" parent="PropBudget-PromptToSyncRates-Dialog"
+		p:promptText="The Activity Type has been changed. Do you want to sync budget rates?"/>
+	<bean id="PropBudget-NoRates-Dialog" parent="PropBudget-NoRates-Dialog-parentBean"/>
+	<bean id="PropBudget-NoRates-Dialog-parentBean" abstract="true" parent="PropBudget-PromptToSyncRates-Dialog"
+		p:promptText="There are no rates associated with this budget.  Do you want to attempt syncing the rates?"/>
+	<bean id="PropBudget-PromptToSyncRates-Dialog" abstract="true" parent="PropBudget-PromptToSyncRates-Dialog-parentBean"/>
+	<bean id="PropBudget-PromptToSyncRates-Dialog-parentBean" abstract="true" parent="Uif-DialogGroup"
+		p:headerText="Sync Budget Rates?"
+		p:dialogCssClass="modal-sm">	
+		<property name="footer.items">
+      		<list>
+				<bean parent="Uif-DialogDismissButton" p:actionLabel="No" p:order="10"/>
+				<bean parent="Uif-PrimaryActionButton" p:actionLabel="Yes" p:order="20" p:dialogDismissOption="REQUEST"
+					p:methodToCall="syncAllRates" p:ajaxSubmit="false"/>
+			</list>
+		</property>
+	</bean>
+
+    <bean id="PropBudget-HelpMenu" parent="PropBudget-HelpMenu-parentBean"/>
+    <bean id="PropBudget-HelpMenu-parentBean" abstract="true" p:toggleText="Help"
+          parent="Uif-DropdownToggleMenu" p:iconClass="icon-question">
+        <property name="wrapperCssClasses">
+            <list merge="true">
+                <value>kc-help-menu</value>
+            </list>
+        </property>
+        <property name="menuItems">
+            <list>
+                <bean parent="Uif-Link" p:target="_blank" p:linkText="Periods &amp; Totals"
+                      p:href="@{#ConfigProperties['application.url']}/static/help/default.htm?turl=Documents/periodstotals.htm"/>
+                <bean parent="Uif-Link" p:target="_blank" p:linkText="Rates"
+                      p:href="@{#ConfigProperties['application.url']}/static/help/default.htm?turl=Documents/rates.htm"/>
+                <bean parent="Uif-MenuDivider"/>
+                <bean parent="Uif-MenuHeader" p:messageText="Personnel Costs"/>
+                <bean parent="Uif-Link" p:target="_blank" p:linkText="Project Personnel"
+                      p:href="@{#ConfigProperties['application.url']}/static/help/default.htm?turl=Documents/projectpersonnel.htm"/>
+                <bean parent="Uif-Link" p:target="_blank" p:linkText="Assign Personnel to Periods"
+                      p:href="@{#ConfigProperties['application.url']}/static/help/default.htm?turl=Documents/assignpersonneltoperiods.htm"/>
+                <bean parent="Uif-MenuDivider"/>
+                <bean parent="Uif-Link" p:target="_blank" p:linkText="Non-Personnel Costs"
+                      p:href="@{#ConfigProperties['application.url']}/static/help/default.htm?turl=Documents/nonpersonnelcosts.htm"/>
+                <bean parent="Uif-Link" p:target="_blank" p:linkText="Subawards"
+                      p:href="@{#ConfigProperties['application.url']}/static/help/default.htm?turl=Documents/subawards.htm"/>
+                <bean parent="Uif-MenuDivider"/>
+                <bean parent="Uif-MenuHeader" p:messageText="Institutional Commitments"/>
+                <bean parent="Uif-Link" p:target="_blank" p:linkText="Cost Sharing"
+                      p:href="@{#ConfigProperties['application.url']}/static/help/default.htm?turl=Documents/institutionalcommitments.htm"/>
+                <bean parent="Uif-Link" p:target="_blank" p:linkText="Project Income"
+                      p:href="@{#ConfigProperties['application.url']}/static/help/default.htm?turl=Documents/projectincome.htm"/>
+                <bean parent="Uif-Link" p:target="_blank" p:linkText="Modular"
+                      p:href="@{#ConfigProperties['application.url']}/static/help/default.htm?turl=Documents/modularbudget.htm"/>
+                <bean parent="Uif-Link" p:target="_blank" p:linkText="Budget Notes"
+                      p:href="@{#ConfigProperties['application.url']}/static/help/default.htm?turl=Documents/budgetnotes.htm"/>
+                <bean parent="Uif-Link" p:target="_blank" p:linkText="Budget Summary"
+                      p:href="@{#ConfigProperties['application.url']}/static/help/default.htm?turl=Documents/budgetsummary.htm"/>
+                <bean parent="Uif-Link" p:target="_blank" p:linkText="Glossary of Terms"
+                      p:href="@{#ConfigProperties['application.url']}/static/help/default.htm?turl=Documents/glossaryofterms.htm"/>
+            </list>
+        </property>
+    </bean>
+
+</beans>

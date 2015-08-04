@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="Questionnaire" parent="Questionnaire-parentBean" />
+    <bean id="Questionnaire-parentBean" abstract="true" parent="BusinessObjectEntry">
+        <property name="businessObjectClass" value="org.kuali.coeus.common.questionnaire.framework.core.Questionnaire" />
+		<property name="objectLabel" value="Questionnaire" />
+        <property name="inquiryDefinition" >
+            <ref bean="Questionnaire-inquiryDefinition" />
+        </property>
+        <property name="lookupDefinition" >
+            <ref bean="Questionnaire-lookupDefinition" />
+        </property>
+        <property name="helpDefinition" >
+            <bean parent="HelpDefinition" p:parameterNamespace="KC-QUESTIONNAIRE" p:parameterName="questionnaireQuestionnaireHelpUrl" p:parameterDetailType="Document" />
+        </property>
+        <property name="titleAttribute" value="questionnaireSeqId" />
+        <property name="attributes" >
+            <list>
+                <ref bean="Questionnaire-id" />
+                <ref bean="Questionnaire-questionnaireSeqId" />
+                <ref bean="Questionnaire-sequenceNumber" />
+                <ref bean="Questionnaire-name" />
+                <ref bean="Questionnaire-fileName" />
+                <ref bean="Questionnaire-description" />
+                <ref bean="Questionnaire-active" />
+                <ref bean="Questionnaire-versionNumber" />
+                <ref bean="Questionnaire-documentNumber" />
+            </list>
+        </property>
+    </bean>
+
+    <!-- Attribute Definitions -->
+
+    <bean id="Questionnaire-id" parent="Questionnaire-id-parentBean" />
+    <bean id="Questionnaire-id-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="id" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Questionnaire Ref Id" />
+        <property name="shortLabel" value="Questionnaire Ref Id" />
+        <property name="maxLength" value="10" />
+        <property name="validationPattern" >
+            <bean parent="NumericValidationPattern" />
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+        <property name="control" >
+      <bean parent="TextControlDefinition" p:size="10"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="10" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="Questionnaire Ref Id" />
+        <property name="description" value="Questionnaire Ref Id" />
+    </bean>
+    
+    <bean id="Questionnaire-questionnaireSeqId" parent="Questionnaire-questionnaireSeqId-parentBean" />
+    <bean id="Questionnaire-questionnaireSeqId-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="questionnaireSeqId" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Questionnaire Id" />
+        <property name="shortLabel" value="Questionnaire Id" />
+        <property name="maxLength" value="6" />
+        <property name="validationPattern" >
+            <bean parent="NumericValidationPattern" />
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+        <property name="control" >
+      <bean parent="TextControlDefinition" p:size="6"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="6" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="Questionnaire Id" />
+        <property name="description" value="Questionnaire Id" />
+    </bean>
+    <bean id="Questionnaire-documentNumber" parent="Questionnaire-documentNumber-parentBean" />
+    <bean id="Questionnaire-documentNumber-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="documentNumber" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Document Number" />
+        <property name="shortLabel" value="Document Number" />
+        <property name="maxLength" value="10" />
+        <property name="validationPattern" >
+            <bean parent="NumericValidationPattern" />
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+        <property name="control" >
+      <bean parent="TextControlDefinition" p:size="10"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="10" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="Document Number" />
+        <property name="description" value="Document Number" />
+    </bean>
+
+    <bean id="Questionnaire-sequenceNumber" parent="Questionnaire-sequenceNumber-parentBean" />
+  <bean id="Questionnaire-sequenceNumber-parentBean" abstract="true" parent="KraAttributeReferenceDummy-sequenceNumber"/>
+    <bean id="Questionnaire-name" parent="Questionnaire-name-parentBean" />
+    <bean id="Questionnaire-name-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="name" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Name" />
+        <property name="shortLabel" value="Name" />
+        <property name="maxLength" value="50" />
+    	<property name="required" value="true" />
+        <property name="validationPattern" >
+      <bean parent="AnyCharacterValidationPattern" p:allowWhitespace="true"/>
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AnyCharacterPatternConstraint">
+        <property name="allowWhitespace" value="true"/>
+      </bean>
+        </property>
+        <property name="control" >
+      <bean parent="TextControlDefinition" p:size="10"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="10" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="Name" />
+        <property name="description" value="Name" />
+    </bean>
+
+    <bean id="Questionnaire-fileName" parent="Questionnaire-fileName-parentBean" />
+    <bean id="Questionnaire-fileName-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="fileName" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Template Name" />
+        <property name="shortLabel" value="Template Name" />
+        <property name="maxLength" value="1000" />
+        <property name="validationPattern" >
+      <bean parent="AnyCharacterValidationPattern" p:allowWhitespace="true"/>
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AnyCharacterPatternConstraint">
+        <property name="allowWhitespace" value="true"/>
+      </bean>
+        </property>
+        <property name="control" >
+      <bean parent="TextControlDefinition" p:size="30"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="30" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="Template Name" />
+        <property name="description" value="Template Name" />
+    </bean>
+
+    <bean id="Questionnaire-description" parent="Questionnaire-description-parentBean" />
+  	<bean id="Questionnaire-description-parentBean" abstract="true" parent="KraAttributeReferenceDummy-description">
+        <property name="maxLength" value="2000" />
+    	<property name="required" value="true" />
+    </bean>
+
+    <bean id="Questionnaire-active" parent="Questionnaire-active-parentBean" />
+    <bean id="Questionnaire-active-parentBean" abstract="true" parent="AttributeReferenceDummy-genericBoolean" >
+        <property name="name" value="active" />
+        <property name="label" value="Active" />
+        <property name="shortLabel" value="Active" />
+        <property name="summary" value="Is Active" />
+        <property name="description" value="Is Active" />
+    </bean>
+
+    <bean id="Questionnaire-versionNumber" parent="Questionnaire-versionNumber-parentBean" />
+  <bean id="Questionnaire-versionNumber-parentBean" abstract="true" parent="AttributeReferenceDummy-versionNumber"/>
+    <!-- Business Object Inquiry Definition -->
+    <bean id="Questionnaire-inquiryDefinition" parent="Questionnaire-inquiryDefinition-parentBean" />
+  <bean id="Questionnaire-InquiryView" parent="Questionnaire-InquiryView-parentBean"/>
+    <bean id="Questionnaire-inquiryDefinition-parentBean" abstract="true" parent="InquiryDefinition">
+        <property name="title" value="Questionnaire Id" />
+        <property name="inquirySections" >
+            <list>
+                <bean parent="InquirySectionDefinition">
+                    <property name="title" value="Questionnaire Id" />
+                    <property name="numberOfColumns" value="1" />
+                    <property name="inquiryFields" >
+                        <list>
+              <bean parent="FieldDefinition" p:attributeName="id" p:forceInquiry="true"/>
+              <bean parent="FieldDefinition" p:attributeName="questionnaireSeqId" p:forceInquiry="true"/>
+              <bean parent="FieldDefinition" p:attributeName="name"/>
+              <bean parent="FieldDefinition" p:attributeName="sequenceNumber"/>
+              <bean parent="FieldDefinition" p:attributeName="description"/>
+              <bean parent="FieldDefinition" p:attributeName="active"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="Questionnaire-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView">
+    <property name="headerText" value="Questionnaire Id"/>
+    <property name="dataObjectClassName" value="org.kuali.coeus.common.questionnaire.framework.core.Questionnaire"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-GridSection">
+          <property name="headerText" value="Questionnaire Id"/>
+          <property name="layoutManager.numberOfColumns" value="2"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="id" parent="Uif-DataField"/>
+              <bean p:propertyName="questionnaireSeqId" parent="Uif-DataField"/>
+              <bean p:propertyName="name" parent="Uif-DataField"/>
+              <bean p:propertyName="sequenceNumber" parent="Uif-DataField"/>
+              <bean p:propertyName="description" parent="Uif-DataField"/>
+              <bean p:propertyName="active" parent="Uif-DataField"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Business Object Lookup Definition -->
+    <bean id="Questionnaire-lookupDefinition" parent="Questionnaire-lookupDefinition-parentBean" />
+  <bean id="Questionnaire-LookupView" parent="Questionnaire-LookupView-parentBean"/>
+    <bean id="Questionnaire-lookupDefinition-parentBean" abstract="true" parent="LookupDefinition">
+        <property name="title" value="Questionnaire Lookup" />
+        <property name="lookupableID" value="questionnaireLookupable" /><property name="defaultSort" >
+      <bean parent="SortDefinition"/>
+        </property>
+        <property name="lookupFields" >
+            <list>
+        <bean parent="FieldDefinition" p:attributeName="id" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="questionnaireSeqId" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="name"/>
+        <bean parent="FieldDefinition" p:attributeName="sequenceNumber"/>
+        <bean parent="FieldDefinition" p:attributeName="description"/>
+        <bean parent="FieldDefinition" p:attributeName="active"/>
+            </list>
+        </property>
+        <property name="resultFields" >
+            <list>
+        <bean parent="FieldDefinition" p:attributeName="id" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="questionnaireSeqId" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="name"/>
+        <bean parent="FieldDefinition" p:attributeName="sequenceNumber"/>
+        <bean parent="FieldDefinition" p:attributeName="description"/>
+        <bean parent="FieldDefinition" p:attributeName="active"/>
+            </list>
+        </property>
+    </bean>
+
+  <bean id="Questionnaire-LookupView-parentBean" abstract="true" parent="Uif-LookupView">
+    <property name="dataObjectClassName" value="org.kuali.coeus.common.questionnaire.framework.core.Questionnaire"/>
+    <property name="headerText" value="Questionnaire Lookup"/>
+    <property name="criteriaFields">
+      <list>
+        <bean p:propertyName="id" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="questionnaireSeqId" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="name" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="sequenceNumber" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="description" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="active" parent="Uif-LookupCriteriaInputField"/>
+      </list>
+    </property>
+    <property name="resultFields">
+      <list>
+        <bean p:propertyName="id" parent="Uif-DataField"/>
+        <bean p:propertyName="questionnaireSeqId" parent="Uif-DataField"/>
+        <bean p:propertyName="name" parent="Uif-DataField"/>
+        <bean p:propertyName="sequenceNumber" parent="Uif-DataField"/>
+        <bean p:propertyName="description" parent="Uif-DataField"/>
+        <bean p:propertyName="active" parent="Uif-DataField"/>
+      </list>
+    </property>
+  </bean>
+
+</beans>

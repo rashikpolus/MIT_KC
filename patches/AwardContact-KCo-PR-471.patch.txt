@@ -1,0 +1,69 @@
+From 887b8a0c110d14ca9f5cee73b8a2c4ccd51cf1e2 Mon Sep 17 00:00:00 2001
+From: Gayathri <gathreya@email.arizona.edu>
+Date: Thu, 28 May 2015 10:23:20 -0700
+Subject: [PATCH] RESKC-490: Allow same person to be added under different
+ roles. As an Award Maintainer, I need to set up new, and maintain existing
+ Awards. When adding Unit and Sponsor Contacts, I sometimes need to add the
+ person to multiple project roles. This usually occurs with small/independent
+ industrial and foundation sponsors in the Sponsor Contacts; and with small
+ internal departments in the Unit Contacts panel. Currently, the system will
+ not let me add the same person to multiple roles. I get an error message on
+ the top of the page, and a specific error above the panel identifying the
+ person saying they are already added to contacts.
+
+Steps to reproduce:
+1 Either create a new award, or open an existing award in Edit mode.
+2 Select a Transaction type on the Award panel.
+3 Click the Contacts tab to open
+4 Expand the Sponsor Contacts panel.
+5 Search for an address book person to add; select a project role; Add.
+6 Search the address book again for the same id added in step 5; select a different project role. Add.
+Result: Error on page and above panel stating that the person already exists.
+Desired Result: Allow duplicates for all Award contacts; Sponsor, Unit, Central Admin.
+---
+ .../kra/award/contacts/AwardSponsorContactAddRuleImpl.java     | 10 +++-------
+ coeus-impl/src/main/resources/ApplicationResources.properties  |  2 +-
+ 2 files changed, 4 insertions(+), 8 deletions(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/award/contacts/AwardSponsorContactAddRuleImpl.java b/coeus-impl/src/main/java/org/kuali/kra/award/contacts/AwardSponsorContactAddRuleImpl.java
+index c4cbae0..25aec6a 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/award/contacts/AwardSponsorContactAddRuleImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/award/contacts/AwardSponsorContactAddRuleImpl.java
+@@ -27,11 +27,7 @@
+ public class AwardSponsorContactAddRuleImpl extends BaseAwardContactAddRule {
+     public static final String AWARD_SPONSOR_CONTACT_LIST_ERROR_KEY = "sponsorContactsBean.newAwardContact";
+     public static final String ERROR_AWARD_SPONSOR_CONTACT_EXISTS = "error.awardSponsorContact.person.exists";
+-    
+-    /**
+-     * @param event
+-     * @return
+-     */
++
+     public boolean processAddAwardSponsorContactBusinessRules(Award award, AwardSponsorContact newContact) {
+         return checkForSelectedContactAndRole(newContact, AWARD_SPONSOR_CONTACT_LIST_ERROR_KEY) && checkForDuplicatePerson(award, newContact);
+     }
+@@ -39,9 +35,9 @@ public boolean processAddAwardSponsorContactBusinessRules(Award award, AwardSpon
+     boolean checkForDuplicatePerson(Award award, AwardSponsorContact newContact) {
+         boolean valid = true;
+         for(AwardSponsorContact unitContact: award.getSponsorContacts()) {
+-            valid = !unitContact.getRolodexId().equals(newContact.getRolodexId());
++            valid = !(unitContact.getRolodexId().equals(newContact.getRolodexId()) && unitContact.getRoleCode().equalsIgnoreCase(newContact.getContactRoleCode()));
+             if(!valid) {
+-                GlobalVariables.getMessageMap().putError(AWARD_SPONSOR_CONTACT_LIST_ERROR_KEY, ERROR_AWARD_SPONSOR_CONTACT_EXISTS, newContact.getFullName());
++                GlobalVariables.getMessageMap().putError(AWARD_SPONSOR_CONTACT_LIST_ERROR_KEY, ERROR_AWARD_SPONSOR_CONTACT_EXISTS, newContact.getFullName(), newContact.getContactRole().getRoleDescription());
+                 break;
+             }
+         }
+diff --git a/coeus-impl/src/main/resources/ApplicationResources.properties b/coeus-impl/src/main/resources/ApplicationResources.properties
+index db3daa8..dd696b1 100644
+--- a/coeus-impl/src/main/resources/ApplicationResources.properties
++++ b/coeus-impl/src/main/resources/ApplicationResources.properties
+@@ -195,7 +195,7 @@ error.awardReportTermItem.noReportTracking=There are no report tracking records
+ error.awardReportTermRecipientItem.notunique=A duplicate Recipient has already been added for this Report.
+ error.both.sponsor.and.rolodex.are.selected=Please select {0} or {1}. Both can not be selected.
+ error.both.sponsor.and.rolodex.are.not.selected={0} or {1} must be selected.
+-error.awardSponsorContact.person.exists={0} is already added to the Award Sponsor Contacts
++error.awardSponsorContact.person.exists={0} is already added to the Award Sponsor Contacts with the role {1}.
+ error.awardSponsorTerm.duplicate.term=This Sponsor Term is duplicated.
+ error.awardSponsorTerm.invalid.term=The Sponsor Term {0} is invalid.
+ error.awardSponsorTerm.no.term=No Sponsor Term selected.

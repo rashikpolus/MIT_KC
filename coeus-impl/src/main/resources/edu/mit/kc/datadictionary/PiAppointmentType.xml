@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	   http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	<bean id="PiAppointmentType" parent="PiAppointmentType-parentBean" />
+	<bean id="PiAppointmentType-parentBean" abstract="true" parent="BusinessObjectEntry">
+		<property name="businessObjectClass" value="edu.mit.kc.bo.PiAppointmentType" />
+        <property name="objectLabel" value="PI Appointment Types" />
+        <!--  
+        <property name="lookupDefinition" >
+            <ref bean="PiAppointmentType-lookupDefinition" />
+        </property>
+		-->
+		 <property name="titleAttribute" value="typeCode"/>
+ 		<property name="attributes">
+			<list>
+				<ref bean="PiAppointmentType-typeCode" />
+				<ref bean="PiAppointmentType-description" />			
+			</list>
+		</property>
+	</bean>
+
+	<!-- Attribute Definitions -->
+	<bean id="PiAppointmentType-typeCode" parent="PiAppointmentType-typeCode-parentBean" />
+	<bean id="PiAppointmentType-typeCode-parentBean" abstract="true" parent="AttributeDefinition" >
+		<property name="name" value="typeCode" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Type Code" />
+        <property name="shortLabel" value="Type Code" />
+        <property name="maxLength" value="3" />
+        <property name="control" >
+            <bean parent="TextControlDefinition"
+                p:size="10" />
+        </property>
+        <property name="summary" value="Type Code" />
+        <property name="description" value="Type Code" />
+	</bean>
+	
+	<bean id="PiAppointmentType-description" parent="PiAppointmentType-description-parentBean" />
+	<bean id="PiAppointmentType-description-parentBean" abstract="true" parent="AttributeDefinition">
+		<property name="name" value="description" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Description" />
+        <property name="shortLabel" value="Description" />
+        <property name="maxLength" value="50" />
+        <property name="validationPattern" >
+            <bean parent="AlphaNumericValidationPattern" />
+        </property>
+        <property name="control" >
+            <bean parent="TextControlDefinition"
+                p:size="20" />
+        </property>
+        <property name="summary" value="Description" />
+        <property name="description" value="Description" />
+    </bean>
+		
+	<!-- 
+	<bean id="PiAppointmentType-typeCode" parent="PiAppointmentType-typeCode-parentBean" />
+	<bean id="PiAppointmentType-typeCode-parentBean" abstract="true"
+		parent="AttributeDefinition" p:name="typeCode" p:forceUppercase="false"
+		p:label="Type Code" p:shortLabel="Type Code" p:summary="Type Code"
+		p:description="">
+		<property name="validationPattern">
+			<bean parent="AnyCharacterValidationPattern" />
+		</property>
+		<property name="validCharactersConstraint">
+			<bean parent="AnyCharacterPatternConstraint" />
+		</property>
+		<property name="control">
+			<bean parent="TextControlDefinition" p:size="8" />
+		</property>
+		<property name="controlField">
+			<bean parent="Uif-TextControl" p:size="14" />
+		</property>
+	</bean>
+	<bean id="PiAppointmentType-description" parent="PiAppointmentType-description-parentBean" />
+	<bean id="PiAppointmentType-description-parentBean" parent="AttributeDefinition"
+		abstract="true" p:name="description" p:forceUppercase="true" p:label="Description"
+		p:shortLabel="Description" p:summary="Description" p:description="Description">
+		<property name="validationPattern">
+			<bean parent="AnyCharacterValidationPattern" />
+		</property>
+		<property name="validCharactersConstraint">
+			<bean parent="AnyCharacterPatternConstraint" />
+		</property>
+		<property name="control">
+			<bean parent="TextControlDefinition" p:size="8" />
+		</property>
+		<property name="controlField">
+			<bean parent="Uif-TextControl" p:size="15" />
+		</property>
+	</bean>
+	 -->
+
+	
+	<!--  
+	<bean id="PiAppointmentType-lookupDefinition" parent="PiAppointmentType-lookupDefinition-parentBean" />
+    <bean id="PiAppointmentType-lookupDefinition-parentBean" abstract="true" parent="LookupDefinition">
+        <property name="title" value="PI Appointment Type Lookup" />
+        <property name="menubar" value="&lt;a href=&quot;index.jsp&quot;&gt;Main&lt;/a&gt;" />
+        <property name="defaultSort" >
+            <bean parent="SortDefinition" >
+        </bean>
+        </property>
+        <property name="lookupFields" >
+	        <list>
+		        <bean parent="FieldDefinition" p:propertyName="typeCode"/>
+		        <bean parent="FieldDefinition" p:propertyName="description"/>        
+	        </list>
+		 </property>
+        <property name="resultFields" >
+            <list>
+                <bean parent="FieldDefinition" p:propertyName="typeCode"/>
+		        <bean parent="FieldDefinition" p:propertyName="description"/>   
+            </list>
+        </property>
+    </bean>
+    -->
+    <bean id="PiAppointmentType-LookupViewId" parent="PiAppointmentType-LookupView-parentBean"
+   		p:viewName="PiAppointmentType-LookupViewName" p:headerText="PI Appointment Type Lookup"/>
+   		
+   <bean id="PiAppointmentType-LookupView-parentBean" abstract="true" parent="Uif-LookupView" >
+   	<property name="dataObjectClassName" value="edu.mit.kc.bo.PiAppointmentType"/>
+    <property name="headerText" value="PI Appointment Type Lookup"/>
+    <property name="defaultSortAttributeNames">
+      <list>
+        <value>typeCode</value>
+      </list>
+    </property>
+    <property name="criteriaFields">
+      <list>
+      	<bean parent="Uif-LookupCriteriaInputField" p:propertyName="typeCode"
+					p:order="10" />
+		<bean parent="Uif-LookupCriteriaInputField" p:propertyName="description"
+					p:order="20" />	
+      </list>
+    </property>
+    <property name="resultFields">
+      <list>
+      	<bean parent="Uif-DataField" p:propertyName="typeCode"
+					p:order="10" />
+		<bean parent="Uif-DataField" p:propertyName="description"
+					p:order="20" />	
+      </list>
+    </property>
+   		
+    </bean>
+  
+</beans>

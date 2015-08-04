@@ -1,0 +1,71 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Tue Jan 20 17:55:05 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+
+1 row deleted.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+SP2-0042: unknown command "﻿declare" - rest of line ignored.
+SP2-0224: invalid starting line number
+SP2-0734: unknown command beginning "ls_content..." - rest of line ignored.
+SP2-0734: unknown command beginning "cursor c_d..." - rest of line ignored.
+SP2-0678: Column or attribute type can not be displayed by SQL*Plus
+  1  select t1.SUBAWARD_ID,t1.FILE_ID,t1.FILE_NAME,t1.DOCUMENT,t1.UPDATE_TIMESTAMP,t1.UPDATE_USER from SUBAWARD_ATTACHMENTS t1
+  2  left outer join attachment_file t2 on t1.file_id = t2.file_id
+  3* where t2.file_id is null
+SP2-0678: Column or attribute type can not be displayed by SQL*Plus
+open c_data;
+     *
+ERROR at line 3:
+ORA-06550: line 3, column 6:
+PLS-00201: identifier 'C_DATA' must be declared
+ORA-06550: line 3, column 1:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 5, column 7:
+PLS-00201: identifier 'C_DATA' must be declared
+ORA-06550: line 5, column 1:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 6, column 11:
+PLS-00201: identifier 'C_DATA' must be declared
+ORA-06550: line 6, column 1:
+PL/SQL: Statement ignored
+ORA-06550: line 8, column 72:
+PL/SQL: ORA-00904: "R_DATA"."SUBAWARD_ID": invalid identifier
+ORA-06550: line 8, column 3:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 10, column 3:
+PLS-00201: identifier 'LS_CONTENT_TYPE' must be declared
+ORA-06550: line 10, column 3:
+PL/SQL: Statement ignored
+ORA-06550: line 11, column 69:
+PL/SQL: ORA-00904: "LS_CONTENT_TYPE": invalid identifier
+ORA-06550: line 11, column 3:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 12, column 9:
+PLS-00201: identifier 'LS_CONTENT_TYPE' must be declared
+ORA-06550: line 12, column 3:
+PL/SQL: Statement ignored
+ORA-06550: line 29, column 114:
+P
+
+
+
+Commit complete.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

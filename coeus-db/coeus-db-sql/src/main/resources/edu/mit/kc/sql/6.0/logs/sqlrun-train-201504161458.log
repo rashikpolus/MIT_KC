@@ -1,0 +1,129 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Thu Apr 16 14:59:10 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+SP2-0103: Nothing in SQL buffer to run.
+
+'RUNNINGDDLSNAPSHOT'
+--------------------
+running ddl snapshot
+
+CREATE TABLE ALERT_TYPE
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+PRIMARY KEY (ALERT_TYPE_ID)
+*
+ERROR at line 3:
+ORA-02260: table can have only one primary key
+
+
+SP2-0310: unable to open file "ddl/SEQUENCE_MITKC-1424.sql"
+ADD ALERT_TYPE_ID  NUMBER (12) NOT NULL
+    *
+ERROR at line 2:
+ORA-01430: column being added already exists in table
+
+
+FOREIGN KEY (ALERT_TYPE_ID)
+*
+ERROR at line 3:
+ORA-02275: such a referential constraint already exists in the table
+
+
+DROP COLUMN MODULE_NMSPC_CD
+            *
+ERROR at line 2:
+ORA-00904: "MODULE_NMSPC_CD": invalid identifier
+
+
+DROP COLUMN MODULE_NAME
+            *
+ERROR at line 2:
+ORA-00904: "MODULE_NAME": invalid identifier
+
+
+DROP COLUMN MODULE_NAME
+            *
+ERROR at line 2:
+ORA-00904: "MODULE_NAME": invalid identifier
+
+
+
+'RUNNINGDMLSNAPSHOT'
+--------------------
+running dml snapshot
+
+CREATE TABLE TMP_MIG_PROTO_DOC_MAPING(
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+0 rows created.
+
+ALTER TABLE TMP_MIG_PROTO_DOC_MAPING ADD CONSTRAINT PK_DOCUMENT_NUMBER PRIMARY KEY(DOCUMENT_NUMBER)
+                                                                       *
+ERROR at line 1:
+ORA-02260: table can have only one primary key
+
+
+
+Table altered.
+
+
+0 rows updated.
+
+
+Commit complete.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

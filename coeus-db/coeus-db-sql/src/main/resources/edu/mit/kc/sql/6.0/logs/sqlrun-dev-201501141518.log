@@ -1,0 +1,63 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Wed Jan 14 15:18:48 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+
+'RUNNINGDDLSNAPSHOT'
+--------------------
+running ddl snapshot
+
+
+'RUNNINGDDLSNAPSHOT'
+--------------------
+running ddl snapshot
+
+
+'RUNNINGDMLSNAPSHOT'
+--------------------
+running dml snapshot
+
+
+Table altered.
+
+ALTER TABLE NEGOTIATION_ACTIVITY MODIFY ACTIVITY_TYPE_ID NUMBER(22,0) NULL
+                                        *
+ERROR at line 1:
+ORA-01451: column to be modified to NULL cannot be modified to NULL
+
+
+UPDATE BUDGET SET BUDGET_NAME='budget-'||version_number WHERE BUDGET_NAME is null
+*
+ERROR at line 2:
+ORA-02185: a token other than WORK follows COMMIT
+
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

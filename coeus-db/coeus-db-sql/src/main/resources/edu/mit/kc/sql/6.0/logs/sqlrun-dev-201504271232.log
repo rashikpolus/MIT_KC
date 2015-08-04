@@ -1,0 +1,82 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Mon Apr 27 12:32:47 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+SP2-0103: Nothing in SQL buffer to run.
+
+'RUNNINGDDLSNAPSHOT'
+--------------------
+running ddl snapshot
+
+
+'RUNNINGDDLSNAPSHOT'
+--------------------
+running ddl snapshot
+
+
+'RUNNINGDMLSNAPSHOT'
+--------------------
+running dml snapshot
+
+
+100569 rows updated.
+
+
+Commit complete.
+
+
+20726 rows updated.
+
+
+Commit complete.
+
+insert into KRMS_FUNC_T (FUNC_ID,NM,DESC_TXT,RTRN_TYP,VER_NBR,ACTV,TYP_ID,NMSPC_CD)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRMS_FUNC_TC1) violated
+
+
+
+1 row created.
+
+insert into KRMS_TERM_SPEC_T (TERM_SPEC_ID, NMSPC_CD, NM, DESC_TXT, TYP, ACTV, VER_NBR)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRMS_TERM_SPEC_TC1) violated
+
+
+
+1 row created.
+
+
+1 row created.
+
+insert into KRMS_TERM_SPEC_CTGRY_T (TERM_SPEC_ID, CTGRY_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.SYS_C0053456) violated
+
+
+insert into KRMS_TERM_RSLVR_T (TERM_RSLVR_ID, NMSPC_CD, NM, TYP_ID, OUTPUT_TERM_SPEC_ID, ACTV, VER_NBR)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRMS_TERM_RSLVR_TC1) violated
+
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

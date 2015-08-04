@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                    http://www.springframework.org/schema/util
+                    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	<bean id="PropBudget-ProjectPersonnelPage" parent="PropBudget-ProjectPersonnelPage-parentBean" />
+	<bean id="PropBudget-ProjectPersonnelPage-parentBean" parent="PropBudget-Page">
+		<property name="items">
+			<list>
+				<ref bean="PropBudget-ProjectPersonnelPage-CollectionGroup" />
+				<ref bean="PropBudget-EditPersonnel-Section"/>
+			</list>
+		</property>
+		<property name="header">
+			<bean parent="Uif-PageHeader" />
+		</property>
+	</bean>
+
+	<bean id="PropBudget-ProjectPersonnelPage-CollectionGroup" parent="PropBudget-ProjectPersonnelPage-CollectionGroup-parentBean" />
+	<bean id="PropBudget-ProjectPersonnelPage-CollectionGroup-parentBean" parent="Uif-TableCollectionSection" abstract="true" 
+		p:headerText="Project Personnel"
+		p:propertyName="budget.budgetPersons"
+		p:collectionObjectClass="org.kuali.coeus.common.budget.framework.personnel.BudgetPerson"
+		p:addWithDialog="false" p:renderAddLine="false"
+		p:layoutManager.renderSequenceField="false" p:readOnly="false">
+		<property name="layoutManager.groupingPropertyNames">
+    		<list>
+      			<value>personGroup</value>
+    		</list>
+  		</property>
+		<property name="layoutManager.richTable.templateOptions">
+			<map>
+				<entry key="sDom" value="tip" />
+				<entry key="bRetrieve" value="true" />
+				<entry key="bPaginate" value="false" />
+				<entry key="bInfo" value="false" />
+			</map>
+		</property>
+		<property name="header.rightGroup">
+			<bean parent="Uif-HeaderRightGroup">
+				<property name="items">
+					<list>
+						<bean parent="PropBudget-ProjectPersonnelPage-AddButton"
+							  p:render="@{!viewOnly and canEditView}"/>
+						<bean parent="Uif-SecondaryActionButton-Mini" p:actionLabel="Sync from Proposal"
+							p:methodToCall="syncFromProposal" p:render="@{!viewOnly and canEditView}"
+							p:order="20" />
+					</list>
+				</property>
+			</bean>
+		</property>
+		<property name="header.lowerGroup">
+			<bean parent="Uif-HeaderLowerGroup">
+				<property name="items">
+					<list>
+						<bean parent="Uif-Message"
+							p:messageText="Personnel added to the proposal are shown below. Review, configure, and add additional personnel to the budget."
+							p:order="10" />
+					</list>
+				</property>
+			</bean>
+		</property>
+		<property name="items">
+			<list>
+ 				<bean parent="Uif-MessageField" p:messageText="@{#lp.personName} @{#lp.contactRoleCode != null ? '[color=#C0C0C0](' + #lp.contactRoleCode + ')[/color]' : ' '}"
+					p:order="10" p:label="Person"/>
+ 				<bean parent="Uif-MessageField" p:messageText="@{#lp.jobTitle} @{#lp.jobCode != null ? '[color=#C0C0C0](' + #lp.jobCode + ')[/color]' : ' '}"
+					p:order="20" p:label="Job Code"/>
+				<bean parent="Uif-DataField" p:propertyName="appointmentType.description"
+					p:order="30" p:label="Appointment Type"/>
+				<bean parent="Uif-DataField" p:propertyName="calculationBase"
+					p:order="40" p:label="Base Salary" p:required="false"/>
+			</list>
+		</property>
+		<property name="lineActions">
+			<list>
+				<bean parent="Uif-SecondaryActionButton-Mini" p:methodToCall="editPersonDetails"
+					p:actionLabel="Details" p:refreshId="null" p:order="10" />
+				<bean parent="Uif-DeleteLineAction-IconOnly" p:order="20" p:methodToCall="deleteProjectPersonnel"
+					p:iconClass="icon-trash" p:render="@{!viewOnly and canEditView}" p:refreshId="PropBudget-ProjectPersonnelPage-CollectionGroup">
+                    <property name="confirmationDialog">
+                    	<bean parent="Uif-DialogGroup-OkCancel" p:promptText="Are you sure you want to delete @{#lp.personName}?"/>
+                    </property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="PropBudget-EditPersonnel-Section" parent="PropBudget-EditPersonnel-Section-parentBean" />
+	<bean id="PropBudget-EditPersonnel-Section-parentBean" p:fieldBindingObjectPath="addProjectPersonnelHelper.editBudgetPerson"
+        p:onHideDialogScript="retrieveComponent('PropBudget-ProjectPersonnelPage-CollectionGroup');"
+		abstract="true" parent="Uif-DialogGroup" p:headerText="Edit Personnel" p:enterKeyAction="@DEFAULT" p:destroyDialogOnHidden="true">
+		<property name="items">
+			<list>
+				<bean parent="Uif-DataField" p:fieldLabel.labelText=" " p:propertyName="personName"/>
+				<bean parent="Uif-TabSection">
+					<property name="items">
+						<list>
+							<bean parent="PropBudget-ProjectPersonnel-Details-Tab"
+								p:headerText="Details" p:order="10" />
+							<bean parent="PropBudget-ProjectPersonnel-SalaryDetails-Tab"
+								p:headerText="Salary by Period" p:order="20" 
+								p:render="@{#ViewHelper.displayPersonSalaryByPeriod()}"/>
+
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+		<property name="footer">
+			<bean parent="Uif-FooterBase">
+				<property name="items">
+					<list>
+						<bean parent="Uif-SecondaryActionButton-Mini" p:actionLabel="Save Changes" p:methodToCall="updatePersonDetails"
+							p:refreshId="PropBudget-EditPersonnel-Section"
+                      		p:actionParameters="@{T(org.kuali.rice.krad.uif.UifParameters).SELECTED_COLLECTION_PATH}:budget.budgetPersons,
+                      		@{T(org.kuali.rice.krad.uif.UifParameters).SELECTED_COLLECTION_ID}:PropBudget-ProjectPersonnelPage-CollectionGroup,
+                      		@{T(org.kuali.rice.krad.uif.UifParameters).SELECTED_LINE_INDEX}:@{addProjectPersonnelHelper.editLineIndex}"
+							p:dialogDismissOption="" p:defaultEnterKeyAction="true"
+			       			p:successCallback="Kc.Dialog.closeDialogWithoutError('PropBudget-EditPersonnel-Section');"
+							p:order="10" p:render="@{!#parent.readOnly}" p:performClientSideValidation="true"/>
+						<bean parent="Uif-SecondaryActionButton-Mini" p:actionLabel="Cancel"
+							p:dialogDismissOption="IMMEDIATE"
+							p:order="30" />
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="PropBudget-ProjectPersonnel-Details-Tab" parent="PropBudget-ProjectPersonnel-Details-Tab-parentBean" />
+	<bean id="PropBudget-ProjectPersonnel-Details-Tab-parentBean" abstract="true" parent="Uif-VerticalBoxSubSection" p:headerText="Details">
+		<property name="items">
+			<list>
+				<bean parent="Uif-CssGridSection-1FieldLabelColumn">
+					<property name="items">
+						<list>
+							<bean parent="Uif-DataField" p:propertyName="role"
+								p:required="false" p:label="Role" p:order="10"/>
+							<bean parent="Uif-InputField" p:propertyName="jobCode"
+								p:required="true" p:label="Job Code" p:order="20" p:uppercaseValue="true">
+								<property name="quickfinder">
+            						<bean parent="Uif-QuickFinder" p:dataObjectClassName="org.kuali.coeus.common.budget.framework.personnel.JobCode"
+                  						p:fieldConversions="jobCode:addProjectPersonnelHelper.editBudgetPerson.jobCode" p:returnByScript="true"/>
+        						</property>
+        					</bean>								
+ 							<bean parent="Uif-MessageField" p:messageText="@{addProjectPersonnelHelper.jobTitle}"
+								p:refreshWhenChangedPropertyNames="addProjectPersonnelHelper.editBudgetPerson.jobCode"
+								p:order="30" p:label="Job Title"/>
+							<bean parent="Uif-InputField" p:propertyName="appointmentTypeCode"
+								p:order="40" p:required="false" p:enableAutoQuickfinder="false"/>
+							<bean parent="Uif-InputField" p:propertyName="effectiveDate"
+								p:order="50" p:required="false"/>
+							<bean parent="Uif-InputField" p:propertyName="salaryAnniversaryDate"
+								p:order="60" p:required="false"/>
+							<bean parent="Uif-InputField" p:propertyName="calculationBase"
+								p:order="70" p:required="false"/>
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="PropBudget-ProjectPersonnel-SalaryDetails-Tab" parent="PropBudget-ProjectPersonnel-SalaryDetails-Tab-parentBean" />
+	<bean id="PropBudget-ProjectPersonnel-SalaryDetails-Tab-parentBean" abstract="true"
+		parent="Uif-TableCollectionSection" p:headerText="Salary by Period"
+		p:propertyName="budgetPersonSalaryDetails"
+		p:collectionObjectClass="org.kuali.coeus.common.budget.framework.personnel.BudgetPersonSalaryDetails"
+		p:renderAddLine="false" 
+		p:layoutManager.renderSequenceField="false"	>
+		<property name="items">
+			<list>
+				<bean parent="Uif-DataField" p:propertyName="budgetPeriod"
+					p:label="Period" p:order="10"/>
+				<bean parent="Uif-InputField" p:propertyName="baseSalary"
+					p:label="Salary" p:order="20"/>
+			</list>
+		</property>
+  		<property name="lineActions">
+			<list/>
+		</property>
+		<property name="footer">
+			<bean parent="Uif-FooterBase">
+				<property name="items">
+					<list>
+						<bean parent="Uif-SecondaryActionButton-Mini" p:actionLabel="Recalculate"
+							p:methodToCall="calculatePersonSalaryDetails" p:render="@{!#parent.readOnly}"
+							p:refreshId="PropBudget-EditPersonnel-Section"
+							p:order="10" />
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+
+	
+</beans> 

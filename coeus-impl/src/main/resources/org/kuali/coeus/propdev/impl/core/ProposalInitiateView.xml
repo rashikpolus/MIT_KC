@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="PropDev-InitiateView" parent="PropDev-InitiateView-parentBean" />
+	<bean id="PropDev-InitiateView-parentBean" abstract="true"
+		parent="Uif-TransactionalDocumentView"
+		p:formClass="org.kuali.coeus.propdev.impl.core.ProposalDevelopmentDocumentForm"
+		p:documentClass="org.kuali.coeus.propdev.impl.core.ProposalDevelopmentDocument"
+		p:viewHelperService="#{#getService('proposalDevelopmentViewHelperService')}"
+		p:viewName="initiate" p:stickyFooter="true" p:singlePageView="true">
+		<property name="additionalScriptFiles">
+			<list>
+				<value>rice-contrib/plugins/jquery.multiselect/jquery.multiselect.min.js</value>
+				<value>rice-contrib/plugins/jquery.multiselect/jquery.multiselect.filter.min.js</value>
+				<value>rice-contrib/multiselect.js</value>
+				<value>scripts/propdev/core.js</value>
+			</list>
+		</property>
+		<property name="additionalCssFiles">
+			<list>
+				<value>rice-contrib/plugins/jquery.multiselect/jquery.multiselect.css</value>
+				<value>rice-contrib/plugins/jquery.multiselect/jquery.multiselect.filter.css</value>
+				<value>rice-contrib/multiselect.css</value>
+			</list>
+		</property>
+		<property name="header">
+			<null />
+		</property>
+		<property name="footer">
+			<bean parent="Uif-FooterBase">
+				<property name="items">
+					<list>
+						<bean parent="Uif-SecondaryActionButton" p:ajaxSubmit="false"
+							p:methodToCall="closeWithoutSave" p:actionLabel="Cancel" p:order="10" />
+						<bean parent="Uif-PrimaryActionButton" p:ajaxSubmit="false"
+							p:performClientSideValidation="true" p:methodToCall="createProposal"
+							p:actionLabel="Save and Continue" p:order="20" />
+					</list>
+				</property>
+			</bean>
+		</property>
+		<property name="page" ref="PropDev-InitiatePage" />
+	</bean>
+
+</beans>

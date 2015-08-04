@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans.xsd">
+  <bean id="AwardBudgetPeriodExt" parent="AwardBudgetPeriodExt-parentBean" />
+  <bean id="AwardBudgetPeriodExt-parentBean" abstract="true" parent="BusinessObjectEntry">
+    <property name="businessObjectClass" value="org.kuali.kra.award.budget.AwardBudgetPeriodExt" />
+		<property name="objectLabel" value="Budget Period" />
+    <property name="inquiryDefinition" >
+      <ref bean="AwardBudgetPeriodExt-inquiryDefinition" />
+    </property>
+    <property name="lookupDefinition" >
+      <ref bean="AwardBudgetPeriodExt-lookupDefinition" />
+    </property>
+    <property name="titleAttribute" value="AwardBudgetPeriodExt" />
+    <property name="helpDefinition" >
+      <bean parent="HelpDefinition" p:parameterNamespace="KC-B" p:parameterName="AwardBudgetPeriodExtHelpUrl" p:parameterDetailType="Document"/>
+    </property>
+    <property name="attributes" >
+      <list>
+        <ref bean="AwardBudgetPeriodExt-totalCostLimit" />
+        <ref bean="AwardBudgetPeriodExt-obligatedAmount" />
+        <ref bean="AwardBudgetPeriodExt-totalFringeAmount" />
+        <ref bean="AwardBudgetPeriodExt-rateOverrideFlag" />
+      </list>
+    </property>
+  </bean>
+
+<!-- Attribute Definitions -->
+  <bean id="AwardBudgetPeriodExt-obligatedAmount" parent="AwardBudgetPeriodExt-obligatedAmount-parentBean"/>
+
+  <bean id="AwardBudgetPeriodExt-obligatedAmount-parentBean" abstract="true" parent="KraAttributeReferenceDummy-genericAmount">
+    <property name="name" value="obligatedAmount"/>
+    <property name="label" value="Obligated Amount"/>
+    <property name="shortLabel" value="Obligated Amount"/>
+    <property name="summary" value="Obligated amount from award amount info"/>
+    <property name="description" value="Obligated amount from award amount info"/>
+  </bean>
+
+  <bean id="AwardBudgetPeriodExt-totalFringeAmount" parent="AwardBudgetPeriodExt-totalFringeAmount-parentBean"/>
+
+  <bean id="AwardBudgetPeriodExt-totalFringeAmount-parentBean" abstract="true" parent="KraAttributeReferenceDummy-genericAmount">
+    <property name="name" value="totalFringeAmount"/>
+    <property name="label" value="Total Fringe Amount"/>
+    <property name="shortLabel" value="Total Fringe Amount"/>
+    <property name="summary" value="Total Fringe amount from award amount info"/>
+    <property name="description" value="Total Fringe amount from award amount info"/>
+  </bean>
+
+  <bean id="AwardBudgetPeriodExt-totalCostLimit" parent="AwardBudgetPeriodExt-totalCostLimit-parentBean" />
+
+  <bean id="AwardBudgetPeriodExt-totalCostLimit-parentBean" abstract="true" parent="BudgetPeriod-totalCostLimit-parentBean">
+    <property name="label" value="Budget Amount" />
+    <property name="shortLabel" value="Budget Amount" />
+    <property name="summary" value="Budget Amount" />
+    <property name="description" value="Budget Amount" />
+  </bean>
+
+  <bean id="AwardBudgetPeriodExt-rateOverrideFlag" parent="AwardBudgetPeriodExt-rateOverrideFlag-parentBean"/>
+  <bean id="AwardBudgetPeriodExt-rateOverrideFlag-parentBean" abstract="true" parent="AttributeReferenceDummy-genericBoolean">
+        <property name="name" value="rateOverrideFlag" />
+        <property name="label" value="Rate Override Flag" />
+        <property name="shortLabel" value="Rate Override Flag" />
+        <property name="summary" value="Rate Override Flag" />
+        <property name="description" value="Rate Override Flag" />
+        <property name="control" >
+      <bean parent="TextControlDefinition" p:size="10"/>
+        </property>
+  </bean>
+
+<!-- Business Object Inquiry Definition -->
+  <bean id="AwardBudgetPeriodExt-inquiryDefinition" parent="AwardBudgetPeriodExt-inquiryDefinition-parentBean" />
+  <bean id="AwardBudgetPeriodExt-InquiryView" parent="AwardBudgetPeriodExt-InquiryView-parentBean"/>
+  <bean id="AwardBudgetPeriodExt-inquiryDefinition-parentBean" abstract="true" parent="InquiryDefinition">
+    <property name="title" value="Budget Periods" />
+    <property name="inquirySections" >
+      <list>
+        <bean parent="InquirySectionDefinition">
+          <property name="title" value="Budget Periods" />
+          <property name="numberOfColumns" value="1" />
+          <property name="inquiryFields" >
+            <list>
+              <bean parent="FieldDefinition" p:attributeName="totalCostLimit"/>
+              <bean parent="FieldDefinition" p:attributeName="obligatedAmount"/>
+              <bean parent="FieldDefinition" p:attributeName="totalFringeAmount"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="AwardBudgetPeriodExt-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView">
+    <property name="headerText" value="Budget Periods"/>
+    <property name="dataObjectClassName" value="org.kuali.kra.award.budget.AwardBudgetPeriodExt"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-GridSection">
+          <property name="headerText" value="Budget Periods"/>
+          <property name="layoutManager.numberOfColumns" value="2"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="totalCostLimit" parent="Uif-DataField"/>
+              <bean p:propertyName="obligatedAmount" parent="Uif-DataField"/>
+              <bean p:propertyName="totalFringeAmount" parent="Uif-DataField"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <!-- Business Object Lookup Definition -->
+  <bean id="AwardBudgetPeriodExt-lookupDefinition" parent="AwardBudgetPeriodExt-lookupDefinition-parentBean" />
+  <bean id="AwardBudgetPeriodExt-LookupView" parent="AwardBudgetPeriodExt-LookupView-parentBean"/>
+  <bean id="AwardBudgetPeriodExt-lookupDefinition-parentBean" abstract="true" parent="LookupDefinition">
+    <property name="title" value="Budget Periods Lookup" /><property name="defaultSort" >
+      <bean parent="SortDefinition"/>
+    </property>
+    <property name="lookupFields" >
+      <list>
+        <bean parent="FieldDefinition" p:attributeName="totalCostLimit"/>
+        <bean parent="FieldDefinition" p:attributeName="obligatedAmount"/>
+        <bean parent="FieldDefinition" p:attributeName="totalFringeAmount"/>
+      </list>
+    </property>
+    <property name="resultFields" >
+      <list>
+        <bean parent="FieldDefinition" p:attributeName="totalCostLimit"/>
+        <bean parent="FieldDefinition" p:attributeName="obligatedAmount"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="AwardBudgetPeriodExt-LookupView-parentBean" abstract="true" parent="Uif-LookupView">
+    <property name="dataObjectClassName" value="org.kuali.kra.award.budget.AwardBudgetPeriodExt"/>
+    <property name="headerText" value="Budget Periods Lookup"/>
+    <property name="criteriaFields">
+      <list>
+        <bean p:propertyName="totalCostLimit" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="obligatedAmount" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="totalFringeAmount" parent="Uif-LookupCriteriaInputField"/>
+      </list>
+    </property>
+    <property name="resultFields">
+      <list>
+        <bean p:propertyName="totalCostLimit" parent="Uif-DataField"/>
+        <bean p:propertyName="obligatedAmount" parent="Uif-DataField"/>
+      </list>
+    </property>
+  </bean>
+
+</beans>

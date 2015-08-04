@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"> 
+
+  <bean id="Sponsor-inquiryDefinition" parent="Sponsor-inquiryDefinition-parentBean" />
+  <bean id="Sponsor-InquiryView" parent="Sponsor-InquiryView-parentBean"/>
+  <bean id="Sponsor-inquiryDefinition-parentBean" abstract="true" parent="InquiryDefinition">
+    <property name="title" value="Sponsor" />
+    <property name="inquirySections" >
+      <list>
+        <bean parent="InquirySectionDefinition">
+          <property name="title" value="Sponsor" />
+          <property name="numberOfColumns" value="1" />
+          <property name="inquiryFields" >
+            <list>
+              <bean parent="FieldDefinition" p:attributeName="sponsorCode" p:forceInquiry="true" />
+              <bean parent="FieldDefinition" p:attributeName="acronym" />
+              <bean parent="FieldDefinition" p:attributeName="unit.unitName" />
+              <bean parent="FieldDefinition" p:attributeName="active" />
+              <bean parent="FieldDefinition" p:attributeName="sponsorName" />
+              <bean parent="FieldDefinition" p:attributeName="sponsorType.description" />
+              <bean parent="FieldDefinition" p:attributeName="auditReportSentForFy" />
+              <bean parent="FieldDefinition" p:attributeName="dunAndBradstreetNumber" />
+              <bean parent="FieldDefinition" p:attributeName="dunsPlusFourNumber" />
+              <bean parent="FieldDefinition" p:attributeName="dodacNumber" />
+              <bean parent="FieldDefinition" p:attributeName="cageNumber" />
+              <bean parent="FieldDefinition" p:attributeName="rolodexId" />
+              <bean parent="FieldDefinition" p:attributeName="state" />
+              <bean parent="FieldDefinition" p:attributeName="postalCode" />
+              <bean parent="FieldDefinition" p:attributeName="countryCode" />
+              <bean parent="FieldDefinition" p:attributeName="updateTimestamp"/>
+              <bean parent="FieldDefinition" p:attributeName="updateUser" />
+          </list>
+          </property>
+        </bean>
+        <bean parent="InquirySectionDefinition">
+          <property name="title" value="Primary Address" />
+          <property name="numberOfColumns" value="1" />
+          <property name="inquiryFields" >
+            <list>
+              <bean parent="FieldDefinition" p:attributeName="rolodex.rolodexId" />
+              <bean parent="FieldDefinition" p:attributeName="rolodex.addressLine1" />
+              <bean parent="FieldDefinition" p:attributeName="rolodex.addressLine2" />
+              <bean parent="FieldDefinition" p:attributeName="rolodex.addressLine3" />
+              <bean parent="FieldDefinition" p:attributeName="rolodex.city" />
+              <bean parent="FieldDefinition" p:attributeName="rolodex.county" />
+              <bean parent="FieldDefinition" p:attributeName="rolodex.state" />
+              <bean parent="FieldDefinition" p:attributeName="rolodex.postalCode" />
+              <bean parent="FieldDefinition" p:attributeName="rolodex.countryCode" />
+              <bean parent="FieldDefinition" p:attributeName="rolodex.phoneNumber" />
+              <bean parent="FieldDefinition" p:attributeName="rolodex.emailAddress" />
+              <bean parent="FieldDefinition" p:attributeName="rolodex.faxNumber" />
+              <bean parent="FieldDefinition" p:attributeName="rolodex.comments" />
+              </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="Sponsor-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView">
+    <property name="headerText" value="Sponsor"/>
+    <property name="dataObjectClassName" value="org.kuali.coeus.common.framework.sponsor.Sponsor"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-GridSection">
+          <property name="headerText" value="Sponsor"/>
+          <property name="layoutManager.numberOfColumns" value="2"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="sponsorCode" parent="Uif-DataField"/>
+              <bean p:propertyName="acronym" parent="Uif-DataField"/>
+              <bean p:propertyName="unit.unitName" parent="Uif-DataField"/>
+              <bean p:propertyName="active" parent="Uif-DataField"/>
+              <bean p:propertyName="sponsorName" parent="Uif-DataField"/>
+              <bean p:propertyName="sponsorType.description" parent="Uif-DataField"/>
+              <bean p:propertyName="auditReportSentForFy" parent="Uif-DataField"/>
+              <bean p:propertyName="dunAndBradstreetNumber" parent="Uif-DataField"/>
+              <bean p:propertyName="dunsPlusFourNumber" parent="Uif-DataField"/>
+              <bean p:propertyName="dodacNumber" parent="Uif-DataField"/>
+              <bean p:propertyName="cageNumber" parent="Uif-DataField"/>
+              <bean p:propertyName="rolodexId" parent="Uif-DataField"/>
+              <bean p:propertyName="state" parent="Uif-DataField"/>
+              <bean p:propertyName="postalCode" parent="Uif-DataField"/>
+              <bean p:propertyName="countryCode" parent="Uif-DataField"/>
+           </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+</beans>

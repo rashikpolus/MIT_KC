@@ -1,0 +1,256 @@
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+
+<!--<!DOCTYPE descriptor-repository PUBLIC "-//Apache Software Foundation//DTD OJB Repository//EN" "../../../../repository.dtd">-->
+
+<descriptor-repository version="1.0">
+
+    <class-descriptor class="org.kuali.coeus.common.questionnaire.framework.question.Question" table="QUESTION">
+        <field-descriptor name="id" column="QUESTION_REF_ID" jdbc-type="BIGINT" primarykey="true" sequence-name="SEQ_QUESTIONNAIRE_REF_ID" autoincrement="true" />
+        <field-descriptor name="documentNumber" column="DOCUMENT_NUMBER" jdbc-type="VARCHAR" />
+        <field-descriptor name="questionSeqId" column="QUESTION_ID" jdbc-type="INTEGER" sequence-name="SEQ_QUESTION_ID" autoincrement="true" />
+        <field-descriptor name="sequenceNumber" column="SEQUENCE_NUMBER" jdbc-type="INTEGER" />
+        <field-descriptor name="sequenceStatus" column="SEQUENCE_STATUS" jdbc-type="VARCHAR" />
+        <field-descriptor name="question" column="QUESTION" jdbc-type="VARCHAR" />
+        <field-descriptor name="status" column="STATUS" jdbc-type="VARCHAR" />
+        <field-descriptor name="categoryTypeCode" column="GROUP_TYPE_CODE" jdbc-type="BIGINT" />
+        <field-descriptor name="questionTypeId" column="QUESTION_TYPE_ID" jdbc-type="BIGINT" />
+        <field-descriptor name="lookupClass" column="LOOKUP_CLASS" jdbc-type="VARCHAR" />
+        <field-descriptor name="lookupReturn" column="LOOKUP_RETURN" jdbc-type="VARCHAR" />
+        <field-descriptor name="displayedAnswers" column="DISPLAYED_ANSWERS" jdbc-type="INTEGER" />
+        <field-descriptor name="maxAnswers" column="MAX_ANSWERS" jdbc-type="INTEGER" />
+        <field-descriptor name="answerMaxLength" column="ANSWER_MAX_LENGTH" jdbc-type="INTEGER" />
+        <field-descriptor name="updateTimestamp" column="UPDATE_TIMESTAMP" jdbc-type="TIMESTAMP" />
+        <field-descriptor name="updateUser" column="UPDATE_USER" jdbc-type="VARCHAR" />
+        <field-descriptor name="versionNumber" column="VER_NBR" jdbc-type="BIGINT" locking="true" />
+        <field-descriptor name="objectId" column="OBJ_ID" jdbc-type="VARCHAR" />
+        <reference-descriptor name="questionCategory" class-ref="org.kuali.coeus.common.questionnaire.framework.question.QuestionCategory" auto-retrieve="true" auto-update="none" auto-delete="none">
+            <foreignkey field-ref="categoryTypeCode"/>
+        </reference-descriptor>
+        <reference-descriptor name="questionType" class-ref="org.kuali.coeus.common.questionnaire.framework.question.QuestionType" auto-retrieve="true" auto-update="none" auto-delete="none">
+            <foreignkey field-ref="questionTypeId"/>
+        </reference-descriptor>
+        <collection-descriptor name="questionMultiChoices" element-class-ref="org.kuali.coeus.common.questionnaire.framework.question.QuestionMultiChoice" collection-class="org.apache.ojb.broker.util.collections.ManageableArrayList" auto-retrieve="true" auto-update="object" auto-delete="none">
+            <inverse-foreignkey field-ref="questionId"/>
+        </collection-descriptor>
+        <collection-descriptor name="questionExplanations" element-class-ref="org.kuali.coeus.common.questionnaire.framework.question.QuestionExplanation" collection-class="org.apache.ojb.broker.util.collections.ManageableArrayList" auto-retrieve="true" auto-update="object" auto-delete="none">
+            <inverse-foreignkey field-ref="questionId"/>
+        </collection-descriptor>
+    </class-descriptor>
+
+    <class-descriptor class="org.kuali.coeus.common.questionnaire.framework.question.QuestionMultiChoice" table="QUESTION_MULTI_CHOICE">
+        <field-descriptor name="id" column="ID" jdbc-type="BIGINT" primarykey="true" sequence-name="SEQ_QUESTION_MULTI_CHOICE_ID" autoincrement="true" />
+        <field-descriptor name="questionId" column="QUESTION_REF_ID_FK" jdbc-type="BIGINT"/>
+        <field-descriptor name="prompt" column="PROMPT" jdbc-type="VARCHAR"/>
+        <field-descriptor name="description" column="DESCRIPTION" jdbc-type="VARCHAR"/>
+        <field-descriptor name="updateTimestamp" column="UPDATE_TIMESTAMP" jdbc-type="TIMESTAMP" />
+        <field-descriptor name="updateUser" column="UPDATE_USER" jdbc-type="VARCHAR" />
+        <field-descriptor name="versionNumber" column="VER_NBR" jdbc-type="BIGINT" locking="true" />
+        <field-descriptor name="objectId" column="OBJ_ID" jdbc-type="VARCHAR" />
+        <reference-descriptor name="sequenceOwner" class-ref="org.kuali.coeus.common.questionnaire.framework.question.Question" auto-retrieve="true" auto-update="none" auto-delete="none">
+            <foreignkey field-ref="questionId"/>
+        </reference-descriptor>
+    </class-descriptor>
+
+    <class-descriptor class="org.kuali.coeus.common.questionnaire.framework.question.QuestionExplanation" table="QUESTION_EXPLANATION">
+        <field-descriptor name="id" column="QUESTION_EXPLANATION_ID" jdbc-type="BIGINT" primarykey="true" sequence-name="SEQ_QUESTIONNAIRE_REF_ID" autoincrement="true" />
+        <field-descriptor name="questionId" column="QUESTION_REF_ID_FK" jdbc-type="BIGINT" />
+        <field-descriptor name="explanationType" column="EXPLANATION_TYPE" jdbc-type="VARCHAR" />
+        <field-descriptor name="explanation" column="EXPLANATION" jdbc-type="VARCHAR" />
+        <field-descriptor name="updateTimestamp" column="UPDATE_TIMESTAMP" jdbc-type="TIMESTAMP" />
+        <field-descriptor name="updateUser" column="UPDATE_USER" jdbc-type="VARCHAR" />
+        <field-descriptor name="versionNumber" column="VER_NBR" jdbc-type="BIGINT" locking="true" />
+        <field-descriptor name="objectId" column="OBJ_ID" jdbc-type="VARCHAR" />
+        <reference-descriptor name="sequenceOwner" class-ref="org.kuali.coeus.common.questionnaire.framework.question.Question" auto-retrieve="true" auto-update="none" auto-delete="none">
+            <foreignkey field-ref="questionId"/>
+        </reference-descriptor>
+    </class-descriptor>
+    
+    <class-descriptor class="org.kuali.coeus.common.questionnaire.framework.question.QuestionCategory" table="GROUP_TYPES">
+        <field-descriptor name="id" column="GROUP_TYPE_CODE" jdbc-type="BIGINT" primarykey="true" />
+        <field-descriptor name="name" column="GROUP_NAME" jdbc-type="VARCHAR" />
+        <field-descriptor name="updateTimestamp" column="UPDATE_TIMESTAMP" jdbc-type="TIMESTAMP" />
+        <field-descriptor name="updateUser" column="UPDATE_USER" jdbc-type="VARCHAR" />
+        <field-descriptor name="versionNumber" column="VER_NBR" jdbc-type="BIGINT" locking="true" />
+        <field-descriptor name="objectId" column="OBJ_ID" jdbc-type="VARCHAR" />
+    </class-descriptor>
+
+    <class-descriptor class="org.kuali.coeus.common.questionnaire.framework.question.QuestionType" table="QUESTION_TYPES">
+        <field-descriptor name="id" column="QUESTION_TYPE_ID" jdbc-type="BIGINT" primarykey="true" />
+        <field-descriptor name="name" column="QUESTION_TYPE_NAME" jdbc-type="VARCHAR" />
+        <field-descriptor name="updateTimestamp" column="UPDATE_TIMESTAMP" jdbc-type="TIMESTAMP" />
+        <field-descriptor name="updateUser" column="UPDATE_USER" jdbc-type="VARCHAR" />
+        <field-descriptor name="versionNumber" column="VER_NBR" jdbc-type="BIGINT" locking="true" />
+        <field-descriptor name="objectId" column="OBJ_ID" jdbc-type="VARCHAR" />
+    </class-descriptor>
+
+    <class-descriptor class="org.kuali.coeus.common.framework.custom.arg.ArgValueLookup" table="ARG_VALUE_LOOKUP">
+        <field-descriptor name="id" column="ARG_VALUE_LOOKUP_ID" jdbc-type="BIGINT" primarykey="true" />
+        <field-descriptor name="argumentName" column="ARGUMENT_NAME" jdbc-type="VARCHAR" />
+        <field-descriptor name="value" column="VALUE" jdbc-type="VARCHAR" />
+        <field-descriptor name="description" column="DESCRIPTION" jdbc-type="VARCHAR" />
+        <field-descriptor name="updateTimestamp" column="UPDATE_TIMESTAMP" jdbc-type="TIMESTAMP" />
+        <field-descriptor name="updateUser" column="UPDATE_USER" jdbc-type="VARCHAR" />
+        <field-descriptor name="versionNumber" column="VER_NBR" jdbc-type="BIGINT" locking="true" />
+        <field-descriptor name="objectId" column="OBJ_ID" jdbc-type="VARCHAR" />
+    </class-descriptor>
+        
+    <class-descriptor class="org.kuali.coeus.common.questionnaire.framework.answer.AnswerHeader" table="QUESTIONNAIRE_ANSWER_HEADER">
+		<field-descriptor name="id" column="QUESTIONNAIRE_ANSWER_HEADER_ID" jdbc-type="BIGINT" primarykey="true" sequence-name="SEQ_QUESTIONNAIRE_REF_ID" autoincrement="true" />
+		<field-descriptor name="moduleItemCode" column="MODULE_ITEM_CODE" jdbc-type="VARCHAR" />
+		<field-descriptor name="moduleItemKey" column="MODULE_ITEM_KEY" jdbc-type="VARCHAR" />
+		<field-descriptor name="moduleSubItemCode" column="MODULE_SUB_ITEM_CODE" jdbc-type="VARCHAR" />
+		<field-descriptor name="moduleSubItemKey" column="MODULE_SUB_ITEM_KEY" jdbc-type="VARCHAR" />
+        <field-descriptor name="questionnaireId" column="QUESTIONNAIRE_REF_ID_FK" jdbc-type="BIGINT" />
+		<field-descriptor name="updateTimestamp" column="UPDATE_TIMESTAMP" jdbc-type="TIMESTAMP" />
+		<field-descriptor name="updateUser" column="UPDATE_USER" jdbc-type="VARCHAR" />
+		<field-descriptor name="completed" column="QUESTIONNAIRE_COMPLETED_FLAG" jdbc-type="VARCHAR" conversion="org.kuali.rice.core.framework.persistence.ojb.conversion.OjbCharBooleanConversion"/>
+		<field-descriptor name="versionNumber" column="VER_NBR" jdbc-type="BIGINT" locking="true" />
+		<field-descriptor name="objectId" column="OBJ_ID" jdbc-type="VARCHAR" />
+		<reference-descriptor name="questionnaire" class-ref="org.kuali.coeus.common.questionnaire.framework.core.Questionnaire" auto-retrieve="true" auto-update="none" auto-delete="none">
+			<foreignkey field-ref="questionnaireId"/>
+		</reference-descriptor>
+		<collection-descriptor name="answers" proxy="true" element-class-ref="org.kuali.coeus.common.questionnaire.framework.answer.Answer" collection-class="org.apache.ojb.broker.util.collections.ManageableArrayList" auto-retrieve="true" auto-update="object" auto-delete="true">
+			<inverse-foreignkey field-ref="answerHeaderId"/>
+		</collection-descriptor>
+	</class-descriptor>
+	
+	<class-descriptor class="org.kuali.coeus.common.questionnaire.framework.answer.Answer" table="QUESTIONNAIRE_ANSWER">
+		<field-descriptor name="id" column="QUESTIONNAIRE_ANSWER_ID" jdbc-type="BIGINT" primarykey="true" sequence-name="SEQ_QUESTIONNAIRE_REF_ID" autoincrement="true" />
+		<field-descriptor name="answerHeaderId" column="QUESTIONNAIRE_AH_ID_FK" jdbc-type="BIGINT" />
+		<field-descriptor name="questionId" column="QUESTION_REF_ID_FK" jdbc-type="BIGINT" />
+		<field-descriptor name="questionnaireQuestionsId" column="QUESTIONNAIRE_QUESTIONS_ID_FK" jdbc-type="BIGINT" />
+		<field-descriptor name="questionNumber" column="QUESTION_NUMBER" jdbc-type="INTEGER" />
+		<field-descriptor name="answerNumber" column="ANSWER_NUMBER" jdbc-type="INTEGER" />
+		<field-descriptor name="answer" column="ANSWER" jdbc-type="VARCHAR" />
+		<field-descriptor name="updateTimestamp" column="UPDATE_TIMESTAMP" jdbc-type="TIMESTAMP" />
+		<field-descriptor name="updateUser" column="UPDATE_USER" jdbc-type="VARCHAR" />
+		<field-descriptor name="versionNumber" column="VER_NBR" jdbc-type="BIGINT" locking="true" />
+		<field-descriptor name="objectId" column="OBJ_ID" jdbc-type="VARCHAR" />
+		<reference-descriptor name="answerHeader" class-ref="org.kuali.coeus.common.questionnaire.framework.answer.AnswerHeader" auto-retrieve="true" auto-update="none" auto-delete="none">
+			<foreignkey field-ref="answerHeaderId"/>
+		</reference-descriptor>
+		<reference-descriptor name="question" class-ref="org.kuali.coeus.common.questionnaire.framework.question.Question" auto-retrieve="true" auto-update="none" auto-delete="none">
+			<foreignkey field-ref="questionId"/>
+		</reference-descriptor>
+		<reference-descriptor name="questionnaireQuestion" class-ref="org.kuali.coeus.common.questionnaire.framework.core.QuestionnaireQuestion" auto-retrieve="true" auto-update="none" auto-delete="none">
+			<foreignkey field-ref="questionnaireQuestionsId"/>
+		</reference-descriptor>
+	</class-descriptor>
+
+<!--  Questionnaire maint related -->
+
+    <class-descriptor class="org.kuali.coeus.common.framework.module.CoeusSubModule" table="COEUS_SUB_MODULE">
+        <field-descriptor name="coeusSubModuleId" column="COEUS_SUB_MODULE_ID" jdbc-type="INTEGER" primarykey="true" />
+        <field-descriptor name="moduleCode" column="MODULE_CODE" jdbc-type="VARCHAR" />
+        <field-descriptor name="subModuleCode" column="SUB_MODULE_CODE" jdbc-type="VARCHAR" />
+        <field-descriptor name="description" column="DESCRIPTION" jdbc-type="VARCHAR" />
+        <field-descriptor name="requireUniqueQuestionnareUsage" column="REQUIRE_UNIQUE_QUESTIONNAIRE" jdbc-type="CHAR" conversion="org.kuali.rice.core.framework.persistence.ojb.conversion.OjbCharBooleanConversion" />
+        <field-descriptor name="updateTimestamp" column="UPDATE_TIMESTAMP" jdbc-type="TIMESTAMP" />
+        <field-descriptor name="updateUser" column="UPDATE_USER" jdbc-type="VARCHAR" />
+        <field-descriptor name="versionNumber" column="VER_NBR" jdbc-type="BIGINT" locking="true" />
+        <field-descriptor name="objectId" column="OBJ_ID" jdbc-type="VARCHAR" />
+        <reference-descriptor name="coeusModule" class-ref="org.kuali.coeus.common.framework.module.CoeusModule" auto-retrieve="false" auto-update="none" auto-delete="none"> 
+            <foreignkey field-ref="moduleCode"/>
+        </reference-descriptor>
+    </class-descriptor>
+    <class-descriptor class="org.kuali.coeus.common.framework.module.CoeusModule" table="COEUS_MODULE">
+        <field-descriptor name="moduleCode" column="MODULE_CODE" jdbc-type="VARCHAR" primarykey="true" />
+        <field-descriptor name="description" column="DESCRIPTION" jdbc-type="VARCHAR" />
+        <field-descriptor name="updateTimestamp" column="UPDATE_TIMESTAMP" jdbc-type="TIMESTAMP" />
+        <field-descriptor name="updateUser" column="UPDATE_USER" jdbc-type="VARCHAR" />
+        <field-descriptor name="versionNumber" column="VER_NBR" jdbc-type="BIGINT" locking="true" />
+        <field-descriptor name="objectId" column="OBJ_ID" jdbc-type="VARCHAR" />
+
+    </class-descriptor>
+    <class-descriptor class="org.kuali.coeus.common.questionnaire.framework.core.Questionnaire" table="QUESTIONNAIRE">
+        <field-descriptor name="id" column="QUESTIONNAIRE_REF_ID" jdbc-type="BIGINT" primarykey="true" sequence-name="SEQ_QUESTIONNAIRE_REF_ID" autoincrement="true" />
+        <field-descriptor name="questionnaireSeqId" column="QUESTIONNAIRE_ID" jdbc-type="VARCHAR" sequence-name="SEQ_QUESTIONNAIRE_ID" autoincrement="true" />
+        <field-descriptor name="sequenceNumber" column="SEQUENCE_NUMBER" jdbc-type="INTEGER" />
+        <field-descriptor name="name" column="NAME" jdbc-type="VARCHAR" />
+        <field-descriptor name="description" column="DESCRIPTION" jdbc-type="VARCHAR" />
+        <field-descriptor name="updateTimestamp" column="UPDATE_TIMESTAMP" jdbc-type="TIMESTAMP" />
+        <field-descriptor name="updateUser" column="UPDATE_USER" jdbc-type="VARCHAR" />
+        <field-descriptor name="active" column="IS_FINAL" jdbc-type="VARCHAR" conversion="org.kuali.rice.core.framework.persistence.ojb.conversion.OjbCharBooleanConversion"/>
+        <field-descriptor name="documentNumber" column="DOCUMENT_NUMBER" jdbc-type="VARCHAR" />
+        <field-descriptor name="fileName" column="FILE_NAME" jdbc-type="VARCHAR" />
+        <field-descriptor name="template" column="TEMPLATE" jdbc-type="CLOB" conversion="org.kuali.coeus.sys.framework.persistence.OjbBlobClobFieldConversion"/>
+        <field-descriptor name="versionNumber" column="VER_NBR" jdbc-type="BIGINT" locking="true" />
+        <field-descriptor name="objectId" column="OBJ_ID" jdbc-type="VARCHAR" />
+         <collection-descriptor name="questionnaireQuestions"  element-class-ref="org.kuali.coeus.common.questionnaire.framework.core.QuestionnaireQuestion" collection-class="org.apache.ojb.broker.util.collections.ManageableArrayList" auto-retrieve="true" auto-update="object" auto-delete="none">
+            <inverse-foreignkey field-ref="questionnaireId"/>
+        </collection-descriptor>
+        <collection-descriptor name="questionnaireUsages" element-class-ref="org.kuali.coeus.common.questionnaire.framework.core.QuestionnaireUsage" collection-class="org.apache.ojb.broker.util.collections.ManageableArrayList" auto-retrieve="true" auto-update="object" auto-delete="none">
+            <inverse-foreignkey field-ref="questionnaireId"/>
+        </collection-descriptor>
+    </class-descriptor> 
+    <class-descriptor class="org.kuali.coeus.common.questionnaire.framework.core.QuestionnaireQuestion" table="QUESTIONNAIRE_QUESTIONS">
+        <field-descriptor name="id" column="QUESTIONNAIRE_QUESTIONS_ID" jdbc-type="BIGINT" primarykey="true" sequence-name="SEQ_QUESTIONNAIRE_REF_ID" autoincrement="true" />
+        <field-descriptor name="questionnaireId" column="QUESTIONNAIRE_REF_ID_FK" jdbc-type="BIGINT" />
+        <field-descriptor name="questionId" column="QUESTION_REF_ID_FK" jdbc-type="BIGINT" />
+        <field-descriptor name="questionNumber" column="QUESTION_NUMBER" jdbc-type="INTEGER" />
+        <field-descriptor name="parentQuestionNumber" column="PARENT_QUESTION_NUMBER" jdbc-type="INTEGER" />
+        <field-descriptor name="conditionFlag" column="CONDITION_FLAG" jdbc-type="VARCHAR" conversion="org.kuali.rice.core.framework.persistence.ojb.conversion.OjbCharBooleanConversion"/>
+        <field-descriptor name="condition" column="CONDITION_TYPE" jdbc-type="VARCHAR" />
+        <field-descriptor name="conditionValue" column="CONDITION_VALUE" jdbc-type="VARCHAR" />
+        <field-descriptor name="updateTimestamp" column="UPDATE_TIMESTAMP" jdbc-type="TIMESTAMP" />
+        <field-descriptor name="updateUser" column="UPDATE_USER" jdbc-type="VARCHAR" />
+        <field-descriptor name="questionSeqNumber" column="QUESTION_SEQ_NUMBER" jdbc-type="INTEGER" />
+        <field-descriptor name="ruleId" column="RULE_ID" jdbc-type="VARCHAR" />
+        <field-descriptor name="versionNumber" column="VER_NBR" jdbc-type="BIGINT" locking="true" />
+        <field-descriptor name="objectId" column="OBJ_ID" jdbc-type="VARCHAR" />
+        <reference-descriptor name="question" class-ref="org.kuali.coeus.common.questionnaire.framework.question.Question" auto-retrieve="true" auto-update="none" auto-delete="none">
+            <foreignkey field-ref="questionId"/>
+        </reference-descriptor>
+        <reference-descriptor name="questionnaire" class-ref="org.kuali.coeus.common.questionnaire.framework.core.Questionnaire" auto-retrieve="false" auto-update="none" auto-delete="none">
+            <foreignkey field-ref="questionnaireId"/>
+        </reference-descriptor>
+    </class-descriptor> 
+    <class-descriptor class="org.kuali.coeus.common.questionnaire.framework.core.QuestionnaireUsage" table="QUESTIONNAIRE_USAGE">
+        <field-descriptor name="id" column="QUESTIONNAIRE_USAGE_ID" jdbc-type="BIGINT" primarykey="true" sequence-name="SEQ_QUESTIONNAIRE_REF_ID" autoincrement="true" />
+        <field-descriptor name="moduleItemCode" column="MODULE_ITEM_CODE" jdbc-type="VARCHAR" />
+        <field-descriptor name="moduleSubItemCode" column="MODULE_SUB_ITEM_CODE" jdbc-type="VARCHAR" />
+        <field-descriptor name="questionnaireSequenceNumber" column="QUESTIONNAIRE_SEQUENCE_NUMBER" jdbc-type="INTEGER" />
+        <field-descriptor name="questionnaireId" column="QUESTIONNAIRE_REF_ID_FK" jdbc-type="BIGINT" />
+        <field-descriptor name="ruleId" column="RULE_ID" jdbc-type="VARCHAR" />
+        <field-descriptor name="questionnaireLabel" column="QUESTIONNAIRE_LABEL" jdbc-type="VARCHAR" />
+        <field-descriptor name="updateTimestamp" column="UPDATE_TIMESTAMP" jdbc-type="TIMESTAMP" />
+        <field-descriptor name="updateUser" column="UPDATE_USER" jdbc-type="VARCHAR" />
+        <field-descriptor name="versionNumber" column="VER_NBR" jdbc-type="BIGINT" locking="true" />
+        <field-descriptor name="objectId" column="OBJ_ID" jdbc-type="VARCHAR" />
+        <field-descriptor name="mandatory" column="IS_MANDATORY" jdbc-type="VARCHAR" conversion="org.kuali.rice.core.framework.persistence.ojb.conversion.OjbCharBooleanConversion"/>
+        <reference-descriptor name="coeusModule" class-ref="org.kuali.coeus.common.framework.module.CoeusModule" auto-retrieve="true" auto-update="none" auto-delete="none"> 
+            <foreignkey field-ref="moduleItemCode"/>
+        </reference-descriptor>
+        <reference-descriptor name="questionnaire" class-ref="org.kuali.coeus.common.questionnaire.framework.core.Questionnaire" auto-retrieve="true" auto-update="none" auto-delete="none">
+            <foreignkey field-ref="questionnaireId"/>
+        </reference-descriptor>
+    </class-descriptor>
+
+	 <class-descriptor class="org.kuali.coeus.propdev.impl.s2s.question.S2sOppFormQuestionnaire" table="S2S_FORM_TO_QUESTIONNAIRE">
+        <field-descriptor name="s2sOppFormQuestionnaireId" column="S2S_FORM_TO_QUESTIONNAIRE_ID" jdbc-type="BIGINT" primarykey="true" sequence-name="SEQ_QUESTIONNAIRE_REF_ID" autoincrement="true" />
+        <field-descriptor name="oppNameSpace" column="OPP_NAME_SPACE" jdbc-type="VARCHAR" />
+        <field-descriptor name="formName" column="FORM_NAME" jdbc-type="VARCHAR" />
+        <field-descriptor name="questionnaireId" column="QUESTIONNAIRE_ID" jdbc-type="BIGINT" />
+        <field-descriptor name="updateTimestamp" column="UPDATE_TIMESTAMP" jdbc-type="TIMESTAMP" />
+        <field-descriptor name="updateUser" column="UPDATE_USER" jdbc-type="VARCHAR" />
+        <field-descriptor name="objectId" column="OBJ_ID" jdbc-type="VARCHAR" />
+    </class-descriptor>
+
+</descriptor-repository>

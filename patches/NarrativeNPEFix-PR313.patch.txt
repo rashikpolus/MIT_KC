@@ -1,0 +1,121 @@
+From cf89f15c4f0ef48d29809933eb6d568a1985c462 Mon Sep 17 00:00:00 2001
+From: Travis Schneberger <leo.herbie@gmail.com>
+Date: Wed, 29 Apr 2015 15:18:45 -0400
+Subject: [PATCH 1/2] RESKC-361 avoiding a NullPointerException on proposal
+ copy.
+
+When an attachment exists such as a narrative or biography but the attachment does not have attachment data and the proposal attachment is copied with the copy attachments option then a NullPointerException occurs.  This scenario should not happen under normal circumstances and may indicate bad data in the system.
+---
+ .../propdev/impl/copy/ProposalCopyServiceImpl.java | 34 ++++++++++++----------
+ 1 file changed, 19 insertions(+), 15 deletions(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/copy/ProposalCopyServiceImpl.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/copy/ProposalCopyServiceImpl.java
+index 7835bbd..8c93f90 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/copy/ProposalCopyServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/copy/ProposalCopyServiceImpl.java
+@@ -624,14 +624,16 @@ protected void copyPropPersonBiosAttachments(List<ProposalPersonBiography> oldBi
+             for (ProposalPersonBiography newBiography : newBiographies) {
+                 if (oldBiography.getProposalPersonNumber().equals(newBiography.getProposalPersonNumber()) &&
+                         oldBiography.getBiographyNumber().equals(newBiography.getBiographyNumber())) {
+-                    ProposalPersonBiographyAttachment newBiographyAttachment = new ProposalPersonBiographyAttachment();
+-                    newBiographyAttachment.setProposalPersonBiography(newBiography);
+-                    newBiographyAttachment.setProposalPersonNumber(oldBiography.getProposalPersonNumber());
+-                    newBiographyAttachment.setBiographyNumber(oldBiography.getBiographyNumber());
+-                    newBiographyAttachment.setData(oldBiography.getPersonnelAttachment().getData());
+-                    newBiographyAttachment.setName(oldBiography.getPersonnelAttachment().getName());
+-                    newBiographyAttachment.setType(oldBiography.getPersonnelAttachment().getType());
+-                    newBiography.setPersonnelAttachment(newBiographyAttachment);
++                    if (oldBiography.getPersonnelAttachment() != null) {
++                        ProposalPersonBiographyAttachment newBiographyAttachment = new ProposalPersonBiographyAttachment();
++                        newBiographyAttachment.setProposalPersonBiography(newBiography);
++                        newBiographyAttachment.setProposalPersonNumber(oldBiography.getProposalPersonNumber());
++                        newBiographyAttachment.setBiographyNumber(oldBiography.getBiographyNumber());
++                        newBiographyAttachment.setData(oldBiography.getPersonnelAttachment().getData());
++                        newBiographyAttachment.setName(oldBiography.getPersonnelAttachment().getName());
++                        newBiographyAttachment.setType(oldBiography.getPersonnelAttachment().getType());
++                        newBiography.setPersonnelAttachment(newBiographyAttachment);
++                    }
+                 }
+             }
+         }
+@@ -641,13 +643,15 @@ protected void copyNarrativeAttachments(List<Narrative> oldNarratives, List<Narr
+         for (Narrative oldNarrative : oldNarratives) {
+             for (Narrative newNarrative : newNarratives) {
+                 if (oldNarrative.getModuleNumber().equals(newNarrative.getModuleNumber())) {
+-                    NarrativeAttachment newNarrativeAttachment = new NarrativeAttachment();
+-                    newNarrativeAttachment.setNarrative(newNarrative);
+-                    newNarrativeAttachment.setModuleNumber(oldNarrative.getModuleNumber());
+-                    newNarrativeAttachment.setData(oldNarrative.getNarrativeAttachment().getData());
+-                    newNarrativeAttachment.setName(oldNarrative.getNarrativeAttachment().getName());
+-                    newNarrativeAttachment.setType(oldNarrative.getNarrativeAttachment().getType());
+-                    newNarrative.setNarrativeAttachment(newNarrativeAttachment);
++                    if (oldNarrative.getNarrativeAttachment() != null) {
++                        NarrativeAttachment newNarrativeAttachment = new NarrativeAttachment();
++                        newNarrativeAttachment.setNarrative(newNarrative);
++                        newNarrativeAttachment.setModuleNumber(oldNarrative.getModuleNumber());
++                        newNarrativeAttachment.setData(oldNarrative.getNarrativeAttachment().getData());
++                        newNarrativeAttachment.setName(oldNarrative.getNarrativeAttachment().getName());
++                        newNarrativeAttachment.setType(oldNarrative.getNarrativeAttachment().getType());
++                        newNarrative.setNarrativeAttachment(newNarrativeAttachment);
++                    }
+                 }
+             }
+         }
+
+From 3214d06c87af20c54ff046821a1df6e3942db543 Mon Sep 17 00:00:00 2001
+From: Travis Schneberger <leo.herbie@gmail.com>
+Date: Wed, 29 Apr 2015 15:19:27 -0400
+Subject: [PATCH 2/2] RESKC-361 avoiding a resource leak that was indicated by
+ a OJB warning message.
+
+---
+ .../questionnaire/impl/QuestionnaireDaoOjb.java    | 23 ++++++++++------------
+ 1 file changed, 10 insertions(+), 13 deletions(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/common/questionnaire/impl/QuestionnaireDaoOjb.java b/coeus-impl/src/main/java/org/kuali/coeus/common/questionnaire/impl/QuestionnaireDaoOjb.java
+index 74950de..0f26d59 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/common/questionnaire/impl/QuestionnaireDaoOjb.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/common/questionnaire/impl/QuestionnaireDaoOjb.java
+@@ -21,7 +21,7 @@
+ 
+ import java.math.BigDecimal;
+ import java.util.Iterator;
+-import org.apache.commons.lang3.ArrayUtils;
++
+ import org.apache.ojb.broker.query.Criteria;
+ import org.apache.ojb.broker.query.QueryFactory;
+ import org.apache.ojb.broker.query.ReportQueryByCriteria;
+@@ -29,24 +29,21 @@
+ import org.kuali.coeus.common.questionnaire.framework.core.QuestionnaireConstants;
+ import org.kuali.rice.core.framework.persistence.ojb.dao.PlatformAwareDaoBaseOjb;
+ 
+-/**
+- * @author Kuali Rice Team (rice.collab@kuali.org)
+- */
+ public class QuestionnaireDaoOjb extends PlatformAwareDaoBaseOjb implements QuestionnaireDao {
+ 
+     @Override
+     public Integer getCurrentQuestionnaireSequenceNumber(String questionnaireSeqId) {
+-        Criteria criteria = new Criteria();
++        final Criteria criteria = new Criteria();
+         criteria.addEqualTo(QuestionnaireConstants.QUESTIONNAIRE_SEQUENCE_ID_PARAMETER_NAME, questionnaireSeqId);
+-        String[] columns = {"max(" + QuestionnaireConstants.QUESTIONNAIRE_SEQUENCE_NUMBER_PARAMETER_NAME + ")"};
+-        ReportQueryByCriteria query = QueryFactory.newReportQuery(Questionnaire.class, columns, criteria, false);
+-        Iterator iter = getPersistenceBrokerTemplate().getReportQueryIteratorByQuery(query);
+-        if (iter.hasNext()) {
+-            Object[] objects = (Object[]) iter.next();
+-            return ((BigDecimal) objects[0]).intValue();
+-        } else {
+-            return null;
++        final String[] columns = {"max(" + QuestionnaireConstants.QUESTIONNAIRE_SEQUENCE_NUMBER_PARAMETER_NAME + ")"};
++        final ReportQueryByCriteria query = QueryFactory.newReportQuery(Questionnaire.class, columns, criteria, false);
++        final Iterator iter = getPersistenceBrokerTemplate().getReportQueryIteratorByQuery(query);
++        final Integer sequenceNumber = iter.hasNext() ? ((BigDecimal) ((Object[]) iter.next())[0]).intValue() : null;
++        while (iter.hasNext()) {
++            iter.next(); // exhaust the iterator so the db resources will be closed.  See org.apache.ojb.broker.accesslayer.OJBIterator
+         }
++
++        return sequenceNumber;
+     }
+ 
+ }

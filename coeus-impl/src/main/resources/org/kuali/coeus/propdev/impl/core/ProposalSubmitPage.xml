@@ -1,0 +1,872 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+     http://www.springframework.org/schema/util
+     http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<util:constant id="deleteDocument" static-field="org.kuali.coeus.common.framework.auth.KcAuthConstants.DocumentActions.DELETE_DOCUMENT"/>
+	<util:constant id="submitToS2s" static-field="org.kuali.coeus.propdev.impl.core.ProposalDevelopmentConstants.PropDevDocumentActions.SUBMIT_TO_S2S"/>
+	<util:constant id="submitToSponsor" static-field="org.kuali.coeus.propdev.impl.core.ProposalDevelopmentConstants.PropDevDocumentActions.SUBMIT_TO_SPONSOR"/>
+	<bean id="PropDev-SubmitPage" parent="PropDev-SubmitPage-parentBean" />
+	<bean id="PropDev-SubmitPage-parentBean" abstract="true"
+		parent="Uif-DocumentPage" p:headerText="Submit">
+		<property name="items">
+			<list>
+		      <bean parent="Uif-StepProgressBar" p:order="10" p:render="@{!document.developmentProposal.child}">
+		     <property name="currentStep" value="@{#ViewHelper.displayProposalProgressCode(document.documentHeader.workflowDocument)}"/>
+              <property name="steps">
+                     <map>
+                     <entry key="#{T(org.kuali.rice.kew.api.document.DocumentStatus).SAVED.name()}" value="Saved"/>
+                     <entry key="#{T(org.kuali.rice.kew.api.document.DocumentStatus).ENROUTE.name()}" value="Routing"/>
+                     <entry key="#{T(org.kuali.rice.kew.api.document.DocumentStatus).FINAL.name()}" value="Approved"/>
+                     </map>
+              </property>
+       </bean>				
+                <bean parent="PropDev-SubmitPage-SummaryTabGroup"  p:order="20"/>
+                <bean parent="Uif-MessageField" p:messageText="@{#ViewHelper.getDisclaimerText()}" p:order="30"
+                      p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_APPROVE]}"/>
+			</list>
+		</property>
+		<property name="header">
+			<bean parent="Uif-PageHeader" />
+		</property>
+		<property name="footer">
+	 	 <bean  parent="Uif-HorizontalBoxGroup" p:align="left" >
+			<property name="items">
+				<list>
+                    <bean p:actionLabel="Send Adhoc" parent="Uif-PrimaryActionButton" p:methodToCall="sendAdHocRequests"  p:order="5"
+                          p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_SEND_ADHOC_REQUESTS]}"/>
+
+					<bean  p:actionLabel="Submit for Review" parent="Uif-PrimaryActionButton" p:methodToCall="submitForReview"  p:order="10"
+                           p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_ROUTE] and document.documentHeader.workflowDocument.saved and !#parent.readOnly}"/>
+
+                    <bean  p:actionLabel="Ad Hoc Recipients" parent="Uif-PrimaryActionButton" p:methodToCall="populateAdHocs"  p:order="20"
+                           p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_ADD_ADHOC_REQUESTS] and (!#parent.readOnly or document.documentHeader.workflowDocument.enroute) and !document.developmentProposal.isChild()}" />
+
+
+                    <bean parent="Uif-PrimaryActionButton" p:actionLabel="Approve" p:methodToCall="approve" p:order="30"
+                          p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_APPROVE]}"/>
+
+                    <bean parent="Uif-SecondaryActionButton" p:methodToCall="disapproveProposal" p:actionLabel="Disapprove"
+                          p:preSubmitCall="dirtyFormState.skipDirtyChecks = true; return true;"
+                          p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_DISAPPROVE]}" p:order="40">
+                        <property name="confirmationDialog">
+                            <bean id="DisapproveExplanationDialog" parent="Uif-DialogGroup-OkCancelExpl" p:promptText="Reason for disapprove?"/>
+                        </property>
+                    </bean>
+
+                    <bean parent="Uif-SecondaryActionButton" p:actionLabel="Reject" p:actionScript="showDialog('PropDev-SubmitPage-RejectDialog')" p:order="50"
+                          p:render="@{#editModes['rejectProposal']}"/>
+
+                    <bean parent="Uif-LinkField" p:linkText="View Route Log"
+                          p:render="@{!document.developmentProposal.child}"
+                          p:href="@{#ConfigProperties['rice.server.url']}/kew/RouteLog.do?documentId=@{document.developmentProposal.proposalDocument.documentNumber}"  p:order="60"
+                    p:link.openInDialog="true" />
+                    
+                    <bean parent="Uif-RecallAction" p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_RECALL] and !document.developmentProposal.child}"  p:order="70">
+              			<property name="confirmationDialog">
+             				<bean id="ConfirmRecallDialog" parent="Uif-DialogGroup-OkCancelExpl" p:promptText="Reason for recall?"/>
+            			</property>
+           			</bean>
+           			
+
+
+			   		<bean parent="Uif-SecondaryActionButton" p:actionLabel="Cancel proposal" p:methodToCall="cancelProposal" p:order="80"
+						p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_CANCEL] and !#parent.readOnly}">
+					 	<property name="confirmationDialog">
+			          		<bean id="ProposalCancelDialog" parent="Uif-DialogGroup-OkCancel" p:promptText="Are you sure you want to cancel ?"/>
+			          	</property>
+					</bean>
+
+					<bean parent="Uif-Space"/><bean parent="Uif-Space"/>
+					 
+					 <bean parent="Uif-SecondaryActionButton" p:actionLabel="Delete Proposal" p:methodToCall="deleteProposal" p:order="90"
+					 	p:render="@{#actionFlags[#{deleteDocument}] and !#parent.readOnly}">
+					 	<property name="confirmationDialog">
+			          		<bean id="ProposalDeleteDialog" parent="Uif-DialogGroup-OkCancel" p:promptText="Are you sure you want to delete ?"/>
+			          	</property>
+					 </bean>
+					 
+					<bean id="PropDev-Resumbit-SubmitToSponsorButton" parent="Uif-SecondaryActionButton" p:actionLabel="Submit to Sponsor" p:methodToCall="submitToSponsor" p:order="100"
+					 	p:render="@{#actionFlags[#{submitToSponsor}] and !document.developmentProposal.child}" p:onClickScript="jQuery(this).hide();">
+					</bean>	
+					
+					<bean parent="Uif-SecondaryActionButton" p:actionLabel="Submit to S2S" p:methodToCall="submitToS2s" p:order="110"
+					 	p:render="@{#actionFlags[#{submitToS2s}] and !document.developmentProposal.child}" p:successCallback="jQuery('#PropDev-OpportunityPage-SubmissionDetailsSection_tab').click()">
+					</bean>				
+						
+					<bean parent="Uif-DropdownToggleMenu" p:toggleText="More Actions"  p:align="right" p:order="120">
+					  <property name="menuItems">
+					    <list>
+					      <bean parent="Uif-MenuAction" p:actionLabel="Send Notifications" p:order="10" p:refreshId="Kc-SendNotification-Wizard" p:methodToCall="prepareNotificationWizard"
+                                p:successCallback="showDialog('Kc-SendNotification-Wizard');" p:render="@{!viewOnly}"/>
+					      	 
+					      <bean parent="Uif-MenuAction" p:actionLabel="Reload proposal"  p:methodToCall="reload" p:order="20"  
+					      	p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_RELOAD]}"/>		
+					      				 
+					      <bean parent="Uif-MenuAction" p:actionLabel="Blanket Approve" p:methodToCall="blanketApprove" p:order="30"
+					      		p:render="@{#actionFlags[#Constants.KUALI_ACTION_CAN_BLANKET_APPROVE] and !document.developmentProposal.child}"/>
+						  <bean parent="Uif-MenuDivider"/>
+					      
+					    </list>
+					  </property>
+					 </bean> 
+					 <bean parent="Uif-SecondaryActionButton" p:ajaxSubmit="true" p:methodToCall="closeWithoutSave" p:actionLabel="Close" p:order="130" />
+				</list>
+			</property>
+		</bean> 
+	
+	 </property>
+	</bean>
+    <bean id="PropDev-SubmitPage-ConfirmDelete" parent="Uif-DialogGroup-OkCancel"
+          p:promptText="Are you sure you want to delete this proposal?"/>
+
+    <bean id="PropDev-SubmitPage-ReceiveFutureRequests" parent="Uif-DialogGroup-YesNo"
+          p:promptText="Do you want to receive future approval requests?"/>
+
+    <bean id="PropDev-SubmitPage-RejectDialog" parent="Uif-DialogGroup-YesNo"
+          p:fieldBindingObjectPath="proposalDevelopmentRejectionBean"
+          p:readOnly="false">
+        <property name="items">
+            <list>
+                <bean parent="Uif-MessageField" p:messageText="Are you sure you want to reject this document?" p:order="10"/>
+                <bean parent="Uif-InputField" p:propertyName="rejectReason" p:order="20"
+                        p:fieldLabel.labelText="Rejection Reason"/>
+                <bean parent="Uif-InputField" p:propertyName="rejectFile" p:order="30"
+                      p:fieldLabel.labelText="Attachment">
+                    <property name="control">
+                        <bean parent="Uif-FileControl"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+        <property name="footer.items">
+            <list>
+                <bean parent="Uif-PrimaryActionButton" p:actionLabel="OK" p:methodToCall="reject" p:order="10"
+                      p:dialogDismissOption="REQUEST"  p:successCallback="dismissDialog('PropDev-SubmitPage-RejectDialog');" p:dialogResponse="true"/>
+                <bean parent="Uif-SecondaryActionButton" p:actionLabel="Cancel" p:methodToCall="cancelReject" p:order="20"
+                      p:dialogDismissOption="REQUEST" p:successCallback="dismissDialog('PropDev-SubmitPage-RejectDialog');" p:dialogResponse="false"/>
+            </list>
+        </property>
+
+            </bean>
+
+    <bean id="PropDev-SubmitPage-SummaryTabGroup" parent="PropDev-SubmitPage-SummaryTabGroup-parentBean" />
+<bean id="PropDev-SubmitPage-SummaryTabGroup-parentBean" abstract="true" parent="Uif-TabGroup">
+        <property name="items">
+            <list>
+                <bean parent="PropDev-SubmitPage-ProposalSummary" p:order="10" />
+                <bean parent="PropDev-SubmitPage-Personnel" p:order="20" />
+                <bean parent="PropDev-SubmitPage-CreditAllocation" p:readOnly="true" p:render="@{#ViewHelper.isCreditSplitEnabled()}" p:order="30" />
+                <bean parent="PropDev-SubmitPage-Compliance" p:order="40"/>
+                <bean parent="PropDev-SubmitPage-Attachments" p:render="@{#ViewHelper.isSummaryAttachmentsPanelEnabled()}" p:order="50" />
+                <bean parent="PropDev-SubmitPage-Questionnaire" p:render="@{#ViewHelper.isSummaryQuestionsPanelEnabled()}" p:order="60" />
+                <bean parent="PropDev-SubmitPage-SupplementalInfo" p:order="70" />
+                <bean parent="PropDev-SubmitPage-Keyword"  p:render="@{#ViewHelper.isSummaryKeywordsPanelEnabled()}" p:order="80" />
+                <bean parent="PropDev-SubmitPage-Hierarchy" p:render="@{document.developmentProposal.isInHierarchy()}" p:order="90"/>
+                <bean parent="PropDev-SubmitPage-BudgetSummary" p:render="@{#ViewHelper.isSummaryBudgetPanelEnabled(document.developmentProposal)}" p:order="100"/>
+            </list>
+        </property>
+    </bean>
+
+   <bean id="PropDev-SubmitPage-ProposalSummary" parent="PropDev-SubmitPage-ProposalSummary-parentBean" />
+    <bean id="PropDev-SubmitPage-ProposalSummary-parentBean" abstract="true"
+          parent="Uif-GridCondensedSection" p:headerText="Proposal Summary" p:fieldBindingObjectPath="document.developmentProposal">
+        <property name="items">
+            <list>
+                <bean parent="PropDev-DataField-NoColon" p:propertyName="title" p:fieldLabel.labelText="Title"
+                      p:order="10" />
+                <bean parent="PropDev-DataField-NoColon" p:propertyName="principalInvestigatorName"
+                      p:order="20" />
+                <bean parent="Uif-MessageField" p:messageText="@{document.developmentProposal.ownedByUnitNumber} - @{document.developmentProposal.ownedByUnit.unitName}"
+                      p:fieldLabel.labelText="Lead Unit" p:fieldLabel.renderColon="false"
+                      p:order="30" />
+                <bean parent="PropDev-DataField-NoColon" p:propertyName="document.developmentProposal.activityType.description"
+                      p:fieldLabel.labelText="Activity Type"
+                      p:order="40" />
+                <bean parent="PropDev-DataField-NoColon" p:propertyName="proposalNumber"
+                      p:order="50" />
+                <bean parent="PropDev-DataField-NoColon" p:propertyName="requestedStartDateInitial"
+                      p:order="60" />
+                <bean parent="PropDev-DataField-NoColon" p:propertyName="requestedEndDateInitial"
+                      p:order="70" />
+                <bean parent="Uif-MessageField"  p:messageText="@{document.developmentProposal.subcontracts ne null?document.developmentProposal.subcontracts?'Yes':'No':'No'}"
+                      p:fieldLabel.labelText="Include Subaward(s)?" p:fieldLabel.renderColon="false" p:order="80" />
+                <bean parent="PropDev-DataField-NoColon" p:propertyName="sponsor.sponsorName"
+                      p:order="90"  />
+                <bean parent="PropDev-DataField-NoColon" p:propertyName="deadlineDate"
+                      p:order="100" />
+                <bean parent="PropDev-DataField-NoColon" p:propertyName="deadlineTypeRef.description"
+                      p:fieldLabel.labelText="Sponsor Deadline Type"
+                      p:order="110" />
+            </list>
+        </property>
+    </bean>
+
+
+    <bean id="PropDev-SubmitPage-Personnel" parent="PropDev-SubmitPage-Personnel-parentBean" />
+    <bean id="PropDev-SubmitPage-Personnel-parentBean" abstract="true"
+          parent="Uif-TableCollectionSection" p:headerText="Personnel"
+          p:collectionObjectClass="org.kuali.coeus.propdev.impl.person.ProposalPerson"
+          p:propertyName="document.developmentProposal.proposalPersons" p:fieldBindingObjectPath="document.developmentProposal"
+          p:renderAddLine="false" p:layoutManager.richTable.render="false" p:renderInactiveToggleButton="false"
+          p:renderLineActions="false" p:layoutManager.renderSequenceField="false"  >
+        <property name="header.rightGroup">
+            <bean parent="Uif-HorizontalBoxGroup">
+                <property name="items">
+                    <list>
+                        <bean parent="Uif-SecondaryActionButton" p:actionLabel="Print All" p:order="10">
+                            <property name="actionUrl">
+                                <bean parent="Uif-Url"
+                                      p:href="../kc-pd-krad/proposalDevelopment?methodToCall=printAllCertifications&amp;formKey=@{formKey}"/>
+                            </property>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-DataField" p:propertyName="fullName" p:fieldLabel.labelText="Key Person" p:order="10"/>
+                <bean parent="Uif-MessageField" p:messageText="@{#lp.role.description}" p:fieldLabel.labelText="Role" p:order="20"/>
+                <bean parent="Uif-FieldGroupBase" p:fieldLabel.labelText="Unit" p:order="30">
+                    <property name="group">
+                        <bean parent="PropDev-SubmitPage-UnitCollectionGroup" />
+                    </property>
+                </bean>
+                <bean parent="Uif-MessageField" p:messageText="@{#line.isQuestionnairesCompleted()?'complete':'incomplete'} [0]"
+                      p:fieldLabel.labelText="Proposal Person Certification"
+                      p:order="40">
+                    <property name="inlineComponents">
+                        <list>
+                            <bean parent="Uif-ActionLink" p:methodToCall="viewCertification"
+                                  p:actionLabel="(view)"
+                                  p:style="padding-left:0px;margin-right:0px"
+                                  p:order="10"  />
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+        <property name="layoutManager.libraryCssClasses">
+            <list>
+                <value>table</value>
+                <value>table-condensed</value>
+            </list>
+        </property>
+        <property name="layoutManager.cssClasses">
+            <null/>
+        </property>
+    </bean>
+
+    <bean id="PropDev-SubmitPage-CertificationDetail" parent="PropDev-SubmitPage-CertificationDetail-parentBean"/>
+    <bean id="PropDev-SubmitPage-CertificationDetail-parentBean" abstract="true" parent="Uif-DialogGroup"
+          p:render="@{proposalPersonQuestionnaireHelper.answerHeaders != null and proposalPersonQuestionnaireHelper.answerHeaders.size() > 0}"
+          p:headerText="@{(proposalPersonQuestionnaireHelper.answerHeaders != null and proposalPersonQuestionnaireHelper.answerHeaders.size() > 0 and proposalPersonQuestionnaireHelper.answerHeaders[0].label != null) ? proposalPersonQuestionnaireHelper.answerHeaders[0].label : 'None'}"
+          p:readOnly="true">
+        <property name="items">
+            <list>
+                <bean parent="Uif-SecondaryActionButton" p:actionLabel="Print" p:order="10">
+                        <property name="actionUrl">
+                                <bean parent="Uif-Url"
+                                    p:href="../kc-pd-krad/proposalDevelopment?methodToCall=printQuestionnaire&amp;formKey=@{formKey}&amp;helper=proposalPersonQuestionnaireHelper&amp;index=0"/>
+                        </property>
+                </bean>
+                <bean parent="Questionnaire-QuestionsGroup" p:propertyName="proposalPersonQuestionnaireHelper.answerHeaders[0].questions"
+                      p:order="20" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="PropDev-SubmitPage-UnitCollectionGroup" parent="PropDev-SubmitPage-UnitCollectionGroup-parentBean"/>
+    <bean id="PropDev-SubmitPage-UnitCollectionGroup-parentBean" abstract="true" parent="Uif-VerticalBoxGroup">
+        <property name="items">
+            <list>
+                <bean parent="Uif-ListCollectionGroup" p:collectionObjectClass="org.kuali.coeus.propdev.impl.person.ProposalPersonUnit"
+                      p:propertyName="units">
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-MessageField" p:messageText="@{#lp.leadUnit ? '(Lead Unit) ':''}@{#lp.unit.unitNumber} - @{#lp.unit.UnitName}" p:order="10"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="PropDev-SubmitPage-CreditAllocation" parent="PropDev-SubmitPage-CreditAllocation-parentBean" />
+    <bean id="PropDev-SubmitPage-CreditAllocation-parentBean" abstract="true"
+          parent="PropDev-CreditAllocation-Section">
+        <property name="items">
+            <list>
+                <bean parent="PropDev-SubmitPage-CreditAllocationCollection"
+                      p:render="@{!#emptyList(document.developmentProposal.investigators)}" p:order="10"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="PropDev-SubmitPage-CreditAllocationCollection" parent="PropDev-SubmitPage-CreditAllocationCollection-parentBean"/>
+    <bean id="PropDev-SubmitPage-CreditAllocationCollection-parentBean" abstract="true" parent="PropDev-CreditAllocation-Collection">
+        <property name="header.rightGroup">
+            <null/>
+        </property>
+        <property name="columnFieldPrototype">
+            <bean parent="Uif-DataField"  p:cssClasses="@{#line ne null?#line.getClass().getName().equals(#collectionGroup.collectionObjectClass)?#line.lineType:'':''}" />
+        </property>
+    </bean>
+
+    <bean id="PropDev-SubmitPage-Compliance" parent="PropDev-SubmitPage-Compliance-parentBean"/>
+    <bean id="PropDev-SubmitPage-Compliance-parentBean" abstract="true" parent="Uif-TableCollectionSection"
+        p:header.headerText="Compliance" p:propertyName="document.developmentProposal.propSpecialReviews"
+        p:collectionObjectClass="org.kuali.coeus.propdev.impl.specialreview.ProposalSpecialReview"
+        p:renderAddLine="false" p:layoutManager.renderSequenceField="false"
+        p:renderLineActions="false" p:layoutManager.richTable.render="false" p:readOnly="true">
+        <property name="items">
+            <list>
+                <bean parent="Uif-DataField" p:propertyName="specialReviewType.description"
+                      p:fieldLabel.labelText="Type" p:order="10"/>
+                <bean parent="Uif-DataField" p:propertyName="approvalType.description"
+                      p:fieldLabel.labelText="Approval Status" p:order="20"/>
+                <bean parent="Uif-DataField" p:propertyName="protocolNumber" p:order="30"/>
+                <bean parent="Uif-DataField" p:propertyName="applicationDate" p:order="40"/>
+                <bean parent="Uif-DataField" p:propertyName="comments" p:order="50"/>
+            </list>
+        </property>
+        <property name="layoutManager.libraryCssClasses">
+            <list>
+                <value>table</value>
+                <value>table-condensed</value>
+            </list>
+        </property>
+        <property name="layoutManager.cssClasses">
+            <null/>
+        </property>
+    </bean>
+
+    <bean id="PropDev-SubmitPage-Questionnaire" parent="PropDev-SubmitPage-Questionnaire-parentBean" />
+    <bean id="PropDev-SubmitPage-Questionnaire-parentBean" abstract="true"
+          parent="PropDev-QuestionnairePage-Section" p:readOnly="true"/>
+		
+    <bean id="PropDev-SubmitPage-Attachments" parent="PropDev-SubmitPage-Attachments-parentBean" />
+    <bean id="PropDev-SubmitPage-Attachments-parentBean" abstract="true"
+          parent="PropDev-AttachmentsPage-Section" p:readOnly="true"/>
+
+   <bean id="PropDev-SubmitPage-Keyword" parent="PropDev-SubmitPage-Keyword-parentBean" />
+    <bean id="PropDev-SubmitPage-Keyword-parentBean" abstract="true" parent="Uif-TableCollectionSection"
+		p:headerText="Keywords" p:propertyName="document.developmentProposal.propScienceKeywords"
+		p:collectionObjectClass="org.kuali.coeus.propdev.impl.keyword.PropScienceKeyword"
+		p:renderAddLine="false" p:layoutManager.renderSequenceField="false"
+		p:renderLineActions="false" p:pageSize="100"
+		p:layoutManager.richTable.disableTableSort="true"
+		p:layoutManager.richTable.showExportOption="false" p:readOnly="true">
+		<property name="items">
+			<list>
+			<bean parent="Uif-DataField" p:propertyName="scienceKeyword.description" p:order="10" />
+			</list>
+		</property>
+	</bean>
+    <bean id="PropDev-SubmitPage-SupplementalInfo" parent="PropDev-SubmitPage-SupplementalInfo-parentBean" />
+    <bean id="PropDev-SubmitPage-SupplementalInfo-parentBean" abstract="true"
+          parent="Uif-TableCollectionSection"
+          p:collectionObjectClass="org.kuali.coeus.common.framework.custom.attr.CustomAttributeDocValue"
+          p:propertyName="document.customDataList"
+          p:fieldBindingObjectPath="document"
+          p:renderLineActions="false" p:renderAddLine="false"
+          p:layoutManager.richTable.render="true" p:layoutManager.renderSequenceField="false"
+          p:header.headerText="Supplemental Info">
+        <property name="items">
+            <list>
+                <bean parent="Uif-DataField" p:fieldLabel.labelText=" "
+                      p:propertyName="customAttribute.label" p:order="10"/>
+                <bean parent="Uif-DataField" p:propertyName="value" p:order="20" />
+            </list>
+        </property>
+        <property name="layoutManager.groupingPropertyNames">
+            <list>
+                <value>customAttribute.groupName</value>
+            </list>
+        </property>
+        <property name="layoutManager.richTable.templateOptions">
+            <map>
+                <entry key="bPaginate" value="false" />
+                <entry key="bFilter" value="false"/>
+                <entry key="bInfo" value="false"/>
+                <entry key="aaSorting" value="[[1,'asc']]" />
+            </map>
+        </property>
+        <property name="layoutManager.libraryCssClasses">
+            <list>
+                <value>table</value>
+                <value>table-condensed</value>
+            </list>
+        </property>
+        <property name="layoutManager.cssClasses">
+            <null/>
+        </property>
+    </bean>
+    <bean id="PropDev-Resumbit-OptionsSection" parent="PropDev-Resumbit-OptionsSection-parentBean" />
+	<bean id="PropDev-Resumbit-OptionsSection-parentBean" abstract="true" parent="Uif-DialogGroup" p:resetDataOnRefresh="true"
+            p:dialogCssClass="modal-lg" p:header.headerText="Resubmission Options" p:readOnly="false"
+            p:onHideDialogScript="jQuery('#PropDev-Resumbit-OptionsSection').one(kradVariables.EVENTS.HIDDEN_MODAL, function(e){Kc.Dialog.resetDialogFields(jQuery('#PropDev-Resumbit-OptionsSection'));});">
+		<property name="header.upperGroup">
+            <null/>
+		</property>
+        <property name="items">
+			   <list>
+				    <bean id="PropDev-Resumbit-OptionsRadio" parent="Uif-InputField" p:required="true" p:propertyName="resubmissionOption" p:order="10" >
+				     <property name="control">
+					      <bean parent="Uif-VerticalRadioControl">
+					         <property name="options">
+		                       <list>
+			                        <bean parent="Uif-KeyLabelPair" p:key="#{T(org.kuali.coeus.propdev.impl.core.ProposalDevelopmentConstants.ResubmissionOptions).GENERATE_NEW_VERSION_OF_IP}" p:value="Generate a new version of Institutional Proposal" />
+	                                <bean parent="Uif-KeyLabelPair" p:key="#{T(org.kuali.coeus.propdev.impl.core.ProposalDevelopmentConstants.ResubmissionOptions).GENERATE_NEW_IP}" p:value="Generate a new Institutional Proposal" />
+	                                <bean parent="Uif-KeyLabelPair" p:key="#{T(org.kuali.coeus.propdev.impl.core.ProposalDevelopmentConstants.ResubmissionOptions).DO_NOT_GENERATE_NEW_IP}" p:value="Do not generate a new Institutional Proposal or Institutional Proposal version" />
+		                      </list>
+				        	</property>
+   						</bean>
+				     </property>
+				     <property name="propertyReplacers">
+				     	<list>
+				     		<bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="control"
+				     			p:condition="@{!#empty(document.developmentProposal.continuedFrom)}">
+				     			<property name="replacement">
+				     				<bean parent="Uif-VerticalRadioControl">
+			                        	<property name="options">
+				                            <list>
+									            <bean parent="Uif-KeyLabelPair" p:key="#{T(org.kuali.coeus.propdev.impl.core.ProposalDevelopmentConstants.ResubmissionOptions).GENERATE_NEW_VERSION_OF_ORIGINAL_IP}" p:value="Generate a new version of Original Institutional Proposal (@{document.developmentProposal.continuedFrom})" />
+						                        <bean parent="Uif-KeyLabelPair" p:key="#{T(org.kuali.coeus.propdev.impl.core.ProposalDevelopmentConstants.ResubmissionOptions).GENERATE_NEW_VERSION_OF_IP}" p:value="Generate a new version of Institutional Proposal" />
+				                                <bean parent="Uif-KeyLabelPair" p:key="#{T(org.kuali.coeus.propdev.impl.core.ProposalDevelopmentConstants.ResubmissionOptions).GENERATE_NEW_IP}" p:value="Generate a new Institutional Proposal" />
+				                                <bean parent="Uif-KeyLabelPair" p:key="#{T(org.kuali.coeus.propdev.impl.core.ProposalDevelopmentConstants.ResubmissionOptions).DO_NOT_GENERATE_NEW_IP}" p:value="Do not generate a new Institutional Proposal or Institutional Proposal version" />
+				                           </list>
+			                            </property>
+			                        </bean>
+				     			</property>
+	                      	</bean>
+				     	</list>
+				     </property>
+	    			</bean>
+	    			<bean id="PropDev-Resumbit-Options-InstitutionalProposalToVersion"
+					   parent="Uif-InputField" p:propertyName="institutionalProposalToVersion"
+					  p:progressiveRender="@{resubmissionOption == '#{T(org.kuali.coeus.propdev.impl.core.ProposalDevelopmentConstants.ResubmissionOptions).GENERATE_NEW_VERSION_OF_IP}'}" p:fieldLabel.labelText="Institutional Proposal To Version">
+					  	<property name="quickfinder">
+						   <bean parent="Uif-QuickFinder" p:dataObjectClassName="org.kuali.kra.institutionalproposal.home.InstitutionalProposal"
+						    p:returnByScript="true" p:hideCriteriaOnSearch="true"  p:fieldConversions="proposalNumber:institutionalProposalToVersion"/>
+						</property>
+					 </bean>
+    			</list>
+		</property>
+		<property name="footer">
+			<bean parent="Uif-DialogFooter">
+				<property name="items">
+					<list>
+						<bean parent="Uif-SecondaryActionButton" p:actionLabel="Proceed" p:methodToCall="proceed" p:order="10" 
+							p:successCallback="dismissDialog('PropDev-Resumbit-OptionsSection');" p:performClientSideValidation="true"/>
+						<bean parent="Uif-SecondaryActionButton" p:actionLabel="Close" p:dialogDismissOption="IMMEDIATE"
+                              p:onClickScript="jQuery('#PropDev-Resumbit-SubmitToSponsorButton').show();"
+                              p:dialogResponse="false" p:order="20"/>
+
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="PropDev-ResumbitSequence-OptionsSection" parent="PropDev-ResumbitSequence-OptionsSection-parentBean" />
+	<bean id="PropDev-ResumbitSequence-OptionsSection-parentBean" abstract="true" parent="Uif-DialogGroup" p:resetDataOnRefresh="true"
+            p:dialogCssClass="modal-lg" p:header.headerText="Resubmission Options" p:readOnly="false"
+            p:onHideDialogScript="jQuery('#PropDev-Resumbit-OptionsSection').one(kradVariables.EVENTS.HIDDEN_MODAL, function(e){Kc.Dialog.resetDialogFields(jQuery('#PropDev-Resumbit-OptionsSection'));});">
+		<property name="header.upperGroup">
+            <null/>
+		</property>
+        <property name="items">
+			   <list>
+				    <bean id="PropDev-ResumbitSequence-OptionsRadio" parent="Uif-InputField" p:required="true" p:propertyName="resubmissionOption" p:order="10" >
+				     <property name="control">
+					      <bean parent="Uif-VerticalRadioControl">
+					         <property name="options">
+		                       <list>
+			                        <bean parent="Uif-KeyLabelPair" p:key="#{T(org.kuali.coeus.propdev.impl.core.ProposalDevelopmentConstants.ResubmissionOptions).GENERATE_NEW_VERSION_OF_IP}" p:value="Generate a new version of Institutional Proposal" />
+	                           </list>
+				        	</property>
+   						</bean>
+				     </property>
+				     <property name="propertyReplacers">
+				     	<list>
+				     		<bean parent="Uif-ConditionalBeanPropertyReplacer" p:propertyName="control"
+				     			p:condition="@{!#empty(document.developmentProposal.continuedFrom)}">
+				     			<property name="replacement">
+				     				<bean parent="Uif-VerticalRadioControl">
+			                        	<property name="options">
+				                            <list>
+									            <bean parent="Uif-KeyLabelPair" p:key="#{T(org.kuali.coeus.propdev.impl.core.ProposalDevelopmentConstants.ResubmissionOptions).GENERATE_NEW_VERSION_OF_ORIGINAL_IP}" p:value="Generate a new version of Original Institutional Proposal (@{document.developmentProposal.continuedFrom})" />
+						                        <bean parent="Uif-KeyLabelPair" p:key="#{T(org.kuali.coeus.propdev.impl.core.ProposalDevelopmentConstants.ResubmissionOptions).GENERATE_NEW_VERSION_OF_IP}" p:value="Generate a new version of Institutional Proposal" />
+				                            </list>
+			                            </property>
+			                        </bean>
+				     			</property>
+	                      	</bean>
+				     	</list>
+				     </property>
+	    			</bean>
+	    			<bean id="PropDev-ResumbitSequence-Options-InstitutionalProposalToVersion"
+					   parent="Uif-InputField" p:propertyName="institutionalProposalToVersion"
+					  p:progressiveRender="@{resubmissionOption == '#{T(org.kuali.coeus.propdev.impl.core.ProposalDevelopmentConstants.ResubmissionOptions).GENERATE_NEW_VERSION_OF_IP}'}" p:fieldLabel.labelText="Institutional Proposal To Version">
+					  	<property name="quickfinder">
+						   <bean parent="Uif-QuickFinder" p:dataObjectClassName="org.kuali.kra.institutionalproposal.home.InstitutionalProposal"
+						    p:returnByScript="true" p:hideCriteriaOnSearch="true"  p:fieldConversions="proposalNumber:institutionalProposalToVersion"/>
+						</property>
+					 </bean>
+    			</list>
+		</property>
+		<property name="footer">
+			<bean parent="Uif-DialogFooter">
+				<property name="items">
+					<list>
+						<bean parent="Uif-SecondaryActionButton" p:actionLabel="Proceed" p:methodToCall="proceed" p:order="10" 
+							p:successCallback="dismissDialog('PropDev-Resumbit-OptionsSection');" p:performClientSideValidation="true"/>
+						<bean parent="Uif-SecondaryActionButton" p:actionLabel="Close" p:dialogDismissOption="IMMEDIATE"
+                              p:onClickScript="jQuery('#PropDev-Resumbit-SubmitToSponsorButton').show();"
+                              p:dialogResponse="false" p:order="20"/>
+
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+	
+	
+
+    <bean id="PropDev-SubmitPage-Hierarchy" parent="PropDev-SubmitPage-Hierarchy-parentBean"/>
+    <bean id="PropDev-SubmitPage-Hierarchy-parentBean" abstract="true" parent="Uif-StackedCollectionSection"
+          p:header.headerText="Hierarchy" p:header.headerTagCssClasses=""
+          p:propertyName="hierarchyDevelopmentProposals"
+          p:collectionObjectClass="org.kuali.coeus.propdev.impl.core.DevelopmentProposal"
+          p:renderAddLine="false" p:renderLineActions="false"
+          p:layoutManager.summaryTitle="@{#line.isParent()?'Parent':'Child'} (Proposal # @{#line.proposalNumber})">
+        <property name="items">
+            <list>
+                <bean parent="Uif-FieldGroupBase" p:order="10">
+                    <property name="group">
+                        <bean parent="PropDev-SubmitPage-HierarchyDetails"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+        <property name="layoutManager.lineGroupPrototype">
+            <bean parent="Uif-CollectionHorizontalBoxItem"
+                  p:style="@{#line.isChild()?'margin-left:5%':''}">
+                <property name="layoutManager">
+                    <bean parent="Uif-SimpleLayout" />
+                </property>
+                <property name="header">
+                    <bean parent="Uif-HeaderFour">
+                        <property name="rightGroup">
+                            <bean parent="Uif-HorizontalBoxGroup">
+                            </bean>
+                        </property>
+                        <property name="headerTagCssClasses">
+                            <null/>
+                        </property>
+                    </bean>
+                </property>
+                <property name="cssClasses">
+                    <list>
+                        <value>uif-collectionItem</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="PropDev-SubmitPage-HierarchyDetails" parent="PropDev-SubmitPage-HierarchyDetails-parentBean"/>
+    <bean id="PropDev-SubmitPage-HierarchyDetails-parentBean" abstract="true" parent="Uif-VerticalBoxSection">
+        <property name="items">
+            <list>
+                <bean parent="Uif-Link" p:linkText="View Document" p:order="10" p:target="_new"
+                     p:href="@{#ConfigProperties['application.url']}/kc-pd-krad/proposalDevelopment?methodToCall=docHandler&amp;docId=@{#line.proposalDocument.documentNumber}&amp;command=displayDocSearchView&amp;pageId=PropDev-DetailsPage" />
+                <bean parent="PropDev-SubmitPage-HierarchyOverview" p:order="20"/>
+                <bean parent="PropDev-SubmitPage-HierarchySponsorProgramInfo" p:order="30"/>
+                <bean parent="PropDev-SubmitPage-HierarchyInvestigatorInfo" p:order="40"/>
+                <bean parent="PropDev-SubmitPage-HierarchyBudgetSummary" p:order="50" p:render="@{!#empty(#line.hierarchySummaryBudget)}"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="PropDev-SubmitPage-HierarchyOverview" parent="PropDev-SubmitPage-HierarchyOverview-parentBean"/>
+    <bean id="PropDev-SubmitPage-HierarchyOverview-parentBean" abstract="true" parent="Uif-Disclosure-GridSection"
+          p:disclosure.defaultOpen="false" p:header.headerText="Overview"
+          p:layoutManager.numberOfColumns="4">
+        <property name="items">
+            <list>
+                <bean parent="Uif-DataField" p:propertyName="proposalNumber" p:order="10"/>
+                <bean parent="Uif-DataField" p:propertyName="proposalState.description" p:order="20"/>
+                <bean parent="Uif-DataField" p:propertyName="requestedStartDateInitial" p:order="30"/>
+                <bean parent="Uif-DataField" p:propertyName="proposalType.description" p:order="40"/>
+                <bean parent="Uif-DataField" p:propertyName="requestedEndDateInitial" p:order="50"/>
+                <bean parent="Uif-MessageField" p:messageText="" p:fieldLabel.labelText="Narrative" p:order="60"/>
+                <bean parent="Uif-DataField" p:propertyName="ownedByUnit.unitName" p:order="70"/>
+                <bean parent="Uif-DataField" p:propertyName="budgetStatusDescription" p:order="80"
+                        p:fieldLabel.labelText="Budget:"/>
+                <bean parent="Uif-DataField" p:fieldLabel.labelText="Activity Type"
+                      p:propertyName="activityType.description" p:order="90"/>
+                <bean parent="Uif-DataField" p:propertyName="title" p:order="100"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="PropDev-SubmitPage-HierarchySponsorProgramInfo" parent="PropDev-SubmitPage-HierarchySponsorProgramInfo-parentBean"/>
+    <bean id="PropDev-SubmitPage-HierarchySponsorProgramInfo-parentBean" abstract="true" parent="Uif-Disclosure-GridSection"
+          p:disclosure.defaultOpen="false" p:header.headerText="Sponsor &amp; Program Information"
+          p:layoutManager.numberOfColumns="4">
+        <property name="items">
+            <list>
+                <bean parent="Uif-DataField" p:propertyName="deadlineDate" p:order="10"/>
+                <bean parent="Uif-DataField" p:propertyName="noticeOfOpportunityCode" p:order="20"/>
+                <bean parent="Uif-DataField" p:propertyName="deadlineType" p:order="30"/>
+                <bean parent="Uif-DataField" p:propertyName="cfdaNumber" p:order="40"/>
+                <bean parent="Uif-DataField" p:propertyName="sponsor.sponsorName" p:order="50"/>
+                <bean parent="Uif-DataField" p:propertyName="programAnnouncementNumber" p:order="60"/>
+                <bean parent="Uif-DataField" p:propertyName="primeSponsorCode" p:order="70"/>
+                <bean parent="Uif-DataField" p:propertyName="sponsorProposalNumber" p:order="80"/>
+                <bean parent="Uif-DataField" p:propertyName="subcontracts" p:order="90"/>
+                <bean parent="Uif-DataField" p:propertyName="agencyDivisionCode" p:order="100"/>
+                <bean parent="Uif-DataField" p:propertyName="agencyProgramCode" p:order="110"/>
+                <bean parent="Uif-DataField" p:propertyName="programAnnouncementTitle" p:order="120"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="PropDev-SubmitPage-HierarchyInvestigatorInfo" parent="PropDev-SubmitPage-HierarchyInvestigatorInfo-parentBean"/>
+    <bean id="PropDev-SubmitPage-HierarchyInvestigatorInfo-parentBean" abstract="true" parent="Uif-Disclosure-TableCollectionSection"
+            p:header.headerText="Investigator/Units"
+            p:propertyName="document.developmentProposal.proposalPersons"
+            p:collectionObjectClass="org.kuali.coeus.propdev.impl.person.ProposalPerson"
+            p:renderAddLine="false" p:layoutManager.renderSequenceField="false"
+            p:renderLineActions="false" p:layoutManager.richTable.render="false"
+            p:renderInactiveToggleButton="false" p:disclosure.defaultOpen="false">
+        <property name="items">
+            <list>
+                <bean parent="Uif-DataField" p:propertyName="fullName" p:fieldLabel.labelText="Key Person" p:order="10"/>
+                <bean parent="Uif-MessageField" p:messageText="@{#lp.role.description}" p:fieldLabel.labelText="Role" p:order="20"/>
+                <bean parent="Uif-FieldGroupBase" p:fieldLabel.labelText="Units" p:order="30">
+                    <property name="group">
+                        <bean parent="PropDev-SubmitPage-UnitCollectionGroup" />
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+
+    <bean id="PropDev-SubmitPage-HierarchyBudgetSummary" parent="PropDev-SubmitPage-HierarchyBudgetSummary-parentBean"/>
+    <bean id="PropDev-SubmitPage-HierarchyBudgetSummary-parentBean" abstract="true"
+          parent="Uif-Disclosure-VerticalBoxSection"
+          p:header.headerText="Budget Summary"
+          p:disclosure.defaultOpen="false">
+        <property name="items">
+            <list>
+                <bean parent="PropDev-SubmitPage-HierarchyBudgetDetails" p:order="10"/>
+                <bean parent="Kc-LineItemTable" p:propertyName="hierarchySummaryBudget.budgetSummaryDetails"
+                      p:order="20"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="PropDev-SubmitPage-HierarchyBudgetDetails" parent="PropDev-SubmitPage-HierarchyBudgetDetails-parentBean"/>
+    <bean id="PropDev-SubmitPage-HierarchyBudgetDetails-parentBean" abstract="true" parent="Uif-GridSection"
+          p:layoutManager.numberOfColumns="4"
+          p:header.headerText="@{#line.hierarchySummaryBudget.name}">
+        <property name="items">
+            <list>
+                <bean parent="Uif-DataField" p:propertyName="proposalNumber" p:order="10"/>
+                <bean parent="Uif-DataField" p:propertyName="hierarchySummaryBudget.budgetStatus" p:order="20"/>
+                <bean parent="Uif-DataField" p:propertyName="hierarchySummaryBudget.budgetVersionNumber" p:order="30"/>
+                <bean parent="Uif-MessageField" p:fieldLabel.labelText="Final"
+                      p:messageText="@{#line.hierarchySummaryBudget?.budgetId == #line.finalBudget?.budgetId?'True':'False'}" p:order="40"/>
+                <bean parent="Uif-DataField" p:propertyName="hierarchySummaryBudget.startDate" p:order="50"/>
+                <bean parent="Uif-DataField" p:propertyName="hierarchySummaryBudget.endDate" p:order="60"/>
+                <bean parent="Uif-DataField" p:propertyName="hierarchySummaryBudget.totalCost" p:order="70"/>
+                <bean parent="Uif-DataField" p:propertyName="hierarchySummaryBudget.totalCostLimit" p:order="80"/>
+                <bean parent="Uif-DataField" p:propertyName="hierarchySummaryBudget.totalDirectCost" p:order="90"/>
+                <bean parent="Uif-DataField" p:propertyName="hierarchySummaryBudget.totalIndirectCost" p:order="100"/>
+                <bean parent="Uif-DataField" p:propertyName="hierarchySummaryBudget.underrecoveryAmount" p:order="110"/>
+                <bean parent="Uif-DataField" p:propertyName="hierarchySummaryBudget.costSharingAmount" p:order="120"/>
+                <bean parent="Uif-DataField" p:propertyName="hierarchySummaryBudget.ohRateClassCode" p:order="130"/>
+                <bean parent="Uif-DataField" p:propertyName="hierarchySummaryBudget.urRateClassCode" p:order="140"/>
+                <bean parent="Uif-DataField" p:propertyName="hierarchySummaryBudget.comments" p:order="150"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="PropDev-SubmitPage-BudgetSummary" parent="PropDev-SubmitPage-BudgetSummary-parentBean"/>
+    <bean id="PropDev-SubmitPage-BudgetSummary-parentBean" abstract="true" parent="Uif-VerticalBoxSection"
+            p:headerText="Budget Summary">
+        <property name="items">
+            <list>
+                <bean parent="PropDev-SubmitPage-BudgetTotals" p:order="10" />
+                <bean parent="Kc-LineItemTable" p:propertyName="selectedBudget.budgetSummaryDetails"
+                      p:order="20"/>
+                <bean parent="PropDev-SubmitPage-BudgetRates" p:order="30"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="PropDev-SubmitPage-BudgetTotals" parent="PropDev-SubmitPage-BudgetTotals-parentBean"/>
+    <bean id="PropDev-SubmitPage-BudgetTotals-parentBean" abstract="true" parent="Uif-GridSection"
+          p:layoutManager.numberOfColumns="4">
+        <property name="items">
+            <list>
+                <bean parent="Uif-DataField" p:propertyName="selectedBudget.costSharingAmount" p:order="10">
+                    <property name="propertyEditor">
+                        <ref bean="Kc-ScaleTwoPercentageEditor"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-DataField" p:propertyName="selectedBudget.underrecoveryAmount" p:order="20">
+                    <property name="propertyEditor">
+                        <ref bean="Kc-ScaleTwoPercentageEditor"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-DataField" p:fieldLabel.labelText="Program Income"
+                      p:propertyName="selectedBudget.projectIncomeTotal" p:order="30">
+                    <property name="propertyEditor">
+                        <ref bean="Kc-ScaleTwoPercentageEditor"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-DataField" p:fieldLabel.labelText="F&amp;A Rate Type"
+                      p:propertyName="selectedBudget.rateClass.description" p:order="40"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="PropDev-SubmitPage-BudgetRates" parent="PropDev-SubmitPage-BudgetRates-parentBean"/>
+    <bean id="PropDev-SubmitPage-BudgetRates-parentBean" abstract="true" parent="Uif-Disclosure-TableCollectionSection"
+          p:propertyName="selectedBudget.budgetRates"
+          p:collectionObjectClass="org.kuali.coeus.common.budget.framework.rate.BudgetRate"
+          p:renderAddLine="false" p:renderLineActions="false"
+          p:layoutManager.renderSequenceField="false"
+          p:layoutManager.richTable.render="false"
+          p:renderInactiveToggleButton="false" p:disclosure.defaultOpen="false"
+          p:header.headerText="F&amp;A Rates">
+        <property name="items">
+                <list>
+                    <bean parent="Uif-DataField" p:propertyName="rateType.description" p:order="10" p:skipInTabOrder="true"
+                          p:enableAutoInquiry="false" />
+                    <bean parent="Uif-DataField" p:propertyName="onOffCampusFlag" p:readOnlyDisplayReplacement="@{#line.onOffCampusFlag?'Yes':'No'}"
+                          p:skipInTabOrder="true" p:order="20"/>
+                    <bean parent="Uif-DataField" p:propertyName="fiscalYear" p:skipInTabOrder="true" p:order="30" p:enableAutoInquiry="false"/>
+                    <bean parent="Uif-DataField" p:propertyName="startDate" p:skipInTabOrder="true" p:order="40"/>
+                    <bean parent="Uif-DataField" p:propertyName="instituteRate" p:skipInTabOrder="true" p:order="50">
+                        <property name="propertyEditor"><ref bean="Kc-ScaleTwoPercentageEditor"/></property>
+                    </bean>
+                    <bean parent="Uif-DataField" p:propertyName="applicableRate" p:order="60">
+                        <property name="propertyEditor"><ref bean="Kc-ScaleTwoPercentageEditor"/></property>
+                    </bean>
+                </list>
+        </property>
+        <property name="filters">
+            <bean parent="Uif-ConditionalCollectionFilter"
+                  p:expression="#line.rateClass.rateClassTypeCode == '#{T(org.kuali.coeus.common.budget.api.rate.RateClassType).OVERHEAD.getRateClassType()}' and
+                  #line.rateClass.code == selectedBudget.rateClass.code"/>
+        </property>
+    </bean>
+
+    <bean id="PropDev-DocumentAdHocRecipientsSection" parent="PropDev-DocumentAdHocRecipientsSection-parentBean"/>
+    <bean id="PropDev-DocumentAdHocRecipientsSection-parentBean" p:retrieveViaAjax="true" abstract="true" parent="Uif-DialogGroup">
+        <property name="items">
+            <list>
+                <bean parent="PropDev-DocumentAdHocRecipients" p:order="10"/>
+            </list>
+        </property>
+        <property name="footer.items">
+            <list>
+                <bean parent="Uif-SecondaryActionButton" p:dialogDismissOption="REQUEST" p:actionLabel="Save"
+                      p:render="@{#ViewHelper.displayProposalProgressCode(document.documentHeader.workflowDocument) eq T(org.kuali.rice.kew.api.document.DocumentStatus).SAVED.name()}"
+                      p:methodToCall="saveAdHocChanges" p:order="10"/>
+                <bean parent="Uif-DialogDismissButton" p:actionLabel="Cancel"
+                      p:render="@{#ViewHelper.displayProposalProgressCode(document.documentHeader.workflowDocument) eq T(org.kuali.rice.kew.api.document.DocumentStatus).SAVED.name()}"
+                      p:order="20"/>
+                <bean parent="Uif-SecondaryActionButton" p:dialogDismissOption="REQUEST" p:actionLabel="OK"
+                      p:render="@{#ViewHelper.displayProposalProgressCode(document.documentHeader.workflowDocument) ne T(org.kuali.rice.kew.api.document.DocumentStatus).SAVED.name()}"
+                      p:methodToCall="saveAdHocChanges" p:order="30"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="PropDev-DocumentAdHocRecipients" parent="Uif-DocumentAdHocRecipientsSection"
+          p:disclosure.render="false">
+        <property name="items">
+            <list>
+                <bean parent="Uif-AdHocPersonCollection" p:readOnly="false">
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-InputField" p:propertyName="actionRequested" p:readOnly="@{!#isAddLine}">
+                                <property name="control">
+                                    <bean parent="Uif-DropdownControl"/>
+                                </property>
+                                <property name="optionsFinder">
+                                    <bean class="org.kuali.rice.krad.keyvalues.AdHocActionRequestCodesValuesFinder"/>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-InputField" p:propertyName="id" p:label="Person" p:required="true" p:readOnly="@{!#isAddLine}">
+                                <property name="readOnlyDisplayReplacement" value="@{#line.id} - @{#line.person.name}"/>
+                                <property name="control">
+                                    <bean parent="Uif-KimPersonControl" p:personObjectPropertyName="person"
+                                          p:principalIdPropertyName="person.principalId" p:personNamePropertyName="person.name"/>
+                                </property>
+                                <property name="quickfinder">
+                                    <bean parent="Uif-QuickFinder" p:returnByScript="true"/>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+                <bean parent="CollectionGroup_AdHocWorkgroup" p:readOnly="false">
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-InputField" p:propertyName="actionRequested" p:readOnly="@{!#isAddLine}">
+                                <property name="control">
+                                    <bean parent="Uif-DropdownControl"/>
+                                </property>
+                                <property name="optionsFinder">
+                                    <bean class="org.kuali.rice.krad.keyvalues.AdHocActionRequestCodesValuesFinder"/>
+                                </property>
+                            </bean>
+                            <bean parent="Uif-InputField" p:propertyName="recipientNamespaceCode" p:readOnly="@{!#isAddLine}"
+                                  p:label="Namespace Code"/>
+                            <bean parent="Uif-InputField" p:propertyName="recipientName" p:label="Name" p:readOnly="@{!#isAddLine}">
+                                <property name="control">
+                                    <bean parent="Uif-KimGroupControl" p:groupIdPropertyName="id"
+                                          p:namespaceCodePropertyName="recipientNamespaceCode"/>
+                                </property>
+                                <property name="quickfinder">
+                                    <bean parent="Uif-QuickFinder" p:returnByScript="true"/>
+                                </property>
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+</beans>

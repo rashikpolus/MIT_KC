@@ -1,0 +1,68 @@
+Index: coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/workloadbalancing/WorkloadBalancingController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/workloadbalancing/WorkloadBalancingController.java	(date 1429158667000)
++++ coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/workloadbalancing/WorkloadBalancingController.java	(revision )
+@@ -123,7 +123,7 @@
+             HashMap<String, String> criteria = new HashMap<String, String>();
+             criteria.put(PERSON_ID, capacity.getPersonId());
+             List<WlFlexibility> flexibilities = findMatching(WlFlexibility.class, criteria, form);
+-
++            flexibilities = new ArrayList<>(flexibilities);
+             workloadLineItem.setWlflexibilityList(flexibilities);
+ 
+             KcPerson person = kcPersonService.getKcPersonByPersonId(capacity.getPersonId());
+@@ -167,6 +167,13 @@
+                     }
+                 }
+             }
++
++            Collections.sort(flexibilities, new Comparator<WlFlexibility>() {
++                @Override
++                public int compare(WlFlexibility o1, WlFlexibility o2) {
++                    return o1.getSponsorGroup().compareTo(o2.getSponsorGroup());
++                }
++            });
+ 
+             form.getWorkloadLineItems().add(workloadLineItem);
+         }
+Index: coeus-webapp/src/main/webapp/css/workloadbalancing/workload_matrix.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- coeus-webapp/src/main/webapp/css/workloadbalancing/workload_matrix.css	(date 1429158667000)
++++ coeus-webapp/src/main/webapp/css/workloadbalancing/workload_matrix.css	(revision )
+@@ -97,7 +97,7 @@
+ */
+ 
+ #wl-balance th.rotate {
+-    height: 92px;
++    height: 130px;
+     white-space: nowrap;
+     position: relative;
+ }
+@@ -108,18 +108,12 @@
+     -moz-transform: rotate(320deg) scale(1) skew(1deg) translate(0px);
+     -o-transform: rotate(320deg) scale(1) skew(1deg) translate(0px);
+     -ms-transform: rotate(320deg) scale(1) skew(1deg) translate(0px);
+-    width: 129px;
++    width: 200px;
+     border-top: 1px solid #ccc;
+     position: absolute;
+-    top: 48px;
+-    left: -9px;
++    top: 63px;
++    left: -16px;
+     padding-left: 22px;
+-}
+-
+-#wl-balance th.rotate:nth-child(18) > div {
+-    width: 103px;
+-    top: 56px;
+-    left: 0px;
+ }
+ 
+ /*

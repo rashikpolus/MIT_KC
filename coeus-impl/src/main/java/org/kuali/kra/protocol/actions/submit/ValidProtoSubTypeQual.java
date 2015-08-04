@@ -1,0 +1,80 @@
+/*
+ * Kuali Coeus, a comprehensive research administration system for higher education.
+ * 
+ * Copyright 2005-2015 Kuali, Inc.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.kuali.kra.protocol.actions.submit;
+
+import org.kuali.coeus.sys.framework.model.KcPersistableBusinessObjectBase;
+
+public class ValidProtoSubTypeQual extends KcPersistableBusinessObjectBase {
+
+
+    private static final long serialVersionUID = 6546751709369749190L;
+
+    private Long validProtoSubTypeQualId;
+
+    private String submissionTypeCode;
+
+    private String submissionTypeQualCode;
+
+    private ProtocolSubmissionTypeBase submissionType;
+
+    private ProtocolSubmissionQualifierTypeBase submissionTypeQualifier;
+
+    public ValidProtoSubTypeQual() {
+    }
+
+    public Long getValidProtoSubTypeQualId() {
+        return validProtoSubTypeQualId;
+    }
+
+    public void setValidProtoSubTypeQualId(Long validProtoSubTypeQualId) {
+        this.validProtoSubTypeQualId = validProtoSubTypeQualId;
+    }
+
+    public String getSubmissionTypeCode() {
+        return submissionTypeCode;
+    }
+
+    public void setSubmissionTypeCode(String submissionTypeCode) {
+        this.submissionTypeCode = submissionTypeCode;
+    }
+
+    public String getSubmissionTypeQualCode() {
+        return submissionTypeQualCode;
+    }
+
+    public void setSubmissionTypeQualCode(String submissionTypeQualCode) {
+        this.submissionTypeQualCode = submissionTypeQualCode;
+    }
+
+    public ProtocolSubmissionTypeBase getSubmissionType() {
+        return submissionType;
+    }
+
+    public void setSubmissionType(ProtocolSubmissionTypeBase submissionType) {
+        this.submissionType = submissionType;
+    }
+
+    public ProtocolSubmissionQualifierTypeBase getSubmissionTypeQualifier() {
+        return submissionTypeQualifier;
+    }
+
+    public void setSubmissionTypeQualifier(ProtocolSubmissionQualifierTypeBase submissionTypeQualifier) {
+        this.submissionTypeQualifier = submissionTypeQualifier;
+    }
+}

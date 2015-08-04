@@ -1,0 +1,27 @@
+﻿
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Changes to be committed:
+#	modified:   .gitattributes
+#	modified:   .gitignore
+#
+# Untracked files:
+#	1505_oracle_kc_rice_server_upgrade.sql.log
+#	CHANGELOG.md
+#	CONTRIBUTING.md
+#	README.md
+#	ci/
+#	coeus-db/
+#	coeus-help/
+#	coeus-impl/
+#	coeus-it/
+#	coeus-tool/
+#	coeus-webapp/
+#	kcc-git-merge.sh
+#	license.txt
+#	patches/
+#	pom.xml
+#	sqlnet.log
+#
+

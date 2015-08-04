@@ -1,0 +1,107 @@
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/award/home/Award.java b/coeus-impl/src/main/java/org/kuali/kra/award/home/Award.java
+index 7f929b8..a5bcce1 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/award/home/Award.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/award/home/Award.java
+@@ -2655,16 +2655,12 @@ public void setUpdateTimestamp(Timestamp updateTimestamp) {
+         } else {
+             setAllowUpdateTimestampToBeReset(true);
+         }
+-
+-        // We want to retain the old update timestamps of old award infos and just change the latest one.
+-        List<AwardAmountInfo> currentAwardAmountInfos = getAwardAmountInfos();
+-        currentAwardAmountInfos.get(currentAwardAmountInfos.size() - 1).changeUpdateTimestamp(updateTimestamp);
+     }
+     
+     public List<Award> getAwardVersions() {
+         Map<String, String> fieldValues = new HashMap<String,String>();
+         fieldValues.put("awardNumber", getAwardNumber());
+-        BusinessObjectService businessObjectService =  KcServiceLocator.getService(BusinessObjectService.class);
++        BusinessObjectService businessObjectService = KcServiceLocator.getService(BusinessObjectService.class);
+         List<Award> awards = (List<Award>)businessObjectService.findMatchingOrderBy(Award.class, fieldValues, "sequenceNumber", true);   
+         return awards;
+     }
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/award/home/AwardAmountInfo.java b/coeus-impl/src/main/java/org/kuali/kra/award/home/AwardAmountInfo.java
+index 7ac1c21..4e824bb 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/award/home/AwardAmountInfo.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/award/home/AwardAmountInfo.java
+@@ -18,6 +18,9 @@
+  */
+ package org.kuali.kra.award.home;
+ 
++import org.apache.commons.lang.ObjectUtils;
++import org.kuali.coeus.sys.framework.gv.GlobalVariableService;
++import org.kuali.coeus.sys.framework.service.KcServiceLocator;
+ import org.kuali.kra.award.AwardAssociate;
+ import org.kuali.coeus.sys.api.model.ScaleTwoDecimal;
+ 
+@@ -109,6 +112,8 @@ public ScaleTwoDecimal getAnticipatedTotalAmount() {
+     }
+ 
+     public void setAnticipatedTotalAmount(ScaleTwoDecimal anticipatedTotalAmount) {
++        changeUpdateElements(this.anticipatedTotalAmount, anticipatedTotalAmount);
++
+         this.anticipatedTotalAmount = anticipatedTotalAmount;
+         if (!(getAward() == null)) {
+             if (getAward().getAwardAmountInfos().size() == 1 && getAward().getSequenceNumber() == 1) {
+@@ -133,6 +138,7 @@ public Date getFinalExpirationDate() {
+     }
+ 
+     public void setFinalExpirationDate(Date finalExpirationDate) {
++        changeUpdateElements(finalExpirationDate, this.finalExpirationDate);
+         this.finalExpirationDate = finalExpirationDate;
+     }
+ 
+@@ -152,6 +158,8 @@ public ScaleTwoDecimal getAmountObligatedToDate() {
+     }
+ 
+     public void setAmountObligatedToDate(ScaleTwoDecimal amountObligatedToDate) {
++        changeUpdateElements(amountObligatedToDate, this.amountObligatedToDate);
++
+         this.amountObligatedToDate = amountObligatedToDate;
+         if (!(getAward() == null)) {
+             if (getAward().getAwardAmountInfos().size() == 1 && getAward().getSequenceNumber() == 1) {
+@@ -176,9 +184,21 @@ public Date getObligationExpirationDate() {
+     }
+ 
+     public void setObligationExpirationDate(Date obligationExpirationDate) {
++        changeUpdateElements(obligationExpirationDate, this.obligationExpirationDate);
+         this.obligationExpirationDate = obligationExpirationDate;
+     }
+ 
++    private void changeUpdateElements(Object obj1, Object obj2) {
++        if (!ObjectUtils.equals(obj1, obj2)) {
++            super.setUpdateTimestamp(new Timestamp(new java.util.Date().getTime()));
++            super.setUpdateUser(getGlobalVariableService().getUserSession().getPrincipalName());
++        }
++    }
++
++    private GlobalVariableService getGlobalVariableService() {
++        return KcServiceLocator.getService(GlobalVariableService.class);
++    }
++
+     public Long getTransactionId() {
+         return transactionId;
+     }
+@@ -375,10 +395,6 @@ public void resetChangeValues() {
+         setAnticipatedChangeIndirect(new ScaleTwoDecimal(0));
+     }
+ 
+-    public void changeUpdateTimestamp(Timestamp updateTimestamp) {
+-        super.setUpdateTimestamp(updateTimestamp);
+-    }
+-
+    @Override
+     public void setUpdateTimestamp(Timestamp updateTimestamp) {
+         if (this.getUpdateTimestamp() == null) {
+@@ -386,4 +402,11 @@ public void setUpdateTimestamp(Timestamp updateTimestamp) {
+         }
+     }
+ 
++    @Override
++    public void setUpdateUser(String updateUser) {
++        if (this.getUpdateUser() == null) {
++            super.setUpdateUser(updateUser);
++        }
++    }
++
+ }

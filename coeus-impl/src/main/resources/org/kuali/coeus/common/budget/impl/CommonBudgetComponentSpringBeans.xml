@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/util
+       http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <context:annotation-config />
+    <context:component-scan base-package="org.kuali.coeus.common.budget" />
+    <context:component-scan base-package="org.kuali.kra.external.budget" />
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="properties" value="#{T(org.kuali.rice.core.api.config.property.ConfigContext).getCurrentContextConfig().getProperties()}" />
+    </bean>
+
+    <import resource="classpath:org/kuali/coeus/common/impl/CommonImportRiceSpringBeans.xml"/>
+    <import resource="classpath:org/kuali/coeus/common/impl/CommonImportModuleSpringBeans.xml"/>
+
+    <bean id="budgetModuleConfiguration" parent="budgetModuleConfiguration-parentBean" />
+    <util:constant id="kc.integrationServiceNamespace" static-field="org.kuali.kra.infrastructure.Constants.FINANCIAL_INTEGRATION_KC_SERVICE_NAMESPACE"/>
+
+    <bean id="budgetModuleConfiguration-parentBean" class="org.kuali.rice.krad.bo.ModuleConfiguration" abstract="true">
+        <property name="namespaceCode" value="KC-B" />
+        <property name="dataSourceName" value="dataSource"/>
+        <property name="databaseRepositoryFilePaths">
+            <list>
+                <value>org/kuali/coeus/common/budget/impl/repository-budget.xml</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="budgetExpenseLookupable" class="org.kuali.rice.kns.lookup.KualiLookupableImpl" scope="prototype">
+        <property name="lookupableHelperService" ref="budgetExpenseLookupableHelperService"/>
+    </bean>
+
+    <bean id="onOffCampusLookupable" class="org.kuali.rice.kns.lookup.KualiLookupableImpl" scope="prototype">
+        <property name="lookupableHelperService" ref="onOffCampusLookupableHelperService" />
+    </bean>
+
+    <bean id="budgetPeriodLookupable" class="org.kuali.rice.kns.lookup.KualiLookupableImpl" scope="prototype" lazy-init="true">
+        <property name="lookupableHelperService" ref="budgetPeriodLookupableHelperService" />
+    </bean>
+
+    <!-- Exposing as Java and Soap services -->
+    <bean id="budgetCategoryServiceJavaExporter" class="org.kuali.rice.ksb.api.bus.support.ServiceBusExporter">
+        <property name="serviceDefinition">
+            <bean class="org.kuali.rice.ksb.api.bus.support.JavaServiceDefinition"
+                  p:service-ref="budgetCategoryService"
+                  p:serviceNameSpaceURI-ref="kc.integrationServiceNamespace"
+                  p:localServiceName="budgetCategoryService"
+                  p:serviceInterface="org.kuali.kra.external.budget.service"
+                  p:busSecurity="${fin.system.integration.bus.security.on}"
+                  p:retryAttempts="1" />
+        </property>
+    </bean>
+
+    <bean id="budgetCategoryServiceSoapExporter" class="org.kuali.rice.ksb.api.bus.support.ServiceBusExporter">
+        <property name="serviceDefinition">
+            <bean class="org.kuali.rice.ksb.api.bus.support.SoapServiceDefinition"
+                  p:service-ref="budgetCategoryService"
+                  p:serviceNameSpaceURI-ref="kc.integrationServiceNamespace"
+                  p:localServiceName="budgetCategorySoapService"
+                  p:busSecurity="${fin.system.integration.bus.security.on}"
+                  p:jaxWsService="true" />
+        </property>
+    </bean>
+</beans>

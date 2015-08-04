@@ -1,0 +1,294 @@
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/Narrative.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/Narrative.java
+index dd82e98..e47366d 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/Narrative.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/Narrative.java
+@@ -136,17 +136,6 @@
+ 
+     @Transient
+     private transient KcAttachmentService kcAttachmentService;
+-    
+-    @Transient
+-    private transient boolean isUpdated = false;
+-    
+-    public boolean isUpdated() {
+-		return isUpdated;
+-	}
+-
+-	public void setUpdated(boolean isUpdated) {
+-		this.isUpdated = isUpdated;
+-	}
+ 
+     @Override
+     public void init(MultipartFile multipartFile) throws Exception {
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalDevelopmentAttachment.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalDevelopmentAttachment.java
+index 9a3ca33..0a7b314 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalDevelopmentAttachment.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalDevelopmentAttachment.java
+@@ -27,8 +27,4 @@
+     public void setMultipartFile(MultipartFile multipartFile);
+ 
+     public String getUploadUserDisplay();
+-
+-    public void setUpdated(boolean isUpdated);
+-
+-    
+ }
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalDevelopmentAttachmentController.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalDevelopmentAttachmentController.java
+index 03978b6..ffea33c 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalDevelopmentAttachmentController.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalDevelopmentAttachmentController.java
+@@ -131,7 +131,6 @@ protected ModelAndView markAllAttachmentStatus(ProposalDevelopmentDocumentForm f
+             if(object instanceof Narrative) {
+             	Narrative narrative = (Narrative) object;
+             	narrative.setModuleStatusCode(moduleStatusCode);
+-            	narrative.setUpdated(true);
+                 getDataObjectService().wrap(object).fetchRelationship("narrativeStatus");
+             }
+         }
+@@ -280,9 +279,6 @@ public ModelAndView addBiography(@ModelAttribute("KualiForm") ProposalDevelopmen
+     public ModelAndView saveNarrative(@ModelAttribute("KualiForm") ProposalDevelopmentDocumentForm form) throws Exception{
+         Narrative narrative = form.getProposalDevelopmentAttachmentHelper().getNarrative();
+         int selectedLineIndex = Integer.parseInt(form.getProposalDevelopmentAttachmentHelper().getSelectedLineIndex());
+-        if(narrative.getObjectId() != null) {
+-        	narrative.setUpdated(true);
+-        }
+         narrative.refreshReferenceObject("narrativeType");
+         narrative.refreshReferenceObject("narrativeStatus");
+         try {
+@@ -329,9 +325,6 @@ public ModelAndView sendNarrativeChangeNotification(ProposalDevelopmentDocumentF
+     @Transactional @RequestMapping(value = "/proposalDevelopment", params="methodToCall=saveBiography")
+     public ModelAndView saveBiography(@ModelAttribute("KualiForm") ProposalDevelopmentDocumentForm form) throws Exception{
+         ProposalPersonBiography biography = form.getProposalDevelopmentAttachmentHelper().getBiography();
+-        if(biography.getObjectId() != null) {
+-        	biography.setUpdated(true);
+-        }
+         int selectedLineIndex = Integer.parseInt(form.getProposalDevelopmentAttachmentHelper().getSelectedLineIndex());
+         biography.setUpdateUser(globalVariableService.getUserSession().getPrincipalName());
+         biography.setUpdateTimestamp(getDateTimeService().getCurrentTimestamp());
+@@ -355,9 +348,6 @@ public ModelAndView saveBiography(@ModelAttribute("KualiForm") ProposalDevelopme
+     @Transactional @RequestMapping(value = "/proposalDevelopment", params="methodToCall=saveInstituteAttachment")
+     public ModelAndView saveInstituteAttachment(@ModelAttribute("KualiForm") ProposalDevelopmentDocumentForm form) throws Exception{
+         Narrative narrative = form.getProposalDevelopmentAttachmentHelper().getInstituteAttachment();
+-        if(narrative.getObjectId() != null) {
+-        	narrative.setUpdated(true);
+-        }
+         int selectedLineIndex = Integer.parseInt(form.getProposalDevelopmentAttachmentHelper().getSelectedLineIndex());
+         getDataObjectService().wrap(narrative).fetchRelationship("narrativeType");
+         try {
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalDevelopmentAttachmentHelper.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalDevelopmentAttachmentHelper.java
+index 7a210f3..5302edf 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalDevelopmentAttachmentHelper.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalDevelopmentAttachmentHelper.java
+@@ -65,158 +65,7 @@ public void reset() {
+         editableFileAttachments = new HashMap<String,List<String>>();
+         selectedLineIndex = null;
+     }
+-    
+-    public void handleNarrativeUpdates(ProposalDevelopmentDocumentForm form, ProposalDevelopmentDocument document) {
+-    	
+-    	// Delete Narratives which are not on the form - from document.
+-    	removeDeletedNarrativesFromDocument(form.getDevelopmentProposal().getNarratives(),document.getDevelopmentProposal().getNarratives());
+-    	// Handle newly added and updated Narratives
+-    	addNewUpdateNarrativesOnDocument(form.getDevelopmentProposal().getNarratives(),document.getDevelopmentProposal().getNarratives());
+-    	
+-    }
+-
+-    public void handleInstAttachmentUpdates(ProposalDevelopmentDocumentForm form, ProposalDevelopmentDocument document) {
+-    	
+-    	// Delete Institute attachment which are not on the form - from document.
+-    	removeDeletedNarrativesFromDocument(form.getDevelopmentProposal().getInstituteAttachments(),document.getDevelopmentProposal().getInstituteAttachments());
+-    	// Handle newly added and updated Institute attachment
+-    	addNewUpdateNarrativesOnDocument(form.getDevelopmentProposal().getInstituteAttachments(),document.getDevelopmentProposal().getInstituteAttachments());
+-    	
+-    }
+-    
+-    public void handlePersonBioUpdates(ProposalDevelopmentDocumentForm form, ProposalDevelopmentDocument document) {
+-    	
+-    	// Delete Person bios which are not on the form - from document.
+-    	removeDeletedPersonBiosFromDocument(form.getDevelopmentProposal().getPropPersonBios(),document.getDevelopmentProposal().getPropPersonBios());
+-    	// Handle newly added and updated person bios
+-    	addNewUpdatePersonBiosOnDocument(form.getDevelopmentProposal().getPropPersonBios(),document.getDevelopmentProposal().getPropPersonBios());
+-
+-        //Extract the new document next values so they can be saved and not overwritten.
+-        DocumentNextvalue formNextValue = null;
+-        for (DocumentNextvalue documentNextValue : form.getProposalDevelopmentDocument().getDocumentNextvalues()) {
+-            if (documentNextValue.getPropertyName().equalsIgnoreCase(Constants.PROP_PERSON_BIO_NUMBER)) {
+-                formNextValue = documentNextValue;
+-                break;
+-            }
+-        }
+-        DocumentNextvalue docNextValue = null;
+-        for (DocumentNextvalue documentNextValue : document.getDocumentNextvalues()) {
+-            if (documentNextValue.getPropertyName().equalsIgnoreCase(Constants.PROP_PERSON_BIO_NUMBER)) {
+-                docNextValue = documentNextValue;
+-                break;
+-            }
+-        }
+-        if (formNextValue != null
+-                && docNextValue == null){
+-            document.getDocumentNextvalues().add(formNextValue);
+-        }
+-        else if (formNextValue != null
+-                && docNextValue != null){
+-            if (formNextValue.getNextValue() > docNextValue.getNextValue()){
+-                docNextValue.setNextValue(formNextValue.getNextValue());
+-            }
+ 
+-        }
+-    }
+-    
+-    private void removeDeletedPersonBiosFromDocument( List<ProposalPersonBiography> formBios, List<ProposalPersonBiography> documentBios) {
+-    	// Delete Narratives which are not on the form - from document.
+-    	if(documentBios != null && documentBios.size() > 0) {
+-    		List<ProposalPersonBiography> deletedBios = new ArrayList<ProposalPersonBiography>();
+-    		for(ProposalPersonBiography documentBio : documentBios ) {
+-    			if(findBioByPersonNumAndBioNum(formBios, documentBio) == null ) {
+-    				deletedBios.add(documentBio);
+-            	}
+-    		}
+-	   		if(deletedBios.size() > 0) {
+-	   			documentBios.removeAll(deletedBios);
+-	   		}
+-    	}
+-    }
+-    
+-    private void addNewUpdatePersonBiosOnDocument(List<ProposalPersonBiography> formBios, List<ProposalPersonBiography> documentBios) {
+-	   	
+-    	for(ProposalPersonBiography formBio :  formBios) {
+-	   		if(formBio.getObjectId() == null) {
+-	   			documentBios.add(formBio);
+-	   			continue;
+-	   		}
+-	       	if(formBio.isUpdated()) {
+-	       		ProposalPersonBiography updatedBio = findBioByPersonNumAndBioNum(documentBios,formBio);
+-	       		documentBios.remove(documentBios.indexOf(updatedBio));
+-	       		documentBios.add(formBio);
+-	       	}
+-	   	}
+-    }
+-    
+-    private void addNewUpdateNarrativesOnDocument(List<Narrative> formNarratives, List<Narrative> documentNarratives) {
+-	   	
+-    	for(Narrative formNarrative :  formNarratives) {
+-	   		if(formNarrative.getObjectId() == null) {
+-	   			documentNarratives.add(formNarrative);
+-	   			continue;
+-	   		}
+-	       	if(formNarrative.isUpdated()) {
+-	       		Narrative updatedNarrative = findNarrativeByModuleNumber(documentNarratives,formNarrative.getModuleNumber());
+-	       		documentNarratives.remove(documentNarratives.indexOf(updatedNarrative));
+-	       		documentNarratives.add(formNarrative);
+-	       	}
+-	   	}
+-    }
+-    	
+-    private void removeDeletedNarrativesFromDocument( List<Narrative> formNarratives, List<Narrative> documentNarratives) {
+-    	// Delete Narratives which are not on the form - from document.
+-    	if(documentNarratives != null && documentNarratives.size() > 0) {
+-    		List<Narrative> deletedNarratives = new ArrayList<Narrative>();
+-    		for(Narrative documentNarrative : documentNarratives ) {
+-    			if(findNarrativeByModuleNumber(formNarratives, documentNarrative.getModuleNumber()) == null ) {
+-            		deletedNarratives.add(documentNarrative);
+-            	}
+-    		}
+-	   		if(deletedNarratives.size() > 0) {
+-	   			documentNarratives.removeAll(deletedNarratives);
+-	   		}
+-    	}
+-    }
+-    
+-    protected ProposalPersonBiography findBioByPersonNumAndBioNum(List<ProposalPersonBiography> origBios, final ProposalPersonBiography newBio) {
+-    	
+-    	ProposalPersonBiography dulicatedBio = CollectionUtils.find(origBios, new Predicate<ProposalPersonBiography>() {
+-
+-			@Override
+-			public boolean evaluate(ProposalPersonBiography origBio) {
+-				if(new EqualsBuilder().append(origBio.getProposalPersonNumber(), newBio.getProposalPersonNumber())
+-						.append(origBio.getBiographyNumber(), newBio.getBiographyNumber()).isEquals()) {
+-					return true;
+-				}	
+-				else {
+-					return false;
+-				}
+-			}
+-		});
+-
+-    	return dulicatedBio;
+-    }
+-    
+-    
+-    protected Narrative findNarrativeByModuleNumber(List<Narrative> origNarratives, final Integer moduleNumber) {
+-    	
+-    	Narrative updatedNarrative = CollectionUtils.find(origNarratives, new Predicate<Narrative>() {
+-
+-			@Override
+-			public boolean evaluate(Narrative narrative) {
+-				if(narrative.getModuleNumber().equals(moduleNumber)) {
+-					return true;
+-				}	
+-				else {
+-					return false;
+-				}
+-			}
+-		});
+-
+-    	return updatedNarrative;
+-    }
+-    
+     public ProposalPersonBiography getBiography() {
+         return biography;
+     }
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentControllerBase.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentControllerBase.java
+index 1474939..91de527 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentControllerBase.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentControllerBase.java
+@@ -408,9 +408,9 @@ protected ModelAndView narrativePageSave(ProposalDevelopmentDocumentForm form, b
+         if (canEdit) {
+             if ((new ProposalDevelopmentDocumentRule().processAttachmentRules(form.getProposalDevelopmentDocument()))
+                     && (new ProposalDevelopmentDocumentRule().processPersonnelAttachmentDuplicates(form.getProposalDevelopmentDocument()))) {
+-            	form.getProposalDevelopmentAttachmentHelper().handleNarrativeUpdates(form, document);
+-            	form.getProposalDevelopmentAttachmentHelper().handleInstAttachmentUpdates(form, document);
+-            	form.getProposalDevelopmentAttachmentHelper().handlePersonBioUpdates(form, document);
++            	document.getDevelopmentProposal().setNarratives(form.getDevelopmentProposal().getNarratives());
++                document.getDevelopmentProposal().setInstituteAttachments(form.getDevelopmentProposal().getInstituteAttachments());
++                document.getDevelopmentProposal().setPropPersonBios(form.getDevelopmentProposal().getPropPersonBios());
+                 document.getDevelopmentProposal().setProposalAbstracts(form.getDevelopmentProposal().getProposalAbstracts());
+                 document.setNotes(form.getDocument().getNotes());
+                 form.setDocument(document);
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentViewHelperServiceImpl.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentViewHelperServiceImpl.java
+index 0f6b916..98783e8 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentViewHelperServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentViewHelperServiceImpl.java
+@@ -378,10 +378,6 @@ protected boolean performDeleteLineValidation(ViewModel model, String collection
+                 getProposalDevelopmentPermissionsService().processDeletePermission(document, ((ProposalUserRoles) deleteLine));
+             }
+         }
+-        
+-        if(deleteLine instanceof ProposalDevelopmentAttachment) {
+-        	((ProposalDevelopmentAttachment)deleteLine).setUpdated(true);
+-        }
+ 
+         if (deleteLine instanceof FileMeta) {
+             getDataObjectService().delete(deleteLine);
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/attachment/ProposalPersonBiography.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/attachment/ProposalPersonBiography.java
+index 469b037..dace061 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/attachment/ProposalPersonBiography.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/attachment/ProposalPersonBiography.java
+@@ -124,17 +124,6 @@
+ 
+     @Transient
+     private transient MultipartFile multipartFile;
+-    
+-    @Transient
+-    private transient boolean isUpdated = false;
+-    
+-    public boolean isUpdated() {
+-		return isUpdated;
+-	}
+-
+-	public void setUpdated(boolean isUpdated) {
+-		this.isUpdated = isUpdated;
+-	}
+ 
+     @Override
+     public void init(MultipartFile multipartFile) throws Exception {

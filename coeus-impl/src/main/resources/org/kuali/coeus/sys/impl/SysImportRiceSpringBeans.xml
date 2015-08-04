@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="grlImporter" abstract="true" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean" p:singleton="true" p:mustExist="true" />
+
+    <bean id="kualiModuleService" parent="grlImporter" p:serviceName="kualiModuleService" />
+    <bean id="parameterService" parent="grlImporter" p:serviceName="parameterService" />
+    <bean id="dateTimeService" parent="grlImporter" p:serviceName="dateTimeService" />
+    <bean id="routeHeaderService" parent="grlImporter" p:serviceName="enDocumentRouteHeaderService" />
+    <bean id="businessObjectService" parent="grlImporter" p:serviceName="businessObjectService" />
+    <bean id="persistenceStructureServiceOjb" parent="grlImporter" p:serviceName="persistenceStructureServiceOjb" />
+    <bean id="documentService" parent="grlImporter" p:serviceName="documentService" />
+    <bean id="documentTypeService" parent="grlImporter" p:serviceName="rice.kew.documentTypeService" />
+    <bean id="kewWorkflowDocumentService" parent="grlImporter" p:serviceName="rice.kew.workflowDocumentService" />
+    <bean id="postProcessorService" parent="grlImporter" p:serviceName="postProcessorService" />
+    <bean id="workflowDocumentActionsService" parent="grlImporter" p:serviceName="rice.kew.workflowDocumentActionsService" />
+    <bean id="actionListService" parent="grlImporter" p:serviceName="rice.kew.actionListService" />
+    <bean id="identityService" parent="grlImporter" p:serviceName="kimIdentityService" />
+    <bean id="kualiConfigurationService" parent="grlImporter" p:serviceName="kualiConfigurationService" />
+    <bean id="dataObjectService" parent="grlImporter" p:serviceName="dataObjectService" />
+    <bean id="documentDictionaryService" parent="grlImporter" p:serviceName="documentDictionaryService" />
+    <bean id="maintenanceDocumentDictionaryService" parent="grlImporter" p:serviceName="maintenanceDocumentDictionaryService" />
+    <bean id="kualiRuleService" parent="grlImporter" p:serviceName="kualiRuleService"/>
+    <bean id="lookupService" parent="grlImporter" p:serviceName="lookupService" />
+    <bean id="sequenceAccessorService" parent="grlImporter" p:serviceName="sequenceAccessorService" />
+    <bean id="lookupResultsService" parent="grlImporter" p:serviceName="lookupResultsService" />
+    <bean id="persistenceStructureService" parent="grlImporter" p:serviceName="persistenceStructureService" />
+    <bean id="dataDictionaryService" parent="grlImporter" p:serviceName="dataDictionaryService" />
+    <bean id="businessObjectDictionaryService" parent="grlImporter" p:serviceName="businessObjectDictionaryService" />
+    <bean id="encryptionService" parent="grlImporter" p:serviceName="encryptionService" />
+    <bean id="businessObjectMetaDataService" parent="grlImporter" p:serviceName="businessObjectMetaDataService" />
+    <bean id="xmlIngesterService" parent="grlImporter" p:serviceName="xmlIngesterService"/>
+
+    <bean id="collectionControllerService" parent="grlImporter" p:serviceName="collectionControllerService" />
+    <bean id="controllerService" parent="grlImporter" p:serviceName="controllerService" />
+    <bean id="fileControllerService" parent="grlImporter" p:serviceName="fileControllerService" />
+    <bean id="modelAndViewService" parent="grlImporter" p:serviceName="modelAndViewService" />
+    <bean id="navigationControllerService" parent="grlImporter" p:serviceName="navigationControllerService" />
+    <bean id="queryControllerService" parent="grlImporter" p:serviceName="queryControllerService" />
+    <bean id="refreshControllerService" parent="grlImporter" p:serviceName="refreshControllerService" />
+    <bean id="saveControllerService" parent="grlImporter" p:serviceName="saveControllerService" />
+    <bean id="permissionService" parent="grlImporter" p:serviceName="kimPermissionService" />
+
+    <bean id="ccImporter" abstract="true" class="org.kuali.coeus.sys.framework.service.ConfigContextConfigObjectFactoryBean" p:singleton="true" p:mustExist="true" />
+
+    <bean id="dataSource" parent="ccImporter" p:objectName="datasource" />
+    <bean id="riceDataSource" parent="ccImporter" p:objectName="riceDataSource" />
+    <bean id="transactionManager" parent="ccImporter" p:objectName="KC_TRANSACTION_MANAGER" />
+</beans>

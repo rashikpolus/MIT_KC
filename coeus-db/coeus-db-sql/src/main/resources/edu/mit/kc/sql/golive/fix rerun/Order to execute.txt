@@ -1,0 +1,11 @@
+person_appointment.sql
+person_biosketch.sql
+person_custom.sql
+person_degree.sql
+bo.sql
+bo_quest_temp_create.sql
+bo_question_and_qexpl.sql
+bo_questionnaire.sql
+bo_quest_temp_drop.sql
+table_logging.sql
+full_index_rebuild.sql

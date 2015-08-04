@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean id="ValidClassReportFrequency" parent="ValidClassReportFrequency-parentBean"/>
+	<bean abstract="true" id="ValidClassReportFrequency-parentBean" parent="BusinessObjectEntry">
+		<property name="businessObjectClass" value="org.kuali.kra.award.paymentreports.ValidClassReportFrequency"/>
+		<property name="objectLabel" value="Valid Class Report Frequency"/>
+		<property name="inquiryDefinition">
+			<ref bean="ValidClassReportFrequency-inquiryDefinition"/>
+		</property>
+		<property name="lookupDefinition">
+			<ref bean="ValidClassReportFrequency-lookupDefinition"/>
+		</property>
+		<property name="titleAttribute" value="validClassReportFreqId"/>
+		<property name="attributes">
+			<list>
+				<ref bean="ValidClassReportFrequency-validClassReportFreqId"/>
+				<ref bean="ValidClassReportFrequency-reportClassCode"/>
+				<ref bean="ValidClassReportFrequency-reportCode"/>
+				<ref bean="ValidClassReportFrequency-frequencyCode"/>
+				<ref bean="ValidClassReportFrequency-versionNumber"/>
+			</list>
+		</property>
+	</bean>
+
+	<!-- Attribute Definitions -->
+	<bean id="ValidClassReportFrequency-validClassReportFreqId" parent="ValidClassReportFrequency-validClassReportFreqId-parentBean"/>
+	<bean abstract="true" id="ValidClassReportFrequency-validClassReportFreqId-parentBean" parent="AttributeDefinition">
+		<property name="name" value="validClassReportFreqId"/>
+		<property name="forceUppercase" value="false"/>
+		<property name="label" value="Valid Class Report Freq Id"/>
+		<property name="shortLabel" value="Valid Class Report Freq Id"/>
+		<property name="maxLength" value="22"/>
+		<property name="validationPattern">
+			<bean parent="NumericValidationPattern"/>
+		</property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+		<property name="control">
+			<bean p:size="10" parent="TextControlDefinition"/>
+		</property>
+    <property name="controlField">
+      <bean p:size="10" parent="Uif-TextControl"/>
+    </property>
+		<property name="summary" value="Valid Class Report Freq Id"/>
+		<property name="description" value="Valid Class Report Freq Id"/>
+	</bean>
+
+	<bean id="ValidClassReportFrequency-reportClassCode" parent="ValidClassReportFrequency-reportClassCode-parentBean"/>
+	<bean abstract="true" id="ValidClassReportFrequency-reportClassCode-parentBean" parent="AttributeDefinition">
+		<property name="name" value="reportClassCode"/>
+		<property name="forceUppercase" value="false"/>
+		<property name="label" value="Report Class Code"/>
+		<property name="shortLabel" value="Report Class Code"/>
+		<property name="maxLength" value="3"/>
+		<property name="validationPattern">
+			<bean parent="NumericValidationPattern"/>
+		</property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+		<property name="control">
+			<bean p:size="10" parent="TextControlDefinition"/>
+		</property>
+    <property name="controlField">
+      <bean p:size="10" parent="Uif-TextControl"/>
+    </property>
+		<property name="summary" value="Report Class Code"/>
+		<property name="description" value="Report Class Code"/>
+	</bean>
+
+	<bean id="ValidClassReportFrequency-reportCode" parent="ValidClassReportFrequency-reportCode-parentBean"/>
+	<bean abstract="true" id="ValidClassReportFrequency-reportCode-parentBean" parent="AttributeDefinition">
+		<property name="name" value="reportCode"/>
+		<property name="forceUppercase" value="false"/>
+		<property name="label" value="Report Code"/>
+		<property name="shortLabel" value="Report Code"/>
+		<property name="maxLength" value="3"/>
+		<property name="validationPattern">
+			<bean parent="NumericValidationPattern"/>
+		</property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+		<property name="control">
+			<bean p:size="10" parent="TextControlDefinition"/>
+		</property>
+    <property name="controlField">
+      <bean p:size="10" parent="Uif-TextControl"/>
+    </property>
+		<property name="summary" value="Report Code"/>
+		<property name="description" value="Report Code"/>
+	</bean>
+
+	<bean id="ValidClassReportFrequency-frequencyCode" parent="ValidClassReportFrequency-frequencyCode-parentBean"/>
+	<bean abstract="true" id="ValidClassReportFrequency-frequencyCode-parentBean" parent="AttributeDefinition">
+		<property name="name" value="frequencyCode"/>
+		<property name="forceUppercase" value="false"/>
+		<property name="label" value="Frequency Code"/>
+		<property name="shortLabel" value="Frequency Code"/>
+		<property name="maxLength" value="3"/>
+		<property name="validationPattern">
+			<bean parent="NumericValidationPattern"/>
+		</property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+		<property name="control">
+			<bean p:size="10" parent="TextControlDefinition"/>
+		</property>
+    <property name="controlField">
+      <bean p:size="10" parent="Uif-TextControl"/>
+    </property>
+		<property name="summary" value="Frequency Code"/>
+		<property name="description" value="Frequency Code"/>
+	</bean>
+
+	<bean id="ValidClassReportFrequency-versionNumber" parent="ValidClassReportFrequency-versionNumber-parentBean"/>
+  <bean abstract="true" id="ValidClassReportFrequency-versionNumber-parentBean" parent="AttributeReferenceDummy-versionNumber"/>
+	<!-- Business Object Inquiry Definition -->
+	<bean id="ValidClassReportFrequency-inquiryDefinition" parent="ValidClassReportFrequency-inquiryDefinition-parentBean"/>
+  <bean id="ValidClassReportFrequency-InquiryView" parent="ValidClassReportFrequency-InquiryView-parentBean"/>
+	<bean abstract="true" id="ValidClassReportFrequency-inquiryDefinition-parentBean" parent="InquiryDefinition">
+		<property name="title" value="Valid Class Report Freq Id"/>
+		<property name="inquirySections">
+			<list>
+				<bean parent="InquirySectionDefinition">
+					<property name="title" value="Valid Class Report Freq Id"/>
+					<property name="numberOfColumns" value="1"/>
+					<property name="inquiryFields">
+						<list>
+							<bean p:attributeName="validClassReportFreqId" p:forceInquiry="true" parent="FieldDefinition"/>
+							<bean p:attributeName="reportClassCode" parent="FieldDefinition"/>
+							<bean p:attributeName="reportCode" parent="FieldDefinition"/>
+							<bean p:attributeName="frequencyCode" parent="FieldDefinition"/>
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+  <bean id="ValidClassReportFrequency-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView">
+    <property name="headerText" value="Valid Class Report Freq Id"/>
+    <property name="dataObjectClassName" value="org.kuali.kra.award.paymentreports.ValidClassReportFrequency"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-GridSection">
+          <property name="headerText" value="Valid Class Report Freq Id"/>
+          <property name="layoutManager.numberOfColumns" value="2"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="validClassReportFreqId" parent="Uif-DataField"/>
+              <bean p:propertyName="reportClassCode" parent="Uif-DataField"/>
+              <bean p:propertyName="reportCode" parent="Uif-DataField"/>
+              <bean p:propertyName="frequencyCode" parent="Uif-DataField"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+	<!-- Business Object Lookup Definition -->
+	<bean id="ValidClassReportFrequency-lookupDefinition" parent="ValidClassReportFrequency-lookupDefinition-parentBean"/>
+  <bean id="ValidClassReportFrequency-LookupView" parent="ValidClassReportFrequency-LookupView-parentBean"/>
+	<bean abstract="true" id="ValidClassReportFrequency-lookupDefinition-parentBean" parent="LookupDefinition">
+		<property name="title" value="Valid Class Report Freq Lookup"/><property name="defaultSort">
+      <bean parent="SortDefinition"/>
+		</property>
+		<property name="helpDefinition" >
+      <bean parent="HelpDefinition" p:parameterNamespace="KC-M" p:parameterName="validClassReportFrequencyMaintenanceHelp" p:parameterDetailType="Document"/>
+    	</property>  		
+		<property name="lookupFields">
+			<list>
+				<bean p:attributeName="validClassReportFreqId" p:forceInquiry="true" parent="FieldDefinition"/>
+				<bean p:attributeName="reportClassCode" parent="FieldDefinition"/>
+				<bean p:attributeName="reportCode" parent="FieldDefinition"/>
+				<bean p:attributeName="frequencyCode" parent="FieldDefinition"/>
+			</list>
+		</property>
+		<property name="resultFields">
+			<list>
+				<bean p:attributeName="validClassReportFreqId" p:forceInquiry="true" parent="FieldDefinition"/>
+				<bean p:attributeName="reportClassCode" parent="FieldDefinition"/>
+				<bean p:attributeName="reportCode" parent="FieldDefinition"/>
+				<bean p:attributeName="frequencyCode" parent="FieldDefinition"/>
+			</list>
+		</property>
+	</bean>
+
+  <bean id="ValidClassReportFrequency-LookupView-parentBean" abstract="true" parent="Uif-LookupView">
+    <property name="dataObjectClassName" value="org.kuali.kra.award.paymentreports.ValidClassReportFrequency"/>
+    <property name="headerText" value="Valid Class Report Freq Lookup"/>
+    <property name="criteriaFields">
+      <list>
+        <bean p:propertyName="validClassReportFreqId" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="reportClassCode" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="reportCode" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="frequencyCode" parent="Uif-LookupCriteriaInputField"/>
+      </list>
+    </property>
+    <property name="resultFields">
+      <list>
+        <bean p:propertyName="validClassReportFreqId" parent="Uif-DataField"/>
+        <bean p:propertyName="reportClassCode" parent="Uif-DataField"/>
+        <bean p:propertyName="reportCode" parent="Uif-DataField"/>
+        <bean p:propertyName="frequencyCode" parent="Uif-DataField"/>
+      </list>
+    </property>
+  </bean>
+
+</beans>

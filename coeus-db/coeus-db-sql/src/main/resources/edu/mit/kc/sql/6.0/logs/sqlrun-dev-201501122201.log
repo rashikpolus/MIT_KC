@@ -1,0 +1,17 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Mon Jan 12 22:01:40 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+SP2-0306: Invalid option.
+Usage: CONN[ECT] [logon] [AS {SYSDBA|SYSOPER}]
+where <logon>  ::= <username>[/<password>][@<connect_identifier>] | /
+ERROR:
+ORA-12162: TNS:net service name is incorrectly specified
+
+
+ERROR:
+ORA-12162: TNS:net service name is incorrectly specified
+
+
+SP2-0157: unable to CONNECT to ORACLE after 3 attempts, exiting SQL*Plus

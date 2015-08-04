@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<taglib xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd" version="2.1">
+
+    <description>KC functions library</description>
+    <display-name>KC functions</display-name>
+    <tlib-version>1.0</tlib-version>
+    <short-name>kc-fn</short-name>
+    <uri>http://www.kuali.org/jsp/jstl/functions</uri>
+
+    <function>
+        <description>Copy a list to avoid a ConcurrentModificationException.</description>
+        <name>copy</name>
+        <function-class>org.kuali.coeus.sys.framework.view.JstlFunctions</function-class>
+        <function-signature>java.util.List copy(java.util.List)</function-signature>
+        <example>&lt;c:forEach items="${krafn:copy(list)}"&gt;></example>
+    </function>
+
+    <function>
+        <description>Gets a List from a Values Finder</description>
+        <name>getOptionList</name>
+        <function-class>org.kuali.coeus.sys.framework.view.JstlFunctions</function-class>
+        <function-signature>java.util.List getOptionList(java.lang.String, java.util.Map)</function-signature>
+        <example>&lt;c:forEach items="${krafn:getOptionList()}"&gt;></example>
+    </function>
+
+    <function>
+        <description>Coerces the type of ScaleTwoDecimal to a BigDecimal</description>
+        <name>getBigDecimal</name>
+        <function-class>org.kuali.coeus.sys.framework.view.JstlFunctions</function-class>
+        <function-signature>java.math.BigDecimal getBigDecimal(org.kuali.coeus.sys.api.model.ScaleTwoDecimal)</function-signature>
+        <example>&lt;c:set var="cumTotalCost" value="${cumTotalCost + krafn:getBigDecimal(budgetPeriodObj.totalCost)}" /"&gt;</example>
+    </function>
+
+    <function>
+        <description>Coerces the type of ScaleTwoDecimal to a float</description>
+        <name>getFloatValue</name>
+        <function-class>org.kuali.coeus.sys.framework.view.JstlFunctions</function-class>
+        <function-signature>float getFloatValue(org.kuali.coeus.sys.api.model.ScaleTwoDecimal)</function-signature>
+        <example>&lt;c:set var="cumTotalCost" value="${cumTotalCost + krafn:getFloatValue(budgetPeriodObj.totalCost)}" /"&gt;</example>
+    </function>
+
+    <function>
+        <description>Gets the icon path for a mine type</description>
+        <name>getIconPath</name>
+        <function-class>org.kuali.coeus.sys.framework.view.JstlFunctions</function-class>
+        <function-signature>java.lang.String getIconPath(java.lang.String)</function-signature>
+        <example>&lt;img src=/"${krafn:getIconPath(attachment.type)}/" ... &gt;</example>
+    </function>
+
+    <function>
+        <description>Whether KC is in grm mode</description>
+        <name>isGrm</name>
+        <function-class>org.kuali.coeus.sys.framework.view.JstlFunctions</function-class>
+        <function-signature>boolean isGrm()</function-signature>
+        <example>&lt;c:set var="grm" value="${krafn:isGrm()}" /"&gt;</example>
+    </function>
+
+</taglib>

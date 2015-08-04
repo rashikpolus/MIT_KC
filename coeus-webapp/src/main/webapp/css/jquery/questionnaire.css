@@ -1,0 +1,62 @@
+/*
+ * Kuali Coeus, a comprehensive research administration system for higher education.
+ * 
+ * Copyright 2005-2015 Kuali, Inc.
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+@charset "utf-8";
+/* CSS Document */
+
+.Qdiv
+{
+	
+	border:#666666 solid 1px;
+	border-collapse:collapse;
+	margin-bottom:5px;
+}
+
+.Qquestiondiv
+{
+	background:#939393;
+	color:#ffffff;
+	font-size:12px;
+	line-height:16px;
+	font-weight:bold;
+	padding:2px;
+}
+	
+.Qquestion
+{
+
+}
+
+.Qmoreinfocontrol
+{
+    float:right;
+    font-size:9px;
+    font-weight:100;
+    cursor:pointer;
+}
+
+.Qmoreinfodiv
+{
+	background:#FFFFFF;
+	padding:2px;
+}
+
+.Qmoreinfo
+{
+
+}

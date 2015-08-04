@@ -1,0 +1,211 @@
+Index: coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/workloadbalancing/WorkloadBalancingController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/workloadbalancing/WorkloadBalancingController.java	(revision )
++++ coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/workloadbalancing/WorkloadBalancingController.java	(revision )
+@@ -25,6 +25,8 @@
+ import org.kuali.coeus.common.framework.unit.Unit;
+ import org.kuali.coeus.common.framework.unit.admin.UnitAdministrator;
+ import org.kuali.coeus.common.impl.sponsor.hierarchy.SponsorHierarchyDao;
++import org.kuali.rice.core.api.criteria.OrderByField;
++import org.kuali.rice.core.api.criteria.OrderDirection;
+ import org.kuali.rice.core.api.criteria.QueryByCriteria;
+ import org.kuali.rice.core.api.criteria.QueryResults;
+ import org.kuali.rice.krad.data.PersistenceOption;
+@@ -315,8 +317,9 @@
+         form.getAbsenteeListEdit().clear();
+         Map<String, Object> criteria = new HashMap<String, Object>();
+         criteria.put(PERSON_ID, personId);
++        OrderByField sort = OrderByField.Builder.create("leaveStartDate", OrderDirection.DESCENDING).build();
+         QueryResults<WlAbsentee> absentees = getDataObjectService().findMatching(WlAbsentee.class,
+-                QueryByCriteria.Builder.andAttributes(criteria).build());
++                QueryByCriteria.Builder.andAttributes(criteria).setOrderByFields(sort).build());
+ 
+         for (WlAbsentee absentee : absentees.getResults()) {
+             AbsenteeWrapper absenteeWrapper = new AbsenteeWrapper(absentee);
+@@ -520,10 +523,8 @@
+     public ModelAndView addAbsence(@ModelAttribute("KualiForm") WorkloadForm form, BindingResult result, HttpServletRequest request, HttpServletResponse response)
+             throws Exception {
+         String personId = form.getWorkloadLineItemEdit().getWlCapacity().getPersonId();
++        AbsenteeWrapper wrapper = (AbsenteeWrapper) form.getNewCollectionLines().get("absenteeListEdit");
+ 
+-        ModelAndView modelAndView = getCollectionControllerService().addLine(form);
+-        AbsenteeWrapper wrapper = ((AbsenteeWrapper) form.getAddedCollectionItems().get(form.getAddedCollectionItems().size() - 1));
+-
+         WlAbsentee newAbsentee = wrapper.getAbsentee();
+         newAbsentee.setPersonId(personId);
+ 
+@@ -531,6 +532,21 @@
+         newAbsentee.setLeaveStartDate(WorkloadUtils.translateTimeToDate(newAbsentee.getLeaveStartDate(), wrapper.getLeaveStartHour()));
+         newAbsentee.setLeaveEndDate(WorkloadUtils.translateTimeToDate(newAbsentee.getLeaveEndDate(), wrapper.getLeaveEndHour()));
+ 
++        if (newAbsentee.getLeaveEndDate().getTime() < newAbsentee.getLeaveStartDate().getTime()) {
++            form.getAbsenteeListEdit().remove(wrapper);
++            getGlobalVariableService().getMessageMap().putError("newCollectionLines['absenteeListEdit'].absentee.leaveEndDate", "workload.error.endDateLessThanStart");
++            form.setUpdateComponentId("Workload-Absentee-Add-Dialog");
++            return getRefreshControllerService().refresh(form);
++        } else if (newAbsentee.getLeaveStartDate().getTime() < System.currentTimeMillis()) {
++            form.getAbsenteeListEdit().remove(wrapper);
++            getGlobalVariableService().getMessageMap().putError("newCollectionLines['absenteeListEdit'].absentee.leaveStartDate", "workload.error.startDateLessThanToday");
++            form.setUpdateComponentId("Workload-Absentee-Add-Dialog");
++            return getRefreshControllerService().refresh(form);
++        }
++
++        ModelAndView modelAndView = getCollectionControllerService().addLine(form);
++        //AbsenteeWrapper wrapper = ((AbsenteeWrapper) form.getAddedCollectionItems().get(form.getAddedCollectionItems().size() - 1));
++
+         getDataObjectService().save(newAbsentee);
+ 
+         updateAbsenteeList(form, personId);
+@@ -591,6 +607,16 @@
+         // Translate the time into the date value and set
+         updatedAbsentee.setLeaveStartDate(WorkloadUtils.translateTimeToDate(updatedAbsentee.getLeaveStartDate(), wrapper.getLeaveStartHour()));
+         updatedAbsentee.setLeaveEndDate(WorkloadUtils.translateTimeToDate(updatedAbsentee.getLeaveEndDate(), wrapper.getLeaveEndHour()));
++
++        if (updatedAbsentee.getLeaveEndDate().getTime() < updatedAbsentee.getLeaveStartDate().getTime()) {
++            getGlobalVariableService().getMessageMap().putError("absenteeEdit.absentee.leaveEndDate", "workload.error.endDateLessThanStart");
++            form.setUpdateComponentId("Workload-AbsenceEdit-Dialog");
++            return getRefreshControllerService().refresh(form);
++        }  else if (updatedAbsentee.getLeaveStartDate().getTime() < System.currentTimeMillis()) {
++            getGlobalVariableService().getMessageMap().putError("absenteeEdit.absentee.leaveStartDate", "workload.error.startDateLessThanToday");
++            form.setUpdateComponentId("Workload-AbsenceEdit-Dialog");
++            return getRefreshControllerService().refresh(form);
++        }
+ 
+         getDataObjectService().save(updatedAbsentee);
+ 
+Index: coeus-impl/src/main/resources/edu/mit/kc/workloadbalancing/WorkloadAbsenteeComponents.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- coeus-impl/src/main/resources/edu/mit/kc/workloadbalancing/WorkloadAbsenteeComponents.xml	(revision )
++++ coeus-impl/src/main/resources/edu/mit/kc/workloadbalancing/WorkloadAbsenteeComponents.xml	(revision )
+@@ -5,7 +5,8 @@
+                     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+ 
+     <bean id="Workload-Absentee-Edit" parent="Uif-DialogGroup" p:retrieveViaAjax="true"
+-          p:headerText="@{#form.workloadLineItemEdit.personName}" p:dialogCssClass="modal-lg">
++          p:headerText="@{#form.workloadLineItemEdit.personName}" p:onHiddenDialogScript="retrieveComponent('Workload-Table');"
++          p:dialogCssClass="modal-lg">
+         <property name="destroyDialogOnHidden" value="true"/>
+         <property name="items">
+             <list>
+@@ -43,23 +44,33 @@
+             <list>
+                 <bean parent="Uif-Action"
+                       p:actionScript="writeHiddenToForm('absenceEditItem', @{#index}); showDialog('Workload-AbsenceEdit-Dialog')"
+-                      p:actionLabel="Edit"
++                      p:actionLabel="Edit" p:render="@{(#line.absentee.leaveStartDate).getTime() > T(java.lang.System).currentTimeMillis()}"
+                       p:additionalCssClasses="btn-default btn-xs"/>
+                 <bean parent="Uif-Action" p:methodToCall="deleteAbsence"
+-                      p:actionLabel="Delete"
++                      p:actionLabel="Delete" p:render="@{(#line.absentee.leaveStartDate).getTime() > T(java.lang.System).currentTimeMillis()}"
+                       p:additionalCssClasses="btn-default btn-xs"/>
+             </list>
+         </property>
+ 
+         <property name="items">
+             <list>
+-                <bean parent="Workload-FromDate" p:readOnly="true"/>
+-                <bean parent="Workload-ToDate" p:readOnly="true"/>
++                <bean parent="Uif-InputField" p:label="From" p:required="true" p:readOnly="true" p:fieldLabel.render="false"
++                      p:propertyName="absentee.leaveStartDate">
++                    <property name="control">
++                        <bean parent="Uif-DateControl"/>
++                    </property>
++                </bean>
++                <bean parent="Uif-InputField" p:label="To" p:required="true" p:readOnly="true" p:fieldLabel.render="false"
++                      p:propertyName="absentee.leaveEndDate">
++                    <property name="control">
++                        <bean parent="Uif-DateControl"/>
++                    </property>
++                </bean>
+             </list>
+         </property>
+ 
+         <property name="addLineDialog">
+-            <bean parent="Uif-AddLineDialog" p:headerText="Add Absence"
++            <bean id="Workload-Absentee-Add-Dialog" parent="Uif-AddLineDialog" p:headerText="Add Absence"
+                   p:enterKeyAction="Workload-Absentee-Collection_add">
+                 <property name="items">
+                     <list>
+@@ -69,8 +80,8 @@
+                 </property>
+                 <property name="footer.items">
+                     <list>
+-                        <bean parent="Uif-AddLineAction-Dialog"
+-                              p:methodToCall="addAbsence"
++                        <bean parent="Uif-AddLineAction-Dialog" p:dialogDismissOption="" p:preSubmitCall="jQuery('#Workload-Absentee-Add-Dialog').removeClass('uif-hasError'); return true;"
++                              p:methodToCall="addAbsence" p:successCallback=" if(jQuery('#Workload-Absentee-Add-Dialog').find('.uif-hasError').length == 0) {jQuery('#Workload-Absentee-Add-Dialog').detach();} Kc.Dialog.closeDialogWithoutError('Workload-Absentee-Add-Dialog');"
+                               p:actionLabel="Add Absence"/>
+                         <bean parent="Uif-DialogDismissButton" p:actionLabel="Cancel"/>
+                     </list>
+@@ -96,17 +107,20 @@
+                 <bean id="Workload-EditAbsence-Button" parent="Uif-PrimaryActionButton"
+                       p:actionLabel="Save Changes" p:methodToCall="updateAbsence"
+                       p:refreshId="Workload-Absentee-Collection"
+-                      p:dialogDismissOption="REQUEST"
++                      p:dialogDismissOption=""
++                      p:successCallback="Kc.Dialog.closeDialogWithoutError('Workload-AbsenceEdit-Dialog');"
+                       p:performClientSideValidation="true"/>
+             </list>
+         </property>
+     </bean>
+ 
+     <bean id="Workload-FromDate" parent="Uif-HorizontalFieldGroup" p:label="From">
++        <property name="group.validationMessages.displayMessages" value="false"/>
+         <property name="items">
+             <list>
+                 <bean parent="Uif-InputField" p:required="true" p:fieldLabel.render="false"
+                       p:propertyName="absentee.leaveStartDate">
++
+                     <property name="control">
+                         <bean parent="Uif-DateControl"/>
+                     </property>
+@@ -124,6 +138,7 @@
+     </bean>
+ 
+     <bean id="Workload-ToDate" parent="Uif-HorizontalFieldGroup" p:label="To">
++        <property name="group.validationMessages.displayMessages" value="false"/>
+         <property name="items">
+             <list>
+                 <bean parent="Uif-InputField" p:required="true" p:fieldLabel.render="false"
+\ No newline at end of file
+Index: coeus-impl/src/main/resources/ApplicationResources.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- coeus-impl/src/main/resources/ApplicationResources.properties	(revision )
++++ coeus-impl/src/main/resources/ApplicationResources.properties	(revision )
+@@ -1141,4 +1141,6 @@
+ workload.error.badUnit=Unit not valid
+ workload.info.simulationSaved=Simulation saved: {0}
+ workload.info.simulationFromLoaded=Simulation loaded: {0}
+-workload.info.simulationFromCurrent=Simulation mode was loaded with current workload balancing data
+\ No newline at end of file
++workload.info.simulationFromCurrent=Simulation mode was loaded with current workload balancing data
++workload.error.endDateLessThanStart=End Date/Time cannot be before Start Date/Time
++workload.error.startDateLessThanToday=Start Date/Time cannot be before Today's Date/Time
+\ No newline at end of file
+Index: coeus-webapp/target/coeus-webapp-6.0.0/css/workloadbalancing/workload_matrix.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- coeus-webapp/target/coeus-webapp-6.0.0/css/workloadbalancing/workload_matrix.css	(revision )
++++ coeus-webapp/target/coeus-webapp-6.0.0/css/workloadbalancing/workload_matrix.css	(revision )
+@@ -543,4 +537,8 @@
+ 
+ .workload-reassign-field {
+     margin-top: 1em;
++}
++
++div#Workload-Absentee-Add-Dialog_messages > .close {
++  display: none;
+-}
++}
+\ No newline at end of file

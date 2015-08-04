@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- - Kuali Coeus, a comprehensive research administration system for higher 
+	education. - - Copyright 2005-2015 Kuali, Inc. - - This program is free software: 
+	you can redistribute it and/or modify - it under the terms of the GNU Affero 
+	General Public License as - published by the Free Software Foundation, either 
+	version 3 of the - License, or (at your option) any later version. - - This 
+	program is distributed in the hope that it will be useful, - but WITHOUT 
+	ANY WARRANTY; without even the implied warranty of - MERCHANTABILITY or FITNESS 
+	FOR A PARTICULAR PURPOSE. See the - GNU Affero General Public License for 
+	more details. - - You should have received a copy of the GNU Affero General 
+	Public License - along with this program. If not, see <http://www.gnu.org/licenses/>. -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+
+	<bean id="SapFeed-DefaultView" parent="SapFeed-DefaultView-parentBean" />
+	<bean id="SapFeed-DefaultView-parentBean" abstract="true" parent="Uif-FormView"
+		p:formClass="org.kuali.coeus.propdev.impl.sapfeed.SapFeedsForm"
+		p:headerText="SAP Feeds" p:stickyApplicationHeader="true"
+		p:stickyFooter="true" p:breadcrumbs.render="false" p:cssClasses="uif-formView"
+		p:unifiedHeader="false" p:defaultBindingObjectPath="">
+
+		<property name="additionalScriptFiles">
+			<list>
+				<value>scripts/common/dialog.js</value>
+				<value>scripts/common/wizard.js</value>
+				<value>scripts/common/inlineEdit.js</value>
+			</list>
+		</property>
+		<property name="additionalCssFiles">
+			<list>
+			    <value>css/common/core.css</value>
+				<value>css/wells.less</value>
+				<value>css/alerts.less</value>
+				<value>css/close.less</value>
+				<value>css/sapfeeds.css</value>
+			</list>
+		</property>
+
+		<property name="footer">
+			<null />
+		</property>
+		<property name="navigation" ref="SapFeed-Menu" />
+		<property name="entryPageId" value="SapFeed-GenerateMasterFeed" />
+		<property name="items">
+			<list>
+				<ref bean="SapFeed-GenerateMasterFeed" />
+				<ref bean="SapFeed-GenerateSponsorFeed" />
+				<ref bean="SapFeed-GenerateRolodexFeed" />
+
+			</list>
+		</property>
+	</bean>
+
+	<bean id="SapFeed-Menu" parent="SapFeed-Menu-parentBean" />
+	<bean id="SapFeed-Menu-parentBean" abstract="true"
+		parent="Uif-MenuNavigationGroup" p:defaultItemIconClass="">
+		<property name="items">
+			<list>
+
+				<bean parent="SapFeed-NavigationMenu-MasterFeed" p:order="10"
+					p:methodToCall="navigate" />
+				<bean parent="SapFeed-NavigationMenu-SponsorFeed" p:order="20"
+					p:methodToCall="navigate" />
+				<bean parent="SapFeed-NavigationMenu-RolodexFeed" p:order="30"
+					p:methodToCall="navigate" />
+
+			</list>
+		</property>
+	</bean>
+	<bean id="SapFeed-NavigationMenu-MasterFeed" parent="SapFeed-NavigationMenu-MasterFeed-parentBean" />
+	<bean id="SapFeed-NavigationMenu-MasterFeed-parentBean" abstract="true"
+		parent="Uif-MenuAction" p:navigateToPageId="SapFeed-GenerateMasterFeed"
+
+		p:actionLabel="Generate Master Data Feed" p:iconClass="icon-sort-by-attributes-alt" />
+	<bean id="SapFeed-NavigationMenu-SponsorFeed" parent="SapFeed-NavigationMenu-SponsorFeed-parentBean" />
+	<bean id="SapFeed-NavigationMenu-SponsorFeed-parentBean" abstract="true"
+		parent="Uif-MenuAction" p:navigateToPageId="SapFeed-GenerateSponsorFeed"
+
+		p:actionLabel="Generate Sponsor Data Feed" p:iconClass="icon-tasks" />
+	<bean id="SapFeed-NavigationMenu-RolodexFeed" parent="SapFeed-NavigationMenu-RolodexFeed-parentBean" />
+	<bean id="SapFeed-NavigationMenu-RolodexFeed-parentBean" abstract="true"
+		parent="Uif-MenuAction" p:navigateToPageId="SapFeed-GenerateRolodexFeed"
+
+		p:actionLabel="Generate Rolodex Data Feed" p:iconClass="icon-tasks" />
+
+
+</beans>

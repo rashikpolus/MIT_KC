@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.3//EN" "http://struts.apache.org/dtds/struts-config_1_3.dtd">
+
+<struts-config>  
+ <form-beans>
+    	<!-- Begin required KNS forms -->    
+        <form-bean name="KualiForm" type="org.kuali.rice.kns.web.struts.form.KualiForm" />       
+    	<!-- End required KNS forms -->
+<!-- Rice content End -->	
+<form-bean name="SharedDocForm" type="edu.mit.kc.award.SharedDocForm" /> 	
+
+    </form-beans>
+    <action-mappings>
+    
+	<action path="/sharedDoc*" name="SharedDocForm"
+		input="/WEB-INF/jsp/award/AwardSharedDoc.jsp" type="org.kuali.kra.award.web.struts.action.AwardSharedDocAction"
+		scope="request" parameter="methodToCall" validate="true" attribute="KualiForm">
+		  <forward name="basic" path="/WEB-INF/jsp/award/AwardSharedDoc.jsp" />
+          <forward name="keyPerson" path="/WEB-INF/jsp/award/KeyPerson.jsp" />
+		  <forward name="awardSharedDoc" path="/WEB-INF/jsp/award/AwardSharedDoc.jsp" />
+	</action>
+	
+	<action path="/keyperson*" name="SharedDocForm"
+		input="/WEB-INF/jsp/award/KeyPerson.jsp" type="org.kuali.kra.award.web.struts.action.AwardSharedDocAction"
+		scope="request" parameter="methodToCall" validate="true" attribute="KualiForm">
+          <forward name="basic" path="/WEB-INF/jsp/award/KeyPerson.jsp" />
+          <forward name="keyPerson" path="/WEB-INF/jsp/award/KeyPerson.jsp" />
+		  <forward name="awardSharedDoc" path="/WEB-INF/jsp/award/AwardSharedDoc.jsp" />
+	</action>
+	
+      <action path="/DocCopyHandler" name="DocHandlerForm" scope="request" parameter="methodToCall"
+        type="edu.mit.kc.sys.framework.controller.MitCustomDocHandlerRedirectAction" >
+        <forward name="documentLocked" path="/WEB-INF/jsp/DocumentLocked.jsp" />
+        <forward name="requiredStateError" path="/WEB-INF/jsp/DocumentLocked.jsp"/>
+        <forward name="finalStateError" path="/WEB-INF/jsp/DocumentLocked.jsp"/>
+      </action>
+
+      <action path="/protocolProtocolActions" name="ProtocolForm" input="/WEB-INF/jsp/irb/ProtocolProtocolActions.jsp" type="edu.mit.kc.irb.actions.MitProtocolProtocolActionsAction"  scope="request" parameter="methodToCall" validate="true" attribute="KualiForm">
+        <forward name="basic" path="/WEB-INF/jsp/irb/ProtocolProtocolActions.jsp" />
+		<forward name="protocol" path="/WEB-INF/jsp/irb/ProtocolProtocol.jsp" />
+		<forward name="personnel" path="/WEB-INF/jsp/irb/ProtocolPersonnel.jsp" />
+		<forward name="permissions" path="/WEB-INF/jsp/irb/ProtocolPermissions.jsp" />
+		<forward name="permissionsRoleRights" path="/WEB-INF/jsp/irb/ProtocolPermissionsRoleRights.jsp" />
+		<forward name="permissionsEditRoles" path="/WEB-INF/jsp/irb/ProtocolPermissionsEditRoles.jsp" />
+		<forward name="permissionsCloseEditRoles" path="/WEB-INF/jsp/irb/ProtocolPermissionsCloseEditRoles.jsp" />
+		<forward name="noteAndAttachment" path="/WEB-INF/jsp/irb/ProtocolNoteAndAttachment.jsp" />
+		<forward name="onlineReview" path = "/WEB-INF/jsp/irb/ProtocolOnlineReview.jsp"/>
+		<forward name="protocolActions" path="/WEB-INF/jsp/irb/ProtocolProtocolActions.jsp" />
+		<forward name="protocolHistory" path="/WEB-INF/jsp/irb/ProtocolProtocolHistory.jsp" />
+		<forward name="customData" path="/WEB-INF/jsp/irb/ProtocolCustomData.jsp" />
+		<forward name="specialReview" path="/WEB-INF/jsp/irb/ProtocolSpecialReview.jsp" />
+		<forward name="checkListItemDescription" path="/WEB-INF/jsp/irb/ProtocolCheckListItemDescription.jsp" />
+		<forward name="questionnaire" path="/WEB-INF/jsp/irb/ProtocolQuestionnaire.jsp" />
+		<forward name="protocolNotificationEditor" path="/WEB-INF/jsp/irb/ProtocolNotificationEditor.jsp"/>
+		<forward name="medusa" path="/WEB-INF/jsp/irb/ProtocolMedusa.jsp" />
+        <forward name="correspondence" path="/WEB-INF/jsp/irb/ProtocolCorrespondenceAction.jsp" />
+      </action>
+	
+    </action-mappings>
+
+    <controller processorClass="org.kuali.coeus.sys.framework.controller.interceptor.KcRequestProcessor" />
+    <message-resources factory="org.kuali.rice.kns.web.struts.action.KualiPropertyMessageResourcesFactory" parameter="" /> 
+    <plug-in className="org.kuali.coeus.sys.framework.controller.GlobalFormatterRegistry" />
+    
+</struts-config>

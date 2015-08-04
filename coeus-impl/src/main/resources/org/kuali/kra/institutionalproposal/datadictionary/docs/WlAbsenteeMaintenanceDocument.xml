@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+    <bean id="WlAbsenteeMaintenanceDocument" parent="WlAbsenteeMaintenanceDocument-parentBean" />
+    <bean id="WlAbsenteeMaintenanceDocument-parentBean" abstract="true" parent="KcMaintenanceDocumentEntry">
+        <property name="businessObjectClass" value="edu.mit.kc.workloadbalancing.bo.WlAbsentee" />
+        <property name="maintainableClass" value="org.kuali.kra.maintenance.KraMaintainableImpl" />
+        <property name="maintainableSections" >
+            <list>
+                <ref bean="WlAbsenteeMaintenanceDocument-EditAbsentee" />
+            </list>
+        </property>
+        <property name="lockingKeys" >
+            <list>
+                <value>absenteeId</value>
+                <value>personId</value>
+               
+            </list>
+        </property>
+        <property name="allowsRecordDeletion" value="true" />
+        <property name="documentTypeName" value="WlAbsenteeMaintenanceDocument" />
+        <property name="documentAuthorizerClass" value="org.kuali.rice.kns.document.authorization.MaintenanceDocumentAuthorizerBase"/>
+        
+    </bean>
+
+    <!-- Maintenance Section Definitions -->
+    
+    <bean id="WlAbsenteeMaintenanceDocument-EditAbsentee" parent="WlAbsenteeMaintenanceDocument-EditAbsentee-parentBean" />
+    <bean id="WlAbsenteeMaintenanceDocument-EditAbsentee-parentBean" abstract="true" parent="MaintainableSectionDefinition">
+        <property name="id" value="Edit Absent Tracker " />
+        <property name="title" value="Edit Absent Tracker  " />
+        <property name="maintainableItems" >
+            <list>
+
+                <bean parent="MaintainableFieldDefinition"
+                    p:name="absenteeId" 
+                    p:required="true"  /> 
+                <bean parent="MaintainableFieldDefinition"
+                    p:name="personId"
+                    p:required="true" />
+                <bean parent="MaintainableFieldDefinition"
+                    p:name="leaveStartDate" />          
+                <bean parent="MaintainableFieldDefinition"
+                    p:name="leaveEndDate" />        
+             
+            </list>
+        </property>
+    </bean>
+</beans>
+  

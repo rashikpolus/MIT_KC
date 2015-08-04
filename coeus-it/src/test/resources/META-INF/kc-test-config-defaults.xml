@@ -1,0 +1,35 @@
+
+<!-- 
+	This config should not reference other config locations.  It should only contain properties that are specific to
+    kc or are different from the rice defaults and are not defined as kc project defaults.
+-->
+<config>
+	<param name="kns.test.port">9925</param>
+	<param name="http.port">${kns.test.port}</param>
+
+	<param name="datasource.username" override="false">KRAUNT</param>
+	
+	<param name="ActionList.norefresh">true</param>
+	<param name="notification.quartz.autostartup">false</param>
+	
+	<param name="message.delivery">synchronous</param>
+	
+	<!--Test params-->
+	<param name="use.clearDatabaseLifecycle">true</param>
+	<param name="use.kewXmlmlDataLoaderLifecycle">true</param>
+	<param name="use.sqlDataLoaderLifecycle">true</param>
+	<param name="use.kraKewXmlDataLoaderLifecycle">true</param>
+	<param name="test.mode">true</param>
+	<param name="ken.test.mode">true</param>
+	
+	<param name="filter.login.class">org.kuali.rice.krad.web.filter.AutoLoginFilter</param>
+	<param name="filtermapping.login.1">/*</param>
+	<param name="filter.login.autouser">quickstart</param>
+	
+	<param name="keystore.alias">rice</param>
+	<param name="keystore.password">r1c3pw</param>
+	<param name="keystore.file">${basedir}/coeus-it/src/test/resources/rice.keystore</param>
+	<param name="keystore.location">${basedir}/coeus-it/src/test/resources/rice.keystore</param>
+	
+	<param name="kc.schemaspy.enabled">false</param>
+</config>

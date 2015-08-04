@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                    http://www.springframework.org/schema/util
+                    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	<bean id="PropBudget-CostSharingPage" parent="PropBudget-CostSharingPage-parentBean" />
+	<bean id="PropBudget-CostSharingPage-parentBean"
+          parent="PropBudget-Page" p:fieldBindingObjectPath="budget">
+		<property name="items">
+		    <list>
+                <bean id="PropBudget-CostSharingPage-CollectionGroup" parent="PropBudget-CostSharingPage-CollectionGroup-parentBean" p:order="10" 
+                      p:render="@{#this.isCostSharingEditFormVisible()}" />
+                <bean parent="Uif-Message" p:order="20"
+                      p:messageText="Cost Sharing doesn't apply or is not available"
+                      p:render="@{!#this.isCostSharingEditFormVisible()}" />
+            </list>
+		</property>
+	</bean>
+
+	<bean id="PropBudget-CostSharingPage-CollectionGroup-parentBean"
+		parent="Uif-TableCollectionSection" abstract="true" p:headerText="Cost Sharing"
+		p:propertyName="budgetCostShares"
+		p:collectionObjectClass="org.kuali.coeus.common.budget.framework.distribution.BudgetCostShare"
+		p:addWithDialog="true" p:layoutManager.renderSequenceField="true">
+		<property name="addWithDialogAction">
+			<bean parent="Uif-AddWithDialogAction" p:actionLabel="Add Cost Sharing"
+                		p:render="@{!#parent.readOnly}"
+				p:iconClass="icon-plus" />
+		</property>
+		<property name="header.lowerGroup">
+			<bean parent="Uif-HeaderLowerGroup">
+				<property name="items">
+					<list>
+						<bean parent="Uif-Message"
+							p:messageText="Assign and distribute any additional unallocated expenses to stakeholders, institutions, or other individuals."
+							p:order="10" />
+					</list>
+				</property>
+			</bean>
+		</property>
+		<property name="header.rightGroup">
+			<bean parent="Uif-HeaderRightGroup">
+				<property name="items">
+					<list>
+						<bean parent="Uif-SecondaryActionButton-Mini" p:actionLabel="View Summary"
+                              p:actionScript="showDialog('PropBudget-CostSharing-Summary')"
+                              p:order="10" />
+                        <bean parent="Uif-SecondaryActionButton-Mini" p:actionLabel="View Subaward Cost Share"
+                              p:actionScript="showDialog('PropBudget-CostSharing-Subaward-Dialog')"
+                              p:order="20" />
+					</list>
+				</property>
+			</bean>
+		</property>
+        <property name="layoutManager.richTable.templateOptions">
+            <map>
+                <entry key="sDom" value="tip" />
+                <entry key="bRetrieve" value="true" />
+                <entry key="bPaginate" value="false" />
+                <entry key="bInfo" value="false" />
+            </map>
+        </property>
+		<property name="items">
+			<list>
+			   <bean parent="Kc-InlineEdit-InputField" p:propertyName="projectPeriod"
+					p:order="10" p:label="Period" p:skipInTabOrder="false" >
+                    <property name="control">
+                        <bean parent="Uif-DropdownControl"/>
+                    </property>
+                    <property name="optionsFinder">
+                        <bean class="org.kuali.coeus.common.budget.impl.core.BudgetPeriodValuesFinder" p:addBlankOption="false"/>
+                    </property>
+                </bean>
+                <bean parent="Kc-InlineEdit-InputField" p:propertyName="sourceUnit" p:skipInTabOrder="false" p:order="20" p:label="Unit Number" >
+                  <property name="quickfinder">
+            		<bean parent="Uif-QuickFinder" p:dataObjectClassName="org.kuali.coeus.common.framework.unit.Unit"
+            		p:fieldConversions="unitNumber:sourceUnit" p:returnByScript="true" p:hideCriteriaOnSearch="true" />
+                  </property>
+                </bean>
+                <bean parent="Kc-InlineEdit-InputField" p:propertyName="sharePercentage" p:skipInTabOrder="false" p:order="30" p:label="Percentage" >
+                    <property name="propertyEditor"><ref bean="Kc-ScaleTwoPercentageEditor"/></property>
+                </bean>
+                <bean parent="Kc-InlineEdit-InputField" p:propertyName="sourceAccount" p:skipInTabOrder="false" p:order="40" />
+                <bean parent="Kc-InlineEdit-InputField" p:propertyName="shareAmount" p:skipInTabOrder="false" p:order="50" p:label="Amount" />
+            </list>
+		</property>
+
+		<property name="lineActions">
+			<list>
+                <bean parent="Uif-DeleteLineAction-IconOnly"
+                      p:render="@{!#ViewHelper.isBudgetLineItemEditable(#collectionGroup.bindingInfo.bindingPath,#index,editableBudgetLineItems)}" p:order="10"
+                      p:iconClass="icon-trash" />
+			</list>
+		</property>
+        <property name="dataAttributes">
+            <map>
+                <entry key="total_costsharing" value="@{#this.getBudget().getAvailableCostSharing()}"/>
+            </map>
+        </property><property name="layoutManager.columnCalculations">
+            <list>
+                <bean parent="Uif-ColumnCalculationInfo-Sum" p:propertyName="shareAmount"
+                      p:totalField.fieldLabel.labelText="Total Allocated"/>
+                <bean parent="Uif-ColumnCalculationInfo" p:calculationFunctionName="totalUnallocatedCostSharing"
+                      p:calculateOnKeyUp="true"
+                      p:propertyName="shareAmount" p:showPageTotal="false">
+                    <property name="totalField.fieldLabel.labelText" value="Total Unallocated"/>
+                </bean>
+            </list>
+        </property>
+        <property name="layoutManager.showPageTotal" value="false"/>
+
+        <property name="footer">
+			<bean parent="Uif-FooterBase">
+				<property name="items">
+					<list>
+						<bean parent="Uif-SecondaryActionButton-Mini" p:actionLabel="Reset to Default"
+                              p:render="@{!#parent.readOnly}" p:methodToCall="resetCostSharing"
+							p:style="float: right;" p:order="10" />
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+
+    <bean id="PropBudget-CostSharing-Summary" parent="PropBudget-CostSharing-Summary-parentBean" />
+      <bean id="PropBudget-CostSharing-Summary-parentBean"
+              abstract="true" parent="Uif-DialogGroup" p:headerText="Cost Sharing Summary By Period">
+              <property name="items">
+                      <list>
+                              <ref bean="PropBudget-CostSharing-SummaryTable" />
+                      </list>
+              </property>
+              <property name="footer">
+                      <bean parent="Uif-FooterBase">
+                              <property name="items">
+                                      <list>
+                                          <bean parent="Uif-DialogDismissButton" p:actionLabel="Close"
+                                                p:order="10" />
+                                      </list>
+                              </property>
+                      </bean>
+              </property>
+      </bean>
+
+      <bean id="PropBudget-CostSharing-SummaryTable" parent="PropBudget-CostSharing-SummaryTable-parentBean" />
+      <bean id="PropBudget-CostSharing-SummaryTable-parentBean"
+              abstract="true" parent="Uif-TableCollectionSection" p:renderAddLine="false"
+              p:propertyName="budget.fiscalYearCostShareTotals"
+              p:collectionObjectClass="org.kuali.coeus.common.budget.framework.core.Budget.FiscalYearSummary"
+              p:renderLineActions="false" p:layoutManager.renderSequenceField="false">
+              <property name="layoutManager.richTable.templateOptions">
+                      <map>
+                              <entry key="sDom" value="tip" />
+                              <entry key="bRetrieve" value="true" />
+                              <entry key="bPaginate" value="false" />
+                              <entry key="bInfo" value="false" />
+                      </map>
+              </property>
+              <property name="items">
+                      <list>
+                          <bean parent="Uif-MessageField" p:messageText="Period:@{#line.assignedBudgetPeriod.budgetPeriod}:@{#line.assignedBudgetPeriod.dateRangeLabel}" p:fieldLabel.labelText="Period" p:order="10" />
+                          <bean parent="Uif-DataField-condensedTable" p:propertyName="costShare"
+                                      p:order="20" p:label="Amount" />
+                      </list>
+              </property>
+              <property name="layoutManager.columnCalculations">
+                      <list>
+                              <bean parent="Uif-ColumnCalculationInfo-Sum" p:propertyName="costShare" />
+                      </list>
+              </property>
+              <property name="layoutManager.showPageTotal" value="false"/>
+      </bean>
+	
+	<bean id="PropBudget-CostSharing-Subaward-Dialog" parent="PropBudget-CostSharing-Subaward-Dialog-parentBean" />
+	<bean id="PropBudget-CostSharing-Subaward-Dialog-parentBean" abstract="true" parent="Uif-DialogBase"
+		p:headerText="Sub Award Cost Sharing Details">
+              <property name="items">
+                      <list>
+                              <bean parent="PropBudget-CostSharing-SubawardSummary" p:order="10"/>
+                      </list>
+              </property>
+              <property name="footer">
+                      <bean parent="Uif-DialogFooter">
+                              <property name="items">
+                                      <list>
+                                          <bean parent="Uif-DialogDismissButton" p:actionLabel="Close"
+                                                p:order="10" />
+                                      </list>
+                              </property>
+                      </bean>
+              </property>
+      </bean>
+      
+      <bean id="PropBudget-CostSharing-SubawardSummary" parent="PropBudget-CostSharing-SubawardSummary-parentBean" />
+      <bean id="PropBudget-CostSharing-SubawardSummary-parentBean"
+              abstract="true" parent="Uif-StackedCollectionSection" p:renderAddLine="false"
+              p:propertyName="budget.budgetSubAwards"
+              p:collectionObjectClass="org.kuali.coeus.propdev.impl.budget.subaward.BudgetSubAwards"
+              p:renderLineActions="false" p:layoutManager.summaryTitle="@{#lp.organization.organizationName}"
+              p:layoutManager.lineGroupPrototype.disclosure.render="true" p:layoutManager.lineGroupPrototype.disclosure.defaultOpen="false">
+		<property name="subCollections">
+			<list>
+				<ref bean="PropBudget-CostSharing-Subaward-SubCollection" />
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="PropBudget-CostSharing-Subaward-SubCollection" parent="PropBudget-CostSharing-Subaward-SubCollection-parentBean" />
+	<bean id="PropBudget-CostSharing-Subaward-SubCollection-parentBean" abstract="true"
+		parent="Uif-TableCollectionSection" p:collectionObjectClass="org.kuali.coeus.propdev.impl.budget.subaward.BudgetSubAwardPeriodDetail"
+		p:propertyName="budgetSubAwardPeriodDetails" p:renderAddLine="false" p:renderLineActions="false" p:layoutManager.renderSequenceField="false">		
+		<property name="items">
+			<list>
+				<bean parent="Uif-DataField" p:propertyName="budgetPeriodBO.budgetPeriod" p:order="10"/>
+				<bean parent="Uif-MessageField" p:messageText="@{#line.budgetPeriodBO.periodFiscalYear}" p:fieldLabel.labelText="Fiscal Year" p:order="20"/>
+				<bean parent="Uif-DataField" p:propertyName="costShare" p:order="30"/>
+			</list>
+		</property>
+		<property name="layoutManager.richTable.templateOptions">
+			<map>
+				<entry key="sDom" value="tip" />
+				<entry key="bRetrieve" value="true" />
+				<entry key="bPaginate" value="false" />
+				<entry key="bInfo" value="false" />
+			</map>
+		</property>		
+	</bean>		      
+</beans>

@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans.xsd">
+  <bean id="DocumentNextvalue" parent="DocumentNextvalue-parentBean" />
+  <bean id="DocumentNextvalue-parentBean" abstract="true" parent="BusinessObjectEntry">
+    <property name="businessObjectClass" value="org.kuali.kra.bo.DocumentNextvalue" />
+		<property name="objectLabel" value="Document Nextvalue" />
+    <property name="inquiryDefinition" >
+      <ref bean="DocumentNextvalue-inquiryDefinition" />
+    </property>
+    <property name="lookupDefinition" >
+      <ref bean="DocumentNextvalue-lookupDefinition" />
+    </property>
+    <property name="titleAttribute" value="documentKey" />
+    <property name="attributes" >
+      <list>
+        <ref bean="DocumentNextvalue-propertyName" />
+        <ref bean="DocumentNextvalue-documentKey" />
+        <ref bean="DocumentNextvalue-nextValue" />
+        <ref bean="DocumentNextvalue-updateUser"/>
+        <ref bean="DocumentNextvalue-updateTimestamp"/>
+      </list>
+    </property>
+  </bean>
+
+<!-- Attribute Definitions -->
+
+
+  <bean id="DocumentNextvalue-propertyName" parent="DocumentNextvalue-propertyName-parentBean" />
+
+  <bean id="DocumentNextvalue-propertyName-parentBean" abstract="true" parent="AttributeDefinition">
+    <property name="name" value="propertyName" />
+    <property name="forceUppercase" value="false" />
+    <property name="label" value="Property Name" />
+    <property name="shortLabel" value="Property Name" />
+    <property name="maxLength" value="200" />
+    <property name="validationPattern" >
+      <bean parent="AnyCharacterValidationPattern" />
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AnyCharacterPatternConstraint"/>
+    </property>
+    <property name="control" >
+      <bean parent="TextControlDefinition" p:size="200"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="200" parent="Uif-TextControl"/>
+    </property>
+    <property name="summary" value="Property Name" />
+    <property name="description" value="Property Name" />
+  </bean>
+
+  <bean id="DocumentNextvalue-documentKey" parent="DocumentNextvalue-documentKey-parentBean"/>
+  <bean id="DocumentNextvalue-documentKey-parentBean" abstract="true" parent="AttributeDefinition">
+    <property name="name" value="documentKey" />
+    <property name="forceUppercase" value="false" />
+    <property name="label" value="Document Number" />
+    <property name="shortLabel" value="Document Number" />
+    <property name="maxLength" value="40" />
+    <property name="validationPattern" >
+      <bean parent="AnyCharacterValidationPattern" />
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AnyCharacterPatternConstraint"/>
+    </property>
+    <property name="control" >
+      <bean parent="TextControlDefinition" p:size="12"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="12" parent="Uif-TextControl"/>
+    </property>
+    <property name="summary" value="Document Number" />
+    <property name="description" value="Document Number" />
+  </bean>
+
+  <bean id="DocumentNextvalue-nextValue" parent="DocumentNextvalue-nextValue-parentBean"/>
+  <bean id="DocumentNextvalue-nextValue-parentBean" abstract="true" parent="AttributeDefinition">
+    <property name="name" value="nextValue" />
+    <property name="forceUppercase" value="false" />
+    <property name="label" value="Next Value" />
+    <property name="shortLabel" value="Next Value" />
+    <property name="maxLength" value="12" />
+    <property name="validationPattern" >
+      <bean parent="NumericValidationPattern" />
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+    <property name="control" >
+      <bean parent="TextControlDefinition" p:size="12"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="12" parent="Uif-TextControl"/>
+    </property>
+    <property name="summary" value="Next Value" />
+    <property name="description" value="Next Value" />
+  </bean>
+
+    <bean id="DocumentNextvalue-updateUser" parent="DocumentNextvalue-updateUser-parentBean" />
+
+    <bean id="DocumentNextvalue-updateUser-parentBean" abstract="true" parent="KraAttributeReferenceDummy-updateUser">
+        <property name="description" value="The user who created or last modified the Document Next Value." />
+    </bean>
+
+  <bean id="DocumentNextvalue-updateTimestamp" parent="DocumentNextvalue-updateTimestamp-parentBean"/>
+    <bean id="DocumentNextvalue-updateTimestamp-parentBean" abstract="true" parent="KraAttributeReferenceDummy-updateTimestamp">
+        <property name="description" value="The timestamp when the Document Next Value was created or last modified." />
+    </bean>
+
+<!-- Business Object Inquiry Definition -->
+  <bean id="DocumentNextvalue-inquiryDefinition" parent="DocumentNextvalue-inquiryDefinition-parentBean" />
+  <bean id="DocumentNextvalue-InquiryView" parent="DocumentNextvalue-InquiryView-parentBean"/>
+  <bean id="DocumentNextvalue-inquiryDefinition-parentBean" abstract="true" parent="InquiryDefinition">
+    <property name="title" value="Proposal Nextvalue" />
+    <property name="inquirySections" >
+      <list>
+        <bean parent="InquirySectionDefinition">
+          <property name="title" value="Proposal Nextvalue" />
+          <property name="numberOfColumns" value="1" />
+          <property name="inquiryFields" >
+            <list>
+              <bean parent="FieldDefinition" p:attributeName="propertyName" p:forceInquiry="true"/>
+              <bean parent="FieldDefinition" p:attributeName="documentKey" p:forceInquiry="true"/>
+              <bean parent="FieldDefinition" p:attributeName="nextValue"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="DocumentNextvalue-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView">
+    <property name="headerText" value="Proposal Nextvalue"/>
+    <property name="dataObjectClassName" value="org.kuali.kra.bo.DocumentNextvalue"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-GridSection">
+          <property name="headerText" value="Proposal Nextvalue"/>
+          <property name="layoutManager.numberOfColumns" value="2"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="propertyName" parent="Uif-DataField"/>
+              <bean p:propertyName="documentKey" parent="Uif-DataField"/>
+              <bean p:propertyName="nextValue" parent="Uif-DataField"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <!-- Business Object Lookup Definition -->
+  <bean id="DocumentNextvalue-lookupDefinition" parent="DocumentNextvalue-lookupDefinition-parentBean" />
+  <bean id="DocumentNextvalue-LookupView" parent="DocumentNextvalue-LookupView-parentBean"/>
+  <bean id="DocumentNextvalue-lookupDefinition-parentBean" abstract="true" parent="LookupDefinition">
+    <property name="title" value="Proposal Nextvalue Lookup" /><property name="defaultSort" >
+      <bean parent="SortDefinition"/>
+    </property>
+    <property name="lookupFields" >
+      <list>
+        <bean parent="FieldDefinition" p:attributeName="propertyName"/>
+        <bean parent="FieldDefinition" p:attributeName="documentKey"/>
+        <bean parent="FieldDefinition" p:attributeName="nextValue"/>
+      </list>
+    </property>
+    <property name="resultFields" >
+      <list>
+        <bean parent="FieldDefinition" p:attributeName="propertyName" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="documentKey" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="nextValue"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="DocumentNextvalue-LookupView-parentBean" abstract="true" parent="Uif-LookupView">
+    <property name="dataObjectClassName" value="org.kuali.kra.bo.DocumentNextvalue"/>
+    <property name="headerText" value="Proposal Nextvalue Lookup"/>
+    <property name="criteriaFields">
+      <list>
+        <bean p:propertyName="propertyName" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="documentKey" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="nextValue" parent="Uif-LookupCriteriaInputField"/>
+      </list>
+    </property>
+    <property name="resultFields">
+      <list>
+        <bean p:propertyName="propertyName" parent="Uif-DataField"/>
+        <bean p:propertyName="documentKey" parent="Uif-DataField"/>
+        <bean p:propertyName="nextValue" parent="Uif-DataField"/>
+      </list>
+    </property>
+  </bean>
+
+</beans>

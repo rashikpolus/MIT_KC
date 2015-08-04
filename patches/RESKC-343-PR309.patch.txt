@@ -1,0 +1,31 @@
+From 05d252067cca63f76fa850383904024a17cb476c Mon Sep 17 00:00:00 2001
+From: Joe Williams <jwillia@iastate.edu>
+Date: Tue, 28 Apr 2015 09:01:05 -0500
+Subject: [PATCH] RESKC-278:set correct update user after editing an
+ institutional proposal
+
+Edit an IP
+The Last Update field appropriately indicates the user that is updating the record while it is open.
+Approve
+Close
+Reopen the IP
+
+Actual result: Last update shows as performed by "kr"
+Expected result: Last update should display user not "kr".
+---
+ .../org/kuali/coeus/coeus-xml/2/InstitutionalProposalDocument.xml       | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/coeus-db/coeus-db-xml/src/main/resources/org/kuali/coeus/coeus-xml/2/InstitutionalProposalDocument.xml b/coeus-db/coeus-db-xml/src/main/resources/org/kuali/coeus/coeus-xml/2/InstitutionalProposalDocument.xml
+index e58c8ff..2093cc2 100644
+--- a/coeus-db/coeus-db-xml/src/main/resources/org/kuali/coeus/coeus-xml/2/InstitutionalProposalDocument.xml
++++ b/coeus-db/coeus-db-xml/src/main/resources/org/kuali/coeus/coeus-xml/2/InstitutionalProposalDocument.xml
+@@ -23,7 +23,7 @@
+ 			<name>InstitutionalProposalDocument</name>
+ 			<description>Manage Institutional Proposal</description>
+ 			<label>KC Institutional Proposal</label>
+-			<postProcessorName>org.kuali.rice.krad.workflow.postprocessor.KualiPostProcessor</postProcessorName>
++			<postProcessorName>org.kuali.coeus.sys.framework.workflow.KcPostProcessor</postProcessorName>
+ 			<superUserWorkgroupName>KC-WKFLW:KcAdmin</superUserWorkgroupName>
+ 			<blanketApproveWorkgroupName>KC-WKFLW:KcAdmin</blanketApproveWorkgroupName>
+ 			<defaultExceptionWorkgroupName>KC-WKFLW:KcAdmin</defaultExceptionWorkgroupName>

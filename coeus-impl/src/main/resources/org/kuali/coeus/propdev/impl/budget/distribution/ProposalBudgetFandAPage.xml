@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="PropBudget-UnrecoveredFandAPage" parent="PropBudget-UnrecoveredFandAPage-parentBean" />
+    <bean id="PropBudget-UnrecoveredFandAPage-parentBean"
+          parent="PropBudget-Page" p:fieldBindingObjectPath="budget">
+        <property name="items">
+            <list>
+                <bean id="PropBudget-UnrecoveredFandAPage-Group" parent="PropBudget-UnrecoveredFandAPage-Group-parentBean"
+                      p:render="@{#this.isUnrecoveredFandAEditFormVisible()}" />
+                <bean parent="Uif-Message"
+                      p:messageText="Unrecovered F&amp;A doesn't apply or is not available"
+                      p:render="@{!#this.isUnrecoveredFandAEditFormVisible()}" />
+            </list>
+        </property>
+	</bean>
+
+	<bean id="PropBudget-UnrecoveredFandAPage-Group-parentBean"
+		parent="Uif-TableCollectionSection"
+		p:propertyName="budgetUnrecoveredFandAs"
+		p:collectionObjectClass="org.kuali.coeus.common.budget.framework.distribution.BudgetUnrecoveredFandA"
+		p:headerText="Unrecovered F&amp;A"
+		p:layoutManager.renderSequenceField="true"
+        p:addWithDialog="true" >
+        <property name="addWithDialogAction">
+            <bean parent="Uif-AddWithDialogAction" p:actionLabel="Add Unrecovered F&amp;A"
+                  p:render="@{!#parent.readOnly}"
+                  p:iconClass="icon-plus"/>
+        </property>
+		<property name="header.lowerGroup">
+			<bean parent="Uif-HeaderLowerGroup">
+				<property name="items">
+					<list>
+						<bean parent="Uif-Message"
+							p:messageText="Assign and distribute unallocated expenses to stakeholders, institutions, or other individuals."
+							p:order="10" />
+					</list>
+				</property>
+			</bean>
+		</property>
+		<property name="header.rightGroup">
+			<bean parent="Uif-HeaderRightGroup">
+				<property name="items">
+					<list>
+						<bean parent="Uif-SecondaryActionButton-Mini" p:actionLabel="View Summary"
+                            p:actionScript="showDialog('PropBudget-UnrecoveredFandAPage-Summary')"
+							p:order="10" />
+					</list>
+				</property>
+			</bean>
+		</property>
+		<property name="layoutManager.richTable.templateOptions">
+			<map>
+				<entry key="sDom" value="tip" />
+				<entry key="bRetrieve" value="true" />
+				<entry key="bPaginate" value="false" />
+				<entry key="bInfo" value="false" />
+			</map>
+		</property>
+		<property name="items">
+			<list>
+				<bean parent="Kc-InlineEdit-InputField" p:propertyName="fiscalYear" p:fieldLabel.renderColon="false"  p:order="10"/>
+				<bean parent="Kc-InlineEdit-InputField" p:propertyName="applicableRate" p:order="20" />
+				<bean parent="Kc-InlineEdit-InputField" p:propertyName="onCampusFlag" p:order="30" p:label="On Campus" >
+                    <property name="control">
+                        <bean parent="Uif-DropdownControl">
+                            <property name="options" >
+                                <list>
+                                    <bean parent="Uif-KeyLabelPair" p:key="" p:value="Select"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="Y" p:value="Yes"/>
+                                    <bean parent="Uif-KeyLabelPair" p:key="N" p:value="No"/>
+                                </list>
+                            </property>
+                        </bean>
+                    </property>
+                </bean>
+				<bean parent="Kc-InlineEdit-InputField" p:propertyName="sourceAccount" p:order="40" />
+				<bean parent="Kc-InlineEdit-InputField" p:propertyName="amount" p:order="50" />
+			</list>
+		</property>
+		<property name="lineActions">
+			<list>
+              <bean parent="Uif-DeleteLineAction-IconOnly" p:order="10" p:iconClass="icon-trash" />
+			</list>
+		</property>
+        <property name="dataAttributes">
+            <map>
+                <entry key="total_unrecovered" value="@{#this.getBudget().getAvailableUnrecoveredFandA()}"/>
+            </map>
+        </property>
+		<property name="layoutManager.columnCalculations">
+			<list>
+				<bean parent="Uif-ColumnCalculationInfo-Sum" p:propertyName="amount"
+					p:totalField.fieldLabel.labelText="Total Allocated"/>
+                <bean parent="Uif-ColumnCalculationInfo" p:calculationFunctionName="totalUnallocatedFandA"
+                      p:calculateOnKeyUp="true"
+                      p:propertyName="amount" p:showPageTotal="false">
+                    <property name="totalField.fieldLabel.labelText" value="Total Unallocated"/>
+                </bean>
+			</list>
+		</property>
+        <property name="layoutManager.showPageTotal" value="false"/>
+
+        <property name="footer">
+			<bean parent="Uif-FooterBase">
+				<property name="items">
+					<list>
+						<bean parent="Uif-SecondaryActionButton-Mini" p:actionLabel="Reset to Default"
+                            p:render="@{!#parent.readOnly}" p:methodToCall="resetUnrecoveredFandA"
+							p:style="float: right;" p:order="10" />
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+
+    <bean id="PropBudget-UnrecoveredFandAPage-Summary"
+          parent="PropBudget-UnrecoveredFandAPage-Summary-parentBean" />
+    <bean id="PropBudget-UnrecoveredFandAPage-Summary-parentBean"
+          abstract="true" parent="Uif-DialogGroup" p:headerText="Unrecovered F&amp;A By Period">
+        <property name="items">
+            <list>
+                <ref bean ="PropBudget-UnrecoveredFandAPage-SummaryTable" />
+            </list>
+        </property>
+        <property name="footer">
+            <bean parent="Uif-FooterBase">
+                <property name="items">
+                    <list>
+                        <bean parent="Uif-DialogDismissButton" p:actionLabel="Close"
+                              p:order="10" />
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="PropBudget-UnrecoveredFandAPage-SummaryTable"
+          parent="Uif-TableCollectionSection" p:renderAddLine="false" p:layoutManager.renderSequenceField="false"
+          p:propertyName="budget.fiscalYearUnrecoveredFandATotals"  p:layoutManager.richTable.render="false"
+          p:renderLineActions="false"
+          p:collectionObjectClass="org.kuali.coeus.common.budget.framework.core.Budget.FiscalYearSummary">
+        <property name="items">
+            <list>
+                <bean parent="Uif-MessageField" p:messageText="Period:@{#line.assignedBudgetPeriod.budgetPeriod}:@{#line.assignedBudgetPeriod.dateRangeLabel}" p:fieldLabel.labelText="Period" p:order="10" />
+                <bean parent="Uif-DataField-condensedTable" p:propertyName="unrecoveredFandA" p:fieldLabel.labelText="Amount" p:order="20" />
+            </list>
+        </property>
+    </bean>
+
+</beans>

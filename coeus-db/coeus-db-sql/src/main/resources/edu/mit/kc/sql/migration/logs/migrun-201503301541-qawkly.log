@@ -1,0 +1,28 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Mon Mar 30 15:42:05 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+SP2-0103: Nothing in SQL buffer to run.
+UPDATE document_access SET  role_nm = 'Aggregator Document Level' WHERE role_nm = 'Aggregator'
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.UQ_DOCUMENT_ACCESS1) violated
+
+
+
+Commit complete.
+
+
+Warning: Function created with compilation errors.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

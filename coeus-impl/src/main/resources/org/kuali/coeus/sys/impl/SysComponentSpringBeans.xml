@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx.xsd
+                           http://www.springframework.org/schema/util
+                           http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <tx:annotation-driven transaction-manager="transactionManager" />
+    <context:annotation-config />
+    <context:component-scan base-package="org.kuali.coeus.sys" />
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="properties" value="#{T(org.kuali.rice.core.api.config.property.ConfigContext).getCurrentContextConfig().getProperties()}" />
+    </bean>
+
+    <import resource="classpath:org/kuali/coeus/sys/impl/SysImportRiceSpringBeans.xml"/>
+    <import resource="classpath:org/kuali/coeus/sys/impl/SysImportModuleSpringBeans.xml"/>
+
+    <!-- only brought in on the grm profile -->
+    <import resource="classpath:co/kuali/coeus/grm/impl/GrmSysComponentSpringBeans.xml"/>
+
+    <bean id="sysModule" parent="sysModule-parentBean" />
+    <bean id="sysModule-parentBean" class="org.kuali.rice.krad.service.impl.ModuleServiceBase" abstract="true">
+        <property name="moduleConfiguration" ref="sysModuleConfiguration"/>
+        <property name="kualiModuleService" ref="kualiModuleService"/>
+    </bean>
+
+    <bean id="sysModuleConfiguration" parent="sysModuleConfiguration-parentBean" />
+    <bean id="sysModuleConfiguration-parentBean" class="org.kuali.rice.krad.bo.ModuleConfiguration" abstract="true">
+        <property name="namespaceCode" value="KC-SYS" />
+        <property name="packagePrefixes">
+            <list>
+                <value>org.kuali.coeus.sys</value>
+            </list>
+        </property>
+        <property name="providers">
+            <list>
+                <ref bean="jpaPersistenceProvider"/>
+                <ref bean="metadataProvider"/>
+            </list>
+        </property>
+        <property name="dataDictionaryPackages">
+            <list>
+               <value>classpath:org/kuali/coeus/sys/impl/view/KcTransactionalDocumentView.xml</value>
+            </list>
+        </property>
+    </bean>
+
+    <alias alias="kradApplicationDataSource" name="dataSource" />
+
+    <bean id="jpaPersistenceUnitName" class="java.lang.String">
+        <!-- due to lack of modularity kc has to load it's entirety in a single persistence unit -->
+        <constructor-arg value="KC" />
+    </bean>
+
+    <util:list id="jpaPackagesToScan">
+        <value>org.kuali.coeus</value>
+        <value>org.kuali.kra</value>
+        <value>edu.mit.kc.workloadbalancing</value>
+        <value>edu.mit.kc</value>
+    </util:list>
+
+    <util:list id="managedClassNames" />
+
+    <util:list id="additionalMetadataProviders" />
+
+    <util:list id="springMetadataFileLocations" />
+
+    <import resource="classpath:org/kuali/rice/krad/config/KRADSpringBeans-jpa-common.xml" />
+
+    <alias name="sharedEntityManager" alias="kcEntityManager" />
+
+    <bean id="kcPessimisticLockingJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="kcPessimisticLockService" />
+        <property name="targetMethod" value="clearExpiredLocks" />
+        <property name="concurrent" value="false" />
+    </bean>
+
+    <bean id="kcPessimisticLockingCronTrigger" class="org.kuali.coeus.sys.framework.scheduling.KcCronTriggerBean">
+        <property name="jobDetail" ref="kcPessimisticLockingJobDetail" />
+        <property name="parameterService" ref="parameterService" />
+        <property name="dateTimeService" ref="dateTimeService" />
+        <property name="cronExpressionParameterName" value="pessimisticLocking.cronExpression" />
+        <property name="parameterNamespace" value="KC-SYS" />
+        <property name="parameterComponent" value="All" />
+    </bean>
+
+    <bean id="kcQuartzScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="exposeSchedulerInRepository" value="true" />
+        <property name="triggers">
+            <list merge="true">
+                <ref bean="kcPessimisticLockingCronTrigger" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="noEditLookupable" class="org.kuali.rice.kns.lookup.KualiLookupableImpl" scope="prototype">
+        <property name="lookupableHelperService" ref="noEditLookupableHelperService" />
+    </bean>
+
+    <bean id="schemaAnalyzer" class="net.sourceforge.schemaspy.SchemaAnalyzer"/>
+
+    <bean class="org.kuali.coeus.sys.framework.controller.interceptor.FilterRegistrator">
+        <property name="filter">
+            <bean class="co.kuali.coeus.sys.impl.persistence.SchemaSpyFilter">
+                <property name="schemaAnalyzer" ref="schemaAnalyzer"/>
+                <property name="configurationService" ref="kualiConfigurationService" />
+                <property name="globalVariableService" ref="globalVariableService" />
+                <property name="permissionService" ref="permissionService" />
+            </bean>
+        </property>
+        <property name="filterName" value="SchemaSpyFilter"/>
+        <property name="urlMapping">
+            <bean class="org.kuali.coeus.sys.framework.controller.interceptor.FilterRegistrator.Mapping">
+                <property name="matchAfter" value="true"/>
+                <property name="maps">
+                    <list>
+                        <value>/schemaspy/*</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean class="org.kuali.coeus.sys.framework.controller.interceptor.FilterRegistrator">
+        <property name="filter">
+            <bean class="co.kuali.coeus.sys.impl.monitor.MonitoringFilter">
+                <property name="globalVariableService" ref="globalVariableService" />
+                <property name="permissionService" ref="permissionService" />
+                <property name="configurationService" ref="kualiConfigurationService" />
+            </bean>
+        </property>
+        <property name="filterName" value="monitoring"/>
+        <property name="urlMapping">
+            <bean class="org.kuali.coeus.sys.framework.controller.interceptor.FilterRegistrator.Mapping">
+                <property name="matchAfter" value="false"/>
+                <property name="maps">
+                    <list>
+                        <value>/monitoring/*</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean class="org.kuali.coeus.sys.framework.controller.interceptor.FilterRegistrator">
+        <property name="filter">
+            <bean class="net.bull.javamelody.MonitoringFilter"/>
+        </property>
+        <property name="filterName" value="javamelody"/>
+        <property name="urlMapping">
+            <bean class="org.kuali.coeus.sys.framework.controller.interceptor.FilterRegistrator.Mapping">
+                <property name="matchAfter" value="true"/>
+                <property name="maps">
+                    <list>
+                        <value>/*</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="initParameters">
+            <map>
+                <entry key="url-exclude-pattern" value="/static/.*"/>
+                <entry key="log" value="true"/>
+                <entry key="disabled" value="#{not (T(org.kuali.rice.core.api.config.property.ConfigContext).getCurrentContextConfig().getBooleanProperty('kc.monitoring.enabled'))}" />
+                <entry key="monitoring-path" value="/monitoring/jm" />
+                <entry key="quartz-default-listener-disabled" value="true"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean class="org.kuali.coeus.sys.framework.listener.ListenerRegistrator">
+        <property name="listener">
+            <bean class="net.bull.javamelody.SessionListener"/>
+        </property>
+    </bean>
+
+</beans>

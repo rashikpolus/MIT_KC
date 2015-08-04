@@ -1,0 +1,10 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Tue Jan 6 21:56:32 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+ERROR:
+ORA-12154: TNS:could not resolve the connect identifier specified
+
+
+Enter user-name: 

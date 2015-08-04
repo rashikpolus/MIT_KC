@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="BatchCorrespondenceDetail" parent="BatchCorrespondenceDetail-parentBean" />
+    <bean id="BatchCorrespondenceDetail-parentBean" abstract="true" parent="BusinessObjectEntry">
+        <property name="businessObjectClass" value="org.kuali.kra.irb.correspondence.BatchCorrespondenceDetail" />
+        <property name="objectLabel" value="Batch Correspondence Detail" />
+        <property name="inquiryDefinition" >
+            <ref bean="BatchCorrespondenceDetail-inquiryDefinition" />
+        </property>
+        <property name="lookupDefinition" >
+            <ref bean="BatchCorrespondenceDetail-lookupDefinition" />
+        </property>
+        <property name="titleAttribute" value="BatchCorrespondenceDetailId" />
+        <property name="attributes" >
+            <list>
+                <ref bean="BatchCorrespondenceDetail-batchCorrespondenceDetailId" />
+                <ref bean="BatchCorrespondenceDetail-batchCorrespondenceTypeCode" />
+                <ref bean="BatchCorrespondenceDetail-protoCorrespTypeCode" />
+                <ref bean="BatchCorrespondenceDetail-daysToEvent" />
+                <ref bean="BatchCorrespondenceDetail-versionNumber" />
+            </list>
+        </property>
+    </bean>
+
+    <!-- Attribute Definitions -->
+    <bean id="BatchCorrespondenceDetail-batchCorrespondenceDetailId" parent="BatchCorrespondenceDetail-batchCorrespondenceDetailId-parentBean" />
+    <bean id="BatchCorrespondenceDetail-batchCorrespondenceDetailId-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="batchCorrespondenceDetailId" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Batch Corresponcence Detail Id" />
+        <property name="shortLabel" value="Batch Corresponcence Detail Id" />
+        <property name="maxLength" value="12" />
+        <property name="validationPattern" >
+            <bean parent="NumericValidationPattern" />
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+        <property name="control" >
+      <bean parent="TextControlDefinition" p:size="12"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="12" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="Batch Corresponcence Detail Id" />
+        <property name="description" value="Batch Corresponcence Detail Id" />
+    </bean>
+
+    <bean id="BatchCorrespondenceDetail-batchCorrespondenceTypeCode" parent="BatchCorrespondenceDetail-batchCorrespondenceTypeCode-parentBean" />
+    <bean id="BatchCorrespondenceDetail-batchCorrespondenceTypeCode-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="batchCorrespondenceTypeCode" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Batch Corresponcence Type Code" />
+        <property name="shortLabel" value="Batch Corresponcence Type Code" />
+        <property name="maxLength" value="3" />
+        <property name="validationPattern" >
+            <bean parent="AlphaNumericValidationPattern" />
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AlphaNumericPatternConstraint"/>
+    </property>
+        <property name="control" >
+      <bean parent="SelectControlDefinition" p:businessObjectClass="org.kuali.kra.irb.correspondence.BatchCorrespondence" p:valuesFinderClass="org.kuali.coeus.sys.framework.keyvalue.ExtendedPersistableBusinessObjectValuesFinder" p:includeKeyInLabel="false" p:includeBlankRow="false" p:keyAttribute="batchCorrespondenceTypeCode" p:labelAttribute="description"/>
+    </property>
+    <property name="optionsFinder">
+      <bean class="org.kuali.coeus.sys.framework.keyvalue.ExtendedPersistableBusinessObjectValuesFinder">
+        <property name="businessObjectClass" value="org.kuali.kra.irb.correspondence.BatchCorrespondence"/>
+        <property name="includeKeyInDescription" value="false"/>
+        <property name="includeBlankRow" value="false"/>
+        <property name="keyAttributeName" value="batchCorrespondenceTypeCode"/>
+        <property name="labelAttributeName" value="description"/>
+      </bean>
+    </property>
+    <property name="controlField">
+      <bean parent="Uif-DropdownControl"/>
+        </property>
+        <property name="summary" value="Batch Corresponcence Type Code" />
+        <property name="description" value="Batch Corresponcence Type Code" />
+    </bean>
+
+    <bean id="BatchCorrespondenceDetail-protoCorrespTypeCode" parent="BatchCorrespondenceDetail-protoCorrespTypeCode-parentBean" />
+    <bean id="BatchCorrespondenceDetail-protoCorrespTypeCode-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="protoCorrespTypeCode" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Protocol Correspondence Type Code" />
+        <property name="shortLabel" value="Protocol Correspondence Type Code" />
+        <property name="maxLength" value="3" />
+        <property name="required" value="true" />
+        <property name="validationPattern" >
+            <bean parent="AlphaNumericValidationPattern" />
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AlphaNumericPatternConstraint"/>
+    </property>
+        <property name="control" >
+      <bean parent="SelectControlDefinition" p:businessObjectClass="org.kuali.kra.irb.correspondence.ProtocolCorrespondenceType" p:valuesFinderClass="org.kuali.coeus.sys.framework.keyvalue.ExtendedPersistableBusinessObjectValuesFinder" p:includeKeyInLabel="false" p:includeBlankRow="false" p:keyAttribute="protoCorrespTypeCode" p:labelAttribute="description"/>
+    </property>
+    <property name="optionsFinder">
+      <bean class="org.kuali.coeus.sys.framework.keyvalue.ExtendedPersistableBusinessObjectValuesFinder">
+        <property name="businessObjectClass" value="org.kuali.kra.irb.correspondence.ProtocolCorrespondenceType"/>
+        <property name="includeKeyInDescription" value="false"/>
+        <property name="includeBlankRow" value="false"/>
+        <property name="keyAttributeName" value="protoCorrespTypeCode"/>
+        <property name="labelAttributeName" value="description"/>
+      </bean>
+    </property>
+    <property name="controlField">
+      <bean parent="Uif-DropdownControl"/>
+        </property>
+        <property name="summary" value="Protocol Correspondence Type Code" />
+        <property name="description" value="Protocol Correspondence Type Code" />
+    </bean>
+
+    <bean id="BatchCorrespondenceDetail-daysToEvent" parent="BatchCorrespondenceDetail-daysToEvent-parentBean" />
+    <bean id="BatchCorrespondenceDetail-daysToEvent-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="daysToEvent" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Days To Event" />
+        <property name="shortLabel" value="Days To Event" />
+        <property name="maxLength" value="3" />
+        <property name="required" value="true" />
+        <property name="validationPattern" >
+            <bean parent="NumericValidationPattern" />
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+        <property name="control" >
+      <bean parent="TextControlDefinition" p:size="3"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="3" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="Days To Event" />
+        <property name="description" value="The days before/after the event" />
+    </bean>
+
+    <bean id="BatchCorrespondenceDetail-versionNumber" parent="BatchCorrespondenceDetail-versionNumber-parentBean" />
+  <bean id="BatchCorrespondenceDetail-versionNumber-parentBean" abstract="true" parent="AttributeReferenceDummy-versionNumber"/>
+    <!-- Business Object Inquiry Definition -->
+    <bean id="BatchCorrespondenceDetail-inquiryDefinition" parent="BatchCorrespondenceDetail-inquiryDefinition-parentBean" />
+  <bean id="BatchCorrespondenceDetail-InquiryView" parent="BatchCorrespondenceDetail-InquiryView-parentBean"/>
+    <bean id="BatchCorrespondenceDetail-inquiryDefinition-parentBean" abstract="true" parent="InquiryDefinition">
+        <property name="title" value="Batch Correspondence Detail Id" />
+        <property name="inquirySections" >
+            <list>
+                <bean parent="InquirySectionDefinition">
+                    <property name="title" value=" Batch Correspondence Detail Id" />
+                    <property name="numberOfColumns" value="1" />
+                    <property name="inquiryFields" >
+                        <list>
+              <bean parent="FieldDefinition" p:attributeName="batchCorrespondenceDetailId" p:forceInquiry="true"/>
+              <bean parent="FieldDefinition" p:attributeName="batchCorrespondenceTypeCode"/>
+              <bean parent="FieldDefinition" p:attributeName="protoCorrespTypeCode"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="BatchCorrespondenceDetail-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView">
+    <property name="headerText" value="Batch Correspondence Detail Id"/>
+    <property name="dataObjectClassName" value="org.kuali.kra.irb.correspondence.BatchCorrespondenceDetail"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-GridSection">
+          <property name="headerText" value=" Batch Correspondence Detail Id"/>
+          <property name="layoutManager.numberOfColumns" value="2"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="batchCorrespondenceDetailId" parent="Uif-DataField"/>
+              <bean p:propertyName="batchCorrespondenceTypeCode" parent="Uif-DataField"/>
+              <bean p:propertyName="protoCorrespTypeCode" parent="Uif-DataField"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Business Object Lookup Definition -->
+    <bean id="BatchCorrespondenceDetail-lookupDefinition" parent="BatchCorrespondenceDetail-lookupDefinition-parentBean" />
+  <bean id="BatchCorrespondenceDetail-LookupView" parent="BatchCorrespondenceDetail-LookupView-parentBean"/>
+    <bean id="BatchCorrespondenceDetail-lookupDefinition-parentBean" abstract="true" parent="LookupDefinition">
+        <property name="title" value=" Batch Correspondence Detail Lookup" /><property name="defaultSort" >
+      <bean parent="SortDefinition"/>
+        </property>
+        <property name="lookupFields" >
+            <list>
+        <bean parent="FieldDefinition" p:attributeName="batchCorrespondenceDetailId" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="batchCorrespondenceTypeCode"/>
+        <bean parent="FieldDefinition" p:attributeName="protoCorrespTypeCode"/>
+            </list>
+        </property>
+        <property name="resultFields" >
+            <list>
+        <bean parent="FieldDefinition" p:attributeName="batchCorrespondenceDetailId" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="batchCorrespondenceTypeCode"/>
+        <bean parent="FieldDefinition" p:attributeName="protoCorrespTypeCode"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="BatchCorrespondenceDetail-LookupView-parentBean" abstract="true" parent="Uif-LookupView">
+    <property name="dataObjectClassName" value="org.kuali.kra.irb.correspondence.BatchCorrespondenceDetail"/>
+    <property name="headerText" value=" Batch Correspondence Detail Lookup"/>
+    <property name="criteriaFields">
+      <list>
+        <bean p:propertyName="batchCorrespondenceDetailId" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="batchCorrespondenceTypeCode" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="protoCorrespTypeCode" parent="Uif-LookupCriteriaInputField"/>
+      </list>
+    </property>
+    <property name="resultFields">
+      <list>
+        <bean p:propertyName="batchCorrespondenceDetailId" parent="Uif-DataField"/>
+        <bean p:propertyName="batchCorrespondenceTypeCode" parent="Uif-DataField"/>
+        <bean p:propertyName="protoCorrespTypeCode" parent="Uif-DataField"/>
+      </list>
+    </property>
+  </bean>
+
+</beans>

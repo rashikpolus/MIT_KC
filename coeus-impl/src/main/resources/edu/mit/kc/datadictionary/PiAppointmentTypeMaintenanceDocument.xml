@@ -1,0 +1,47 @@
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+    <bean id="PiAppointmentTypeMaintenanceDocument" parent="uifMaintenanceDocumentEntry"
+        p:dataObjectClass="edu.mit.kc.bo.PiAppointmentType"
+        p:businessRulesClass="edu.mit.kc.bo.PiAppointmentType"
+        p:documentTypeName="PiAppointmentTypeMaintenanceDocument"/>
+    
+     <bean id="PiAppointmentType-MaintenanceView" parent="Uif-MaintenanceView"
+          p:headerText="PI Appointment Type Maintenance"
+          p:title="PI Appointment Type Maintenance"
+          p:dataObjectClassName="edu.mit.kc.bo.PiAppointmentType">
+        <property name="items">
+        <list merge="true">             
+         <bean parent="Uif-MaintenanceGridSection" p:headerText="PI Appointment Type">
+          <property name="items">
+	          <list>
+	         <bean parent="Uif-InputField" p:propertyName="typeCode" p:required="true"/>
+	         <bean parent="Uif-InputField" p:propertyName="description" p:required="true" p:order="30"/>
+	          </list>
+          </property>
+         </bean>
+        </list>
+        </property>
+    </bean> 
+</beans>

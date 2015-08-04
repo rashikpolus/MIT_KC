@@ -1,0 +1,166 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+       
+  
+   
+	<bean id="Award-lookupDefinition" parent="MIT-Award-lookupDefinition-parentBean" />
+	<bean id="MIT-Award-lookupDefinition-parentBean" parent="MIT2-Award-lookupDefinition-parentBean">
+		<property name="resultSetLimit" value="1500" />
+	</bean>
+
+	<bean id="AwardReportTerm-lookupDefinition" parent="MIT-AwardReportTerm-lookupDefinition-parentBean" />
+	<bean id="MIT-AwardReportTerm-lookupDefinition-parentBean" parent="AwardReportTerm-lookupDefinition-parentBean">
+		<property name="resultSetLimit" value="500" />
+	</bean>
+
+	<bean id="AwardReportTermRecipient-lookupDefinition"
+		parent="MIT-AwardReportTermRecipient-lookupDefinition-parentBean" />
+	<bean id="MIT-AwardReportTermRecipient-lookupDefinition-parentBean"
+		parent="AwardReportTermRecipient-lookupDefinition-parentBean">
+		<property name="resultSetLimit" value="500" />
+	</bean>
+
+	<bean id="AwardTemplate-lookupDefinition" parent="MIT-AwardTemplate-lookupDefinition-parentBean" />
+	<bean id="MIT-AwardTemplate-lookupDefinition-parentBean" parent="AwardTemplate-lookupDefinition-parentBean">
+		<property name="resultSetLimit" value="500" />
+	</bean>
+
+	<bean id="Budget-lookupDefinition" parent="MIT-Budget-lookupDefinition-parentBean" />
+	<bean id="MIT-Budget-lookupDefinition-parentBean" parent="Budget-lookupDefinition-parentBean">
+		<property name="resultSetLimit" value="500" />
+	</bean>
+
+	<bean id="MIT-DevelopmentProposal-lookupDefinition-parentBean"
+		parent="DevelopmentProposal-lookupDefinition-parentBean">
+		<property name="resultSetLimit" value="700" />
+	</bean>
+
+	<bean id="DisclosurePerson-lookupDefinition" parent="MIT-DisclosurePerson-lookupDefinition-parentBean" />
+	<bean id="MIT-DisclosurePerson-lookupDefinition-parentBean"
+		parent="DisclosurePerson-lookupDefinition-parentBean">
+		<property name="resultSetLimit" value="500" />
+	</bean>
+
+	<bean id="DisclosurePersonUnit-lookupDefinition" parent="MIT-DisclosurePersonUnit-lookupDefinition-parentBean" />
+	<bean id="MIT-DisclosurePersonUnit-lookupDefinition-parentBean"
+		parent="DisclosurePersonUnit-lookupDefinition-parentBean">
+		<property name="resultSetLimit" value="500" />
+	</bean>
+
+	<bean id="IacucProtocol-lookupDefinition" parent="MIT-IacucProtocol-lookupDefinition-parentBean" />
+	<bean id="MIT-IacucProtocol-lookupDefinition-parentBean" parent="IacucProtocol-lookupDefinition-parentBean">
+		<property name="resultSetLimit" value="500" />
+	</bean>
+
+	<bean id="IacucProtocolSubmission-lookupDefinition" parent="MIT-IacucProtocolSubmission-lookupDefinition-parentBean" />
+	<bean id="MIT-IacucProtocolSubmission-lookupDefinition-parentBean"
+		parent="IacucProtocolSubmission-lookupDefinition-parentBean">
+		<property name="resultSetLimit" value="500" />
+	</bean>
+
+	<bean id="InstitutionalProposal-lookupDefinition" parent="MIT-InstitutionalProposal-lookupDefinition-parentBean" />
+	<bean id="MIT-InstitutionalProposal-lookupDefinition-parentBean"
+		parent="InstitutionalProposal-lookupDefinition-parentBean">
+		<property name="resultSetLimit" value="600" />
+	</bean>
+
+	<bean id="InstitutionalProposalLog-lookupDefinition"
+		parent="MIT-InstitutionalProposalLog-lookupDefinition-parentBean" />
+	<bean id="MIT-InstitutionalProposalLog-lookupDefinition-parentBean"
+		parent="InstitutionalProposalLog-lookupDefinition-parentBean">
+		<property name="resultSetLimit" value="500" />
+	</bean>
+
+	<bean id="KcPerson-lookupDefinition" parent="MIT-KcPerson-lookupDefinition-parentBean" />
+	<bean id="MIT-KcPerson-lookupDefinition-parentBean" parent="KcPerson-lookupDefinition-parentBean">
+		<property name="resultSetLimit" value="500" />
+	</bean>
+
+	<bean id="LookupableDevelopmentProposal-lookupDefinition"
+		parent="MIT-LookupableDevelopmentProposal-lookupDefinition-parentBean" />
+	<bean id="MIT-LookupableDevelopmentProposal-lookupDefinition-parentBean"
+		parent="LookupableDevelopmentProposal-lookupDefinition-parentBean">
+		<property name="resultSetLimit" value="500" />
+	</bean>
+
+	<bean id="NegotiationStatus-lookupDefinition" parent="MIT-NegotiationStatus-lookupDefinition-parentBean" />
+	<bean id="MIT-NegotiationStatus-lookupDefinition-parentBean"
+		parent="NegotiationStatus-lookupDefinition-parentBean">
+		<property name="resultSetLimit" value="500" />
+	</bean>
+
+	<bean id="PersonDegree-lookupDefinition" parent="MIT-PersonDegree-lookupDefinition-parentBean" />
+	<bean id="MIT-PersonDegree-lookupDefinition-parentBean" parent="PersonDegree-lookupDefinition-parentBean">
+		<property name="resultSetLimit" value="500" />
+	</bean>
+
+	<bean id="Protocol-lookupDefinition" parent="MIT-Protocol-lookupDefinition-parentBean" />
+	<bean id="MIT-Protocol-lookupDefinition-parentBean"
+		parent="Protocol-lookupDefinition-parentBean">
+		<property name="resultSetLimit" value="100" />
+	</bean>
+
+	<bean id="ProtocolPerson-lookupDefinition" parent="MIT-ProtocolPerson-lookupDefinition-parentBean" />
+	<bean id="MIT-ProtocolPerson-lookupDefinition-parentBean" parent="ProtocolPerson-lookupDefinition-parentBean">
+		<property name="resultSetLimit" value="500" />
+	</bean>
+
+	<bean id="ProtocolSubmission-lookupDefinition" parent="MIT-ProtocolSubmission-lookupDefinition-parentBean" />
+	<bean id="MIT-ProtocolSubmission-lookupDefinition-parentBean"
+		parent="ProtocolSubmission-lookupDefinition-parentBean">
+		<property name="resultSetLimit" value="500" />
+	</bean>
+
+	<bean id="Question-lookupDefinition" parent="MIT-Question-lookupDefinition-parentBean" />
+	<bean id="MIT-Question-lookupDefinition-parentBean" parent="Question-lookupDefinition-parentBean">
+		<property name="resultSetLimit" value="500" />
+	</bean>
+
+	<bean id="Report-lookupDefinition" parent="MIT-Report-lookupDefinition-parentBean" />
+	<bean id="MIT-Report-lookupDefinition-parentBean" parent="Report-lookupDefinition-parentBean">
+		<property name="resultSetLimit" value="500" />
+	</bean>
+
+	<bean id="SpecialReview-lookupDefinition" parent="MIT-SpecialReview-lookupDefinition-parentBean" />
+	<bean id="MIT-SpecialReview-lookupDefinition-parentBean" parent="SpecialReview-lookupDefinition-parentBean">
+		<property name="resultSetLimit" value="500" />
+	</bean>
+
+	<bean id="Sponsor-lookupDefinition" parent="MIT-Sponsor-lookupDefinition-parentBean" />
+	<bean id="MIT-Sponsor-lookupDefinition-parentBean" parent="Sponsor-lookupDefinition-parentBean">
+		<property name="resultSetLimit" value="500" />
+	</bean>
+
+	<bean id="SubAward-lookupDefinition" parent="MIT-SubAward-lookupDefinition-parentBean" />
+	<bean id="MIT-SubAward-lookupDefinition-parentBean" parent="SubAward-lookupDefinition-parentBean">
+		<property name="resultSetLimit" value="500" />
+	</bean>
+
+	<bean id="SubAwardContact-lookupDefinition" parent="MIT-SubAwardContact-lookupDefinition-parentBean" />
+	<bean id="MIT-SubAwardContact-lookupDefinition-parentBean" parent="SubAwardContact-lookupDefinition-parentBean">
+		<property name="resultSetLimit" value="500" />
+	</bean>
+
+	 <bean id="Unit-lookupDefinition" parent="MIT-Unit-lookupDefinition-parentBean" />
+	<!-- MITKC-140 start -->
+	<bean id="MIT-Unit-lookupDefinition-parentBean" parent="MIT2-Unit-lookupDefinition-parentBean">
+		<property name="resultSetLimit" value="1500" />
+		
+	</bean>
+
+  <bean id="InstituteRate-lookupDefinition" parent="MIT-InstituteRate-lookupDefinition-parentBean" />
+  <bean id="MIT-InstituteRate-lookupDefinition-parentBean" parent="InstituteRate-lookupDefinition-parentBean">
+  <property name="resultSetLimit" value="1000" />
+  </bean>
+
+  
+  <bean id="DevelopmentProposal-LookupView" parent="MIT-DevelopmentProposal-LookupView-parentBean" /> 
+  <bean id="MIT-DevelopmentProposal-LookupView-parentBean" abstract="true" parent="DevelopmentProposal-LookupView-parentBean" p:resultSetLimit="500" />
+	
+  <bean id="DevelopmentProposals-LookupViewId" parent="MIT-DevelopmentProposal-LookupView-parentBean"
+   p:viewName="DevelopmentProposals-LookupViewName" p:headerText="Development Proposal Lookup"/>
+  
+  
+</beans>

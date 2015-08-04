@@ -1,0 +1,6 @@
+set define off
+@dml/KC_DML_01_KRACOEUS-8417_B000.sql
+@dml/KR_DML_01_KRACOEUS-7492_B000.sql
+@dml/KR_DML_01_KRACOEUS-8380_B000.sql
+@dml/KR_DML_03_KRACOEUS-7014_B000.sql
+commit;

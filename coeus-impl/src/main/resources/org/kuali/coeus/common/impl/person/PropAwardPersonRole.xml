@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans.xsd">
+  <bean id="PropAwardPersonRole" parent="PropAwardPersonRole-parentBean" />
+  <bean id="PropAwardPersonRole-parentBean" abstract="true" parent="BusinessObjectEntry">
+    <property name="businessObjectClass" value="org.kuali.coeus.common.framework.person.PropAwardPersonRole" />
+		<property name="objectLabel" value="Proposal Person Role" />
+    <property name="inquiryDefinition" >
+      <ref bean="PropAwardPersonRole-inquiryDefinition" />
+    </property>
+    <property name="lookupDefinition" >
+      <ref bean="PropAwardPersonRole-lookupDefinition" />
+    </property>
+    <property name="titleAttribute" value="code" />
+    <property name="attributes" >
+      <list>
+        <ref bean="PropAwardPersonRole-id" />
+        <ref bean="PropAwardPersonRole-code"/>
+        <ref bean="PropAwardPersonRole-description" />
+        <ref bean="PropAwardPersonRole-versionNumber" />
+        <ref bean="PropAwardPersonRole-readOnly" />
+        <ref bean="PropAwardPersonRole-certificationRequired" />
+        <ref bean="PropAwardPersonRole-sponsorHierarchyName" />
+        <ref bean="PropAwardPersonRole-unitDetailsRequired" />
+      </list>
+    </property>
+  </bean>
+
+<!-- Attribute Definitions -->
+
+
+  <bean id="PropAwardPersonRole-id" parent="PropAwardPersonRole-id-parentBean" />
+
+  <bean id="PropAwardPersonRole-id-parentBean" abstract="true" parent="AttributeReferenceDummy-genericSystemId">
+    <property name="name" value="id" />
+    <property name="maxLength" value="12"/>
+    <property name="validationPattern" >
+      <bean parent="NumericValidationPattern" />
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+    <property name="label" value="Proposal Person Role Id" />
+    <property name="shortLabel" value="Prop Per Role Id" />
+    <property name="summary" value="Proposal Person Role Id" />
+    <property name="description" value="Proposal Person Role Id" />
+  </bean>
+  <bean id="PropAwardPersonRole-code" parent="PropAwardPersonRole-code-parentBean"/>
+  <bean id="PropAwardPersonRole-code-parentBean" abstract="true" parent="AttributeReferenceDummy-genericSystemId">
+    <property name="name" value="code" />
+    <property name="maxLength" value="12"/>
+    <property name="label" value="Proposal Person Role Id" />
+    <property name="shortLabel" value="Prop Per Role Id" />
+    <property name="summary" value="Proposal Person Role Id" />
+    <property name="description" value="Proposal Person Role Id" />
+  </bean>
+
+
+  <bean id="PropAwardPersonRole-description" parent="PropAwardPersonRole-description-parentBean"/>
+  <bean id="PropAwardPersonRole-description-parentBean" abstract="true" parent="KraAttributeReferenceDummy-description"
+        p:maxLength="25">
+      <property name="controlField">
+          <bean p:size="25" parent="Uif-TextControl"/>
+      </property>
+  </bean>
+
+  <bean id="PropAwardPersonRole-versionNumber" parent="PropAwardPersonRole-versionNumber-parentBean" />
+  <bean id="PropAwardPersonRole-versionNumber-parentBean" abstract="true" parent="AttributeReferenceDummy-versionNumber"/>
+
+  <bean id="PropAwardPersonRole-certificationRequired" parent="PropAwardPersonRole-certificationRequired-parentBean" />
+  <bean id="PropAwardPersonRole-certificationRequired-parentBean" abstract="true" parent="AttributeReferenceDummy-genericBoolean"
+        p:name="certificationRequired"
+        p:label="Certification Required"
+        p:shortLabel="Certification Required"
+        p:summary="Certification Required"
+        p:description="Certification Required" />
+
+    <bean id="PropAwardPersonRole-readOnly" parent="PropAwardPersonRole-readOnly-parentBean" />
+    <bean id="PropAwardPersonRole-readOnly-parentBean" abstract="true" parent="AttributeReferenceDummy-genericBoolean"
+          p:name="readOnly"
+          p:label="Read Only"
+          p:shortLabel="Read Only"
+          p:summary="Read Only"
+          p:description="Read Only" />
+
+    <bean id="PropAwardPersonRole-unitDetailsRequired" parent="PropAwardPersonRole-unitDetailsRequired-parentBean" />
+    <bean id="PropAwardPersonRole-unitDetailsRequired-parentBean" abstract="true" parent="AttributeReferenceDummy-genericBoolean"
+          p:name="unitDetailsRequired"
+          p:label="Unit Details Required"
+          p:shortLabel="Unit Details Required"
+          p:summary="Unit Details Required"
+          p:description="Unit Details Required" />
+
+    <bean id="PropAwardPersonRole-sponsorHierarchyName" parent="PropAwardPersonRole-sponsorHierarchyName-parentBean"/>
+    <bean id="PropAwardPersonRole-sponsorHierarchyName-parentBean" abstract="true" parent="AttributeDefinition"
+        p:name="sponsorHierarchyName"
+        p:forceUppercase="false"
+        p:label="Sponsor Hierarchy Name"
+        p:shortLabel="Sponsor Hierarchy Name"
+        p:summary="Sponsor Hierarchy Name"
+        p:description="Sponsor Hierarchy Name"
+        p:maxLength="50">
+        <property name="control" >
+            <bean parent="TextControlDefinition" p:size="50"/>
+        </property>
+        <property name="controlField">
+            <bean p:size="50" parent="Uif-TextControl"/>
+        </property>
+    </bean>
+<!-- Business Object Inquiry Definition -->
+  <bean id="PropAwardPersonRole-inquiryDefinition" parent="PropAwardPersonRole-inquiryDefinition-parentBean" />
+  <bean id="PropAwardPersonRole-InquiryView" parent="PropAwardPersonRole-InquiryView-parentBean"/>
+  <bean id="PropAwardPersonRole-inquiryDefinition-parentBean" abstract="true" parent="InquiryDefinition">
+    <property name="title" value="Proposal Person Role" />
+    <property name="inquirySections" >
+      <list>
+        <bean parent="InquirySectionDefinition">
+          <property name="title" value="Proposal Person Role" />
+          <property name="numberOfColumns" value="1" />
+          <property name="inquiryFields" >
+            <list>
+              <bean parent="FieldDefinition" p:attributeName="id" p:forceInquiry="true"/>
+              <bean parent="FieldDefinition" p:attributeName="description"/>
+              <bean parent="FieldDefinition" p:attributeName="certificationRequired"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+    <bean id="PropAwardPersonRole-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView"
+          p:headerText="Proposal Person Role"
+          p:dataObjectClassName="org.kuali.coeus.common.framework.person.PropAwardPersonRole">
+        <property name="items">
+            <list>
+                <bean parent="Uif-Disclosure-GridSection"
+                      p:headerText="Proposal Person Role"
+                      p:layoutManager.numberOfColumns="2">
+                    <property name="items">
+                        <list>
+                            <bean p:propertyName="code" parent="Uif-DataField" p:order="10" />
+                            <bean p:propertyName="description" parent="Uif-DataField" p:order="20" />
+                            <bean p:propertyName="sponsorHierarchyName" parent="Uif-DataField" p:order="30" />
+                            <bean p:propertyName="readOnly" parent="Uif-DataField" p:order="40" />
+                            <bean p:propertyName="certificationRequired" parent="Uif-DataField" p:order="50" />
+                            <bean p:propertyName="unitDetailsRequired" parent="Uif-DataField" p:order="60" />
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+  <!-- Business Object Lookup Definition -->
+  <bean id="PropAwardPersonRole-lookupDefinition" parent="PropAwardPersonRole-lookupDefinition-parentBean" />
+  <bean id="PropAwardPersonRole-LookupView" parent="PropAwardPersonRole-LookupView-parentBean"/>
+  <bean id="PropAwardPersonRole-lookupDefinition-parentBean" abstract="true" parent="LookupDefinition">
+    <property name="title" value="Proposal Person Role" /><property name="defaultSort" >
+      <bean parent="SortDefinition"/>
+    </property>
+    <property name="lookupFields" >
+      <list>
+        <bean parent="FieldDefinition" p:attributeName="id"/>
+      </list>
+    </property>
+    <property name="resultFields" >
+      <list>
+        <bean parent="FieldDefinition" p:attributeName="id" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="description"/>
+        <bean parent="FieldDefinition" p:attributeName="certificationRequired"/>
+      </list>
+    </property>
+  </bean>
+
+    <bean id="PropAwardPersonRole-LookupView-parentBean" abstract="true" parent="Uif-LookupView"
+          p:viewName="PropAwardPersonRole-LookupViewName"
+          p:dataObjectClassName="org.kuali.coeus.common.framework.person.PropAwardPersonRole"
+          p:headerText="Proposal Person Role">
+        <property name="criteriaFields">
+            <list>
+                <bean p:propertyName="code" parent="Uif-LookupCriteriaInputField" p:order="10" />
+                <bean p:propertyName="description" parent="Uif-LookupCriteriaInputField" p:order="20" />
+                <bean p:propertyName="sponsorHierarchyName" parent="Uif-LookupCriteriaInputField" p:order="30" />
+                <bean p:propertyName="readOnly" parent="Uif-LookupCriteriaInputField" p:order="40" />
+                <bean p:propertyName="certificationRequired" parent="Uif-LookupCriteriaInputField" p:order="50" />
+                <bean p:propertyName="unitDetailsRequired" parent="Uif-LookupCriteriaInputField" p:order="60" />
+            </list>
+        </property>
+        <property name="resultFields">
+            <list>
+                <bean p:propertyName="code" parent="Uif-DataField" p:order="10" />
+                <bean p:propertyName="description" parent="Uif-DataField" p:order="20" />
+                <bean p:propertyName="sponsorHierarchyName" parent="Uif-DataField" p:order="30" />
+                <bean p:propertyName="readOnly" parent="Uif-DataField" p:order="40" />
+                <bean p:propertyName="certificationRequired" parent="Uif-DataField" p:order="50" />
+                <bean p:propertyName="unitDetailsRequired" parent="Uif-DataField" p:order="60" />
+            </list>
+        </property>
+    </bean>
+</beans>

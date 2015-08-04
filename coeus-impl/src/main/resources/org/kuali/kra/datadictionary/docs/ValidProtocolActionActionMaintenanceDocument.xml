@@ -1,0 +1,77 @@
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+    <bean id="ValidProtocolActionActionMaintenanceDocument" parent="ValidProtocolActionActionMaintenanceDocument-parentBean" />
+    <bean id="ValidProtocolActionActionMaintenanceDocument-parentBean" abstract="true" parent="KcMaintenanceDocumentEntry">
+        <property name="businessObjectClass" value="org.kuali.kra.irb.actions.submit.ValidProtocolActionAction" />
+        <property name="maintainableClass" value="org.kuali.kra.maintenance.KraMaintainableImpl" />
+        <property name="maintainableSections" >
+            <list>
+                <ref bean="ValidProtocolActionActionMaintenanceDocument-EditValidProtoSubRevType" />
+            </list>
+        </property>
+        <property name="lockingKeys" >
+            <list>
+                <value>validProtocolActionActionId</value>
+            </list>
+        </property>
+        <property name="allowsRecordDeletion" value="true" />
+        <property name="documentTypeName" value="ValidProtocolActionActionMaintenanceDocument" />
+        <property name="businessRulesClass" value="org.kuali.kra.irb.actions.submit.ValidProtocolActionActionMaintenanceDocumentRule"/>
+        <property name="documentAuthorizerClass" value="org.kuali.rice.kns.document.authorization.MaintenanceDocumentAuthorizerBase" />
+    </bean>
+
+    <!-- Maintenance Section Definitions -->
+    
+    <bean id="ValidProtocolActionActionMaintenanceDocument-EditValidProtoSubRevType" parent="ValidProtocolActionActionMaintenanceDocument-EditValidProtoSubRevType-parentBean" />
+    <bean id="ValidProtocolActionActionMaintenanceDocument-EditValidProtoSubRevType-parentBean" abstract="true" parent="MaintainableSectionDefinition">
+        <property name="id" value="Edit Protocol Follow-up Actions" />
+        <property name="title" value="Edit Protocol Follow-up Actions" />
+        <property name="maintainableItems" >
+            <list>
+                <bean parent="MaintainableFieldDefinition"
+                    p:name="validProtocolActionActionId"
+                    p:required="true" />
+                <bean parent="MaintainableFieldDefinition"
+                    p:name="protocolActionTypeCode"
+                    p:required="true" />
+                <bean parent="MaintainableFieldDefinition"
+                    p:name="motionTypeCode"
+                    p:required="true" />
+                <bean parent="MaintainableFieldDefinition"
+                    p:name="actionNumber"
+                    p:required="true" />    
+ 	            <bean parent="MaintainableFieldDefinition"
+                    p:name="followupActionCode"
+                    p:required="true" />    
+   				<bean parent="MaintainableFieldDefinition"
+                    p:name="userPromptFlag"
+                    p:required="false" />  
+                <bean parent="MaintainableFieldDefinition"
+                    p:name="userPrompt"
+                    p:required="false" />
+            </list>
+        </property>
+    </bean>
+</beans>

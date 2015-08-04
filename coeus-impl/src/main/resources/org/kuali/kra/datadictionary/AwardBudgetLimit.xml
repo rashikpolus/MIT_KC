@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="AwardBudgetLimit" parent="AwardBudgetLimit-parentBean" />
+    <bean id="AwardBudgetLimit-parentBean" abstract="true" parent="BusinessObjectEntry">
+        <property name="businessObjectClass" value="org.kuali.kra.award.budget.AwardBudgetLimit" />
+		<property name="objectLabel" value="Award Budget Limit" />
+        <property name="titleAttribute" value="limitTypeCode" />
+        <property name="attributes" >
+            <list>
+                <ref bean="AwardBudgetLimit-budgetLimitId" />
+                <ref bean="AwardBudgetLimit-limitTypeCode" />
+                <ref bean="AwardBudgetLimit-limit" />
+                <ref bean="AwardBudgetLimit-versionNumber" />
+            </list>
+        </property>
+    </bean>
+
+    <!-- Attribute Definitions -->
+    <bean id="AwardBudgetLimit-budgetLimitId" parent="AwardBudgetLimit-budgetLimitId-parentBean" />
+    <bean id="AwardBudgetLimit-budgetLimitId-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="budgetLimitId" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Award Budget Limit Id" />
+        <property name="shortLabel" value="Award Budget Limit Id" />
+        <property name="maxLength" value="22" />
+        <property name="validationPattern" >
+      		<bean parent="NumericValidationPattern" />	            
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+        <property name="control" >
+      <bean parent="TextControlDefinition" p:size="12"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="12" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="Award Budget Limit Id" />
+        <property name="description" value="Award Budget Limit Id" />
+    </bean>
+
+    <bean id="AwardBudgetLimit-limitTypeCode" parent="AwardBudgetLimit-limitTypeCode-parentBean" />
+    <bean id="AwardBudgetLimit-limitTypeCode-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="limitTypeCode" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Budget Limit Type Code" />
+        <property name="shortLabel" value="Budget Limit Type Code" />
+        <property name="maxLength" value="100" />
+        <property name="validationPattern">
+      <bean parent="AnyCharacterValidationPattern" p:allowWhitespace="false"/>
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AnyCharacterPatternConstraint">
+        <property name="allowWhitespace" value="false"/>
+      </bean>
+    	</property>
+    	<property name="control" >
+      <bean parent="TextControlDefinition" p:size="12"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="12" parent="Uif-TextControl"/>
+        </property>
+        <property name="required" value="true" />
+        <property name="summary" value="Budget Limit Type Code" />
+        <property name="description" value="Budget Limit Type Code" />
+    </bean>
+
+    <bean id="AwardBudgetLimit-limit" parent="AwardBudgetLimit-limit-parentBean" />
+    <bean id="AwardBudgetLimit-limit-parentBean" abstract="true" parent="KraAttributeReferenceDummy-genericAmount" >
+        <property name="name" value="limit" />
+        <property name="label" value="Budget Limit" />
+        <property name="shortLabel" value="Budget Limit" />
+        <property name="summary" value="Budget Limit" />
+        <property name="description" value="Budget Limit" />
+    </bean>
+
+    <bean id="AwardBudgetLimit-versionNumber" parent="AwardBudgetLimit-versionNumber-parentBean" />
+  <bean id="AwardBudgetLimit-versionNumber-parentBean" abstract="true" parent="AttributeReferenceDummy-versionNumber"/>
+</beans>

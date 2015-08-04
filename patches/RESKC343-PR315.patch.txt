@@ -1,0 +1,23 @@
+From 5fa5fff9f459bff9db49cdc183685bef9fdca608 Mon Sep 17 00:00:00 2001
+From: blackcathacker <douglas.pace@gmail.com>
+Date: Wed, 29 Apr 2015 14:11:21 -0700
+Subject: [PATCH] RESKC-343:Set bounds on DevelopmentProposal lookups
+
+When tested originally we were able to repo a outofmemory error and the search taking a LONG time. By setting bounds on the search always the search returns rather quickly. Further work needs to be done to resolve problems when a user has limited access to proposals as none may returned as the first 20 returned don't include any they have permission on.
+---
+ .../coeus/propdev/impl/core/PropDevLookupableHelperServiceImpl.java     | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/PropDevLookupableHelperServiceImpl.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/PropDevLookupableHelperServiceImpl.java
+index d48bdb7..ab66eec 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/PropDevLookupableHelperServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/PropDevLookupableHelperServiceImpl.java
+@@ -120,7 +120,7 @@
+ 
+         QueryByCriteria.Builder query = lookupCriteriaGenerator.generateCriteria(DevelopmentProposal.class, modifiedSearchCriteria,
+                 wildcardAsLiteralSearchCriteria, getLookupService().allPrimaryKeyValuesPresentAndNotWildcard(DevelopmentProposal.class, modifiedSearchCriteria));
+-        if (!bounded && searchResultsLimit != null) {
++        if (searchResultsLimit != null) {
+             query.setMaxResults(searchResultsLimit);
+         }
+         if (StringUtils.isBlank(adjustedSearchCriteria.get("proposalNumber"))

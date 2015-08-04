@@ -1,0 +1,130 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Wed Jan 28 12:38:48 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+33581 rows deleted.
+
+
+31 rows deleted.
+
+
+0 rows deleted.
+
+
+Table truncated.
+
+
+Table created.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+Table dropped.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Commit complete.
+
+INSERT INTO PROPOSAL_ATTACHMENT_TYPE(
+            *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+
+Commit complete.
+
+
+Table created.
+
+li_prp_att_data_id  proposal_attachments_data.proposal_attachments_data_id%type;
+                    *
+ERROR at line 5:
+ORA-06550: line 5, column 21:
+PLS-00201: identifier 'PROPOSAL_ATTACHMENTS_DATA.PROPOSAL_ATTACHMENTS_DATA_ID'
+must be declared
+ORA-06550: line 5, column 21:
+PL/SQL: Item ignored
+ORA-06550: line 40, column 5:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 40, column 5:
+PL/SQL: Statement ignored
+ORA-06550: line 42, column 17:
+PL/SQL: ORA-00942: table or view does not exist
+ORA-06550: line 42, column 5:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 71, column 17:
+PL/SQL: ORA-00942: table or view does not exist
+ORA-06550: line 71, column 5:
+PL/SQL: SQL Statement ignored
+
+
+
+Commit complete.
+
+SP2-0734: unknown command beginning "﻿set ser..." - rest of line ignored.
+
+PL/SQL procedure successfully completed.
+
+
+1 row deleted.
+
+declare
+*
+ERROR at line 1:
+ORA-01400: cannot insert NULL into ("KCSO"."KRIM_ROLE_PERM_T"."PERM_ID")
+ORA-06512: at line 12
+
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

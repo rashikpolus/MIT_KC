@@ -1,0 +1,25 @@
+From 1dc3d17a33b45c5f7d96f58a5470a7c27f30b6f3 Mon Sep 17 00:00:00 2001
+From: Gayathri <gathreya@email.arizona.edu>
+Date: Tue, 26 May 2015 13:03:37 -0700
+Subject: [PATCH] RESKC-483: Fixing award copy 1. Created award with all
+ required fields to submit. 2. Open T&M and add money, route. 3. Open award,
+ create budget for the obligated amnt in award. 4. Route, approve and post
+ budget. 5. Open award hierarchy actions, copy new. 6. Open new award,
+ navigate to budget versions, notice the budget has been copied over
+
+---
+ .../org/kuali/kra/award/awardhierarchy/AwardHierarchyServiceImpl.java    | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/award/awardhierarchy/AwardHierarchyServiceImpl.java b/coeus-impl/src/main/java/org/kuali/kra/award/awardhierarchy/AwardHierarchyServiceImpl.java
+index e9583c1..907591a 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/award/awardhierarchy/AwardHierarchyServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/award/awardhierarchy/AwardHierarchyServiceImpl.java
+@@ -378,6 +378,7 @@ Award copyAward(Award award, String nextAwardNumber) {
+             restoreOriginalAwardPropertiesAfterCopy(award, originalAwardNumber, originalSequenceNumber);
+             award.setAwardDocument(document);
+             copyAwardAmountDateInfo(award, newAward);
++            award.setBudgets(new ArrayList<>());
+ 
+             List<AwardSpecialReview> awardSpecialReviews = new ArrayList<AwardSpecialReview>();
+             newAward.setSpecialReviews(awardSpecialReviews);

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean id="AwardSponsorTerm" parent="AwardSponsorTerm-parentBean" />
+	<bean id="AwardSponsorTerm-parentBean" abstract="true" parent="BusinessObjectEntry">
+		<property name="businessObjectClass" value="org.kuali.kra.award.home.AwardSponsorTerm" />
+		<property name="objectLabel" value="Award Sponsor Term" />
+		<property name="inquiryDefinition" >
+			<ref bean="AwardSponsorTerm-inquiryDefinition" />
+		</property>
+		<property name="lookupDefinition" >
+			<ref bean="AwardSponsorTerm-lookupDefinition" />
+		</property>
+		<property name="titleAttribute" value="awardSponsorTermId" />
+		<property name="attributes" >
+			<list>
+				<ref bean="AwardSponsorTerm-awardSponsorTermId" />
+				<ref bean="AwardSponsorTerm-sponsorTermId" />
+				<ref bean="AwardSponsorTerm-versionNumber" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- Attribute Definitions -->
+	<bean id="AwardSponsorTerm-awardSponsorTermId" parent="AwardSponsorTerm-awardSponsorTermId-parentBean" />
+	<bean id="AwardSponsorTerm-awardSponsorTermId-parentBean" abstract="true" parent="AttributeDefinition" >
+		<property name="name" value="awardSponsorTermId" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="Award Sponsor Term Id" />
+		<property name="shortLabel" value="Award Sponsor Term Id" />
+		<property name="maxLength" value="22" />
+		<property name="validationPattern" >
+			<bean parent="NumericValidationPattern" />
+		</property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+		<property name="control" >
+      <bean parent="TextControlDefinition" p:size="10"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="10" parent="Uif-TextControl"/>
+		</property>
+		<property name="summary" value="Award Sponsor Term Id" />
+		<property name="description" value="Award Sponsor Term Id" />
+	</bean>
+
+	<bean id="AwardSponsorTerm-sponsorTermId" parent="AwardSponsorTerm-sponsorTermId-parentBean" />
+	<bean id="AwardSponsorTerm-sponsorTermId-parentBean" abstract="true" parent="AttributeDefinition" >
+		<property name="name" value="sponsorTermId" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="Code" />
+		<property name="shortLabel" value="Sponsor Term Id" />
+		<property name="maxLength" value="22" />
+		<property name="validationPattern" >
+			<bean parent="AlphaNumericValidationPattern" />
+		</property>
+    <property name="validCharactersConstraint">
+      <bean parent="AlphaNumericPatternConstraint"/>
+    </property>
+		<property name="control" >
+      <bean parent="TextControlDefinition" p:size="10"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="10" parent="Uif-TextControl"/>
+		</property>
+		<property name="summary" value="Sponsor Term Id" />
+		<property name="description" value="Sponsor Term Id" />
+	</bean>
+
+	<bean id="AwardSponsorTerm-versionNumber" parent="AwardSponsorTerm-versionNumber-parentBean" />
+  <bean id="AwardSponsorTerm-versionNumber-parentBean" abstract="true" parent="AttributeReferenceDummy-versionNumber"/>
+	<!-- Business Object Inquiry Definition -->
+	<bean id="AwardSponsorTerm-inquiryDefinition" parent="AwardSponsorTerm-inquiryDefinition-parentBean" />
+  <bean id="AwardSponsorTerm-InquiryView" parent="AwardSponsorTerm-InquiryView-parentBean"/>
+	<bean id="AwardSponsorTerm-inquiryDefinition-parentBean" abstract="true" parent="InquiryDefinition">
+		<property name="title" value="Award Sponsor Term Id" />
+		<property name="inquirySections" >
+			<list>
+				<bean parent="InquirySectionDefinition">
+					<property name="title" value="Award Sponsor Term Id" />
+					<property name="numberOfColumns" value="1" />
+					<property name="inquiryFields" >
+						<list>
+              <bean parent="FieldDefinition" p:attributeName="awardSponsorTermId" p:forceInquiry="true"/>
+              <bean parent="FieldDefinition" p:attributeName="sponsorTermId"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="AwardSponsorTerm-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView">
+    <property name="headerText" value="Award Sponsor Term Id"/>
+    <property name="dataObjectClassName" value="org.kuali.kra.award.home.AwardSponsorTerm"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-GridSection">
+          <property name="headerText" value="Award Sponsor Term Id"/>
+          <property name="layoutManager.numberOfColumns" value="2"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="awardSponsorTermId" parent="Uif-DataField"/>
+              <bean p:propertyName="sponsorTermId" parent="Uif-DataField"/>
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<!-- Business Object Lookup Definition -->
+	<bean id="AwardSponsorTerm-lookupDefinition" parent="AwardSponsorTerm-lookupDefinition-parentBean" />
+  <bean id="AwardSponsorTerm-LookupView" parent="AwardSponsorTerm-LookupView-parentBean"/>
+	<bean id="AwardSponsorTerm-lookupDefinition-parentBean" abstract="true" parent="LookupDefinition">
+		<property name="title" value="Award Sponsor Term Lookup" /><property name="defaultSort" >
+      <bean parent="SortDefinition"/>
+		</property>
+		<property name="lookupFields" >
+			<list>
+        <bean parent="FieldDefinition" p:attributeName="awardSponsorTermId" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="sponsorTermId"/>
+			</list>
+		</property>
+		<property name="resultFields" >
+			<list>
+        <bean parent="FieldDefinition" p:attributeName="awardSponsorTermId" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="sponsorTermId"/>
+			</list>
+		</property>
+	</bean>
+
+  <bean id="AwardSponsorTerm-LookupView-parentBean" abstract="true" parent="Uif-LookupView">
+    <property name="dataObjectClassName" value="org.kuali.kra.award.home.AwardSponsorTerm"/>
+    <property name="headerText" value="Award Sponsor Term Lookup"/>
+    <property name="criteriaFields">
+      <list>
+        <bean p:propertyName="awardSponsorTermId" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="sponsorTermId" parent="Uif-LookupCriteriaInputField"/>
+      </list>
+    </property>
+    <property name="resultFields">
+      <list>
+        <bean p:propertyName="awardSponsorTermId" parent="Uif-DataField"/>
+        <bean p:propertyName="sponsorTermId" parent="Uif-DataField"/>
+      </list>
+    </property>
+  </bean>
+
+</beans>

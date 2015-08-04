@@ -1,0 +1,41 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Tue Feb 3 17:33:36 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+
+'RUNNINGKCCDMLSNAPSHOT'
+------------------------
+running kcc dml snapshot
+
+SP2-0734: unknown command beginning "DELIMITER ..." - rest of line ignored.
+
+Table altered.
+
+SP2-0042: unknown command "DELIMITER " - rest of line ignored.
+SP2-0734: unknown command beginning "DELIMITER ..." - rest of line ignored.
+
+Table altered.
+
+SP2-0042: unknown command "DELIMITER " - rest of line ignored.
+SP2-0734: unknown command beginning "DELIMITER ..." - rest of line ignored.
+
+Table altered.
+
+SP2-0042: unknown command "DELIMITER " - rest of line ignored.
+
+Commit complete.
+
+
+Commit complete.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

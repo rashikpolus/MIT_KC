@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx.xsd
+                           http://www.springframework.org/schema/util
+                           http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <tx:annotation-driven transaction-manager="transactionManager" />
+    <context:annotation-config />
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="properties" value="#{T(org.kuali.rice.core.api.config.property.ConfigContext).getCurrentContextConfig().getProperties()}" />
+    </bean>
+
+    <bean id="ccImporter" abstract="true" class="org.kuali.coeus.sys.framework.service.ConfigContextConfigObjectFactoryBean" p:singleton="true" p:mustExist="true" />
+
+    <bean id="dataSource" parent="ccImporter" p:objectName="datasource" />
+    <bean id="transactionManager" parent="ccImporter" p:objectName="KC_TRANSACTION_MANAGER" />
+
+    <bean id="subAwardModule" class="org.kuali.rice.krad.service.impl.ModuleServiceBase">
+        <property name="moduleConfiguration" ref="subAwardModuleConfiguration"/>
+        <property name="kualiModuleService" ref="kualiModuleService"/>
+    </bean>
+  	
+    <bean id="subAwardModuleConfiguration" parent="subAwardModuleConfiguration-parentBean" />
+    <bean id="subAwardModuleConfiguration-parentBean" class="org.kuali.rice.krad.bo.ModuleConfiguration" abstract="true">
+    	<property name="namespaceCode" value="KC-AWARD" />
+    	<property name="packagePrefixes">
+            <list>
+                <value>org.kuali.kra.subaward</value>
+            </list>
+        </property>
+		<property name="databaseRepositoryFilePaths">
+			<list>
+				<value>org/kuali/kra/subaward/repository-subAward.xml</value>				
+			</list>
+		</property>
+	</bean>
+	<bean id="dateTimeService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="dateTimeService" />
+    </bean>
+	
+    <bean id="businessObjectService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="businessObjectService" />
+    </bean>
+    
+    <bean id="businessObjectDictionaryService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="businessObjectDictionaryService" />
+    </bean>
+    
+    <bean id="businessObjectMetaDataService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="businessObjectMetaDataService" />
+    </bean>
+    
+    <bean id="dataDictionaryService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="dataDictionaryService" />
+    </bean>
+    
+    <bean id="documentService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="documentService" />
+    </bean>
+    
+    <bean id="encryptionService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="encryptionService" />
+    </bean>
+    
+    <bean id="kcAuthorizationService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="kcAuthorizationService" />
+    </bean>
+    
+    <bean id="kcPersonService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="kcPersonService" />
+    </bean>
+    
+    <bean id="kcWorkflowService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="kcWorkflowService" />
+    </bean>
+    
+    <bean id="kualiModuleService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="kualiModuleService" />
+    </bean>
+    
+    <bean id="lookupService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="lookupService" />
+    </bean>
+    
+    <bean id="lookupResultsService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="lookupResultsService" />
+    </bean>
+    
+    <bean id="parameterService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="parameterService" />
+    </bean>
+    
+    <bean id="persistenceStructureService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="persistenceStructureService" />
+    </bean>
+    
+    <bean id="persistenceStructureServiceOjb" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="persistenceStructureServiceOjb" />
+    </bean>
+    
+    <bean id="sequenceAccessorService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="sequenceAccessorService" />
+    </bean>
+    
+    <bean id="subAwardNotificationRoleQualifierService" class="org.kuali.kra.subaward.notification.SubAwardNotificationRoleQualifierServiceImpl" scope="prototype" />
+    
+    <bean id="unitAuthorizationService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="unitAuthorizationService" />
+    </bean>
+    
+    <bean id="versioningService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="versioningService" />
+    </bean>
+    
+    <bean id="versionHistoryService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="versionHistoryService" />
+    </bean>
+	
+    <bean id="parentLookupableHelperService" abstract="true">
+        <property name="persistenceStructureService" ref="persistenceStructureService" />
+        <property name="businessObjectDictionaryService" ref="businessObjectDictionaryService" />
+        <property name="dataDictionaryService" ref="dataDictionaryService" />
+        <property name="encryptionService" ref="encryptionService" />
+        <property name="lookupService" ref="lookupService" />
+        <property name="businessObjectMetaDataService" ref="businessObjectMetaDataService" />
+        <property name="sequenceAccessorService" ref="sequenceAccessorService" />
+        <property name="businessObjectService" ref="businessObjectService" />
+        <property name="lookupResultsService" ref="lookupResultsService" />
+    </bean>
+    
+    <!-- SubAward Services -->
+    <bean id="subAwardPrintingService" class="org.kuali.kra.subaward.reporting.printing.service.impl.SubAwardPrintingServiceImpl">
+    	<property name="subAwardSF294Print" ref="subAwardSF294Print" />
+    	<property name="subAwardSF295Print" ref="subAwardSF295Print" />
+    	<property name="printingService" ref="printingService" />    	
+    	<property name="subAwardFDPAgreement" ref="subAwardFDPAgreement" />
+    	<property name="subAwardFDPModification" ref="subAwardFDPModification" />
+    </bean>
+    
+    <bean id="subAwardSF294Print" class="org.kuali.kra.subaward.reporting.printing.print.SubAwardSF294Print" scope="prototype">
+        <property name="xmlStream" ref="subawardXmlStream" />
+    </bean>
+    <bean id="subAwardSF295Print" class="org.kuali.kra.subaward.reporting.printing.print.SubAwardSF295Print" scope="prototype">
+        <property name="xmlStream" ref="subawardXmlStream" />
+    </bean>
+    
+    <bean id="subawardXmlStream" class="org.kuali.kra.subaward.reporting.printing.xmlstream.SubawardXmlStream" scope="prototype">
+        <property name="businessObjectService" ref="businessObjectService" />
+    </bean>
+    
+    <bean id="printingService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="printingService" />
+    </bean>
+    
+    <bean id="subAwardFDPAgreement" class="org.kuali.kra.subawardReporting.printing.print.SubAwardFDPAgreement" scope="prototype">
+        <property name="xmlStream" ref="subAwardFDPPrintXmlStream" />
+    </bean>
+    
+    <bean id="subAwardFDPModification" class="org.kuali.kra.subawardReporting.printing.print.SubAwardFDPModification" scope="prototype">
+        <property name="xmlStream" ref="subAwardFDPPrintXmlStream" />
+    </bean>
+    
+    <bean id="subAwardFDPPrintXmlStream" class="org.kuali.kra.subawardReporting.printing.xmlstream.SubAwardFDPPrintXmlStream" scope="prototype">
+        <property name="dateTimeService" ref="dateTimeService" />
+        <property name="businessObjectService" ref="businessObjectService" />
+    </bean>
+    
+    <bean id="subAwardService" class="org.kuali.kra.subaward.service.impl.SubAwardServiceImpl">
+        <property name="businessObjectService" ref="businessObjectService" />
+        <property name="documentService" ref="documentService" />
+        <property name="versioningService" ref="versioningService" />
+        <property name="sequenceAccessorService" ref="sequenceAccessorService" />
+        <property name="parameterService" ref="parameterService" />
+        <property name="versionHistoryService" ref="versionHistoryService" />
+    </bean>
+    
+	<bean id="subAwardLookupable" class="org.kuali.rice.kns.lookup.KualiLookupableImpl" scope="prototype">
+  		<property name="lookupableHelperService" ref="subAwardLookupableHelperService" />  
+	</bean>
+	
+	<bean id="subAwardLookupableHelperService" class="org.kuali.kra.subaward.lookup.SubAwardLookupableHelperServiceImpl" parent="parentLookupableHelperService" 
+	      scope="prototype">
+		<property name="versionHistoryService" ref="versionHistoryService" />
+  	</bean>
+  	
+  	<!-- SubAward Task Authorizers -->
+  	
+  	<bean id="parentSubAwardAuthorizer" abstract="true">
+        <property name="unitAuthorizationService" ref="unitAuthorizationService" />
+        <property name="kraAuthorizationService" ref="kcAuthorizationService" />
+    </bean>
+  	
+  	<bean id="subAwardTaskAuthorizers" class="org.kuali.coeus.common.framework.auth.task.TaskAuthorizerGroup">
+        <property name="groupName" value="subAward" />
+        <property name="taskAuthorizers">
+            <list>
+                <bean class="org.kuali.kra.subaward.document.authorizer.ViewSubAwardAuthorizer" parent="parentSubAwardAuthorizer">
+                    <property name="taskName" value="viewSubaward" />
+                    <property name="kraWorkflowService" ref="kcWorkflowService" />
+                </bean>
+                
+                 <bean class="org.kuali.kra.subaward.document.authorizer.ModifySubAwardAutherizer" parent="parentSubAwardAuthorizer">
+                    <property name="taskName" value="modifySubaward" />
+                     <property name="kraWorkflowService" ref="kcWorkflowService" />
+                 </bean>
+                
+                <bean class="org.kuali.kra.subaward.document.authorizer.addInvoiceSubAwardAuthorizer" parent="parentSubAwardAuthorizer">
+                    <property name="taskName" value="addInvoiceSubAward" />
+                </bean>          
+            </list>
+         </property>
+     </bean>
+     
+    <bean id="subAwardRequisitionerDerivedRoleTypeService" class="org.kuali.kra.subaward.service.impl.SubAwardRequisitionerDerivedRoleTypeServiceImpl">
+
+    </bean>
+
+    <bean id="kc.import.serviceBus" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="rice.ksb.serviceBus" />
+    </bean>
+
+    <bean id="kcCoreCallbackService" abstract="true" class="org.kuali.rice.ksb.api.bus.support.CallbackServiceExporter"
+          p:serviceBus-ref="kc.import.serviceBus">
+        <property name="serviceNameSpaceURI">
+            <util:constant static-field="org.kuali.kra.infrastructure.Constants.KC_CORE_SERVICE_NAMESPACE"/>
+        </property>
+    </bean>
+
+	<bean id="subAwardRequisitionerDerivedRoleTypeServiceCallback" parent="kcCoreCallbackService"
+		p:callbackService-ref="subAwardRequisitionerDerivedRoleTypeService" 
+		p:localServiceName="subAwardRequisitionerDerivedRoleTypeService" 
+		p:serviceInterface="org.kuali.rice.kim.framework.role.RoleTypeService"/>
+	
+	<bean id="subAwardFactBuilderService" class="org.kuali.kra.subaward.service.impl.SubAwardFactBuilderServiceImpl">
+		  <property name="documentService" ref="documentService" />
+	</bean>
+	
+</beans>	

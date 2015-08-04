@@ -1,0 +1,47 @@
+From b4489c9e8c93664f560489a4c41e0df1be229683 Mon Sep 17 00:00:00 2001
+From: Gayathri <gathreya@email.arizona.edu>
+Date: Thu, 30 Apr 2015 17:32:16 -0700
+Subject: [PATCH] RESKC-370: Do not regenerate periods if periods already
+ exist! As an award budget user, when I create a rebudget (new version of
+ posted budget with no change to authorized amount), I expect to have all the
+ budget details from the last posted version appear in the rebudget. I should
+ be reducing funds from the existing line items and redistributing that amount
+ to current or new line items, confined to matching the preexisting authorized
+ total. Current (4/29/15) release is not copying the posted budget details to
+ the rebudget; the rebudget is blank, only letting me search for an IP to link
+ details or manually reenter all items. This is not the intended
+ functionality, and not consistent with prior releases. Steps to recreate:
+ Kuali.com demo1 site on 4/29/2015. Award *73-00001, acct id 2533529 As
+ Quickstart: Locate an existing award or create a new award with T&M values
+ maintained. Create an initial Award Budget, match to auth total: Actions>
+ submit; As JTester: Action list: Award budget link:Actions> approve the award
+ budget. As Quickstart: Open Award Budget: Actions > post. Open Award > Open
+ Budget Versions To create the rebudget (new AB without change to T&M). -click
+ 'new' to create the rebudget documument result: The new 'rebudget' is not
+ populated with the details entered in the prior approved/posted version.
+ Thus, all the manually entered the details (or modified pulled in PD budget
+ details) are lost, requiring the AB admin to do all the work over again from
+ scratch. The system should be copying the budget line item details forward to
+ the rebudget; users should only be required to shift funds (reduce some line
+ items to rebudget to another) to meet the authorized amount. Rebudget had
+ been working in previous tests: I have done a rebudget where I put in
+ negative value in an existing detail line item to the add that value to
+ another or new line item.
+
+---
+ .../main/java/org/kuali/kra/award/budget/AwardBudgetServiceImpl.java    | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/award/budget/AwardBudgetServiceImpl.java b/coeus-impl/src/main/java/org/kuali/kra/award/budget/AwardBudgetServiceImpl.java
+index 74b5e8f..fc44700 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/award/budget/AwardBudgetServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/award/budget/AwardBudgetServiceImpl.java
+@@ -444,7 +444,7 @@ public Budget getNewBudgetVersion(BudgetParentDocument parentBudgetDocument, Str
+ 		}
+ 		if (budgetDocument != null) {
+ 			AwardBudgetExt budget = budgetDocument.getBudget();
+-			if (budget.getStartDate() != null) {
++                if (budget.getBudgetPeriods().isEmpty() && budget.getStartDate() != null) {
+ 	            budget.setBudgetPeriods(getBudgetSummaryService().generateBudgetPeriods(budget));
+ 	        }
+ 			awardDocument.getAward().getBudgets().add(budget);

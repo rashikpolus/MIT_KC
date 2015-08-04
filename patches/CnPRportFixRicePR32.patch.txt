@@ -1,0 +1,92 @@
+From 7cf2efdb81dd79916e27fdb147c61158d59d52b5 Mon Sep 17 00:00:00 2001
+From: Gayathri <gathreya@email.arizona.edu>
+Date: Mon, 27 Apr 2015 17:34:47 -0700
+Subject: [PATCH] RESKC-345: Fixing exception while exporting results. Rice
+ added an enhancement to check permissions before displaying the options to
+ export search results. Rice assumes that the export functionality is only
+ used in lookupForms which have a boEntry but KC uses it in other forms as
+ well. Therefore, when the boEntry is null, I bypass the perm check. I could
+ not override the helper because it is not spring injected, therefore this
+ solution. Additionally, in the absence of a boEntry, how would you check
+ perms? Hence this solution. Details -------- Steps to reproduce - 1. From the
+ Home Page - Navigate to Current and Pending Reports Menu Option 2. Search for
+ Select "cate" as PI or any PI that will return results 3. select "current" 4.
+ select initiate report 5. Get results on screen 6. select option to export
+ into spreadsheet, CSV, or XML file Get HTTP 500 error HTTP Status 500 -
+ javax.servlet.ServletException: javax.servlet.jsp.JspException:
+ javax.servlet.jsp.JspException: java.lang.NullPointerException
+ ________________________________________ type Exception report message
+ javax.servlet.ServletException: javax.servlet.jsp.JspException:
+ javax.servlet.jsp.JspException: java.lang.NullPointerException description
+ The server encountered an internal error that prevented it from fulfilling
+ this request. exception org.apache.jasper.JasperException:
+ javax.servlet.ServletException: javax.servlet.jsp.JspException:
+ javax.servlet.jsp.JspException: java.lang.NullPointerException
+ org.apache.jasper.servlet.JspServletWrapper.handleJspException(JspServletWrapper.java:549)
+ org.apache.jasper.servlet.JspServletWrapper.service(JspServletWrapper.java:455)
+ org.apache.jasper.servlet.JspServlet.serviceJspFile(JspServlet.java:390)
+ org.apache.jasper.servlet.JspServlet.service(JspServlet.java:334)
+ javax.servlet.http.HttpServlet.service(HttpServlet.java:728)
+ org.apache.struts.action.RequestProcessor.doForward(RequestProcessor.java:1083)
+ org.apache.struts.action.RequestProcessor.processForwardConfig(RequestProcessor.java:396)
+ org.kuali.rice.kns.web.struts.action.KualiRequestProcessor.processFormActionAndForward(KualiRequestProcessor.java:243)
+ org.kuali.rice.kns.web.struts.action.KualiRequestProcessor.strutsProcess(KualiRequestProcessor.java:222)
+ org.kuali.rice.kns.web.struts.action.KualiRequestProcessor.process(KualiRequestProcessor.java:101)
+ org.apache.struts.action.ActionServlet.process(ActionServlet.java:1913)
+ org.kuali.rice.kns.web.struts.action.KualiActionServlet.process(KualiActionServlet.java:202)
+ org.apache.struts.action.ActionServlet.doGet(ActionServlet.java:449)
+ javax.servlet.http.HttpServlet.service(HttpServlet.java:621)
+ javax.servlet.http.HttpServlet.service(HttpServlet.java:728)
+ org.kuali.coeus.sys.framework.controller.interceptor.RequestLoggingFilter.doFilter(RequestLoggingFilter.java:92)
+ org.kuali.rice.kew.web.UserPreferencesFilter.doFilter(UserPreferencesFilter.java:78)
+ org.kuali.rice.kew.web.UserPreferencesFilter.doFilter(UserPreferencesFilter.java:62)
+ org.kuali.rice.krad.web.filter
+
+---
+ .../kuali/rice/kns/lookup/ExportViewHelper.java    | 26 ++++++++++++----------
+ 1 file changed, 14 insertions(+), 12 deletions(-)
+
+diff --git a/rice-middleware/kns/src/main/java/org/kuali/rice/kns/lookup/ExportViewHelper.java b/rice-middleware/kns/src/main/java/org/kuali/rice/kns/lookup/ExportViewHelper.java
+index a8c1212..e466795 100644
+--- a/rice-middleware/kns/src/main/java/org/kuali/rice/kns/lookup/ExportViewHelper.java
++++ b/rice-middleware/kns/src/main/java/org/kuali/rice/kns/lookup/ExportViewHelper.java
+@@ -39,6 +39,7 @@
+ import org.kuali.rice.krad.service.KRADServiceLocatorWeb;
+ import org.kuali.rice.krad.exception.ExportNotSupportedException;
+ import org.kuali.rice.krad.util.GlobalVariables;
++import org.kuali.rice.krad.util.ObjectUtils;
+ 
+ /**
+  * A helper class to be used with the custom ExportView implementations for
+@@ -115,18 +116,19 @@ public boolean attemptCustomExport(Writer writer, String exportFormat) throws IO
+ 
+     // KULRICE-12281: Turn off the ability to export results from the certain lookups
+     public void checkPermission() throws AuthorizationException {
+-        boolean isAuthorized = false;
+-        String componentName = businessObjectEntry.getBusinessObjectClass().getName();
+-        String nameSpaceCode = "KR-NS";
+-        String templateName =  "Export Records";
+-        String principalId = GlobalVariables.getUserSession().getPrincipalId();
+-        String principalUserName = GlobalVariables.getUserSession().getPrincipalName();
+-        Map<String, String> permissionDetails = new HashMap<String,String>();
+-        permissionDetails.put("componentName", componentName);
+-        isAuthorized = KimApiServiceLocator.getPermissionService().isAuthorizedByTemplate(principalId,nameSpaceCode,templateName,permissionDetails,new HashMap<String,String>());
+-        if(!isAuthorized){
+-            throw new AuthorizationException(principalUserName, "Exporting the LookUp Results", componentName);
++        if (ObjectUtils.isNotNull(businessObjectEntry)) {
++            String componentName = businessObjectEntry.getBusinessObjectClass().getName();
++            String nameSpaceCode = "KR-NS";
++            String templateName = "Export Records";
++            String principalId = GlobalVariables.getUserSession().getPrincipalId();
++            String principalUserName = GlobalVariables.getUserSession().getPrincipalName();
++            Map<String, String> permissionDetails = new HashMap<String, String>();
++            permissionDetails.put("componentName", componentName);
++            boolean isAuthorized = KimApiServiceLocator.getPermissionService().isAuthorizedByTemplate(principalId, nameSpaceCode,
++                    templateName, permissionDetails, new HashMap<String, String>());
++            if (!isAuthorized) {
++                throw new AuthorizationException(principalUserName, "Exporting the LookUp Results", componentName);
++            }
+         }
+     }
+-	
+ }

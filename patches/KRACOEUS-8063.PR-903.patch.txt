@@ -1,0 +1,1223 @@
+From 79783966d18391c4eb06610b855ba575e7741593 Mon Sep 17 00:00:00 2001
+From: Travis Schneberger <leo.herbie@gmail.com>
+Date: Tue, 14 Oct 2014 10:49:40 -0400
+Subject: [PATCH] KRACOEUS-8063: establishing a common proposal module, setting
+ up autowiring correctly.
+
+---
+ .../impl/report/CurrentAndPendingBaseStream.java   |  71 ++++++++
+ .../proposal/impl/report/CurrentProposalPrint.java |   3 +-
+ .../impl/report/CurrentProposalXmlStream.java      | 198 +++++++++++++++++++++
+ .../proposal/impl/report/PendingProposalPrint.java |   2 +-
+ .../impl/report/PendingProposalXmlStream.java      | 196 ++++++++++++++++++++
+ .../impl/print/CurrentAndPendingBaseStream.java    |  71 --------
+ .../impl/print/CurrentProposalXmlStream.java       | 198 ---------------------
+ .../impl/print/PendingProposalXmlStream.java       | 196 --------------------
+ .../common/impl/CommonAllComponentSpringBeans.xml  |   2 +-
+ .../impl/CommonProposalComponentSpringBeans.xml    |  57 ++++++
+ .../common/proposal/impl/repository-proposal.xml   |  36 ++++
+ .../propdev/impl/PropDevComponentSpringBeans.xml   |   4 -
+ .../resources/org/kuali/kra/CoreSpringBeans.xml    |   4 -
+ coeus-impl/src/main/resources/repository.xml       |  18 +-
+ 14 files changed, 562 insertions(+), 494 deletions(-)
+ create mode 100644 coeus-impl/src/main/java/org/kuali/coeus/common/proposal/impl/report/CurrentAndPendingBaseStream.java
+ create mode 100644 coeus-impl/src/main/java/org/kuali/coeus/common/proposal/impl/report/CurrentProposalXmlStream.java
+ create mode 100644 coeus-impl/src/main/java/org/kuali/coeus/common/proposal/impl/report/PendingProposalXmlStream.java
+ delete mode 100644 coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/print/CurrentAndPendingBaseStream.java
+ delete mode 100644 coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/print/CurrentProposalXmlStream.java
+ delete mode 100644 coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/print/PendingProposalXmlStream.java
+ create mode 100644 coeus-impl/src/main/resources/org/kuali/coeus/common/proposal/impl/CommonProposalComponentSpringBeans.xml
+ create mode 100644 coeus-impl/src/main/resources/org/kuali/coeus/common/proposal/impl/repository-proposal.xml
+
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/common/proposal/impl/report/CurrentAndPendingBaseStream.java b/coeus-impl/src/main/java/org/kuali/coeus/common/proposal/impl/report/CurrentAndPendingBaseStream.java
+new file mode 100644
+index 0000000..6d174c4
+--- /dev/null
++++ b/coeus-impl/src/main/java/org/kuali/coeus/common/proposal/impl/report/CurrentAndPendingBaseStream.java
+@@ -0,0 +1,71 @@
++/*
++ * Copyright 2005-2014 The Kuali Foundation
++ * 
++ * Licensed under the GNU Affero General Public License, Version 3 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ * 
++ * http://www.opensource.org/licenses/ecl1.php
++ * 
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++package org.kuali.coeus.common.proposal.impl.report;
++
++import org.kuali.coeus.common.framework.print.stream.xml.XmlStream;
++import org.kuali.rice.core.api.datetime.DateTimeService;
++import org.kuali.rice.krad.service.BusinessObjectService;
++
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.beans.factory.annotation.Qualifier;
++
++/**
++ * This class will contain all common methods that can be used across
++ * Institution Proposal XML generator streams . All those report XML stream
++ * implementations need to extend and use the functions defined in this class.
++ * 
++ */
++public abstract class CurrentAndPendingBaseStream implements XmlStream {
++
++    @Autowired
++    @Qualifier("dateTimeService")
++    protected DateTimeService dateTimeService;
++
++    @Autowired
++    @Qualifier("businessObjectService")
++	protected BusinessObjectService businessObjectService = null;
++
++	/**
++	 * @return the dateTimeService
++	 */
++	public DateTimeService getDateTimeService() {
++		return dateTimeService;
++	}
++
++	/**
++	 * @param dateTimeService
++	 *            the dateTimeService to set
++	 */
++	public void setDateTimeService(DateTimeService dateTimeService) {
++		this.dateTimeService = dateTimeService;
++	}
++
++	/**
++	 * @return the businessObjectService
++	 */
++	public BusinessObjectService getBusinessObjectService() {
++		return businessObjectService;
++	}
++
++	/**
++	 * @param businessObjectService
++	 *            the businessObjectService to set
++	 */
++	public void setBusinessObjectService(
++			BusinessObjectService businessObjectService) {
++		this.businessObjectService = businessObjectService;
++	}
++}
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/common/proposal/impl/report/CurrentProposalPrint.java b/coeus-impl/src/main/java/org/kuali/coeus/common/proposal/impl/report/CurrentProposalPrint.java
+index 546be63..ce2c676 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/common/proposal/impl/report/CurrentProposalPrint.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/common/proposal/impl/report/CurrentProposalPrint.java
+@@ -17,7 +17,6 @@
+ 
+ import org.kuali.coeus.common.framework.print.AbstractPrint;
+ import org.kuali.coeus.common.framework.print.PrintConstants;
+-import org.kuali.coeus.common.framework.print.Printable;
+ import org.kuali.coeus.common.framework.print.stream.xml.XmlStream;
+ import org.kuali.coeus.common.framework.print.util.PrintingUtils;
+ import org.kuali.coeus.common.framework.print.watermark.Watermarkable;
+@@ -39,7 +38,7 @@
+  * streaming etc.
+  * 
+  */
+-@Component("pendingProposalPrint")
++@Component("currentProposalPrint")
+ @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+ public class CurrentProposalPrint extends AbstractPrint {
+ 
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/common/proposal/impl/report/CurrentProposalXmlStream.java b/coeus-impl/src/main/java/org/kuali/coeus/common/proposal/impl/report/CurrentProposalXmlStream.java
+new file mode 100644
+index 0000000..826fa24
+--- /dev/null
++++ b/coeus-impl/src/main/java/org/kuali/coeus/common/proposal/impl/report/CurrentProposalXmlStream.java
+@@ -0,0 +1,198 @@
++package org.kuali.coeus.common.proposal.impl.report;
++
++import org.apache.xmlbeans.XmlObject;
++import org.kuali.coeus.common.framework.print.PrintConstants;
++import org.kuali.coeus.sys.framework.model.KcPersistableBusinessObjectBase;
++import org.kuali.kra.award.customdata.AwardCustomData;
++import org.kuali.coeus.common.framework.print.CurrentReportBean;
++import org.kuali.kra.infrastructure.Constants;
++import org.kuali.kra.printing.schema.CurrentAndPendingSupportDocument;
++import org.kuali.kra.printing.schema.CurrentAndPendingSupportDocument.CurrentAndPendingSupport;
++import org.kuali.kra.printing.schema.CurrentAndPendingSupportDocument.CurrentAndPendingSupport.CurrentReportCEColumnNames;
++import org.kuali.kra.printing.schema.CurrentAndPendingSupportDocument.CurrentAndPendingSupport.CurrentSupport;
++import org.kuali.kra.printing.schema.CurrentAndPendingSupportDocument.CurrentAndPendingSupport.CurrentSupport.CurrentReportCEColomnValues;
++import org.kuali.rice.coreservice.framework.parameter.ParameterConstants;
++import org.kuali.rice.coreservice.framework.parameter.ParameterService;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.beans.factory.annotation.Qualifier;
++import org.springframework.stereotype.Component;
++
++import java.util.*;
++/**
++ * This class generates XML that confirms with the XSD related to Current
++ * Proposal Report. The data for XML is derived from
++ * {@link org.kuali.coeus.sys.framework.model.KcTransactionalDocumentBase} and {@link Map} of details passed to the class.
++ * 
++ */
++
++@Component("currentProposalXmlStream")
++public class CurrentProposalXmlStream extends CurrentAndPendingBaseStream {
++
++    private List<String> columsList;
++    @Autowired
++    @Qualifier("parameterService")
++    private ParameterService parameterService;
++
++    public void setParameterService (ParameterService parameterService){
++        this.parameterService = parameterService;
++    }
++
++    protected ParameterService getParameterService(){
++        return parameterService;
++    }
++	/**
++	 * This method generates XML for Current Proposal Report. It uses data
++	 * passed in {@link org.kuali.coeus.sys.framework.model.KcTransactionalDocumentBase} for populating the XML nodes. The
++	 * XMl once generated is returned as {@link XmlObject}
++	 * 
++	 * @param printableBusinessObject
++	 *            using which XML is generated
++	 * @param reportParameters
++	 *            parameters related to XML generation
++	 * @return {@link XmlObject} representing the XML
++	 */
++	public Map<String, XmlObject> generateXmlStream(
++			KcPersistableBusinessObjectBase printableBusinessObject, Map<String, Object> reportParameters) {
++		Map<String, XmlObject> xmlObjectList = new LinkedHashMap<String, XmlObject>();
++		CurrentAndPendingSupportDocument currentAndPendingSupportDocument=CurrentAndPendingSupportDocument.Factory.newInstance();
++		CurrentAndPendingSupport currentAndPendingSupport = CurrentAndPendingSupport.Factory
++				.newInstance();
++        List<CurrentReportBean> currentReportBeans = (List<CurrentReportBean>)reportParameters.get(PrintConstants.CURRENT_REPORT_BEANS_KEY);
++        CurrentReportCEColumnNames currentReportCEColumnNames = getPendingSupportCustomColumnName(currentReportBeans);
++		CurrentSupport[] currentSupports = getCurrentSupportInformation(currentReportBeans);
++		currentAndPendingSupport.setPersonName((String)reportParameters.get(PrintConstants.REPORT_PERSON_NAME_KEY));
++		currentAndPendingSupport.setCurrentSupportArray(currentSupports);
++		currentAndPendingSupport.setCurrentReportCEColumnNames(currentReportCEColumnNames);
++		currentAndPendingSupportDocument.setCurrentAndPendingSupport(currentAndPendingSupport);
++		xmlObjectList.put(PrintConstants.CURRENT_REPORT_TYPE, currentAndPendingSupportDocument);
++		return xmlObjectList;
++	}
++	
++	private CurrentReportCEColumnNames getPendingSupportCustomColumnName(List<CurrentReportBean> currentReportBeans){
++	    CurrentReportCEColumnNames currentReportCEColumnNames =  CurrentReportCEColumnNames.Factory.newInstance();
++        columsList=new ArrayList<String>();
++        String columName ="";
++        for (CurrentReportBean bean : currentReportBeans){
++            if(bean.getAwardCustomDataList() !=null){
++               
++                    for(AwardCustomData awardcutomdata :bean.getAwardCustomDataList()) {
++                        if(awardcutomdata.getCustomAttribute()!=null)
++                             columName = awardcutomdata.getCustomAttribute().getLabel();
++                        if(!columsList.contains(columName))
++                             columsList.add(columName);
++                    }
++            }
++        }
++        for(int columnLabelIndex=0;columnLabelIndex<columsList.size();columnLabelIndex++){
++            if(columnLabelIndex == 0)
++                currentReportCEColumnNames.setCEColumnName1(columsList.get(columnLabelIndex).toString());
++            
++            if(columnLabelIndex == 1)
++                currentReportCEColumnNames.setCEColumnName2(columsList.get(columnLabelIndex).toString());
++          
++            if(columnLabelIndex == 2)
++                currentReportCEColumnNames.setCEColumnName3(columsList.get(columnLabelIndex).toString());
++          
++            if(columnLabelIndex == 3)
++                currentReportCEColumnNames.setCEColumnName4(columsList.get(columnLabelIndex).toString());
++          
++            if(columnLabelIndex == 4)
++                currentReportCEColumnNames.setCEColumnName5(columsList.get(columnLabelIndex).toString());
++            
++            if(columnLabelIndex == 5)
++                currentReportCEColumnNames.setCEColumnName6(columsList.get(columnLabelIndex).toString());
++            
++            if(columnLabelIndex == 6)
++                currentReportCEColumnNames.setCEColumnName7(columsList.get(columnLabelIndex).toString());
++            
++            if(columnLabelIndex == 7)
++                currentReportCEColumnNames.setCEColumnName8(columsList.get(columnLabelIndex).toString());
++            
++            if(columnLabelIndex == 8)
++                currentReportCEColumnNames.setCEColumnName9(columsList.get(columnLabelIndex).toString());
++            
++            if(columnLabelIndex == 9)
++                currentReportCEColumnNames.setCEColumnName10(columsList.get(columnLabelIndex).toString());
++          
++        }
++        return currentReportCEColumnNames;
++    }
++	/*
++	 * This method will set the values to current support information xml object
++	 * and finally returns a array of currentSupport xml objects
++	 */
++	private CurrentSupport[] getCurrentSupportInformation(List<CurrentReportBean> currentReportBeans) {
++		List<CurrentSupport> currentSupports = new ArrayList<CurrentSupport>();
++		 parameterService = getParameterService();
++		 String directIndirectEnabledValue = parameterService.getParameterValueAsString(Constants.PARAMETER_MODULE_AWARD, ParameterConstants.DOCUMENT_COMPONENT, "ENABLE_AWD_ANT_OBL_DIRECT_INDIRECT_COST");
++
++		for (CurrentReportBean bean : currentReportBeans) {
++		    Map<String,String> cutomDataValueMap = new HashMap<String,String>();
++		    CurrentSupport currentSupport = CurrentSupport.Factory.newInstance();
++		    currentSupports.add(currentSupport);
++            if (bean.getAcademicYearEffort() != null) {
++                currentSupport.setAcademicYearEffort(bean
++                        .getAcademicYearEffort().bigDecimalValue());
++            }
++            if (bean.getCalendarYearEffort() != null) {
++                currentSupport.setCalendarYearEffort(bean
++                        .getCalendarYearEffort().bigDecimalValue());
++            }
++            if (bean.getTotalEffort() != null) {
++                currentSupport.setPercentageEffort(bean.getTotalEffort()
++                        .bigDecimalValue());
++            }
++            if (bean.getSummerEffort() != null) {
++                currentSupport.setSummerYearEffort(bean
++                        .getSummerEffort().bigDecimalValue());
++            }
++            if (bean.getRoleCode() != null) {
++                currentSupport.setPI(bean.getRoleCode());
++            }
++            if (bean.getAwardAmount() != null) {
++                currentSupport.setAwardAmount(bean.getAwardAmount().bigDecimalValue());
++            }
++            if (bean.getProjectEndDate() != null) {
++                currentSupport.setEndDate(dateTimeService.getCalendar(bean.getProjectEndDate()));
++            }
++            if (bean.getAwardTitle() != null) {
++                currentSupport.setTitle(bean.getAwardTitle());
++            }
++            if (bean.getProjectStartDate() != null) {
++                currentSupport.setEffectiveDate(dateTimeService.getCalendar(bean.getProjectStartDate()));
++            }
++            if (bean.getSponsorAwardNumber() != null) {
++                currentSupport.setSponsorAwardNumber(bean.getSponsorAwardNumber());
++            }
++            if (bean.getSponsorName() != null) {
++                currentSupport.setAgency(bean.getSponsorName());
++            }
++            if (bean.getTotalDirectCostTotal() !=null && directIndirectEnabledValue.equals("1")){
++                currentSupport.setTotalDirectCost(bean.getTotalDirectCostTotal().bigDecimalValue());
++            }
++            if (bean.getTotalIndirectCostTotal() !=null && directIndirectEnabledValue.equals("1")){
++                currentSupport.setTotalIndirectCost(bean.getTotalIndirectCostTotal().bigDecimalValue());
++            }
++            if(bean.getAwardCustomDataList() !=null){
++                
++                List<CurrentReportCEColomnValues> currentReportCEColomnValues = new ArrayList<CurrentReportCEColomnValues>();
++                for(AwardCustomData awardcutomdata :bean.getAwardCustomDataList()) {
++                    if(awardcutomdata.getCustomAttribute()!=null && awardcutomdata.getValue()!=null && awardcutomdata.getCustomAttribute().getLabel()!=null){
++                        cutomDataValueMap.put(awardcutomdata.getCustomAttribute().getLabel(), awardcutomdata.getValue());
++                    }
++                }
++                for(int columnLabelIndex=0;columnLabelIndex<columsList.size();columnLabelIndex++){
++                    CurrentReportCEColomnValues currentReportCEColumnValue = CurrentReportCEColomnValues.Factory.newInstance();
++                    if(cutomDataValueMap.get(columsList.get(columnLabelIndex))!=null)
++                        currentReportCEColumnValue.setCurrentReportCEColumnValue(cutomDataValueMap.get(columsList.get(columnLabelIndex)).toString());
++                    else{
++                        currentReportCEColumnValue.setCurrentReportCEColumnValue("");
++                    }
++                    currentReportCEColomnValues.add(currentReportCEColumnValue);
++                }
++                currentSupport.setCurrentReportCEColomnValuesArray(currentReportCEColomnValues.toArray(new CurrentReportCEColomnValues[0]));
++            }
++		}
++		return currentSupports.toArray(new CurrentSupport[0]);
++	}
++}
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/common/proposal/impl/report/PendingProposalPrint.java b/coeus-impl/src/main/java/org/kuali/coeus/common/proposal/impl/report/PendingProposalPrint.java
+index 3e3de0a..045b40a 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/common/proposal/impl/report/PendingProposalPrint.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/common/proposal/impl/report/PendingProposalPrint.java
+@@ -38,7 +38,7 @@
+  * 
+  * 
+  */
+-@Component("currentProposalPrint")
++@Component("pendingProposalPrint")
+ @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+ public class PendingProposalPrint extends AbstractPrint {
+ 
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/common/proposal/impl/report/PendingProposalXmlStream.java b/coeus-impl/src/main/java/org/kuali/coeus/common/proposal/impl/report/PendingProposalXmlStream.java
+new file mode 100644
+index 0000000..5df00a1
+--- /dev/null
++++ b/coeus-impl/src/main/java/org/kuali/coeus/common/proposal/impl/report/PendingProposalXmlStream.java
+@@ -0,0 +1,196 @@
++package org.kuali.coeus.common.proposal.impl.report;
++
++import org.apache.xmlbeans.XmlObject;
++import org.kuali.coeus.common.framework.print.PrintConstants;
++import org.kuali.coeus.sys.framework.model.KcPersistableBusinessObjectBase;
++import org.kuali.coeus.common.framework.print.PendingReportBean;
++import org.kuali.kra.institutionalproposal.customdata.InstitutionalProposalCustomData;
++import org.kuali.kra.institutionalproposal.home.InstitutionalProposal;
++import org.kuali.kra.printing.schema.CurrentAndPendingSupportDocument;
++import org.kuali.kra.printing.schema.CurrentAndPendingSupportDocument.CurrentAndPendingSupport;
++import org.kuali.kra.printing.schema.CurrentAndPendingSupportDocument.CurrentAndPendingSupport.PendingReportCEColumnNames;
++import org.kuali.kra.printing.schema.CurrentAndPendingSupportDocument.CurrentAndPendingSupport.PendingSupport;
++import org.kuali.kra.printing.schema.CurrentAndPendingSupportDocument.CurrentAndPendingSupport.PendingSupport.PendingReportCEColomnValues;
++
++import org.springframework.stereotype.Component;
++
++import java.util.*;
++
++/**
++ * This class generates XML that confirms with the XSD related to Pending
++ * Proposal Report. The data for XML is derived from
++ * {@link org.kuali.coeus.sys.framework.model.KcTransactionalDocumentBase} and {@link Map} of details passed to the class.
++ * 
++ */
++@Component("pendingProposalXmlStream")
++public class PendingProposalXmlStream extends CurrentAndPendingBaseStream {
++	private ArrayList columsList;
++    private static final String PROP_SEQ_STATUS = "ACTIVE";
++    private static final String PROP_NUMBER = "proposalNumber";
++    private static final int PROP_TYPE_CONTINUATION = 4;
++    private static final int PROP_TYPE_TASK_ORDER = 6;
++    private static final int PROP_PENDING_STATUS = 1;    
++	/**
++	 * This method generates XML for Pending Proposal Report. It uses data
++	 * passed in {@link org.kuali.coeus.sys.framework.model.KcTransactionalDocumentBase} for populating the XML nodes. The
++	 * XMl once generated is returned as {@link XmlObject}
++	 * 
++	 * @param printableBusinessObject
++	 *            using which XML is generated
++	 * @param reportParameters
++	 *            parameters related to XML generation
++	 * @return {@link XmlObject} representing the XML
++	 */
++	public Map<String, XmlObject> generateXmlStream(
++			KcPersistableBusinessObjectBase printableBusinessObject, Map<String, Object> reportParameters) {
++		Map<String, XmlObject> xmlObjectList = new LinkedHashMap<String, XmlObject>();
++		CurrentAndPendingSupportDocument currentAndPendingSupportDocument=CurrentAndPendingSupportDocument.Factory.newInstance();
++		CurrentAndPendingSupport currentAndPendingSupport = CurrentAndPendingSupport.Factory
++				.newInstance();
++		List<PendingReportBean> pendingReportBeans = (List<PendingReportBean>)reportParameters.get(PrintConstants.PENDING_REPORT_BEANS_KEY);
++       
++        PendingReportCEColumnNames pendingReportCEColumnNames =getPendingSupportCustomColumnName(pendingReportBeans);
++        
++        PendingSupport[] pendingSupports = getPendingSupportInformation(pendingReportBeans);
++        
++        currentAndPendingSupport.setPersonName((String)reportParameters.get(PrintConstants.REPORT_PERSON_NAME_KEY));
++        currentAndPendingSupport.setPendingSupportArray(pendingSupports);
++        currentAndPendingSupport.setPendingReportCEColumnNames(pendingReportCEColumnNames);
++        currentAndPendingSupportDocument.setCurrentAndPendingSupport(currentAndPendingSupport);
++        xmlObjectList.put(PrintConstants.PENDING_REPORT_TYPE, currentAndPendingSupportDocument);
++		return xmlObjectList;
++	}
++
++	private PendingReportCEColumnNames getPendingSupportCustomColumnName(List<PendingReportBean> pendingReportBeans){
++	    PendingReportCEColumnNames pendingReportCEColumnNames =  PendingReportCEColumnNames.Factory.newInstance();
++	    columsList=new ArrayList<String>();
++        String columName ="";
++        for (PendingReportBean bean : pendingReportBeans) {
++            if(bean.getInstitutionalProposalCustomDataList() !=null){
++                    for(InstitutionalProposalCustomData institutionalProposalCustomData :bean.getInstitutionalProposalCustomDataList()) {
++                        if(institutionalProposalCustomData.getCustomAttribute()!=null)
++                             columName = institutionalProposalCustomData.getCustomAttribute().getLabel();
++                        if(!columsList.contains(columName))
++                            columsList.add(columName);
++                    }
++            }
++        }
++        for(int columnLabelIndex=0;columnLabelIndex<columsList.size();columnLabelIndex++){
++            if(columnLabelIndex == 0)
++                pendingReportCEColumnNames.setCEColumnName1(columsList.get(columnLabelIndex).toString());
++            
++            if(columnLabelIndex == 1)
++                pendingReportCEColumnNames.setCEColumnName2(columsList.get(columnLabelIndex).toString());
++          
++            if(columnLabelIndex == 2)
++                pendingReportCEColumnNames.setCEColumnName3(columsList.get(columnLabelIndex).toString());
++          
++            if(columnLabelIndex == 3)
++                pendingReportCEColumnNames.setCEColumnName4(columsList.get(columnLabelIndex).toString());
++          
++            if(columnLabelIndex == 4)
++                pendingReportCEColumnNames.setCEColumnName5(columsList.get(columnLabelIndex).toString());
++            
++            if(columnLabelIndex == 5)
++                pendingReportCEColumnNames.setCEColumnName6(columsList.get(columnLabelIndex).toString());
++            
++            if(columnLabelIndex == 6)
++                pendingReportCEColumnNames.setCEColumnName7(columsList.get(columnLabelIndex).toString());
++            
++            if(columnLabelIndex == 7)
++                pendingReportCEColumnNames.setCEColumnName8(columsList.get(columnLabelIndex).toString());
++            
++            if(columnLabelIndex == 8)
++                pendingReportCEColumnNames.setCEColumnName9(columsList.get(columnLabelIndex).toString());
++            
++            if(columnLabelIndex == 9)
++                pendingReportCEColumnNames.setCEColumnName10(columsList.get(columnLabelIndex).toString());
++          
++        }
++        return pendingReportCEColumnNames;
++	}
++
++	private PendingSupport[] getPendingSupportInformation(List<PendingReportBean> pendingReportBeans) {
++	    List<PendingSupport> pendingSupports = new ArrayList<PendingSupport>();
++	    for (PendingReportBean bean : pendingReportBeans) {
++	      	Map<String,String> cutomDataValueMap = new HashMap<String,String>();
++	        Map<String, String> proposalNumberMap = new HashMap<String, String>();
++	        List<InstitutionalProposal> institutionalProposalList = new ArrayList <InstitutionalProposal>();  
++	     	proposalNumberMap.put(PROP_NUMBER, String.valueOf(bean.getProposalNumber()));
++	      institutionalProposalList = (List<InstitutionalProposal>) getBusinessObjectService()
++                                    .findMatching(InstitutionalProposal.class,proposalNumberMap);
++	      for(InstitutionalProposal institutionalProposal:institutionalProposalList){
++	            
++	           if(institutionalProposal.getProposalSequenceStatus().equals(PROP_SEQ_STATUS) && institutionalProposal.getStatusCode()== PROP_PENDING_STATUS 
++	                   && institutionalProposal.getProposalTypeCode()!= PROP_TYPE_CONTINUATION && institutionalProposal.getProposalTypeCode()!= PROP_TYPE_TASK_ORDER ){
++	        PendingSupport pendingSupport = PendingSupport.Factory.newInstance();
++	        pendingSupports.add(pendingSupport);
++	        if (bean.getProposalTitle() != null) {
++	            pendingSupport.setTitle(bean.getProposalTitle());
++	        }
++	        if (bean.getTotalDirectCostTotal() != null) {
++	            pendingSupport.setTotalDirectCost(bean.getTotalDirectCostTotal().bigDecimalValue());
++	        }
++	        if (bean.getTotalIndirectCostTotal() != null) {
++	            pendingSupport.setTotalIndirectCost(bean.getTotalIndirectCostTotal().bigDecimalValue());
++	        }
++	        if (bean.getTotalRequestedCost() != null) {
++	            pendingSupport.setTotalRequested(bean.getTotalRequestedCost().bigDecimalValue());
++	        }
++	        if (bean.getProposalNumber() != null) {
++	            pendingSupport.setProposalNumber(bean
++	                    .getProposalNumber());
++	        }
++	        if (bean.getRequestedEndDateTotal() != null) {
++	            pendingSupport
++	                    .setEndDate(dateTimeService.getCalendar(bean
++	                            .getRequestedEndDateTotal()));
++	        }
++	        if (bean.getRequestedStartDateInitial() != null) {
++	            pendingSupport.setEffectiveDate(dateTimeService
++	                    .getCalendar(bean
++	                            .getRequestedStartDateInitial()));
++	        }
++	        if (bean.getSponsorName() != null) {
++	            pendingSupport.setAgency(bean.getSponsorName());
++	        }
++            if (bean.getRoleCode() != null) {
++                pendingSupport.setPI(bean.getRoleCode());
++            }
++            if (bean.getTotalEffort() != null) {
++                pendingSupport.setPercentageEffort(bean.getTotalEffort().bigDecimalValue());
++            }
++            if (bean.getAcademicYearEffort() != null) {
++                pendingSupport.setAcademicYearEffort(bean.getAcademicYearEffort().bigDecimalValue());
++            }
++            if (bean.getCalendarYearEffort() != null) {
++                pendingSupport.setCalendarYearEffort(bean.getCalendarYearEffort().bigDecimalValue());
++            }
++            if (bean.getSummerEffort() != null) {
++                pendingSupport.setSummerYearEffort(bean.getSummerEffort().bigDecimalValue());
++            }
++            if(bean.getInstitutionalProposalCustomDataList() !=null){
++                List<PendingReportCEColomnValues> pendingReportCEColomnValues = new ArrayList<PendingReportCEColomnValues>();
++                for(InstitutionalProposalCustomData institutionalProposalCustomData :bean.getInstitutionalProposalCustomDataList()) {
++                    if(institutionalProposalCustomData.getCustomAttribute()!=null && institutionalProposalCustomData.getValue()!=null && institutionalProposalCustomData.getCustomAttribute().getLabel()!=null){
++                        cutomDataValueMap.put(institutionalProposalCustomData.getCustomAttribute().getLabel(), institutionalProposalCustomData.getValue());
++                    }
++                }
++                for(int columnLabelIndex=0;columnLabelIndex<columsList.size();columnLabelIndex++){
++                    PendingReportCEColomnValues pendingReportCEColomnValue = PendingReportCEColomnValues.Factory.newInstance();
++                    if(cutomDataValueMap.get(columsList.get(columnLabelIndex))!=null)
++                        pendingReportCEColomnValue.setPendingReportCEColumnValue(cutomDataValueMap.get(columsList.get(columnLabelIndex)).toString());
++                    else{
++                        pendingReportCEColomnValue.setPendingReportCEColumnValue("");
++                    }
++                    pendingReportCEColomnValues.add(pendingReportCEColomnValue);
++                }
++                pendingSupport.setPendingReportCEColomnValuesArray(pendingReportCEColomnValues.toArray(new PendingReportCEColomnValues[0]));
++            }
++	       }
++	      }
++	     }
++	    return pendingSupports.toArray(new PendingSupport[0]);
++	}
++
++}
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/print/CurrentAndPendingBaseStream.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/print/CurrentAndPendingBaseStream.java
+deleted file mode 100644
+index a94e4a4..0000000
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/print/CurrentAndPendingBaseStream.java
++++ /dev/null
+@@ -1,71 +0,0 @@
+-/*
+- * Copyright 2005-2014 The Kuali Foundation
+- * 
+- * Licensed under the GNU Affero General Public License, Version 3 (the "License");
+- * you may not use this file except in compliance with the License.
+- * You may obtain a copy of the License at
+- * 
+- * http://www.opensource.org/licenses/ecl1.php
+- * 
+- * Unless required by applicable law or agreed to in writing, software
+- * distributed under the License is distributed on an "AS IS" BASIS,
+- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+- * See the License for the specific language governing permissions and
+- * limitations under the License.
+- */
+-package org.kuali.coeus.propdev.impl.print;
+-
+-import org.kuali.coeus.common.framework.print.stream.xml.XmlStream;
+-import org.kuali.rice.core.api.datetime.DateTimeService;
+-import org.kuali.rice.krad.service.BusinessObjectService;
+-
+-import org.springframework.beans.factory.annotation.Autowired;
+-import org.springframework.beans.factory.annotation.Qualifier;
+-
+-/**
+- * This class will contain all common methods that can be used across
+- * Institution Proposal XML generator streams . All those report XML stream
+- * implementations need to extend and use the functions defined in this class.
+- * 
+- */
+-public abstract class CurrentAndPendingBaseStream implements XmlStream {
+-
+-    @Autowired
+-    @Qualifier("dateTimeService")
+-    protected DateTimeService dateTimeService;
+-
+-    @Autowired
+-    @Qualifier("businessObjectService")
+-	protected BusinessObjectService businessObjectService = null;
+-
+-	/**
+-	 * @return the dateTimeService
+-	 */
+-	public DateTimeService getDateTimeService() {
+-		return dateTimeService;
+-	}
+-
+-	/**
+-	 * @param dateTimeService
+-	 *            the dateTimeService to set
+-	 */
+-	public void setDateTimeService(DateTimeService dateTimeService) {
+-		this.dateTimeService = dateTimeService;
+-	}
+-
+-	/**
+-	 * @return the businessObjectService
+-	 */
+-	public BusinessObjectService getBusinessObjectService() {
+-		return businessObjectService;
+-	}
+-
+-	/**
+-	 * @param businessObjectService
+-	 *            the businessObjectService to set
+-	 */
+-	public void setBusinessObjectService(
+-			BusinessObjectService businessObjectService) {
+-		this.businessObjectService = businessObjectService;
+-	}
+-}
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/print/CurrentProposalXmlStream.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/print/CurrentProposalXmlStream.java
+deleted file mode 100644
+index aeb46a5..0000000
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/print/CurrentProposalXmlStream.java
++++ /dev/null
+@@ -1,198 +0,0 @@
+-package org.kuali.coeus.propdev.impl.print;
+-
+-import org.apache.xmlbeans.XmlObject;
+-import org.kuali.coeus.common.framework.print.PrintConstants;
+-import org.kuali.coeus.sys.framework.model.KcPersistableBusinessObjectBase;
+-import org.kuali.kra.award.customdata.AwardCustomData;
+-import org.kuali.coeus.common.framework.print.CurrentReportBean;
+-import org.kuali.kra.infrastructure.Constants;
+-import org.kuali.kra.printing.schema.CurrentAndPendingSupportDocument;
+-import org.kuali.kra.printing.schema.CurrentAndPendingSupportDocument.CurrentAndPendingSupport;
+-import org.kuali.kra.printing.schema.CurrentAndPendingSupportDocument.CurrentAndPendingSupport.CurrentReportCEColumnNames;
+-import org.kuali.kra.printing.schema.CurrentAndPendingSupportDocument.CurrentAndPendingSupport.CurrentSupport;
+-import org.kuali.kra.printing.schema.CurrentAndPendingSupportDocument.CurrentAndPendingSupport.CurrentSupport.CurrentReportCEColomnValues;
+-import org.kuali.rice.coreservice.framework.parameter.ParameterConstants;
+-import org.kuali.rice.coreservice.framework.parameter.ParameterService;
+-import org.springframework.beans.factory.annotation.Autowired;
+-import org.springframework.beans.factory.annotation.Qualifier;
+-import org.springframework.stereotype.Component;
+-
+-import java.util.*;
+-/**
+- * This class generates XML that confirms with the XSD related to Current
+- * Proposal Report. The data for XML is derived from
+- * {@link org.kuali.coeus.sys.framework.model.KcTransactionalDocumentBase} and {@link Map} of details passed to the class.
+- * 
+- */
+-
+-@Component("currentProposalXmlStream")
+-public class CurrentProposalXmlStream extends CurrentAndPendingBaseStream {
+-
+-    private List<String> columsList;
+-    @Autowired
+-    @Qualifier("parameterService")
+-    private ParameterService parameterService;
+-
+-    public void setParameterService (ParameterService parameterService){
+-        this.parameterService = parameterService;
+-    }
+-
+-    protected ParameterService getParameterService(){
+-        return parameterService;
+-    }
+-	/**
+-	 * This method generates XML for Current Proposal Report. It uses data
+-	 * passed in {@link org.kuali.coeus.sys.framework.model.KcTransactionalDocumentBase} for populating the XML nodes. The
+-	 * XMl once generated is returned as {@link XmlObject}
+-	 * 
+-	 * @param printableBusinessObject
+-	 *            using which XML is generated
+-	 * @param reportParameters
+-	 *            parameters related to XML generation
+-	 * @return {@link XmlObject} representing the XML
+-	 */
+-	public Map<String, XmlObject> generateXmlStream(
+-			KcPersistableBusinessObjectBase printableBusinessObject, Map<String, Object> reportParameters) {
+-		Map<String, XmlObject> xmlObjectList = new LinkedHashMap<String, XmlObject>();
+-		CurrentAndPendingSupportDocument currentAndPendingSupportDocument=CurrentAndPendingSupportDocument.Factory.newInstance();
+-		CurrentAndPendingSupport currentAndPendingSupport = CurrentAndPendingSupport.Factory
+-				.newInstance();
+-        List<CurrentReportBean> currentReportBeans = (List<CurrentReportBean>)reportParameters.get(PrintConstants.CURRENT_REPORT_BEANS_KEY);
+-        CurrentReportCEColumnNames currentReportCEColumnNames = getPendingSupportCustomColumnName(currentReportBeans);
+-		CurrentSupport[] currentSupports = getCurrentSupportInformation(currentReportBeans);
+-		currentAndPendingSupport.setPersonName((String)reportParameters.get(PrintConstants.REPORT_PERSON_NAME_KEY));
+-		currentAndPendingSupport.setCurrentSupportArray(currentSupports);
+-		currentAndPendingSupport.setCurrentReportCEColumnNames(currentReportCEColumnNames);
+-		currentAndPendingSupportDocument.setCurrentAndPendingSupport(currentAndPendingSupport);
+-		xmlObjectList.put(PrintConstants.CURRENT_REPORT_TYPE, currentAndPendingSupportDocument);
+-		return xmlObjectList;
+-	}
+-	
+-	private CurrentReportCEColumnNames getPendingSupportCustomColumnName(List<CurrentReportBean> currentReportBeans){
+-	    CurrentReportCEColumnNames currentReportCEColumnNames =  CurrentReportCEColumnNames.Factory.newInstance();
+-        columsList=new ArrayList<String>();
+-        String columName ="";
+-        for (CurrentReportBean bean : currentReportBeans){
+-            if(bean.getAwardCustomDataList() !=null){
+-               
+-                    for(AwardCustomData awardcutomdata :bean.getAwardCustomDataList()) {
+-                        if(awardcutomdata.getCustomAttribute()!=null)
+-                             columName = awardcutomdata.getCustomAttribute().getLabel();
+-                        if(!columsList.contains(columName))
+-                             columsList.add(columName);
+-                    }
+-            }
+-        }
+-        for(int columnLabelIndex=0;columnLabelIndex<columsList.size();columnLabelIndex++){
+-            if(columnLabelIndex == 0)
+-                currentReportCEColumnNames.setCEColumnName1(columsList.get(columnLabelIndex).toString());
+-            
+-            if(columnLabelIndex == 1)
+-                currentReportCEColumnNames.setCEColumnName2(columsList.get(columnLabelIndex).toString());
+-          
+-            if(columnLabelIndex == 2)
+-                currentReportCEColumnNames.setCEColumnName3(columsList.get(columnLabelIndex).toString());
+-          
+-            if(columnLabelIndex == 3)
+-                currentReportCEColumnNames.setCEColumnName4(columsList.get(columnLabelIndex).toString());
+-          
+-            if(columnLabelIndex == 4)
+-                currentReportCEColumnNames.setCEColumnName5(columsList.get(columnLabelIndex).toString());
+-            
+-            if(columnLabelIndex == 5)
+-                currentReportCEColumnNames.setCEColumnName6(columsList.get(columnLabelIndex).toString());
+-            
+-            if(columnLabelIndex == 6)
+-                currentReportCEColumnNames.setCEColumnName7(columsList.get(columnLabelIndex).toString());
+-            
+-            if(columnLabelIndex == 7)
+-                currentReportCEColumnNames.setCEColumnName8(columsList.get(columnLabelIndex).toString());
+-            
+-            if(columnLabelIndex == 8)
+-                currentReportCEColumnNames.setCEColumnName9(columsList.get(columnLabelIndex).toString());
+-            
+-            if(columnLabelIndex == 9)
+-                currentReportCEColumnNames.setCEColumnName10(columsList.get(columnLabelIndex).toString());
+-          
+-        }
+-        return currentReportCEColumnNames;
+-    }
+-	/*
+-	 * This method will set the values to current support information xml object
+-	 * and finally returns a array of currentSupport xml objects
+-	 */
+-	private CurrentSupport[] getCurrentSupportInformation(List<CurrentReportBean> currentReportBeans) {
+-		List<CurrentSupport> currentSupports = new ArrayList<CurrentSupport>();
+-		 parameterService = getParameterService();
+-		 String directIndirectEnabledValue = parameterService.getParameterValueAsString(Constants.PARAMETER_MODULE_AWARD, ParameterConstants.DOCUMENT_COMPONENT, "ENABLE_AWD_ANT_OBL_DIRECT_INDIRECT_COST");
+-
+-		for (CurrentReportBean bean : currentReportBeans) {
+-		    Map<String,String> cutomDataValueMap = new HashMap<String,String>();
+-		    CurrentSupport currentSupport = CurrentSupport.Factory.newInstance();
+-		    currentSupports.add(currentSupport);
+-            if (bean.getAcademicYearEffort() != null) {
+-                currentSupport.setAcademicYearEffort(bean
+-                        .getAcademicYearEffort().bigDecimalValue());
+-            }
+-            if (bean.getCalendarYearEffort() != null) {
+-                currentSupport.setCalendarYearEffort(bean
+-                        .getCalendarYearEffort().bigDecimalValue());
+-            }
+-            if (bean.getTotalEffort() != null) {
+-                currentSupport.setPercentageEffort(bean.getTotalEffort()
+-                        .bigDecimalValue());
+-            }
+-            if (bean.getSummerEffort() != null) {
+-                currentSupport.setSummerYearEffort(bean
+-                        .getSummerEffort().bigDecimalValue());
+-            }
+-            if (bean.getRoleCode() != null) {
+-                currentSupport.setPI(bean.getRoleCode());
+-            }
+-            if (bean.getAwardAmount() != null) {
+-                currentSupport.setAwardAmount(bean.getAwardAmount().bigDecimalValue());
+-            }
+-            if (bean.getProjectEndDate() != null) {
+-                currentSupport.setEndDate(dateTimeService.getCalendar(bean.getProjectEndDate()));
+-            }
+-            if (bean.getAwardTitle() != null) {
+-                currentSupport.setTitle(bean.getAwardTitle());
+-            }
+-            if (bean.getProjectStartDate() != null) {
+-                currentSupport.setEffectiveDate(dateTimeService.getCalendar(bean.getProjectStartDate()));
+-            }
+-            if (bean.getSponsorAwardNumber() != null) {
+-                currentSupport.setSponsorAwardNumber(bean.getSponsorAwardNumber());
+-            }
+-            if (bean.getSponsorName() != null) {
+-                currentSupport.setAgency(bean.getSponsorName());
+-            }
+-            if (bean.getTotalDirectCostTotal() !=null && directIndirectEnabledValue.equals("1")){
+-                currentSupport.setTotalDirectCost(bean.getTotalDirectCostTotal().bigDecimalValue());
+-            }
+-            if (bean.getTotalIndirectCostTotal() !=null && directIndirectEnabledValue.equals("1")){
+-                currentSupport.setTotalIndirectCost(bean.getTotalIndirectCostTotal().bigDecimalValue());
+-            }
+-            if(bean.getAwardCustomDataList() !=null){
+-                
+-                List<CurrentReportCEColomnValues> currentReportCEColomnValues = new ArrayList<CurrentReportCEColomnValues>();
+-                for(AwardCustomData awardcutomdata :bean.getAwardCustomDataList()) {
+-                    if(awardcutomdata.getCustomAttribute()!=null && awardcutomdata.getValue()!=null && awardcutomdata.getCustomAttribute().getLabel()!=null){
+-                        cutomDataValueMap.put(awardcutomdata.getCustomAttribute().getLabel(), awardcutomdata.getValue());
+-                    }
+-                }
+-                for(int columnLabelIndex=0;columnLabelIndex<columsList.size();columnLabelIndex++){
+-                    CurrentReportCEColomnValues currentReportCEColumnValue = CurrentReportCEColomnValues.Factory.newInstance();
+-                    if(cutomDataValueMap.get(columsList.get(columnLabelIndex))!=null)
+-                        currentReportCEColumnValue.setCurrentReportCEColumnValue(cutomDataValueMap.get(columsList.get(columnLabelIndex)).toString());
+-                    else{
+-                        currentReportCEColumnValue.setCurrentReportCEColumnValue("");
+-                    }
+-                    currentReportCEColomnValues.add(currentReportCEColumnValue);
+-                }
+-                currentSupport.setCurrentReportCEColomnValuesArray(currentReportCEColomnValues.toArray(new CurrentReportCEColomnValues[0]));
+-            }
+-		}
+-		return currentSupports.toArray(new CurrentSupport[0]);
+-	}
+-}
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/print/PendingProposalXmlStream.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/print/PendingProposalXmlStream.java
+deleted file mode 100644
+index 1b1e239..0000000
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/print/PendingProposalXmlStream.java
++++ /dev/null
+@@ -1,196 +0,0 @@
+-package org.kuali.coeus.propdev.impl.print;
+-
+-import org.apache.xmlbeans.XmlObject;
+-import org.kuali.coeus.common.framework.print.PrintConstants;
+-import org.kuali.coeus.sys.framework.model.KcPersistableBusinessObjectBase;
+-import org.kuali.coeus.common.framework.print.PendingReportBean;
+-import org.kuali.kra.institutionalproposal.customdata.InstitutionalProposalCustomData;
+-import org.kuali.kra.institutionalproposal.home.InstitutionalProposal;
+-import org.kuali.kra.printing.schema.CurrentAndPendingSupportDocument;
+-import org.kuali.kra.printing.schema.CurrentAndPendingSupportDocument.CurrentAndPendingSupport;
+-import org.kuali.kra.printing.schema.CurrentAndPendingSupportDocument.CurrentAndPendingSupport.PendingReportCEColumnNames;
+-import org.kuali.kra.printing.schema.CurrentAndPendingSupportDocument.CurrentAndPendingSupport.PendingSupport;
+-import org.kuali.kra.printing.schema.CurrentAndPendingSupportDocument.CurrentAndPendingSupport.PendingSupport.PendingReportCEColomnValues;
+-
+-import org.springframework.stereotype.Component;
+-
+-import java.util.*;
+-
+-/**
+- * This class generates XML that confirms with the XSD related to Pending
+- * Proposal Report. The data for XML is derived from
+- * {@link org.kuali.coeus.sys.framework.model.KcTransactionalDocumentBase} and {@link Map} of details passed to the class.
+- * 
+- */
+-@Component("pendingProposalXmlStream")
+-public class PendingProposalXmlStream extends CurrentAndPendingBaseStream {
+-	private ArrayList columsList;
+-    private static final String PROP_SEQ_STATUS = "ACTIVE";
+-    private static final String PROP_NUMBER = "proposalNumber";
+-    private static final int PROP_TYPE_CONTINUATION = 4;
+-    private static final int PROP_TYPE_TASK_ORDER = 6;
+-    private static final int PROP_PENDING_STATUS = 1;    
+-	/**
+-	 * This method generates XML for Pending Proposal Report. It uses data
+-	 * passed in {@link org.kuali.coeus.sys.framework.model.KcTransactionalDocumentBase} for populating the XML nodes. The
+-	 * XMl once generated is returned as {@link XmlObject}
+-	 * 
+-	 * @param printableBusinessObject
+-	 *            using which XML is generated
+-	 * @param reportParameters
+-	 *            parameters related to XML generation
+-	 * @return {@link XmlObject} representing the XML
+-	 */
+-	public Map<String, XmlObject> generateXmlStream(
+-			KcPersistableBusinessObjectBase printableBusinessObject, Map<String, Object> reportParameters) {
+-		Map<String, XmlObject> xmlObjectList = new LinkedHashMap<String, XmlObject>();
+-		CurrentAndPendingSupportDocument currentAndPendingSupportDocument=CurrentAndPendingSupportDocument.Factory.newInstance();
+-		CurrentAndPendingSupport currentAndPendingSupport = CurrentAndPendingSupport.Factory
+-				.newInstance();
+-		List<PendingReportBean> pendingReportBeans = (List<PendingReportBean>)reportParameters.get(PrintConstants.PENDING_REPORT_BEANS_KEY);
+-       
+-        PendingReportCEColumnNames pendingReportCEColumnNames =getPendingSupportCustomColumnName(pendingReportBeans);
+-        
+-        PendingSupport[] pendingSupports = getPendingSupportInformation(pendingReportBeans);
+-        
+-        currentAndPendingSupport.setPersonName((String)reportParameters.get(PrintConstants.REPORT_PERSON_NAME_KEY));
+-        currentAndPendingSupport.setPendingSupportArray(pendingSupports);
+-        currentAndPendingSupport.setPendingReportCEColumnNames(pendingReportCEColumnNames);
+-        currentAndPendingSupportDocument.setCurrentAndPendingSupport(currentAndPendingSupport);
+-        xmlObjectList.put(PrintConstants.PENDING_REPORT_TYPE, currentAndPendingSupportDocument);
+-		return xmlObjectList;
+-	}
+-
+-	private PendingReportCEColumnNames getPendingSupportCustomColumnName(List<PendingReportBean> pendingReportBeans){
+-	    PendingReportCEColumnNames pendingReportCEColumnNames =  PendingReportCEColumnNames.Factory.newInstance();
+-	    columsList=new ArrayList<String>();
+-        String columName ="";
+-        for (PendingReportBean bean : pendingReportBeans) {
+-            if(bean.getInstitutionalProposalCustomDataList() !=null){
+-                    for(InstitutionalProposalCustomData institutionalProposalCustomData :bean.getInstitutionalProposalCustomDataList()) {
+-                        if(institutionalProposalCustomData.getCustomAttribute()!=null)
+-                             columName = institutionalProposalCustomData.getCustomAttribute().getLabel();
+-                        if(!columsList.contains(columName))
+-                            columsList.add(columName);
+-                    }
+-            }
+-        }
+-        for(int columnLabelIndex=0;columnLabelIndex<columsList.size();columnLabelIndex++){
+-            if(columnLabelIndex == 0)
+-                pendingReportCEColumnNames.setCEColumnName1(columsList.get(columnLabelIndex).toString());
+-            
+-            if(columnLabelIndex == 1)
+-                pendingReportCEColumnNames.setCEColumnName2(columsList.get(columnLabelIndex).toString());
+-          
+-            if(columnLabelIndex == 2)
+-                pendingReportCEColumnNames.setCEColumnName3(columsList.get(columnLabelIndex).toString());
+-          
+-            if(columnLabelIndex == 3)
+-                pendingReportCEColumnNames.setCEColumnName4(columsList.get(columnLabelIndex).toString());
+-          
+-            if(columnLabelIndex == 4)
+-                pendingReportCEColumnNames.setCEColumnName5(columsList.get(columnLabelIndex).toString());
+-            
+-            if(columnLabelIndex == 5)
+-                pendingReportCEColumnNames.setCEColumnName6(columsList.get(columnLabelIndex).toString());
+-            
+-            if(columnLabelIndex == 6)
+-                pendingReportCEColumnNames.setCEColumnName7(columsList.get(columnLabelIndex).toString());
+-            
+-            if(columnLabelIndex == 7)
+-                pendingReportCEColumnNames.setCEColumnName8(columsList.get(columnLabelIndex).toString());
+-            
+-            if(columnLabelIndex == 8)
+-                pendingReportCEColumnNames.setCEColumnName9(columsList.get(columnLabelIndex).toString());
+-            
+-            if(columnLabelIndex == 9)
+-                pendingReportCEColumnNames.setCEColumnName10(columsList.get(columnLabelIndex).toString());
+-          
+-        }
+-        return pendingReportCEColumnNames;
+-	}
+-
+-	private PendingSupport[] getPendingSupportInformation(List<PendingReportBean> pendingReportBeans) {
+-	    List<PendingSupport> pendingSupports = new ArrayList<PendingSupport>();
+-	    for (PendingReportBean bean : pendingReportBeans) {
+-	      	Map<String,String> cutomDataValueMap = new HashMap<String,String>();
+-	        Map<String, String> proposalNumberMap = new HashMap<String, String>();
+-	        List<InstitutionalProposal> institutionalProposalList = new ArrayList <InstitutionalProposal>();  
+-	     	proposalNumberMap.put(PROP_NUMBER, String.valueOf(bean.getProposalNumber()));
+-	      institutionalProposalList = (List<InstitutionalProposal>) getBusinessObjectService()
+-                                    .findMatching(InstitutionalProposal.class,proposalNumberMap);
+-	      for(InstitutionalProposal institutionalProposal:institutionalProposalList){
+-	            
+-	           if(institutionalProposal.getProposalSequenceStatus().equals(PROP_SEQ_STATUS) && institutionalProposal.getStatusCode()== PROP_PENDING_STATUS 
+-	                   && institutionalProposal.getProposalTypeCode()!= PROP_TYPE_CONTINUATION && institutionalProposal.getProposalTypeCode()!= PROP_TYPE_TASK_ORDER ){
+-	        PendingSupport pendingSupport = PendingSupport.Factory.newInstance();
+-	        pendingSupports.add(pendingSupport);
+-	        if (bean.getProposalTitle() != null) {
+-	            pendingSupport.setTitle(bean.getProposalTitle());
+-	        }
+-	        if (bean.getTotalDirectCostTotal() != null) {
+-	            pendingSupport.setTotalDirectCost(bean.getTotalDirectCostTotal().bigDecimalValue());
+-	        }
+-	        if (bean.getTotalIndirectCostTotal() != null) {
+-	            pendingSupport.setTotalIndirectCost(bean.getTotalIndirectCostTotal().bigDecimalValue());
+-	        }
+-	        if (bean.getTotalRequestedCost() != null) {
+-	            pendingSupport.setTotalRequested(bean.getTotalRequestedCost().bigDecimalValue());
+-	        }
+-	        if (bean.getProposalNumber() != null) {
+-	            pendingSupport.setProposalNumber(bean
+-	                    .getProposalNumber());
+-	        }
+-	        if (bean.getRequestedEndDateTotal() != null) {
+-	            pendingSupport
+-	                    .setEndDate(dateTimeService.getCalendar(bean
+-	                            .getRequestedEndDateTotal()));
+-	        }
+-	        if (bean.getRequestedStartDateInitial() != null) {
+-	            pendingSupport.setEffectiveDate(dateTimeService
+-	                    .getCalendar(bean
+-	                            .getRequestedStartDateInitial()));
+-	        }
+-	        if (bean.getSponsorName() != null) {
+-	            pendingSupport.setAgency(bean.getSponsorName());
+-	        }
+-            if (bean.getRoleCode() != null) {
+-                pendingSupport.setPI(bean.getRoleCode());
+-            }
+-            if (bean.getTotalEffort() != null) {
+-                pendingSupport.setPercentageEffort(bean.getTotalEffort().bigDecimalValue());
+-            }
+-            if (bean.getAcademicYearEffort() != null) {
+-                pendingSupport.setAcademicYearEffort(bean.getAcademicYearEffort().bigDecimalValue());
+-            }
+-            if (bean.getCalendarYearEffort() != null) {
+-                pendingSupport.setCalendarYearEffort(bean.getCalendarYearEffort().bigDecimalValue());
+-            }
+-            if (bean.getSummerEffort() != null) {
+-                pendingSupport.setSummerYearEffort(bean.getSummerEffort().bigDecimalValue());
+-            }
+-            if(bean.getInstitutionalProposalCustomDataList() !=null){
+-                List<PendingReportCEColomnValues> pendingReportCEColomnValues = new ArrayList<PendingReportCEColomnValues>();
+-                for(InstitutionalProposalCustomData institutionalProposalCustomData :bean.getInstitutionalProposalCustomDataList()) {
+-                    if(institutionalProposalCustomData.getCustomAttribute()!=null && institutionalProposalCustomData.getValue()!=null && institutionalProposalCustomData.getCustomAttribute().getLabel()!=null){
+-                        cutomDataValueMap.put(institutionalProposalCustomData.getCustomAttribute().getLabel(), institutionalProposalCustomData.getValue());
+-                    }
+-                }
+-                for(int columnLabelIndex=0;columnLabelIndex<columsList.size();columnLabelIndex++){
+-                    PendingReportCEColomnValues pendingReportCEColomnValue = PendingReportCEColomnValues.Factory.newInstance();
+-                    if(cutomDataValueMap.get(columsList.get(columnLabelIndex))!=null)
+-                        pendingReportCEColomnValue.setPendingReportCEColumnValue(cutomDataValueMap.get(columsList.get(columnLabelIndex)).toString());
+-                    else{
+-                        pendingReportCEColomnValue.setPendingReportCEColumnValue("");
+-                    }
+-                    pendingReportCEColomnValues.add(pendingReportCEColomnValue);
+-                }
+-                pendingSupport.setPendingReportCEColomnValuesArray(pendingReportCEColomnValues.toArray(new PendingReportCEColomnValues[0]));
+-            }
+-	       }
+-	      }
+-	     }
+-	    return pendingSupports.toArray(new PendingSupport[0]);
+-	}
+-
+-}
+diff --git a/coeus-impl/src/main/resources/org/kuali/coeus/common/impl/CommonAllComponentSpringBeans.xml b/coeus-impl/src/main/resources/org/kuali/coeus/common/impl/CommonAllComponentSpringBeans.xml
+index 42ddf2d..33d313b 100644
+--- a/coeus-impl/src/main/resources/org/kuali/coeus/common/impl/CommonAllComponentSpringBeans.xml
++++ b/coeus-impl/src/main/resources/org/kuali/coeus/common/impl/CommonAllComponentSpringBeans.xml
+@@ -16,5 +16,5 @@
+     <import resource="classpath:org/kuali/coeus/common/impl/CommonComponentSpringBeans.xml"/>
+     <import resource="classpath:org/kuali/coeus/common/budget/impl/CommonBudgetComponentSpringBeans.xml"/>
+     <import resource="classpath:org/kuali/coeus/common/questionnaire/impl/CommonQuestionnaireComponentSpringBeans.xml"/>
+-
++    <import resource="classpath:org/kuali/coeus/common/proposal/impl/CommonProposalComponentSpringBeans.xml"/>
+ </beans>
+\ No newline at end of file
+diff --git a/coeus-impl/src/main/resources/org/kuali/coeus/common/proposal/impl/CommonProposalComponentSpringBeans.xml b/coeus-impl/src/main/resources/org/kuali/coeus/common/proposal/impl/CommonProposalComponentSpringBeans.xml
+new file mode 100644
+index 0000000..a7b3972
+--- /dev/null
++++ b/coeus-impl/src/main/resources/org/kuali/coeus/common/proposal/impl/CommonProposalComponentSpringBeans.xml
+@@ -0,0 +1,57 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
++       xmlns:p="http://www.springframework.org/schema/p"
++       xmlns:context="http://www.springframework.org/schema/context"
++       xmlns:util="http://www.springframework.org/schema/util"
++       xmlns="http://www.springframework.org/schema/beans"
++       xsi:schemaLocation="http://www.springframework.org/schema/beans
++       http://www.springframework.org/schema/beans/spring-beans.xsd
++       http://www.springframework.org/schema/context
++       http://www.springframework.org/schema/context/spring-context.xsd
++       http://www.springframework.org/schema/util
++       http://www.springframework.org/schema/util/spring-util.xsd">
++
++    <context:annotation-config />
++    <context:component-scan base-package="org.kuali.coeus.common.proposal" />
++
++    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
++        <property name="properties" value="#{T(org.kuali.rice.core.api.config.property.ConfigContext).getCurrentContextConfig().getProperties()}" />
++    </bean>
++
++    <import resource="classpath:org/kuali/coeus/common/impl/CommonImportRiceSpringBeans.xml"/>
++    <import resource="classpath:org/kuali/coeus/common/impl/CommonImportModuleSpringBeans.xml"/>
++
++    <bean id="proposalModuleConfiguration" parent="proposalModuleConfiguration-parentBean" />
++    <bean id="proposalModuleConfiguration-parentBean" class="org.kuali.rice.krad.bo.ModuleConfiguration" abstract="true">
++        <property name="initializeDataDictionary" value="true" />
++        <property name="namespaceCode" value="KC-P" />
++        <property name="packagePrefixes">
++            <list>
++                <value>org.kuali.coeus.common.proposal</value>
++            </list>
++        </property>
++        <property name="databaseRepositoryFilePaths">
++            <list>
++                <value>org/kuali/coeus/common/proposal/impl/repository-proposal.xml</value>
++            </list>
++        </property>
++        <property name="dataDictionaryPackages">
++            <list>
++                <value>classpath:org/kuali/coeus/common/proposal/impl/mail/MailBy.xml</value>
++                <value>classpath:org/kuali/coeus/common/proposal/impl/mail/MailType.xml</value>
++                <value>classpath:org/kuali/coeus/common/proposal/impl/mail/MailByMaintenanceDocument.xml</value>
++                <value>classpath:org/kuali/coeus/common/proposal/impl/mail/MailTypeMaintenanceDocument.xml</value>
++            </list>
++        </property>
++    </bean>
++
++    <bean id="platformAwareDao" class="org.kuali.rice.core.framework.persistence.ojb.dao.PlatformAwareDaoBaseOjb" abstract="true">
++        <property name="jcdAlias" value="kradApplicationDataSource" />
++        <property name="dbPlatform" ref="dbPlatform" />
++    </bean>
++
++    <bean id="currentReportDao" parent="platformAwareDao" class="org.kuali.coeus.common.proposal.impl.report.CurrentReportDaoOjb" />
++
++    <bean id="pendingReportDao" parent="platformAwareDao" class="org.kuali.coeus.common.proposal.impl.report.PendingReportDaoOjb" />
++
++</beans>
+\ No newline at end of file
+diff --git a/coeus-impl/src/main/resources/org/kuali/coeus/common/proposal/impl/repository-proposal.xml b/coeus-impl/src/main/resources/org/kuali/coeus/common/proposal/impl/repository-proposal.xml
+new file mode 100644
+index 0000000..918a7fd
+--- /dev/null
++++ b/coeus-impl/src/main/resources/org/kuali/coeus/common/proposal/impl/repository-proposal.xml
+@@ -0,0 +1,36 @@
++<!--
++ Copyright 2005-2014 The Kuali Foundation.
++ 
++ Licensed under the Educational Community License, Version 1.0 (the "License");
++ you may not use this file except in compliance with the License.
++ You may obtain a copy of the License at
++ 
++ http://www.opensource.org/licenses/ecl1.php
++ 
++ Unless required by applicable law or agreed to in writing, software
++ distributed under the License is distributed on an "AS IS" BASIS,
++ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ See the License for the specific language governing permissions and
++ limitations under the License.
++-->
++<descriptor-repository version="1.0">
++
++    <class-descriptor class="org.kuali.coeus.common.proposal.framework.mail.MailBy" table="MAIL_BY">
++        <field-descriptor name="mailByCode" column="MAIL_BY_CODE" jdbc-type="VARCHAR" primarykey="true" />
++        <field-descriptor name="description" column="DESCRIPTION" jdbc-type="VARCHAR" />
++        <field-descriptor name="updateTimestamp" column="UPDATE_TIMESTAMP" jdbc-type="TIMESTAMP" />
++        <field-descriptor name="updateUser" column="UPDATE_USER" jdbc-type="VARCHAR" />
++        <field-descriptor name="objectId" column="OBJ_ID" jdbc-type="VARCHAR" />
++        <field-descriptor name="versionNumber" column="VER_NBR" jdbc-type="BIGINT" locking="false" />
++    </class-descriptor>
++
++    <class-descriptor class="org.kuali.coeus.common.proposal.framework.mail.MailType" table="MAIL_TYPE">
++        <field-descriptor name="mailType" column="MAIL_TYPE" jdbc-type="VARCHAR" primarykey="true" />
++        <field-descriptor name="description" column="DESCRIPTION" jdbc-type="VARCHAR" />
++        <field-descriptor name="updateTimestamp" column="UPDATE_TIMESTAMP" jdbc-type="TIMESTAMP" />
++        <field-descriptor name="updateUser" column="UPDATE_USER" jdbc-type="VARCHAR" />
++        <field-descriptor name="objectId" column="OBJ_ID" jdbc-type="VARCHAR" />
++        <field-descriptor name="versionNumber" column="VER_NBR" jdbc-type="BIGINT" locking="false" />
++    </class-descriptor>
++	
++</descriptor-repository>
+\ No newline at end of file
+diff --git a/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/PropDevComponentSpringBeans.xml b/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/PropDevComponentSpringBeans.xml
+index 749903f..356d576 100644
+--- a/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/PropDevComponentSpringBeans.xml
++++ b/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/PropDevComponentSpringBeans.xml
+@@ -155,10 +155,6 @@
+           p:localServiceName="proposalRoleTypeService"
+           p:serviceInterface="org.kuali.rice.kim.framework.role.RoleTypeService"/>
+ 
+-    <bean id="currentReportDao" parent="platformAwareDao" class="org.kuali.coeus.common.proposal.impl.report.CurrentReportDaoOjb" />
+-
+-    <bean id="pendingReportDao" parent="platformAwareDao" class="org.kuali.coeus.common.proposal.impl.report.PendingReportDaoOjb" />
+-
+     <bean id="proposalTypeValuesFinder" class="org.kuali.coeus.sys.framework.keyvalue.ExtendedPersistableBusinessObjectValuesFinder">
+         <property name="businessObjectClass" value="org.kuali.coeus.common.framework.type.ProposalType"/>
+         <property name="includeKeyInDescription" value="false"/>
+diff --git a/coeus-impl/src/main/resources/org/kuali/kra/CoreSpringBeans.xml b/coeus-impl/src/main/resources/org/kuali/kra/CoreSpringBeans.xml
+index 1dab100..9fdcba6 100644
+--- a/coeus-impl/src/main/resources/org/kuali/kra/CoreSpringBeans.xml
++++ b/coeus-impl/src/main/resources/org/kuali/kra/CoreSpringBeans.xml
+@@ -399,8 +399,6 @@
+                 <value>classpath:org/kuali/coeus/common/impl/person/attr/KcPersonExtendedAttributes.xml</value>
+                 <value>classpath:org/kuali/kra/datadictionary/KraAttributeReferenceDummy.xml</value>
+                 <value>classpath:org/kuali/coeus/propdev/impl/core/LookupableDevelopmentProposal.xml</value>
+-                <value>classpath:org/kuali/coeus/common/proposal/impl/mail/MailBy.xml</value>
+-                <value>classpath:org/kuali/coeus/common/proposal/impl/mail/MailType.xml</value>
+                 <value>classpath:org/kuali/kra/datadictionary/MembershipRole.xml</value>
+                 <value>classpath:org/kuali/coeus/common/impl/motd/MessageOfTheDay.xml</value>
+                 <value>classpath:org/kuali/kra/datadictionary/MinuteEntryType.xml</value>
+@@ -793,8 +791,6 @@
+                 <value>classpath:org/kuali/kra/datadictionary/docs/KcKrmsTermFunParamMaintenanceDocument.xml</value>
+                 <value>classpath:org/kuali/kra/datadictionary/docs/KcMaintenanceDocumentEntry.xml</value>
+                 <value>classpath:org/kuali/coeus/common/impl/person/attr/KcPersonExtendedAttributesMaintenanceDocument.xml</value>
+-                <value>classpath:org/kuali/coeus/common/proposal/impl/mail/MailByMaintenanceDocument.xml</value>
+-                <value>classpath:org/kuali/coeus/common/proposal/impl/mail/MailTypeMaintenanceDocument.xml</value>
+                 <value>classpath:org/kuali/kra/datadictionary/docs/MembershipRoleMaintenanceDocument.xml</value>
+                 <value>classpath:org/kuali/coeus/common/impl/motd/MessageOfTheDayMaintenanceDocument.xml</value>
+                 <value>classpath:org/kuali/kra/datadictionary/docs/MinuteEntryTypeMaintenanceDocument.xml</value>
+diff --git a/coeus-impl/src/main/resources/repository.xml b/coeus-impl/src/main/resources/repository.xml
+index 03c0f11..9539b29 100755
+--- a/coeus-impl/src/main/resources/repository.xml
++++ b/coeus-impl/src/main/resources/repository.xml
+@@ -222,15 +222,6 @@
+     	
+ 	</class-descriptor>
+ 
+-	<class-descriptor class="org.kuali.coeus.common.proposal.framework.mail.MailBy" table="MAIL_BY">
+-		<field-descriptor name="mailByCode" column="MAIL_BY_CODE" jdbc-type="VARCHAR" primarykey="true" />
+-		<field-descriptor name="description" column="DESCRIPTION" jdbc-type="VARCHAR" />
+-		<field-descriptor name="updateTimestamp" column="UPDATE_TIMESTAMP" jdbc-type="TIMESTAMP" />
+-		<field-descriptor name="updateUser" column="UPDATE_USER" jdbc-type="VARCHAR" />
+-		<field-descriptor name="objectId" column="OBJ_ID" jdbc-type="VARCHAR" />
+-    	<field-descriptor name="versionNumber" column="VER_NBR" jdbc-type="BIGINT" locking="false" />
+-	</class-descriptor>
+-
+ 	<class-descriptor class="org.kuali.coeus.common.framework.noo.NoticeOfOpportunity" table="NOTICE_OF_OPPORTUNITY">
+ 		<field-descriptor name="code" column="NOTICE_OF_OPPORTUNITY_CODE" jdbc-type="VARCHAR" primarykey="true" />
+ 		<field-descriptor name="description" column="DESCRIPTION" jdbc-type="VARCHAR" />
+@@ -346,14 +337,7 @@
+ 		<field-descriptor name="updateUser" column="UPDATE_USER" jdbc-type="VARCHAR"/>
+ 		<field-descriptor name="versionNumber" column="VER_NBR"  jdbc-type="BIGINT" locking="false"/>
+ 	</class-descriptor>
+-	<class-descriptor class="org.kuali.coeus.common.proposal.framework.mail.MailType" table="MAIL_TYPE">
+-		<field-descriptor name="mailType" column="MAIL_TYPE" jdbc-type="VARCHAR" primarykey="true" />
+-		<field-descriptor name="description" column="DESCRIPTION" jdbc-type="VARCHAR" />
+-		<field-descriptor name="updateTimestamp" column="UPDATE_TIMESTAMP" jdbc-type="TIMESTAMP" />
+-		<field-descriptor name="updateUser" column="UPDATE_USER" jdbc-type="VARCHAR" />
+-		<field-descriptor name="objectId" column="OBJ_ID" jdbc-type="VARCHAR" />
+-    	<field-descriptor name="versionNumber" column="VER_NBR" jdbc-type="BIGINT" locking="false" />
+-	</class-descriptor>
++
+ 	<class-descriptor class="org.kuali.coeus.common.framework.sponsor.SponsorType" table="SPONSOR_TYPE">
+ 		<field-descriptor name="code" column="SPONSOR_TYPE_CODE" jdbc-type="VARCHAR" primarykey="true"/>
+ 		<field-descriptor name="description" column="DESCRIPTION" jdbc-type="VARCHAR"/>

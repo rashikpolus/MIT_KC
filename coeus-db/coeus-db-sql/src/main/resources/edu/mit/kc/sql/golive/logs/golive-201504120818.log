@@ -1,0 +1,1849 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Sun Apr 12 11:45:06 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+
+Table truncated.
+
+FROM krcr_parm_t@kc_stag_db_link
+                 *
+ERROR at line 23:
+ORA-02019: connection description for remote database not found
+
+
+
+Commit complete.
+
+  SELECT nm, nmspc_cd, lbl, actv, cmpnt_nm, desc_txt FROM krew_attr_defn_t@kc_stag_db_link
+  *
+ERROR at line 4:
+ORA-06550: line 4, column 3:
+PL/SQL: ORA-00942: table or view does not exist
+ORA-06550: line 4, column 3:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 3, column 10:
+PLS-00341: declaration of cursor 'C_DATA' is incomplete or malformed
+ORA-06550: line 6, column 10:
+PL/SQL: Item ignored
+ORA-06550: line 11, column 21:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 11, column 3:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 16, column 18:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 16, column 18:
+PL/SQL: ORA-00904: "R_DATA"."NMSPC_CD": invalid identifier
+ORA-06550: line 14, column 3:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 37, column 5:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 37, column 12:
+PL/SQL: ORA-00984: column not allowed here
+ORA-06550: line 19, column 5:
+PL/SQL: SQL Statement ignored
+
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+FROM krew_ppl_flw_attr_t@kc_stag_db_link
+                         *
+ERROR at line 13:
+ORA-02019: connection description for remote database not found
+
+
+
+Table truncated.
+
+FROM krew_ppl_flw_dlgt_t@kc_stag_db_link
+                         *
+ERROR at line 19:
+ORA-02019: connection description for remote database not found
+
+
+
+Table truncated.
+
+FROM krew_ppl_flw_t@kc_stag_db_link
+                    *
+ERROR at line 17:
+ORA-02019: connection description for remote database not found
+
+
+
+Table truncated.
+
+FROM krew_ppl_flw_mbr_t@kc_stag_db_link
+                        *
+ERROR at line 21:
+ORA-02019: connection description for remote database not found
+
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+TRUNCATE TABLE rolodex
+               *
+ERROR at line 1:
+ORA-02266: unique/primary keys in table referenced by enabled foreign keys
+
+
+FROM rolodex@kc_stag_db_link
+             *
+ERROR at line 64:
+ORA-02019: connection description for remote database not found
+
+
+
+PL/SQL procedure successfully completed.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+FROM UNIT@KC_STAG_DB_LINK
+          *
+ERROR at line 3:
+ORA-02019: connection description for remote database not found
+
+
+
+Table truncated.
+
+FROM UNIT_ADMINISTRATOR@KC_STAG_DB_LINK
+                        *
+ERROR at line 3:
+ORA-02019: connection description for remote database not found
+
+
+
+Table altered.
+
+
+Table altered.
+
+ALTER TABLE AWARD_REPORT_TRACKING ENABLE CONSTRAINT AWARD_REPORT_TRACKING_FK1
+                                                    *
+ERROR at line 1:
+ORA-02298: cannot validate (KCSO.AWARD_REPORT_TRACKING_FK1) - parent keys not
+found
+
+
+
+Table altered.
+
+ALTER TABLE PROTOCOL_UNITS ENABLE CONSTRAINT FK_PROTOCOL_UNITS_2
+                                             *
+ERROR at line 1:
+ORA-02298: cannot validate (KCSO.FK_PROTOCOL_UNITS_2) - parent keys not found
+
+
+
+Table altered.
+
+ALTER TABLE PROPOSAL_LOG ENABLE CONSTRAINT FK_LEAD_UNIT
+                                           *
+ERROR at line 1:
+ORA-02298: cannot validate (KCSO.FK_LEAD_UNIT) - parent keys not found
+
+
+
+Table altered.
+
+
+Table altered.
+
+ALTER TABLE AWARD_PERSON_UNITS ENABLE CONSTRAINT FK_APU_UNIT
+                                                 *
+ERROR at line 1:
+ORA-02298: cannot validate (KCSO.FK_APU_UNIT) - parent keys not found
+
+
+
+Table altered.
+
+
+Table altered.
+
+ALTER TABLE COMMITTEE ENABLE CONSTRAINT FK_COMMITTEE_2
+                                        *
+ERROR at line 1:
+ORA-02298: cannot validate (KCSO.FK_COMMITTEE_2) - parent keys not found
+
+
+ALTER TABLE NEGOTIATION_UNASSOC_DETAIL ENABLE CONSTRAINT NEGOTIATION_UNASSOC_DETAIL_FK2
+                                                         *
+ERROR at line 1:
+ORA-02298: cannot validate (KCSO.NEGOTIATION_UNASSOC_DETAIL_FK2) - parent keys
+not found
+
+
+ALTER TABLE AWARD ENABLE CONSTRAINT FK_AWARD_UNIT
+                                    *
+ERROR at line 1:
+ORA-02298: cannot validate (KCSO.FK_AWARD_UNIT) - parent keys not found
+
+
+
+Table altered.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+  select t1.budget_id,t1.award_id,t2.award_number,t2.sequence_number,t3.document_number from award_budget_ext@KC_STAG_DB_LINK t1
+  *
+ERROR at line 3:
+ORA-06550: line 3, column 3:
+PL/SQL: ORA-00942: table or view does not exist
+ORA-06550: line 3, column 3:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 2, column 10:
+PLS-00341: declaration of cursor 'C_DATA' is incomplete or malformed
+ORA-06550: line 6, column 10:
+PL/SQL: Item ignored
+ORA-06550: line 14, column 21:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 14, column 3:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 19, column 83:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 19, column 83:
+PL/SQL: ORA-00904: "R_DATA"."SEQUENCE_NUMBER": invalid identifier
+ORA-06550: line 18, column 7:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 60, column 9:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 60, column 16:
+PL/SQL: ORA-00984: column not allowed here
+ORA-06550: line 38, column 7:
+PL/SQL: SQL Statement ignored
+
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+Commit complete.
+
+from go_live_awd_bgt_mapping t1 inner join BUDGET_DOCUMENT@KC_STAG_DB_LINK t2 on t1.stage_bud_doc_id = t2.DOCUMENT_NUMBER
+                                                           *
+ERROR at line 3:
+ORA-02019: connection description for remote database not found
+
+
+from go_live_awd_bgt_mapping t1 inner join BUDGET_DOCUMENT@KC_STAG_DB_LINK t2 on t1.stage_bud_doc_id = t2.DOCUMENT_NUMBER
+                                                           *
+ERROR at line 3:
+ORA-02019: connection description for remote database not found
+
+
+
+Commit complete.
+
+CREATE TABLE TMP_STAG_BUDGET AS SELECT BUDGET_ID,BUDGET_JUSTIFICATION,COMMENTS FROM BUDGET@KC_STAG_DB_LINK
+                                                                                           *
+ERROR at line 1:
+ORA-02019: connection description for remote database not found
+
+
+CREATE TABLE TMP_STAG_BUDGET AS SELECT BUDGET_ID,BUDGET_JUSTIFICATION,COMMENTS FROM BUDGET@KC_STAG_DB_LINK
+                                                                                           *
+ERROR at line 1:
+ORA-02019: connection description for remote database not found
+
+
+SP2-0310: unable to open file "_DATE,END_DATE,TOTAL_COST,TOTAL_DIRECT_COST,TOTAL_INDIRECT_COST,COST_SHARING_AMOUNT,UNDERRECOVERY_AMOUNT,RESIDUAL_FUNDS,.sql"
+SP2-0734: unknown command beginning "TOTAL_COST..." - rest of line ignored.
+SP2-0734: unknown command beginning "MODULAR_BU..." - rest of line ignored.
+*/
+ *
+ERROR at line 6:
+ORA-00936: missing expression
+
+
+  1  SELECT t1.prod_budget_id,t2.BUDGET_ID, t2.budget_justification,t2.on_off_campus_flag,t2.version_number,t1.prod_bud_doc_id,t2.parent_document_type_code,
+  2  t2.start_date,t2.end_date,t2.total_cost,t2.total_direct_cost,t2.total_indirect_cost,t2.cost_sharing_amount,t2.underrecovery_amount,t2.residual_funds,
+  3  t2.total_cost_limit,t2.oh_rate_class_code,t2.oh_rate_type_code,t2.comments,t2.final_version_flag,t2.update_timestamp,t2.update_user,t2.ur_rate_class_code,
+  4  t2.modular_budget_flag,t2.ver_nbr,t2.total_direct_cost_limit,t2.submit_cost_sharing
+  5  from go_live_awd_bgt_mapping t1 inner join BUDGET@KC_STAG_DB_LINK t2 on t1.stage_budget_id = t2.budget_id
+  6  */
+  7  declare
+  8  cursor c_data is
+  9  	SELECT t1.prod_budget_id,t2.BUDGET_ID,t2.on_off_campus_flag,t2.version_number,t1.prod_bud_doc_id,t2.parent_document_type_code,
+ 10  	t2.start_date,t2.end_date,t2.total_cost,t2.total_direct_cost,t2.total_indirect_cost,t2.cost_sharing_amount,t2.underrecovery_amount,t2.residual_funds,
+ 11  	t2.total_cost_limit,t2.oh_rate_class_code,t2.oh_rate_type_code,t2.final_version_flag,t2.update_timestamp,t2.update_user,t2.ur_rate_class_code,
+ 12  	t2.modular_budget_flag,t2.ver_nbr,sys_guid(),t2.total_direct_cost_limit,t2.submit_cost_sharing
+ 13* 	from go_live_awd_bgt_mapping t1 inner join BUDGET@KC_STAG_DB_LINK t2 on t1.stage_budget_id = t2.budget_id
+*/
+ *
+ERROR at line 6:
+ORA-00936: missing expression
+
+
+SP2-0734: unknown command beginning "ll_bgt_jus..." - rest of line ignored.
+SP2-0734: unknown command beginning "ll_comment..." - rest of line ignored.
+	open c_data;
+	     *
+ERROR at line 2:
+ORA-06550: line 2, column 7:
+PLS-00201: identifier 'C_DATA' must be declared
+ORA-06550: line 2, column 2:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 4, column 8:
+PLS-00201: identifier 'C_DATA' must be declared
+ORA-06550: line 4, column 2:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 5, column 12:
+PLS-00201: identifier 'C_DATA' must be declared
+ORA-06550: line 5, column 2:
+PL/SQL: Statement ignored
+ORA-06550: line 8, column 60:
+PL/SQL: ORA-00942: table or view does not exist
+ORA-06550: line 8, column 4:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 10, column 4:
+PLS-00201: identifier 'LL_BGT_JUSTI_CLOB' must be declared
+ORA-06550: line 10, column 4:
+PL/SQL: Statement ignored
+ORA-06550: line 14, column 41:
+PL/SQL: ORA-00942: table or view does not exist
+ORA-06550: line 14, column 4:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 16, column 4:
+PLS-00201: identifier 'LL_COMMENT' must be declared
+ORA-06550: line 16, column 4:
+PL/SQL: Statement ignored
+ORA-06550: line 26, column 93:
+PL/SQL: ORA-00984: column no
+
+
+drop table TMP_STAG_BUDGET
+           *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+
+Commit complete.
+
+	SELECT t1.budget_period_number,t2.prod_budget_id as budget_id,t1.BUDGET_PERIOD,t1.START_DATE,t1.END_DATE,t1.TOTAL_COST,t1.TOTAL_DIRECT_COST,
+	*
+ERROR at line 3:
+ORA-06550: line 3, column 2:
+PL/SQL: ORA-00942: table or view does not exist
+ORA-06550: line 3, column 2:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 2, column 9:
+PLS-00341: declaration of cursor 'C_DATA' is incomplete or malformed
+ORA-06550: line 6, column 9:
+PL/SQL: Item ignored
+ORA-06550: line 13, column 20:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 13, column 2:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 21, column 16:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 21, column 23:
+PL/SQL: ORA-00984: column not allowed here
+ORA-06550: line 17, column 4:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 24, column 11:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 24, column 18:
+PL/SQL: ORA-00984: column not allowed here
+ORA-06550: line 23, column 4:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 28, column 86:
+PLS-00320: the declaration of th
+
+
+
+Commit complete.
+
+t1.update_timestamp,t1.update_user,t1.ver_nbr,sys_guid() FROM BUDGET_MODULAR@KC_STAG_DB_LINK t1
+                                                                             *
+ERROR at line 4:
+ORA-02019: connection description for remote database not found
+
+
+
+Commit complete.
+
+FROM BUDGET_MODULAR_IDC@KC_STAG_DB_LINK t1
+                        *
+ERROR at line 5:
+ORA-02019: connection description for remote database not found
+
+
+	SELECT t1.PERSON_SEQUENCE_NUMBER,t1.BUDGET_ID,t2.prod_budget_id,t1.ROLODEX_ID,t1.APPOINTMENT_TYPE_CODE,t1.TBN_ID,
+	*
+ERROR at line 3:
+ORA-06550: line 3, column 2:
+PL/SQL: ORA-00942: table or view does not exist
+ORA-06550: line 3, column 2:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 2, column 9:
+PLS-00341: declaration of cursor 'C_DATA' is incomplete or malformed
+ORA-06550: line 7, column 9:
+PL/SQL: Item ignored
+ORA-06550: line 12, column 20:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 12, column 2:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 16, column 43:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 16, column 2:
+PL/SQL: Statement ignored
+ORA-06550: line 19, column 37:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 19, column 2:
+PL/SQL: Statement ignored
+ORA-06550: line 23, column 56:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 23, column 63:
+PL/SQL: ORA-00984: column not allowed here
+ORA-06550: line 22, column 2:
+
+
+	select t1.BUDGET_DETAILS_ID,t1.GROUP_NAME,t1.budget_id,t1.HIERARCHY_PROPOSAL_NUMBER,t1.HIDE_IN_HIERARCHY,
+	*
+ERROR at line 3:
+ORA-06550: line 3, column 2:
+PL/SQL: ORA-00942: table or view does not exist
+ORA-06550: line 3, column 2:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 2, column 9:
+PLS-00341: declaration of cursor 'C_DATA' is incomplete or malformed
+ORA-06550: line 8, column 9:
+PL/SQL: Item ignored
+ORA-06550: line 17, column 19:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 17, column 1:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 26, column 26:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 26, column 26:
+PL/SQL: ORA-00904: "R_DATA"."BUDGET_PERIOD": invalid identifier
+ORA-06550: line 21, column 3:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 36, column 115:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 36, column 122:
+PL/SQL: ORA-00984: column not allowed here
+ORA-06550: line 29, column 3:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 39, column 10:
+PLS-00320
+
+
+select t1.BUDGET_DETAILS_CAL_AMTS_ID,t1.BUDGET_ID,t1.BUDGET_PERIOD_NUMBER,t1.BUDGET_PERIOD,t1.LINE_ITEM_NUMBER,t1.RATE_CLASS_CODE,t1.RATE_TYPE_CODE,t1.APPLY_RATE_FLAG,
+*
+ERROR at line 3:
+ORA-06550: line 3, column 1:
+PL/SQL: ORA-00942: table or view does not exist
+ORA-06550: line 3, column 1:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 2, column 8:
+PLS-00341: declaration of cursor 'C_DATA' is incomplete or malformed
+ORA-06550: line 7, column 8:
+PL/SQL: Item ignored
+ORA-06550: line 17, column 19:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 17, column 1:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 25, column 26:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 25, column 26:
+PL/SQL: ORA-00904: "R_DATA"."BUDGET_PERIOD": invalid identifier
+ORA-06550: line 21, column 3:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 31, column 29:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 31, column 29:
+PL/SQL: ORA-00904: "R_DATA"."LINE_ITEM_NUMBER": invalid identifier
+ORA-06550: line 27, column 3:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 38
+
+
+	SELECT t1.budget_rate_and_base_id,t1.budget_period_number,t1.budget_id,t1.budget_period,t1.line_item_number,t1.rate_number,t1.start_date,t1.end_date,
+	*
+ERROR at line 3:
+ORA-06550: line 3, column 2:
+PL/SQL: ORA-00942: table or view does not exist
+ORA-06550: line 3, column 2:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 2, column 8:
+PLS-00341: declaration of cursor 'C_DATA' is incomplete or malformed
+ORA-06550: line 7, column 8:
+PL/SQL: Item ignored
+ORA-06550: line 18, column 19:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 18, column 1:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 26, column 26:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 26, column 26:
+PL/SQL: ORA-00904: "R_DATA"."BUDGET_PERIOD": invalid identifier
+ORA-06550: line 22, column 3:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 32, column 29:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 32, column 29:
+PL/SQL: ORA-00904: "R_DATA"."LINE_ITEM_NUMBER": invalid identifier
+ORA-06550: line 28, column 3:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 40
+
+
+FROM budget_personnel_details@KC_STAG_DB_LINK
+                              *
+ERROR at line 2:
+ORA-02019: connection description for remote database not found
+
+
+	select t1.budget_personnel_details_id,t1.person_sequence_number,t1.budget_period_number,t1.budget_id,t1.line_item_number,
+	*
+ERROR at line 3:
+ORA-06550: line 3, column 2:
+PL/SQL: ORA-00942: table or view does not exist
+ORA-06550: line 3, column 2:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 2, column 9:
+PLS-00341: declaration of cursor 'C_DATA' is incomplete or malformed
+ORA-06550: line 10, column 9:
+PL/SQL: Item ignored
+ORA-06550: line 21, column 19:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 21, column 1:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 27, column 60:
+PL/SQL: ORA-00942: table or view does not exist
+ORA-06550: line 27, column 4:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 38, column 26:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 38, column 26:
+PL/SQL: ORA-00904: "R_DATA"."BUDGET_PERIOD": invalid identifier
+ORA-06550: line 34, column 3:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 44, column 38:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 44, column 38:
+PL/SQ
+
+
+drop table TMP_STAG_BUD_PER_DET
+           *
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+	select budget_personnel_cal_amts_id,budget_period_number,budget_id,budget_period,
+	*
+ERROR at line 3:
+ORA-06550: line 3, column 2:
+PL/SQL: ORA-00942: table or view does not exist
+ORA-06550: line 3, column 2:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 2, column 9:
+PLS-00341: declaration of cursor 'C_DATA' is incomplete or malformed
+ORA-06550: line 7, column 9:
+PL/SQL: Item ignored
+ORA-06550: line 18, column 19:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 18, column 1:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 27, column 26:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 27, column 26:
+PL/SQL: ORA-00904: "R_DATA"."BUDGET_PERIOD": invalid identifier
+ORA-06550: line 23, column 3:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 36, column 27:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 36, column 27:
+PL/SQL: ORA-00904: "R_DATA"."LINE_ITEM_NUMBER": invalid identifier
+ORA-06550: line 31, column 4:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 48
+
+
+	select bgt_per_det_rate_and_base_id,budget_id,budget_period,line_item_number,person_number,rate_number,person_id,start_date,end_date,rate_class_code,
+	*
+ERROR at line 3:
+ORA-06550: line 3, column 2:
+PL/SQL: ORA-00942: table or view does not exist
+ORA-06550: line 3, column 2:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 2, column 9:
+PLS-00341: declaration of cursor 'C_DATA' is incomplete or malformed
+ORA-06550: line 7, column 9:
+PL/SQL: Item ignored
+ORA-06550: line 18, column 19:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 18, column 1:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 27, column 26:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 27, column 26:
+PL/SQL: ORA-00904: "R_DATA"."BUDGET_PERIOD": invalid identifier
+ORA-06550: line 23, column 3:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 36, column 27:
+PLS-00320: the declaration of the type of this expression is incomplete or
+malformed
+ORA-06550: line 36, column 27:
+PL/SQL: ORA-00904: "R_DATA"."LINE_ITEM_NUMBER": invalid identifier
+ORA-06550: line 31, column 4:
+PL/SQL: SQL Statement ignored
+ORA-06550: line 50
+
+
+FROM AWARD_BUDGET_EXT@kc_stag_db_link t1
+                      *
+ERROR at line 5:
+ORA-02019: connection description for remote database not found
+
+
+
+Commit complete.
+
+FROM AWARD_BUDGET_DETAILS_EXT@kc_stag_db_link t1
+                              *
+ERROR at line 3:
+ORA-02019: connection description for remote database not found
+
+
+
+Commit complete.
+
+FROM AWARD_BUDGET_PERIOD_EXT@kc_stag_db_link t1
+                             *
+ERROR at line 3:
+ORA-02019: connection description for remote database not found
+
+
+
+Commit complete.
+
+from award_budget_limit@kc_stag_db_link t1
+                        *
+ERROR at line 3:
+ORA-02019: connection description for remote database not found
+
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+KRMS_ATTR_DEFN_T@KC_STAG_DB_LINK b on a.ATTR_DEFN_ID=b.ATTR_DEFN_ID
+                 *
+ERROR at line 3:
+ORA-02019: connection description for remote database not found
+
+
+
+Table altered.
+
+
+Table truncated.
+
+SELECT a.ACTN_ID,a.NM,a.DESC_TXT,a.TYP_ID,a.RULE_ID,a.SEQ_NO,a.VER_NBR,a.NMSPC_CD FROM KRMS_ACTN_T@KC_STAG_DB_LINK a
+                                                                                                   *
+ERROR at line 2:
+ORA-02019: connection description for remote database not found
+
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+KRMS_ATTR_DEFN_T@KC_STAG_DB_LINK b on a.ATTR_DEFN_ID=b.ATTR_DEFN_ID
+                 *
+ERROR at line 3:
+ORA-02019: connection description for remote database not found
+
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+KRMS_AGENDA_T@KC_STAG_DB_LINK b on a.AGENDA_ID=b.AGENDA_ID
+              *
+ERROR at line 4:
+ORA-02019: connection description for remote database not found
+
+
+
+Table altered.
+
+
+Table truncated.
+
+SELECT AGENDA_ID,NM,CNTXT_ID,INIT_AGENDA_ITM_ID,TYP_ID,ACTV,VER_NBR FROM KRMS_AGENDA_T@KC_STAG_DB_LINK
+                                                                                       *
+ERROR at line 2:
+ORA-02019: connection description for remote database not found
+
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+SELECT ATTR_DEFN_ID,NM,NMSPC_CD,LBL,ACTV,CMPNT_NM,VER_NBR,DESC_TXT FROM KRMS_ATTR_DEFN_T@KC_STAG_DB_LINK
+                                                                                         *
+ERROR at line 2:
+ORA-02019: connection description for remote database not found
+
+
+ALTER TABLE KRMS_RULE_ATTR_T ENABLE CONSTRAINT KRMS_RULE_ATTR_FK2
+                                               *
+ERROR at line 1:
+ORA-02298: cannot validate (KCSO.KRMS_RULE_ATTR_FK2) - parent keys not found
+
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+ALTER TABLE KRMS_TYP_ATTR_T ENABLE CONSTRAINT KRMS_TYP_ATTR_FK1
+                                              *
+ERROR at line 1:
+ORA-02298: cannot validate (KCSO.KRMS_TYP_ATTR_FK1) - parent keys not found
+
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+SELECT CMPND_PROP_ID,PROP_ID FROM KRMS_CMPND_PROP_PROPS_T@KC_STAG_DB_LINK
+                                                          *
+ERROR at line 2:
+ORA-02019: connection description for remote database not found
+
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+INNER JOIN KRMS_CNTXT_T@KC_STAG_DB_LINK b
+                        *
+ERROR at line 3:
+ORA-02019: connection description for remote database not found
+
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+SELECT CNTXT_ID,NMSPC_CD,NM,TYP_ID,ACTV,VER_NBR,DESC_TXT FROM KRMS_CNTXT_T@KC_STAG_DB_LINK
+                                                                           *
+ERROR at line 2:
+ORA-02019: connection description for remote database not found
+
+
+ALTER TABLE KRMS_CNTXT_VLD_TERM_SPEC_T ENABLE CONSTRAINT KRMS_CNTXT_VLD_TERM_SPEC_TI1
+                                                         *
+ERROR at line 1:
+ORA-02298: cannot validate (KCSO.KRMS_CNTXT_VLD_TERM_SPEC_TI1) - parent keys
+not found
+
+
+
+Table altered.
+
+ALTER TABLE KRMS_CNTXT_VLD_AGENDA_TYP_T ENABLE CONSTRAINT KRMS_CNTXT_VLD_AGENDA_TYP_FK1
+                                                          *
+ERROR at line 1:
+ORA-02298: cannot validate (KCSO.KRMS_CNTXT_VLD_AGENDA_TYP_FK1) - parent keys
+not found
+
+
+
+Table altered.
+
+
+Table altered.
+
+ALTER TABLE KRMS_CNTXT_VLD_ACTN_TYP_T ENABLE CONSTRAINT KRMS_CNTXT_VLD_ACTN_TYP_FK1
+                                                        *
+ERROR at line 1:
+ORA-02298: cannot validate (KCSO.KRMS_CNTXT_VLD_ACTN_TYP_FK1) - parent keys not
+found
+
+
+ALTER TABLE KRMS_CNTXT_VLD_RULE_TYP_T ENABLE CONSTRAINT KRMS_CNTXT_VLD_RULE_TYP_FK1
+                                                        *
+ERROR at line 1:
+ORA-02298: cannot validate (KCSO.KRMS_CNTXT_VLD_RULE_TYP_FK1) - parent keys not
+found
+
+
+ALTER TABLE KRMS_CNTXT_VLD_ACTN_TYP_T ENABLE CONSTRAINT KRMS_CNTXT_VLD_ACTN_TYP_FK1
+                                                        *
+ERROR at line 1:
+ORA-02298: cannot validate (KCSO.KRMS_CNTXT_VLD_ACTN_TYP_FK1) - parent keys not
+found
+
+
+
+Table truncated.
+
+INNER JOIN KRMS_CNTXT_T@KC_STAG_DB_LINK b
+                        *
+ERROR at line 3:
+ORA-02019: connection description for remote database not found
+
+
+
+Table altered.
+
+
+Table truncated.
+
+INNER JOIN KRMS_CNTXT_T@KC_STAG_DB_LINK b
+                        *
+ERROR at line 3:
+ORA-02019: connection description for remote database not found
+
+
+
+Table altered.
+
+
+Table truncated.
+
+INNER JOIN KRMS_CNTXT_T@KC_STAG_DB_LINK b
+                        *
+ERROR at line 3:
+ORA-02019: connection description for remote database not found
+
+
+
+Table altered.
+
+
+Table truncated.
+
+INNER JOIN KRMS_CNTXT_T@KC_STAG_DB_LINK b
+                        *
+ERROR at line 3:
+ORA-02019: connection description for remote database not found
+
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+INNER JOIN KRMS_TERM_SPEC_T@KC_STAG_DB_LINK b
+                            *
+ERROR at line 3:
+ORA-02019: connection description for remote database not found
+
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+SELECT CTGRY_ID,NM,NMSPC_CD,VER_NBR FROM KRMS_CTGRY_T@KC_STAG_DB_LINK
+                                                      *
+ERROR at line 2:
+ORA-02019: connection description for remote database not found
+
+
+ALTER TABLE KRMS_TERM_SPEC_CTGRY_T ENABLE CONSTRAINT KRMS_TERM_SPEC_CTGRY_FK2
+                                                     *
+ERROR at line 1:
+ORA-02298: cannot validate (KCSO.KRMS_TERM_SPEC_CTGRY_FK2) - parent keys not
+found
+
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+INNER JOIN KRMS_FUNC_T@KC_STAG_DB_LINK b
+                       *
+ERROR at line 3:
+ORA-02019: connection description for remote database not found
+
+
+
+Table altered.
+
+
+Table truncated.
+
+INNER JOIN KRMS_FUNC_T@KC_STAG_DB_LINK b
+                       *
+ERROR at line 3:
+ORA-02019: connection description for remote database not found
+
+
+
+Table altered.
+
+
+Table truncated.
+
+SELECT FUNC_ID,NMSPC_CD,NM,DESC_TXT,RTRN_TYP,TYP_ID,ACTV,VER_NBR FROM KRMS_FUNC_T@KC_STAG_DB_LINK
+                                                                                  *
+ERROR at line 2:
+ORA-02019: connection description for remote database not found
+
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+INNER JOIN KRMS_NL_TMPL_T@KC_STAG_DB_LINK b
+                          *
+ERROR at line 3:
+ORA-02019: connection description for remote database not found
+
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+SELECT NL_TMPL_ID,LANG_CD,NL_USAGE_ID,TYP_ID,TMPL,VER_NBR,ACTV FROM KRMS_NL_TMPL_T@KC_STAG_DB_LINK
+                                                                                   *
+ERROR at line 2:
+ORA-02019: connection description for remote database not found
+
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+INNER JOIN KRMS_NL_USAGE_T@KC_STAG_DB_LINK b
+                           *
+ERROR at line 3:
+ORA-02019: connection description for remote database not found
+
+
+
+Table truncated.
+
+SELECT NL_USAGE_ID,NM,NMSPC_CD,DESC_TXT,ACTV,VER_NBR FROM KRMS_NL_USAGE_T@KC_STAG_DB_LINK
+                                                                          *
+ERROR at line 2:
+ORA-02019: connection description for remote database not found
+
+
+
+Table altered.
+
+
+Table truncated.
+
+SELECT PROP_PARM_ID,PROP_ID,PARM_VAL,PARM_TYP_CD,SEQ_NO,VER_NBR FROM KRMS_PROP_PARM_T@KC_STAG_DB_LINK
+                                                                                      *
+ERROR at line 2:
+ORA-02019: connection description for remote database not found
+
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+SELECT PROP_ID,DESC_TXT,TYP_ID,DSCRM_TYP_CD,CMPND_OP_CD,RULE_ID,VER_NBR,CMPND_SEQ_NO FROM KRMS_PROP_T@KC_STAG_DB_LINK
+                                                                                                      *
+ERROR at line 2:
+ORA-02019: connection description for remote database not found
+
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+SELECT REF_OBJ_KRMS_OBJ_ID,COLLECTION_NM,KRMS_OBJ_ID,KRMS_DSCR_TYP,REF_OBJ_ID,REF_DSCR_TYP,NMSPC_CD,ACTV,VER_NBR FROM KRMS_REF_OBJ_KRMS_OBJ_T @KC_STAG_DB_LINK
+                                                                                                                                               *
+ERROR at line 2:
+ORA-02019: connection description for remote database not found
+
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+INNER JOIN KRMS_RULE_T@KC_STAG_DB_LINK b
+                       *
+ERROR at line 3:
+ORA-02019: connection description for remote database not found
+
+
+
+Table altered.
+
+
+Table truncated.
+
+SELECT RULE_ID,NMSPC_CD,NM,TYP_ID,PROP_ID,ACTV,VER_NBR,DESC_TXT FROM KRMS_RULE_T@KC_STAG_DB_LINK
+                                                                                 *
+ERROR at line 2:
+ORA-02019: connection description for remote database not found
+
+
+
+Table altered.
+
+
+Table truncated.
+
+SELECT TERM_PARM_ID,TERM_ID,NM,VAL,VER_NBR FROM KRMS_TERM_PARM_T@KC_STAG_DB_LINK
+                                                                 *
+ERROR at line 2:
+ORA-02019: connection description for remote database not found
+
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+INNER JOIN KRMS_TERM_RSLVR_T@KC_STAG_DB_LINK b
+                             *
+ERROR at line 3:
+ORA-02019: connection description for remote database not found
+
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+INNER JOIN KRMS_TERM_RSLVR_T@KC_STAG_DB_LINK b
+                             *
+ERROR at line 3:
+ORA-02019: connection description for remote database not found
+
+
+
+Table altered.
+
+
+Table truncated.
+
+INNER JOIN KRMS_TERM_RSLVR_T@KC_STAG_DB_LINK b
+                             *
+ERROR at line 3:
+ORA-02019: connection description for remote database not found
+
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+SELECT TERM_RSLVR_ID,NMSPC_CD,NM,TYP_ID,OUTPUT_TERM_SPEC_ID,ACTV,VER_NBR FROM KRMS_TERM_RSLVR_T@KC_STAG_DB_LINK
+                                                                                                *
+ERROR at line 2:
+ORA-02019: connection description for remote database not found
+
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+INNER JOIN KRMS_TERM_SPEC_T@KC_STAG_DB_LINK b
+                            *
+ERROR at line 3:
+ORA-02019: connection description for remote database not found
+
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+SELECT TERM_SPEC_ID,NM,TYP,ACTV,VER_NBR,DESC_TXT,NMSPC_CD FROM KRMS_TERM_SPEC_T@KC_STAG_DB_LINK
+                                                                                *
+ERROR at line 2:
+ORA-02019: connection description for remote database not found
+
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+ALTER TABLE KRMS_TERM_T ENABLE CONSTRAINT KRMS_TERM_T__FK1
+                                          *
+ERROR at line 1:
+ORA-02298: cannot validate (KCSO.KRMS_TERM_T__FK1) - parent keys not found
+
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+INNER JOIN KRMS_TERM_SPEC_T@KC_STAG_DB_LINK b
+                            *
+ERROR at line 3:
+ORA-02019: connection description for remote database not found
+
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+SELECT TYP_ATTR_ID,SEQ_NO,TYP_ID,ATTR_DEFN_ID,ACTV,VER_NBR FROM KRMS_TYP_ATTR_T@KC_STAG_DB_LINK
+                                                                                *
+ERROR at line 2:
+ORA-02019: connection description for remote database not found
+
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+SELECT TYP_RELN_ID,FROM_TYP_ID,TO_TYP_ID,RELN_TYP,SEQ_NO,VER_NBR,ACTV FROM KRMS_TYP_RELN_T@KC_STAG_DB_LINK
+                                                                                           *
+ERROR at line 2:
+ORA-02019: connection description for remote database not found
+
+
+
+Table truncated.
+
+SELECT TYP_ID,NM,NMSPC_CD,SRVC_NM,ACTV,VER_NBR FROM KRMS_TYP_T@KC_STAG_DB_LINK
+                                                               *
+ERROR at line 2:
+ORA-02019: connection description for remote database not found
+
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+SQL> ERROR:
+ORA-12152: TNS:unable to send break message
+
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options (with complications)

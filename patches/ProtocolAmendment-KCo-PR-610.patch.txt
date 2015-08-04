@@ -1,0 +1,52 @@
+From f04f7e6bc1ee7862b6b507d38eadbb3901433c22 Mon Sep 17 00:00:00 2001
+From: Joe Williams <jwillia@iastate.edu>
+Date: Wed, 8 Jul 2015 08:00:01 -0500
+Subject: [PATCH] RESKC-596:revert changes to ProtocolFormBase that were
+ causing issues
+
+Create a protocol
+Submit and approve protocol
+On approved protocol, take create an amendment action (A001)
+Select section (like "General Info"), add comment, submit
+Close amendment A001
+Go to original, approved protocol
+Create another amendment (A002)
+
+Actual Result: User can select the same section as selected on A001. After submitting A002, the section is now editable in both A001 and A002 at the same.
+
+Expected Result: User cannot select the same section as selected on A001. The system should prevent the user from being able to amend the same section in more than one amendment in progress.
+---
+ .../src/main/java/org/kuali/kra/protocol/ProtocolFormBase.java      | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/protocol/ProtocolFormBase.java b/coeus-impl/src/main/java/org/kuali/kra/protocol/ProtocolFormBase.java
+index a426473..e69ee7a 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/protocol/ProtocolFormBase.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/protocol/ProtocolFormBase.java
+@@ -108,8 +108,7 @@
+     private transient List<ProtocolFundingSourceBase> deletedProtocolFundingSources;
+  
+     private boolean showNotificationEditor = false;  // yep, it's a hack
+-    private boolean initialized = false;
+-    
++
+     public ProtocolFormBase() throws Exception {
+         super();
+         initialize();
+@@ -123,7 +122,6 @@ public ProtocolFormBase() throws Exception {
+      * @throws Exception 
+      */
+     public void initialize() throws Exception {
+-        if (!initialized) {
+             setProtocolHelper(createNewProtocolHelperInstanceHook(this));
+             setPersonnelHelper(createNewPersonnelHelperInstanceHook(this));
+             setPermissionsHelper(createNewPermissionsHelperInstanceHook(this));
+@@ -137,8 +135,6 @@ public void initialize() throws Exception {
+             setOnlineReviewsActionHelper(createNewOnlineReviewsActionHelperInstanceHook(this));
+             setNotificationHelper(getNotificationHelperHook());
+             setMedusaBean(new MedusaBean());
+-            initialized = true;
+-        }
+     }
+        
+   

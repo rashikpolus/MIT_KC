@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="PropDev-DocumentPage" parent="PropDev-DocumentPage-parentBean"/>
+	<bean id="PropDev-DocumentPage-parentBean" abstract="true" parent="Uif-DocumentPage">
+		<property name="footer" ref="PropDev-DocumentFooter"/>
+	</bean>
+
+	<bean id="PropDev-DocumentFooter" parent="PropDev-DocumentFooter-parentBean" />
+	<bean id="PropDev-DocumentFooter-parentBean" abstract="true" p:dataAttributes="sticky_footer:true"
+		parent="Uif-FooterBase">
+		<property name="items">
+			<list>
+				<bean parent="Uif-SecondaryActionButton" p:ajaxSubmit="true"
+					p:performClientSideValidation="true" p:methodToCall="navigate" 
+					p:actionLabel="Back" p:finalizeMethodToCall="finalizeNavigationLinks"
+					p:finalizeMethodAdditionalArguments="previous" p:order="10" />
+				<bean parent="Uif-SecondaryActionButton" p:ajaxSubmit="false"
+					p:performClientSideValidation="true" p:methodToCall="save"
+					p:actionLabel="Save" p:order="20" p:render="@{(!#parent.readOnly and canEditView) or #editModes[#proposalAuthConsts.CAN_SAVE_CERTIFICATION] or #editModes[#proposalAuthConsts.MODIFY_S2S]}"/>
+				<bean parent="Uif-PrimaryActionButton" p:ajaxSubmit="true"
+					p:performClientSideValidation="true" p:methodToCall="navigate"
+					p:actionLabel="Save and Continue" p:finalizeMethodToCall="finalizeNavigationLinks"
+					p:finalizeMethodAdditionalArguments="next" p:order="30" p:render="@{!#parent.readOnly and canEditView}"/>
+                <bean parent="Uif-SecondaryActionButton" p:actionLabel="Close" p:order="40"
+                      p:methodToCall="closeProposal"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="PropDev-UnderDevelopmentPage" parent="PropDev-UnderDevelopmentPage-parentBean" />
+	<bean id="PropDev-UnderDevelopmentPage-parentBean" abstract="true"
+		parent="PropDev-DocumentPage">
+		<property name="items">
+			<list merge="false">
+				<bean parent="Uif-HeaderOne" p:headerText="Under Construction" />
+			</list>
+		</property>
+		<property name="header">
+			<bean parent="Uif-PageHeader" />
+		</property>
+		<property name="footer">
+			<null />
+		</property>
+	</bean>
+
+	<bean id="PropDev-HeaderLowerGroup" parent="PropDev-HeaderLowerGroup-parentBean" />
+	<bean id="PropDev-HeaderLowerGroup-parentBean" abstract="true"
+		parent="Uif-VerticalBoxGroup">
+		<property name="items">
+			<list>
+				<bean parent="Uif-Message" p:messageText="[p]* indicates required fields[/p]"
+					p:cssClasses="text-muted" p:order="10" />
+			</list>
+		</property>
+	</bean>
+
+    <bean id="PropDev-DataField-NoColon" parent="PropDev-DataField-NoColon-parentBean"/>
+    <bean id="PropDev-DataField-NoColon-parentBean" parent="Uif-DataField" p:fieldLabel.renderColon="false"/>
+
+
+    <bean id="PropDev-CollectionToggleMenu" abstract="true" parent="PropDev-CollectionToggleMenu-parentBean"/>
+    <bean id="PropDev-CollectionToggleMenu-parentBean" abstract="true"
+          class="org.kuali.coeus.org.kuali.rice.krad.uif.element.CollectionToggleMenu" parent="Uif-SidebarToggleMenu">
+        <property name="bindingInfo">
+            <ref bean="Uif-BindingInfo"/>
+        </property>
+    </bean>
+
+    <bean id="PropBudget-ProjectPersonnelPage-SearchResults" parent="PropBudget-ProjectPersonnelPage-SearchResults-parentBean" />
+    <bean id="PropBudget-ProjectPersonnelPage-SearchResults-parentBean" abstract="true"
+          parent="Uif-CssGridGroup">
+        <property name="items">
+            <list>
+                <bean parent="PropBudget-ProjectPersonnelPage-Search-Result-Details"
+                      p:order="10" />
+            </list>
+        </property>
+        <property name="footer">
+            <bean parent="Uif-FooterBase">
+                <property name="items">
+                    <list>
+                        <bean parent="PropBudget-ProjectPersonnelPage-WizardButton-Back"
+                              p:actionParameters="PropBudget-ProjectPersonnelPage-Wizard.step:0" p:order="10" />
+                        <bean parent="PropDev-PersonnelPage-WizardButton-Continue"
+                              p:actionParameters="PropDev-PersonnelPage-Wizard.step:2"
+                              p:actionLabel="Add Selected Personnel" p:refreshId="PropBudget-ProjectPersonnelPage-CollectionGroup"
+                              p:methodToCall="addProjectPersonnel" p:successCallback="dismissDialog('PropBudget-ProjectPersonnelPage-Wizard');"
+                              p:order="20" />
+                        <bean parent="Uif-DialogDismissButton" p:actionLabel="Cancel" />
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="PropDev-Personnel-TypeSelection-InputField" parent="PropDev-Personnel-TypeSelection-InputField-parentBean" />
+    <bean id="PropDev-Personnel-TypeSelection-InputField-parentBean" abstract="true"
+          parent="Uif-InputField" p:propertyName="lineType" p:order="10"
+          p:label="Search for" p:defaultValue="E" p:fieldLabel.renderColon="false">
+        <property name="control">
+            <bean parent="Uif-DropdownControl"/>
+        </property>
+    </bean>
+
+    <bean id="PropDev-Close-Dialog" parent="PropDev-Close-Dialog-parentBean"/>
+    <bean id="PropDev-Close-Dialog-parentBean" abstract="true" parent="Uif-DialogGroup"
+          p:headerText="Please Select"
+          p:promptText="Would you like to save this document before you close it?">
+         <property name="availableResponses">
+                <list>
+                    <bean parent="Uif-KeyLabelPair" p:key="yes" p:value="yes"/>
+                    <bean parent="Uif-KeyLabelPair" p:key="no" p:value="no"/>
+                    <bean parent="Uif-KeyLabelPair" p:key="" p:value="return to document"/>
+                </list>
+         </property>
+     </bean>
+</beans>

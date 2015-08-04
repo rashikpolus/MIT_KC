@@ -1,0 +1,2086 @@
+Index: coeus-impl/src/main/java/edu/mit/kc/dashboard/bo/Alert.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- coeus-impl/src/main/java/edu/mit/kc/dashboard/bo/Alert.java	(revision )
++++ coeus-impl/src/main/java/edu/mit/kc/dashboard/bo/Alert.java	(revision )
+@@ -0,0 +1,20 @@
++package edu.mit.kc.dashboard.bo;
++
++/**
++ * Demo bo for alert.
++ */
++public class Alert {
++    private String alert;
++
++    public Alert(){
++        alert = "This is a demonstration alert";
++    }
++
++    public String getAlert() {
++        return alert;
++    }
++
++    public void setAlert(String alert) {
++        this.alert = alert;
++    }
++}
+Index: coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/dashboard/DashboardViewHelperService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/dashboard/DashboardViewHelperService.java	(revision )
++++ coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/dashboard/DashboardViewHelperService.java	(revision )
+@@ -0,0 +1,79 @@
++package org.kuali.coeus.propdev.impl.dashboard;
++
++import org.kuali.kra.award.home.Award;
++import org.kuali.rice.kew.api.KewApiConstants;
++import org.kuali.rice.kew.api.doctype.DocumentTypeService;
++import org.kuali.rice.kew.api.exception.WorkflowException;
++import org.kuali.rice.kns.lookup.HtmlData;
++import org.kuali.rice.krad.uif.element.Link;
++import org.kuali.rice.krad.uif.field.LinkField;
++import org.kuali.rice.krad.uif.service.impl.ViewHelperServiceImpl;
++import org.kuali.rice.krad.util.KRADConstants;
++import org.kuali.rice.krad.util.UrlFactory;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.beans.factory.annotation.Qualifier;
++import org.springframework.beans.factory.config.ConfigurableBeanFactory;
++import org.springframework.context.annotation.Scope;
++import org.springframework.stereotype.Component;
++
++import java.util.Properties;
++
++/**
++
++ */
++@Component("dashboardViewHelperService")
++@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
++public class DashboardViewHelperService extends ViewHelperServiceImpl {
++
++
++	public void buildPropDevLink(LinkField actionLink, Object model, String docId) throws WorkflowException {
++        actionLink.setHref(getConfigurationService().getPropertyValueAsString(KRADConstants.WORKFLOW_URL_KEY)
++     	                + KRADConstants.DOCHANDLER_DO_URL
++     	                + docId
++     	                + KRADConstants.DOCHANDLER_URL_CHUNK);
++
++	}
++
++    public void buildAwardLink(LinkField actionLink, Object model, String docId) throws WorkflowException {
++        actionLink.setHref(getConfigurationService().getPropertyValueAsString(KRADConstants.WORKFLOW_URL_KEY)
++     	                + KRADConstants.DOCHANDLER_DO_URL
++     	                + docId
++     	                + KRADConstants.DOCHANDLER_URL_CHUNK);
++   	}
++
++    public void buildProjectDocLink(LinkField actionLink, Object model, String docId, String awardId) {
++        Properties parameters = new Properties();
++        parameters.put(KRADConstants.DISPATCH_REQUEST_PARAMETER, "sharedDoc");
++        parameters.put(KRADConstants.PARAMETER_COMMAND, KewApiConstants.DOCSEARCH_COMMAND);
++        parameters.put(KRADConstants.DOCUMENT_TYPE_NAME, "AwardDocument");
++        parameters.put("viewDocument", "false");
++        parameters.put("docId", docId);
++        parameters.put("docOpenedFromAwardSearch", "true");
++        parameters.put("placeHolderAwardId", awardId);
++        String href  = UrlFactory.parameterizeUrl("../" + getHtmlActionShared(), parameters);
++        actionLink.setHref(href);
++    }
++
++    public void buildKeyPersonLink(LinkField actionLink, Object model, String docId, String awardId) {
++
++       Properties parameters = new Properties();
++       parameters.put(KRADConstants.DISPATCH_REQUEST_PARAMETER, "keyperson");//contact
++       parameters.put(KRADConstants.PARAMETER_COMMAND, KewApiConstants.DOCSEARCH_COMMAND);
++       parameters.put(KRADConstants.DOCUMENT_TYPE_NAME, "AwardDocument");
++       parameters.put("viewDocument", "false");
++       parameters.put("docId", docId);
++       parameters.put("docOpenedFromAwardSearch", "true");
++       parameters.put("placeHolderAwardId", awardId);
++       String href  = UrlFactory.parameterizeUrl("../"+getHtmlActionKeyPerson(), parameters);
++       actionLink.setHref(href);
++
++    }
++
++    protected String getHtmlActionShared() {
++        return "sharedDoc.do";
++    }
++    protected String getHtmlActionKeyPerson() {
++        return "keyperson.do";
++    }
++
++}
+Index: coeus-webapp/src/main/webapp/css/mitDashboard.css
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- coeus-webapp/src/main/webapp/css/mitDashboard.css	(revision )
++++ coeus-webapp/src/main/webapp/css/mitDashboard.css	(revision )
+@@ -0,0 +1,95 @@
++.modal-backdrop {
++    z-index: 10000;
++}
++
++.modal {
++    z-index: 10001;
++}
++
++#Uif-DialogGroup-Lookup {
++    z-index: 10005;
++}
++
++h2 {
++    padding-bottom: 0;
++}
++
++h2:after {
++    content: "";
++    display: block;
++    height: 1px;
++    width: 100%;
++    margin-top: 20px;
++    background: #eeeeee;
++    margin-bottom: 5px;
++}
++
++#Dashboard-Page_headerWrapper .uif-header-rightGroup {
++    top: 25px;
++    font-size: 16px;
++}
++
++#Dashboard-SpecifyUser-Dialog .modal-body {
++    text-align: center;
++}
++
++#Dashboard-Activity {
++  min-height: 200px;
++  margin-bottom: 15px;
++}
++
++#Dashboard-Activity_tabList {
++  background: #f5f5f5;
++  padding-top: 5px;
++  padding-left: 5px;
++  border-top: 1px solid #dddddd;
++  border-left: 1px solid #dddddd;
++  border-right: 1px solid #dddddd;
++}
++
++.dashboard-alert-num {
++  background-color: #ff0000;
++  border-radius: 10px;
++  color: #ffffff;
++  display: inline-block;
++  font-family: sans-serif;
++  font-size: .8em;
++  padding-left: .2em;
++  padding-right: 0.2em;
++}
++
++a[role="tab"] {
++  color: #777;
++  font-size: 14px;
++}
++
++.tab-content {
++  border: 1px solid #dddddd;
++  border-top: none;
++  padding: 1.2em;
++  padding-top: .2em;
++}
++
++.dashboard-alert-list ul {
++    height: 250px;
++    overflow-y: scroll;
++    margin-bottom: 20px;
++    font-size: 1.2em;
++}
++
++.dashboard-alert-list li .uif-messageField {
++    width: 100%;
++}
++
++.dashboard-alert-list li p{
++    background-color: #ffffff;
++    border: 1px solid #dddddd;
++    display: block;
++    margin-bottom: -1px;
++    padding: 10px 15px;
++    position: relative;
++}
++
++.DTTT_container {
++  display: none;
++}
+\ No newline at end of file
+Index: coeus-webapp/src/main/webapp/scripts/dashboard.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- coeus-webapp/src/main/webapp/scripts/dashboard.js	(revision )
++++ coeus-webapp/src/main/webapp/scripts/dashboard.js	(revision )
+@@ -0,0 +1,9 @@
++function setupTabRetrieval() {
++    jQuery(document).on("shown.bs.tab", "[data-type='Uif-TabGroup']", function(event) {
++        var tabId = jQuery(event.target).attr("id").replace("_tab", "_tabPanel");
++        var placeholder = jQuery("#" + tabId).find("> ." + kradVariables.CLASSES.PLACEHOLDER);
++        if (placeholder.length) {
++            retrieveComponent(placeholder.attr("id"));
++        }
++    });
++}
+\ No newline at end of file
+Index: coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/dashboard/DashboardController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/dashboard/DashboardController.java	(revision )
++++ coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/dashboard/DashboardController.java	(revision )
+@@ -0,0 +1,415 @@
++/**
++ * Copyright 2005-2014 The Kuali Foundation
++ *
++ * Licensed under the Educational Community License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.opensource.org/licenses/ecl2.php
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++package org.kuali.coeus.propdev.impl.dashboard;
++
++
++import edu.mit.kc.dashboard.core.DashboardForm;
++import edu.mit.kc.workloadbalancing.core.WorkloadForm;
++import org.apache.commons.lang.StringUtils;
++import org.kuali.coeus.common.framework.person.KcPerson;
++import org.kuali.coeus.common.framework.person.KcPersonService;
++import org.kuali.coeus.common.framework.ruleengine.KcBusinessRulesEngine;
++import org.kuali.coeus.common.impl.version.history.VersionHistoryLookupDaoOjb;
++import org.kuali.coeus.propdev.impl.core.ProposalDevelopmentDocument;
++import org.kuali.coeus.sys.framework.controller.KcCommonControllerService;
++import org.kuali.coeus.sys.framework.controller.UifExportControllerService;
++import org.kuali.coeus.sys.framework.gv.GlobalVariableService;
++import org.kuali.coeus.sys.framework.service.KcServiceLocator;
++import org.kuali.kra.award.dao.AwardLookupDao;
++import org.kuali.kra.award.dao.ojb.AwardLookupDaoOjb;
++import org.kuali.kra.award.document.authorization.AwardDocumentAuthorizer;
++import org.kuali.kra.award.home.Award;
++import org.kuali.kra.award.home.AwardService;
++import org.kuali.rice.core.api.config.property.ConfigurationService;
++import org.kuali.rice.core.api.criteria.QueryByCriteria;
++import org.kuali.rice.kew.api.document.WorkflowDocumentService;
++import org.kuali.rice.kew.api.document.search.DocumentSearchCriteria;
++import org.kuali.rice.kew.api.document.search.DocumentSearchResult;
++import org.kuali.rice.kew.api.document.search.DocumentSearchResults;
++import org.kuali.rice.kim.api.identity.Person;
++import org.kuali.rice.krad.data.DataObjectService;
++import org.kuali.rice.krad.document.TransactionalDocumentControllerService;
++import org.kuali.rice.krad.service.KRADServiceLocator;
++import org.kuali.rice.krad.service.LookupService;
++import org.kuali.rice.krad.uif.field.AttributeQueryResult;
++import org.kuali.rice.krad.util.GlobalVariables;
++import org.kuali.rice.krad.web.controller.MethodAccessible;
++import org.kuali.rice.krad.web.form.UifFormBase;
++import org.kuali.rice.krad.web.service.*;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.beans.factory.annotation.Qualifier;
++import org.springframework.stereotype.Controller;
++import org.springframework.transaction.annotation.Transactional;
++import org.springframework.validation.BindingResult;
++import org.springframework.web.bind.annotation.ModelAttribute;
++import org.springframework.web.bind.annotation.RequestMapping;
++import org.springframework.web.bind.annotation.ResponseBody;
++import org.springframework.web.servlet.ModelAndView;
++
++import javax.servlet.http.HttpServletRequest;
++import javax.servlet.http.HttpServletResponse;
++import java.util.*;
++
++@Controller("dashboard")
++@RequestMapping(value = "/dashboard")
++public class DashboardController {
++
++    @Autowired
++    @Qualifier("uifExportControllerService")
++    private UifExportControllerService uifExportControllerService;
++
++    @Autowired
++    @Qualifier("kcCommonControllerService")
++    private KcCommonControllerService kcCommonControllerService;
++
++    @Autowired
++    @Qualifier("transactionalDocumentControllerService")
++    private TransactionalDocumentControllerService transactionalDocumentControllerService;
++
++    @Autowired
++    @Qualifier("collectionControllerService")
++    private CollectionControllerService collectionControllerService;
++
++    @Autowired
++    @Qualifier("modelAndViewService")
++    private ModelAndViewService modelAndViewService;
++
++    @Autowired
++    @Qualifier("navigationControllerService")
++    private NavigationControllerService navigationControllerService;
++
++    @Autowired
++    @Qualifier("queryControllerService")
++    private QueryControllerService queryControllerService;
++
++    @Autowired
++    @Qualifier("refreshControllerService")
++    private RefreshControllerService refreshControllerService;
++
++    @Autowired
++    @Qualifier("dataObjectService")
++    private DataObjectService dataObjectService;
++
++    @Autowired
++    @Qualifier("kcBusinessRulesEngine")
++    private KcBusinessRulesEngine kcBusinessRulesEngine;
++
++    @Autowired
++    @Qualifier("kualiConfigurationService")
++    private ConfigurationService kualiConfigurationService;
++
++    @Autowired
++    @Qualifier("globalVariableService")
++    private GlobalVariableService globalVariableService;
++
++    @Autowired
++    @Qualifier("lookupService")
++    private LookupService lookupService;
++
++    @Autowired
++    @Qualifier("kewWorkflowDocumentService")
++    private WorkflowDocumentService workflowDocumentService;
++
++    @Autowired
++    @Qualifier("awardService")
++    private AwardService awardService;
++
++    @Autowired
++    @Qualifier("kcPersonService")
++    private KcPersonService kcPersonService;
++
++    @ModelAttribute(value = "KualiForm")
++    public UifFormBase initForm(HttpServletRequest request,
++                                HttpServletResponse response) throws Exception {
++        UifFormBase form = getKcCommonControllerService().initForm(
++                this.createInitialForm(request), request, response);
++
++        return form;
++    }
++
++    protected DashboardForm createInitialForm(HttpServletRequest request) {
++        DashboardForm form = new DashboardForm();
++        Person currentUser = GlobalVariables.getUserSession().getPerson();
++        KcPerson kcPerson = kcPersonService.getKcPersonByPersonId(currentUser.getPrincipalId());
++
++        form.setDashboardPerson(kcPerson);
++
++        populateProposals(form);
++        return form;
++    }
++
++    @Transactional
++    @RequestMapping(params = "methodToCall=start")
++    public ModelAndView start(
++            @ModelAttribute("KualiForm") DashboardForm form) throws Exception {
++        if (form.getClientStateForSyncing() != null) {
++            form.getClientStateForSyncing().remove("Dashboard-Activity");
++        }
++
++        return getRefreshControllerService().refresh(form);
++    }
++
++    @Transactional
++    @RequestMapping(params = "methodToCall=refresh")
++    public ModelAndView refresh(@ModelAttribute("KualiForm") DashboardForm form, BindingResult result, HttpServletRequest request, HttpServletResponse response)
++            throws Exception {
++        String refreshId = request.getParameter("updateComponentId");
++
++        if (form.getMyAwards().isEmpty() &&
++                (refreshId.equals("Dashboard-MyAwards") || refreshId.equals("Dashboard-ProjectDocuments") || refreshId.equals("Dashboard-KeyPerson"))) {
++            populateAwards(form);
++        }
++
++        return getRefreshControllerService().refresh(form);
++    }
++
++    protected void populateProposals(DashboardForm form) {
++        DocumentSearchCriteria.Builder builder = DocumentSearchCriteria.Builder.create();
++        builder.setInitiatorPrincipalId(form.getDashboardPerson().getPersonId());
++        builder.setDocumentTypeName("ProposalDevelopmentDocument");
++        DocumentSearchResults results = workflowDocumentService.documentSearch(form.getDashboardPerson().getPersonId(), builder.build());
++
++        if (results.getSearchResults().size() == 0) {
++            return;
++        }
++
++        List<String> documentIds = new ArrayList<String>();
++        for (DocumentSearchResult result : results.getSearchResults()) {
++            documentIds.add(result.getDocument().getDocumentId());
++        }
++
++        QueryByCriteria queryByCriteria = QueryByCriteria.Builder.andAttributes(Collections.singletonMap("documentNumber",documentIds)).build();
++        List<ProposalDevelopmentDocument> myProposals = getDataObjectService().findMatching(ProposalDevelopmentDocument.class,queryByCriteria).getResults();
++
++        myProposals = new ArrayList<>(myProposals);
++
++        form.setMyProposals(myProposals);
++    }
++
++    protected void populateAwards(DashboardForm form) {
++        Map<String, Object> awardCriteria = new HashMap<String, Object>();
++        awardCriteria.put("projectPersons.personId", form.getDashboardPerson().getPersonId());
++        Collection<Award> myAwards = awardService.retrieveAwardsByCriteria(awardCriteria);
++
++        List<Award> myAwardsFiltered = new ArrayList<Award>();
++        for (Award award : myAwards) {
++            if (award.getVersionHistory().isActiveVersion()) {
++                myAwardsFiltered.add(award);
++            }
++        }
++
++        form.setMyAwards(myAwardsFiltered);
++    }
++
++    // TODO unknown if need to filter on permission
++    public List<Award> filterForPermissions(List<Award> results) {
++        Person user = GlobalVariables.getUserSession().getPerson();
++        AwardDocumentAuthorizer authorizer = new AwardDocumentAuthorizer();
++        List<Award> filteredResults = new ArrayList<Award>();
++        // if the user has permission.
++        for (Award award : results) {
++            if (award!=null && authorizer.canOpen(award.getAwardDocument(), user)) {
++                filteredResults.add(award);
++            }
++        }
++        return filteredResults;
++    }
++
++    @Transactional
++    @RequestMapping(params = "methodToCall=changeDashboard")
++    public ModelAndView changeDashboard(@ModelAttribute("KualiForm") DashboardForm form, BindingResult result, HttpServletRequest request, HttpServletResponse response)
++            throws Exception {
++        String personId = null;
++        KcPerson person = null;
++        if (!StringUtils.isBlank(form.getTempUserName())) {
++            person = kcPersonService.getKcPersonByUserName(form.getTempUserName());
++            if (person != null) {
++                personId = person.getPersonId();
++            }
++        }
++
++        // Show message for missing person
++        if (StringUtils.isBlank(personId)) {
++            getGlobalVariableService().getMessageMap().putError("tempUserName", "dashboard.error.missingPerson");
++            form.setUpdateComponentId("Dashboard-SpecifyUser-Dialog");
++            return getRefreshControllerService().refresh(form);
++        }
++
++        form.setTempUserName(null);
++        form.setMyProposals(new ArrayList<ProposalDevelopmentDocument>());
++        form.setMyAwards(new ArrayList<Award>());
++        if (form.getClientStateForSyncing() != null) {
++            form.getClientStateForSyncing().remove("Dashboard-Activity");
++        }
++
++        form.setDashboardPerson(person);
++        populateProposals(form);
++
++        return getRefreshControllerService().refresh(form);
++    }
++
++    @Transactional
++    @RequestMapping(params = "methodToCall=tableJsonRetrieval")
++    public ModelAndView tableJsonRetrieval(@ModelAttribute("KualiForm") DashboardForm form, BindingResult result, HttpServletRequest request,
++                                           HttpServletResponse response) {
++        return getCollectionControllerService().tableJsonRetrieval(form);
++    }
++
++    @Transactional
++    @RequestMapping(params = "methodToCall=retrieveCollectionPage")
++    public ModelAndView retrieveCollectionPage(@ModelAttribute("KualiForm") DashboardForm form, BindingResult result, HttpServletRequest request,
++                                               HttpServletResponse response) throws Exception {
++        return getCollectionControllerService().retrieveCollectionPage(form);
++    }
++
++    @MethodAccessible
++    @Transactional
++    @RequestMapping(params = "methodToCall=performFieldQuery")
++    public
++    @ResponseBody
++        AttributeQueryResult performFieldQuery(@ModelAttribute("KualiForm") WorkloadForm form, BindingResult result, HttpServletRequest request,
++                                           HttpServletResponse response) {
++        return getQueryControllerService().performFieldQuery(form);
++    }
++
++    public UifExportControllerService getUifExportControllerService() {
++        return uifExportControllerService;
++    }
++
++    public void setUifExportControllerService(UifExportControllerService uifExportControllerService) {
++        this.uifExportControllerService = uifExportControllerService;
++    }
++
++    public KcCommonControllerService getKcCommonControllerService() {
++        return kcCommonControllerService;
++    }
++
++    public void setKcCommonControllerService(KcCommonControllerService kcCommonControllerService) {
++        this.kcCommonControllerService = kcCommonControllerService;
++    }
++
++    public TransactionalDocumentControllerService getTransactionalDocumentControllerService() {
++        return transactionalDocumentControllerService;
++    }
++
++    public void setTransactionalDocumentControllerService(TransactionalDocumentControllerService transactionalDocumentControllerService) {
++        this.transactionalDocumentControllerService = transactionalDocumentControllerService;
++    }
++
++    public CollectionControllerService getCollectionControllerService() {
++        return collectionControllerService;
++    }
++
++    public void setCollectionControllerService(CollectionControllerService collectionControllerService) {
++        this.collectionControllerService = collectionControllerService;
++    }
++
++    public ModelAndViewService getModelAndViewService() {
++        return modelAndViewService;
++    }
++
++    public void setModelAndViewService(ModelAndViewService modelAndViewService) {
++        this.modelAndViewService = modelAndViewService;
++    }
++
++    public NavigationControllerService getNavigationControllerService() {
++        return navigationControllerService;
++    }
++
++    public void setNavigationControllerService(NavigationControllerService navigationControllerService) {
++        this.navigationControllerService = navigationControllerService;
++    }
++
++    public QueryControllerService getQueryControllerService() {
++        return queryControllerService;
++    }
++
++    public void setQueryControllerService(QueryControllerService queryControllerService) {
++        this.queryControllerService = queryControllerService;
++    }
++
++    public RefreshControllerService getRefreshControllerService() {
++        return refreshControllerService;
++    }
++
++    public void setRefreshControllerService(RefreshControllerService refreshControllerService) {
++        this.refreshControllerService = refreshControllerService;
++    }
++
++    public DataObjectService getDataObjectService() {
++        return dataObjectService;
++    }
++
++    public void setDataObjectService(DataObjectService dataObjectService) {
++        this.dataObjectService = dataObjectService;
++    }
++
++    public KcBusinessRulesEngine getKcBusinessRulesEngine() {
++        return kcBusinessRulesEngine;
++    }
++
++    public void setKcBusinessRulesEngine(KcBusinessRulesEngine kcBusinessRulesEngine) {
++        this.kcBusinessRulesEngine = kcBusinessRulesEngine;
++    }
++
++    public ConfigurationService getKualiConfigurationService() {
++        return kualiConfigurationService;
++    }
++
++    public void setKualiConfigurationService(ConfigurationService kualiConfigurationService) {
++        this.kualiConfigurationService = kualiConfigurationService;
++    }
++
++    public GlobalVariableService getGlobalVariableService() {
++        return globalVariableService;
++    }
++
++    public void setGlobalVariableService(GlobalVariableService globalVariableService) {
++        this.globalVariableService = globalVariableService;
++    }
++
++    public LookupService getLookupService() {
++        return lookupService;
++    }
++
++    public void setLookupService(LookupService lookupService) {
++        this.lookupService = lookupService;
++    }
++
++    public WorkflowDocumentService getWorkflowDocumentService() {
++        return workflowDocumentService;
++    }
++
++    public void setWorkflowDocumentService(WorkflowDocumentService workflowDocumentService) {
++        this.workflowDocumentService = workflowDocumentService;
++    }
++
++    public AwardService getAwardService() {
++        return awardService;
++    }
++
++    public void setAwardService(AwardService awardService) {
++        this.awardService = awardService;
++    }
++
++    public KcPersonService getKcPersonService() {
++        return kcPersonService;
++    }
++
++    public void setKcPersonService(KcPersonService kcPersonService) {
++        this.kcPersonService = kcPersonService;
++    }
++}
+Index: coeus-impl/src/main/resources/edu/mit/kc/dashboard/DashboardView.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- coeus-impl/src/main/resources/edu/mit/kc/dashboard/DashboardView.xml	(revision )
++++ coeus-impl/src/main/resources/edu/mit/kc/dashboard/DashboardView.xml	(revision )
+@@ -0,0 +1,250 @@
++<beans xmlns="http://www.springframework.org/schema/beans"
++       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
++       xsi:schemaLocation="http://www.springframework.org/schema/beans
++                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
++
++    <bean id="Dashboard-View" parent="Dashboard-View-parentBean"/>
++    <bean id="Dashboard-View-parentBean" abstract="true"
++          parent="Uif-FormView" p:viewHelperService="#{#getService('dashboardViewHelperService')}"
++          p:formClass="edu.mit.kc.dashboard.core.DashboardForm"
++          p:stickyFooter="true" p:singlePageView="true">
++        <property name="contentContainerCssClasses">
++          <list>
++            <value>container</value>
++          </list>
++        </property>
++        <property name="additionalScriptFiles">
++            <list>
++                <value>scripts/propdev/core.js</value>
++                <value>scripts/common/dialog.js</value>
++                <value>scripts/dashboard.js</value>
++            </list>
++        </property>
++        <property name="additionalCssFiles">
++            <list>
++                <value>css/mitDashboard.css</value>
++            </list>
++        </property>
++        <property name="header">
++            <null/>
++        </property>
++        <property name="page" ref="Dashboard-Page"/>
++        <property name="onDocumentReadyScript" value="setupTabRetrieval();"/>
++        <property name="dialogs">
++            <list>
++                <ref bean="Dashboard-SpecifyUser-Dialog"/>
++            </list>
++        </property>
++    </bean>
++    
++    <bean id="Dashboard-SpecifyUser-Dialog" parent="Uif-DialogGroup" p:retrieveViaAjax="true"
++          p:enterKeyAction="Dashboard-SpecifyUser-Button"
++          p:headerText="Change Dashboard User">
++        <property name="destroyDialogOnHidden" value="true"/>
++        <property name="items">
++            <list>
++                <bean parent="Uif-InputField" p:required="true" p:label="Username"
++                      p:propertyName="tempUserName" p:labelLeft="true">
++                    <property name="control">
++                        <bean parent="Uif-TextControl"/>
++                    </property>
++                    <property name="quickfinder">
++                        <bean parent="Uif-QuickFinder" p:returnByScript="true"
++                              p:fieldConversions="userName:tempUserName"
++                              p:dataObjectClassName="org.kuali.coeus.common.framework.person.KcPerson"/>
++                    </property>
++                </bean>
++
++            </list>
++        </property>
++        <property name="footer.items">
++            <list>
++
++                <bean parent="Uif-DialogDismissButton" p:actionLabel="Cancel"/>
++                <bean id="Dashboard-SpecifyUser-Button" parent="Uif-PrimaryActionButton"
++                      p:actionLabel="Show User's Dashboard"
++                      p:methodToCall="changeDashboard"
++                      p:successCallback="Kc.Dialog.closeDialogWithoutError('Dashboard-SpecifyUser-Dialog')"
++                      p:refreshId="Dashboard-Page" p:defaultEnterKeyAction="true"
++                      p:performClientSideValidation="true"/>
++            </list>
++        </property>
++    </bean>
++
++    <bean id="Dashboard-Page" parent="Uif-Page" p:headerText="Dashboard">
++        <property name="header.rightGroup">
++          <bean parent="Uif-HeaderRightGroup">
++            <property name="items">
++              <list>
++                  <bean parent="Uif-DropdownToggleMenu" p:toggleText="@{#form.dashboardPerson.fullName}'s Dashboard">
++                    <property name="menuItems">
++                      <list>
++                        <bean parent="Uif-MenuAction" p:actionLabel="Specify User..."
++                              p:actionScript="showDialog('Dashboard-SpecifyUser-Dialog');"/>
++                      </list>
++                    </property>
++                  </bean>
++              </list>
++            </property>
++          </bean>
++        </property>
++        <property name="items">
++            <list>
++                <ref bean="Dashboard-Top"/>
++                <ref bean="Dashboard-Activity"/>
++            </list>
++        </property>
++    </bean>
++
++    <bean id="Dashboard-Top" parent="Uif-CssGridSection">
++        <property name="items">
++            <list>
++                <bean parent="Uif-VerticalBoxSection" p:headerText="Expenditures Volume by Sponsor Type" p:colSpan="6">
++                    <property name="items">
++                        <list>
++                            <bean parent="Uif-Image" p:source="@{#ConfigProperties['application.url']}/static/images/graph_sample.png"/>
++                        </list>
++                    </property>
++                </bean>
++
++                <bean parent="Uif-ListCollectionSection" p:headerText="Alerts [span class='dashboard-alert-num']@{#form.alerts.size()}[/span]" p:colSpan="6"
++                        p:additionalCssClasses="dashboard-alert-list">
++                    <property name="collectionObjectClass" value="edu.mit.kc.dashboard.bo.Alert"/>
++                    <property name="propertyName" value="alerts"/>
++                    <property name="items">
++                        <list>
++                            <bean parent="Uif-MessageField"
++                                  p:messageText="[span class='icon-warning'][/span] @{#line.alert}"/>
++                        </list>
++                    </property>
++                </bean>
++
++            </list>
++        </property>
++    </bean>
++
++    <bean id="Dashboard-Activity" parent="Uif-TabSection" p:headerText="My Research Activity">
++        <property name="items">
++            <list>
++                <ref bean="Dashboard-MyProposals"/>
++                <ref bean="Dashboard-MyAwards"/>
++                <ref bean="Dashboard-ProjectDocuments"/>
++                <ref bean="Dashboard-KeyPerson"/>
++            </list>
++        </property>
++    </bean>
++
++    <bean id="Dashboard-MyProposals" parent="Uif-TableCollectionSection">
++        <property name="headerText" value="Proposals"/>
++        <property name="collectionObjectClass"
++                  value="org.kuali.coeus.propdev.impl.core.ProposalDevelopmentDocument"/>
++        <property name="propertyName" value="myProposals"/>
++        <property name="layoutManager.renderSequenceField" value="false"/>
++        <property name="layoutManager.generateAutoSequence" value="false"/>
++        <property name="layoutManager.richTable.ajaxSource"
++                  value="@{#ConfigProperties['application.url']}/kc-pd-krad/dashboard?methodToCall=tableJsonRetrieval&amp;updateComponentId=Dashboard-MyProposals&amp;ajaxReturnType=update-component&amp;ajaxRequest=true&amp;formKey=@{#form.formKey}"/>
++        <!-- enable DataTables and server paging -->
++        <property name="layoutManager.richTable.render" value="true"/>
++        <property name="useServerPaging" value="true"/>
++        <property name="readOnly" value="true"/>
++
++        <property name="items">
++            <list>
++                <bean parent="Uif-LinkField" p:label="Proposal" p:linkText="@{#line.documentNumber}">
++                    <property name="finalizeMethodToCall" value="buildPropDevLink"/>
++                    <property name="finalizeMethodAdditionalArguments" value="@{#line.documentNumber}"/>
++                </bean>
++                <bean parent="Uif-DataField" p:label="Project Title" p:propertyName="developmentProposal.title"></bean>
++                <bean parent="Uif-DataField" p:label="Sponsor Name"
++                      p:propertyName="developmentProposal.sponsorName">
++                </bean>
++                <bean parent="Uif-InputField" p:label="Status"
++                      p:propertyName="developmentProposal.proposalStateTypeCode">
++                    <property name="optionsFinder">
++                        <bean class="org.kuali.coeus.sys.framework.keyvalue.ExtendedPersistableBusinessObjectValuesFinder">
++                            <property name="businessObjectClass"
++                                      value="org.kuali.coeus.propdev.impl.state.ProposalState"/>
++                            <property name="includeKeyInDescription" value="false"/>
++                            <property name="keyAttributeName" value="code"/>
++                            <property name="labelAttributeName" value="description"/>
++                        </bean>
++                    </property>
++                    <property name="control">
++                        <bean parent="Uif-DropdownControl"/>
++                    </property>
++                </bean>
++                <bean parent="Uif-DataField" p:label="Investigator"
++                      p:propertyName="developmentProposal.principalInvestigatorName"></bean>
++            </list>
++        </property>
++    </bean>
++
++    <bean id="Dashboard-MyAwards" parent="Uif-TableCollectionSection" p:retrieveViaAjax="true">
++        <property name="headerText" value="Awards"/>
++        <property name="collectionObjectClass"
++                  value="org.kuali.kra.award.home.Award"/>
++        <property name="propertyName" value="myAwards"/>
++        <property name="layoutManager.renderSequenceField" value="false"/>
++        <property name="layoutManager.generateAutoSequence" value="false"/>
++
++        <!-- enable DataTables and server paging -->
++        <property name="layoutManager.richTable.render" value="true"/>
++        <property name="useServerPaging" value="true"/>
++        <property name="readOnly" value="true"/>
++
++        <property name="layoutManager.richTable.ajaxSource"
++                  value="@{#ConfigProperties['application.url']}/kc-pd-krad/dashboard?methodToCall=tableJsonRetrieval&amp;updateComponentId=Dashboard-MyAwards&amp;ajaxReturnType=update-component&amp;ajaxRequest=true&amp;formKey=@{#form.formKey}"/>
++
++        <property name="items">
++            <list>
++                <bean parent="Uif-LinkField" p:label="Award" p:linkText="@{#line.awardNumber}">
++                    <property name="finalizeMethodToCall" value="buildAwardLink"/>
++                    <property name="finalizeMethodAdditionalArguments" value="@{#line.awardDocument.documentNumber}"/>
++                </bean>
++                <bean parent="Uif-DataField" p:label="Award Title" p:propertyName="title"></bean>
++                <bean parent="Uif-DataField" p:label="Sponsor Name" p:propertyName="sponsorName"></bean>
++                <bean parent="Uif-DataField" p:label="Investigator" p:propertyName="principalInvestigatorName"></bean>
++            </list>
++        </property>
++    </bean>
++
++    <bean id="Dashboard-ProjectDocuments" parent="Dashboard-MyAwards">
++        <property name="headerText" value="Project Documents"/>
++
++        <property name="layoutManager.richTable.ajaxSource"
++                  value="@{#ConfigProperties['application.url']}/kc-pd-krad/dashboard?methodToCall=tableJsonRetrieval&amp;updateComponentId=Dashboard-ProjectDocuments&amp;ajaxReturnType=update-component&amp;ajaxRequest=true&amp;formKey=@{#form.formKey}"/>
++
++        <property name="items">
++            <list>
++                <bean parent="Uif-LinkField" p:label="Actions" p:linkText="View Project Doc">
++                    <property name="finalizeMethodToCall" value="buildProjectDocLink"/>
++                    <property name="finalizeMethodAdditionalArguments"
++                              value="@{#line.awardDocument.documentNumber},@{#line.awardId}"/>
++                </bean>
++                <bean parent="Uif-DataField" p:label="Award Title" p:propertyName="title"></bean>
++                <bean parent="Uif-DataField" p:label="Sponsor Name" p:propertyName="sponsorName"></bean>
++                <bean parent="Uif-DataField" p:label="Investigator" p:propertyName="principalInvestigatorName"></bean>
++            </list>
++        </property>
++    </bean>
++
++    <bean id="Dashboard-KeyPerson" parent="Dashboard-MyAwards">
++        <property name="headerText" value="Key Person Maintenance"/>
++        <property name="layoutManager.richTable.ajaxSource"
++                  value="@{#ConfigProperties['application.url']}/kc-pd-krad/dashboard?methodToCall=tableJsonRetrieval&amp;updateComponentId=Dashboard-KeyPerson&amp;ajaxReturnType=update-component&amp;ajaxRequest=true&amp;formKey=@{#form.formKey}"/>
++
++        <property name="items">
++            <list>
++                <bean parent="Uif-LinkField" p:label="Award" p:linkText="View Key Person">
++                    <property name="finalizeMethodToCall" value="buildKeyPersonLink"/>
++                    <property name="finalizeMethodAdditionalArguments"
++                              value="@{#line.awardDocument.documentNumber},@{#line.awardId}"/>
++                </bean>
++                <bean parent="Uif-DataField" p:label="Award Title" p:propertyName="title"></bean>
++                <bean parent="Uif-DataField" p:label="Sponsor Name" p:propertyName="sponsorName"></bean>
++                <bean parent="Uif-DataField" p:label="Investigator" p:propertyName="principalInvestigatorName"></bean>
++            </list>
++        </property>
++    </bean>
++
++</beans>
+\ No newline at end of file
+Index: coeus-impl/src/main/resources/ApplicationResources.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- coeus-impl/src/main/resources/ApplicationResources.properties	(date 1426561568000)
++++ coeus-impl/src/main/resources/ApplicationResources.properties	(revision )
+@@ -1134,6 +1134,11 @@
+ 
+ info.notifications.sent Notification successfully sent to {0}.
+ error.award.notFound=Award not found.
++dashboard.error.missingPerson=Invalid username
+ 
+ workload.error.missingPerson=Invalid username
+-workload.error.duplicatePerson=This person already exists as Contract Administrator
+\ No newline at end of file
++workload.error.duplicatePerson=This person already exists as Contract Administrator
++workload.error.badUnit=Unit not valid
++workload.info.simulationSaved=Simulation saved: {0}
++workload.info.simulationFromLoaded=Simulation loaded: {0}
++workload.info.simulationFromCurrent=Simulation mode was loaded with current workload balancing data
+\ No newline at end of file
+Index: coeus-impl/src/main/java/edu/mit/kc/dashboard/core/DashboardForm.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- coeus-impl/src/main/java/edu/mit/kc/dashboard/core/DashboardForm.java	(revision )
++++ coeus-impl/src/main/java/edu/mit/kc/dashboard/core/DashboardForm.java	(revision )
+@@ -0,0 +1,72 @@
++package edu.mit.kc.dashboard.core;
++
++import edu.mit.kc.dashboard.bo.Alert;
++import org.kuali.coeus.common.framework.person.KcPerson;
++import org.kuali.coeus.propdev.impl.core.DevelopmentProposal;
++import org.kuali.coeus.propdev.impl.core.ProposalDevelopmentDocument;
++import org.kuali.kra.award.home.Award;
++import org.kuali.kra.negotiations.bo.Negotiation;
++import org.kuali.rice.kim.api.identity.Person;
++import org.kuali.rice.krad.web.form.UifFormBase;
++
++import java.util.ArrayList;
++import java.util.Collection;
++import java.util.List;
++
++/**
++ *
++ */
++public class DashboardForm extends UifFormBase {
++
++    private KcPerson dashboardPerson;
++    private String tempUserName;
++    private List<ProposalDevelopmentDocument> myProposals = new ArrayList<>();
++    private List<Award> myAwards = new ArrayList<>();
++    private List<Alert> alerts = new ArrayList<>();
++
++    public void setDashboardPerson(KcPerson dashboardPerson) {
++        this.dashboardPerson = dashboardPerson;
++    }
++
++    public KcPerson getDashboardPerson() {
++        return dashboardPerson;
++    }
++
++    public String getTempUserName() {
++        return tempUserName;
++    }
++
++    public void setTempUserName(String tempUserName) {
++        this.tempUserName = tempUserName;
++    }
++
++    public List<ProposalDevelopmentDocument> getMyProposals() {
++        return myProposals;
++    }
++
++    public void setMyProposals(List<ProposalDevelopmentDocument> myProposals) {
++        this.myProposals = myProposals;
++    }
++
++    public List<Award> getMyAwards() {
++        return myAwards;
++    }
++
++    public void setMyAwards(List<Award> myAwards) {
++        this.myAwards = myAwards;
++    }
++
++    public List<Alert> getAlerts() {
++        // TODO this is for demo only
++        alerts = new ArrayList<Alert>();
++        for (int i = 0; i < 5; i++){
++            alerts.add(new Alert());
++        }
++
++        return alerts;
++    }
++
++    public void setAlerts(List<Alert> alerts) {
++        this.alerts = alerts;
++    }
++}
+Index: coeus-impl/src/main/java/org/kuali/rice/krad/uif/widget/RichTable.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- coeus-impl/src/main/java/org/kuali/rice/krad/uif/widget/RichTable.java	(revision )
++++ coeus-impl/src/main/java/org/kuali/rice/krad/uif/widget/RichTable.java	(revision )
+@@ -0,0 +1,1057 @@
++/**
++ * Copyright 2005-2015 The Kuali Foundation
++ *
++ * Licensed under the Educational Community License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ * http://www.opensource.org/licenses/ecl2.php
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++package org.kuali.rice.krad.uif.widget;
++
++import com.google.common.base.Function;
++import com.google.common.collect.Lists;
++
++import org.apache.commons.lang.ClassUtils;
++import org.apache.commons.lang.StringUtils;
++import org.kuali.rice.core.api.CoreApiServiceLocator;
++import org.kuali.rice.core.api.config.property.ConfigurationService;
++import org.kuali.rice.core.api.util.type.KualiDecimal;
++import org.kuali.rice.core.api.util.type.KualiInteger;
++import org.kuali.rice.core.api.util.type.KualiPercent;
++import org.kuali.rice.krad.datadictionary.parse.BeanTag;
++import org.kuali.rice.krad.datadictionary.parse.BeanTagAttribute;
++import org.kuali.rice.krad.datadictionary.parse.BeanTags;
++import org.kuali.rice.krad.lookup.LookupView;
++import org.kuali.rice.krad.uif.UifConstants;
++import org.kuali.rice.krad.uif.UifParameters;
++import org.kuali.rice.krad.uif.component.Component;
++import org.kuali.rice.krad.uif.component.ComponentBase;
++import org.kuali.rice.krad.uif.container.CollectionGroup;
++import org.kuali.rice.krad.uif.control.*;
++import org.kuali.rice.krad.uif.field.*;
++import org.kuali.rice.krad.uif.layout.LayoutManager;
++import org.kuali.rice.krad.uif.layout.TableLayoutManager;
++import org.kuali.rice.krad.uif.lifecycle.ViewLifecycle;
++import org.kuali.rice.krad.uif.util.LifecycleElement;
++import org.kuali.rice.krad.uif.util.ObjectPropertyUtils;
++import org.kuali.rice.krad.uif.view.View;
++import org.kuali.rice.krad.uif.widget.WidgetBase;
++import org.kuali.rice.krad.util.KRADConstants;
++import org.kuali.rice.krad.util.KRADUtils;
++import org.kuali.rice.krad.web.form.UifFormBase;
++
++import javax.annotation.Nullable;
++import java.sql.Timestamp;
++import java.util.ArrayList;
++import java.util.HashMap;
++import java.util.List;
++import java.util.Set;
++
++/**
++ * Decorates a HTML Table client side with various tools
++ *
++ * <p>
++ * Decorations implemented depend on widget implementation. Examples are sorting, paging and
++ * skinning.
++ * </p>
++ *
++ * @author Kuali Rice Team (rice.collab@kuali.org)
++ */
++@BeanTags({@BeanTag(name = "richTable", parent = "Uif-RichTable"),
++        @BeanTag(name = "pagedRichTable", parent = "Uif-PagedRichTable"),
++        @BeanTag(name = "scrollableRichTable", parent = "Uif-ScrollableRichTable")})
++public class RichTable extends WidgetBase {
++    private static final long serialVersionUID = 4671589690877390070L;
++
++    private String emptyTableMessage;
++    private boolean disableTableSort;
++
++    private boolean forceAoColumnDefsOverride;
++
++    private boolean forceLocalJsonData;
++    private int nestedLevel;
++    private String aaData;
++
++    private Set<String> hiddenColumns;
++    private Set<String> sortableColumns;
++    private List<String> cellCssClasses;
++
++    private String ajaxSource;
++
++    private boolean showExportOption;
++
++    private String groupingOptionsJSString;
++
++    public RichTable() {
++        super();
++        groupingOptionsJSString = "null";
++        cellCssClasses = new ArrayList<String>();
++    }
++
++    /**
++     * The following initialization is performed:
++     *
++     * <ul>
++     * <li>Initializes component options for empty table message</li>
++     * </ul>
++     */
++    @Override
++    public void performFinalize(Object model, LifecycleElement parent) {
++        super.performFinalize(model, parent);
++
++        UifFormBase formBase = (UifFormBase) model;
++
++        if (!isRender()) {
++            return;
++        }
++
++        if (templateOptions.isEmpty()) {
++            setTemplateOptions(new HashMap<String, String>());
++        }
++
++        if (StringUtils.isNotBlank(getEmptyTableMessage()) && !templateOptions.containsKey(
++                UifConstants.TableToolsKeys.LANGUAGE)) {
++            templateOptions.put(UifConstants.TableToolsKeys.LANGUAGE,
++                    "{\"" + UifConstants.TableToolsKeys.EMPTY_TABLE + "\" : \"" + getEmptyTableMessage() + "\"}");
++        }
++
++        Object domOption = templateOptions.get(UifConstants.TableToolsKeys.SDOM);
++        if (domOption instanceof String) {
++            String sDomOption = (String) domOption;
++
++            if (StringUtils.isNotBlank(sDomOption)) {
++                if (!isShowExportOption()) {
++                    sDomOption = StringUtils.remove(sDomOption, "T"); //Removes Export option
++                }
++                templateOptions.put(UifConstants.TableToolsKeys.SDOM, sDomOption);
++            }
++        }
++
++        // for add events, disable initial sorting
++        if (UifConstants.ActionEvents.ADD_LINE.equals(formBase.getActionEvent()) || UifConstants.ActionEvents
++                .ADD_BLANK_LINE.equals(formBase.getActionEvent())) {
++            templateOptions.put(UifConstants.TableToolsKeys.AASORTING, "[]");
++        }
++
++        if ((parent instanceof CollectionGroup)) {
++            CollectionGroup collectionGroup = (CollectionGroup) parent;
++            LayoutManager layoutManager = collectionGroup.getLayoutManager();
++
++            //if useServerPaging is true, add the css cell styling to the template options so it can still be used
++            //since this will not go through the grid ftl
++            if (layoutManager instanceof TableLayoutManager && collectionGroup.isUseServerPaging()) {
++                addCellStyling((TableLayoutManager) layoutManager);
++            }
++
++            buildTableOptions(collectionGroup);
++            setTotalOptions(collectionGroup);
++
++            View view = ViewLifecycle.getActiveLifecycle().getView();
++            if (view instanceof LookupView) {
++                buildSortOptions((LookupView) view, collectionGroup);
++            }
++        }
++
++        if (isDisableTableSort()) {
++            templateOptions.put(UifConstants.TableToolsKeys.TABLE_SORT, "false");
++        }
++
++        String kradUrl = getConfigurationService().getPropertyValueAsString(UifConstants.ConfigProperties.KRAD_URL);
++        if (StringUtils.isNotBlank(ajaxSource)) {
++            templateOptions.put(UifConstants.TableToolsKeys.SAJAX_SOURCE, ajaxSource);
++        } else if (parent instanceof CollectionGroup && ((CollectionGroup) parent).isUseServerPaging()) {
++
++
++            // build sAjaxSource url to call
++            templateOptions.put(UifConstants.TableToolsKeys.SAJAX_SOURCE,
++                    kradUrl + ((UifFormBase) model).getControllerMapping() + "?" +
++                            UifConstants.CONTROLLER_METHOD_DISPATCH_PARAMETER_NAME + "=" +
++                            UifConstants.MethodToCallNames.TABLE_JSON + "&" + UifParameters.UPDATE_COMPONENT_ID + "=" +
++                            parent.getId() + "&" + UifParameters.FORM_KEY + "=" + ((UifFormBase) model).getFormKey() +
++                            "&" + UifParameters.AJAX_RETURN_TYPE + "=" +
++                            UifConstants.AjaxReturnTypes.UPDATECOMPONENT.getKey() + "&" + UifParameters.AJAX_REQUEST +
++                            "=" + "true");
++        }
++
++        if (templateOptions.get(UifConstants.TableToolsKeys.SAJAX_SOURCE) != null) {
++            // enable required dataTables options for server side paging
++            templateOptions.put(UifConstants.TableToolsKeys.BPROCESSING, "true");
++            templateOptions.put(UifConstants.TableToolsKeys.BSERVER_SIDE, "true");
++            //TODO: Figure out where to move this script file constant?
++            String pushLookupSelect = "function (aoData) { "
++                    +
++                    "if(jQuery('table.dataTable').length > 0) {    "
++                    +
++                    "    var table = jQuery('table.dataTable');    "
++                    +
++                    "    jQuery( table.find(':input:checked')).each( function (index) {     "
++                    +
++                    "        aoData.push({'name': (jQuery(this)).attr('name'),'value': (jQuery(this)).attr('value')});  "
++                    +
++                    "    console.log(jQuery(this).attr('name') + ':' + jQuery(this).attr('value')); "
++                    +
++                    "    });  "
++                    +
++                    "}  "
++                    +
++                    "}";
++
++            templateOptions.put(UifConstants.TableToolsKeys.SERVER_PARAMS, pushLookupSelect);
++
++            // store col defs so columns can be built on paging request
++            ViewLifecycle.getViewPostMetadata().addComponentPostData(parent.getId(),
++                    UifConstants.TableToolsKeys.AO_COLUMN_DEFS, templateOptions.get(
++                    UifConstants.TableToolsKeys.AO_COLUMN_DEFS));
++        }
++
++        // build export url to call
++        templateOptions.put(UifConstants.TableToolsKeys.SDOWNLOAD_SOURCE,
++                kradUrl + "/" + UifConstants.ControllerMappings.EXPORT + "?" + UifParameters.UPDATE_COMPONENT_ID + "=" +
++                        parent.getId() + "&" + UifParameters.FORM_KEY + "=" + ((UifFormBase) model).getFormKey() + "&" +
++                        UifParameters.AJAX_RETURN_TYPE + "=" + UifConstants.AjaxReturnTypes.UPDATECOMPONENT.getKey() +
++                        "&" + UifParameters.AJAX_REQUEST + "=" + "true");
++    }
++
++    /**
++     * Add the css style to the cellCssClasses by column index, later used by the aoColumnDefs
++     *
++     * @param manager the tableLayoutManager that contains the original fields
++     */
++    private void addCellStyling(TableLayoutManager manager) {
++        if (manager.getAllRowFields() != null && !manager.getAllRowFields().isEmpty()) {
++            for (int index = 0; index < manager.getNumberOfColumns(); index++) {
++                String cellStyleClasses = ((ComponentBase) manager.getAllRowFields().get(index))
++                        .getWrapperCssClassesAsString();
++                if (StringUtils.isNotBlank(cellStyleClasses)) {
++                    cellCssClasses.add(cellStyleClasses);
++                }
++            }
++        }
++    }
++
++    /**
++     * Builds the footer callback template option for column totals
++     *
++     * @param collectionGroup the collection group
++     */
++    private void setTotalOptions(CollectionGroup collectionGroup) {
++        LayoutManager layoutManager = collectionGroup.getLayoutManager();
++
++        if (layoutManager instanceof TableLayoutManager) {
++            List<String> totalColumns = ((TableLayoutManager) layoutManager).getColumnsToCalculate();
++
++            if (totalColumns.size() > 0) {
++                String array = "[";
++
++                for (String i : totalColumns) {
++                    array = array + i + ",";
++                }
++                array = StringUtils.removeEnd(array, ",");
++                array = array + "]";
++
++                templateOptions.put(UifConstants.TableToolsKeys.FOOTER_CALLBACK,
++                        "function (nRow, aaData, iStart, iEnd, aiDisplay) {initializeTotalsFooter (nRow, aaData, iStart, iEnd, aiDisplay, "
++                                + array
++                                + " )}");
++            }
++        }
++    }
++
++    /**
++     * Builds column options for sorting
++     *
++     * @param collectionGroup
++     */
++    protected void buildTableOptions(CollectionGroup collectionGroup) {
++        checkMutable(false);
++
++        LayoutManager layoutManager = collectionGroup.getLayoutManager();
++        final boolean useServerPaging = collectionGroup.isUseServerPaging();
++
++        if (templateOptions.isEmpty()) {
++            setTemplateOptions(new HashMap<String, String>());
++        }
++
++        // if sub collection exists, don't allow the table sortable
++        if (!collectionGroup.getSubCollections().isEmpty()) {
++            setDisableTableSort(true);
++        }
++
++        if (!isDisableTableSort()) {
++            // if rendering add line, skip that row from col sorting
++            if (collectionGroup.isRenderAddLine()
++                    && !Boolean.TRUE.equals(collectionGroup.getReadOnly())
++                    && !((layoutManager instanceof TableLayoutManager) && ((TableLayoutManager) layoutManager)
++                    .isSeparateAddLine())) {
++
++                templateOptions.put(UifConstants.TableToolsKeys.SORT_SKIP_ROWS,
++                        "[" + UifConstants.TableToolsValues.ADD_ROW_DEFAULT_INDEX + "]");
++            }
++
++            StringBuilder tableColumnOptions = new StringBuilder("[");
++
++            int colIndex = 0;
++            int actionIndex = UifConstants.TableLayoutValues.ACTIONS_COLUMN_RIGHT_INDEX;
++            boolean actionFieldVisible = collectionGroup.isRenderLineActions() && !Boolean.TRUE.equals(
++                    collectionGroup.getReadOnly());
++
++            if (layoutManager instanceof TableLayoutManager) {
++                actionIndex = ((TableLayoutManager) layoutManager).getActionColumnIndex();
++            }
++
++            if (actionIndex == UifConstants.TableLayoutValues.ACTIONS_COLUMN_LEFT_INDEX && actionFieldVisible) {
++                String options = constructTableColumnOptions(colIndex, false, useServerPaging, null, null);
++                tableColumnOptions.append(options + ",");
++                colIndex++;
++            }
++
++            // handle sequence field
++            if (layoutManager instanceof TableLayoutManager && ((TableLayoutManager) layoutManager)
++                    .isRenderSequenceField()) {
++                Class<?> dataTypeClass = Number.class;
++
++                if (((TableLayoutManager) layoutManager).getSequenceFieldPrototype() instanceof DataField) {
++                    DataField dataField = (DataField) ((TableLayoutManager) layoutManager).getSequenceFieldPrototype();
++                    dataTypeClass = ObjectPropertyUtils.getPropertyType(collectionGroup.getCollectionObjectClass(),
++                            dataField.getPropertyName());
++                    // check to see if field has custom sort type
++                    if (dataField.getSortAs() != null && dataField.getSortAs().length() > 0) {
++                        if (dataField.getSortAs().equals(UifConstants.TableToolsValues.DATE)) {
++                            dataTypeClass = java.sql.Date.class;
++                        } else if (dataField.getSortAs().equals(UifConstants.TableToolsValues.NUMERIC)) {
++                            dataTypeClass = Number.class;
++                        } else if (dataField.getSortAs().equals(UifConstants.TableToolsValues.STRING)) {
++                            dataTypeClass = String.class;
++                        }
++                    }
++                }
++
++                // don't allow sorting of sequence field - why?
++                // auto sequence column is never sortable
++                tableColumnOptions.append("{"
++                        + sortable(false)
++                        + ","
++                        + sortType(getSortType(dataTypeClass))
++                        + ","
++                        + sortDataType(UifConstants.TableToolsValues.DOM_TEXT)
++                        + mData(useServerPaging, colIndex)
++                        + ","
++                        + targets(colIndex)
++                        + "},");
++
++                // the sequence field needs to still be sorted when initially loaded
++                templateOptions.put(UifConstants.TableToolsKeys.AASORTING, "[[" + colIndex + ",'asc']]");
++
++                colIndex++;
++
++                if (actionIndex == 2 && actionFieldVisible) {
++                    String options = constructTableColumnOptions(colIndex, false, useServerPaging, null, null);
++                    tableColumnOptions.append(options + ",");
++                    colIndex++;
++                }
++            }
++
++            // skip select field if enabled
++            if (collectionGroup.isIncludeLineSelectionField()) {
++                String options = constructTableColumnOptions(colIndex, false, useServerPaging, null, null);
++                tableColumnOptions.append(options + ",");
++                colIndex++;
++            }
++
++            // if data dictionary defines aoColumns, copy here and skip default sorting/visibility behaviour
++            if (!StringUtils.isEmpty(templateOptions.get(UifConstants.TableToolsKeys.AO_COLUMNS))) {
++                // get the contents of the JS array string
++                String jsArray = templateOptions.get(UifConstants.TableToolsKeys.AO_COLUMNS);
++                int startBrace = StringUtils.indexOf(jsArray, "[");
++                int endBrace = StringUtils.lastIndexOf(jsArray, "]");
++                tableColumnOptions.append(StringUtils.substring(jsArray, startBrace + 1, endBrace) + ",");
++
++                if (actionFieldVisible && (actionIndex == -1 || actionIndex >= colIndex)) {
++                    String options = constructTableColumnOptions(colIndex, false, useServerPaging, null, null);
++                    tableColumnOptions.append(options);
++                } else {
++                    tableColumnOptions = new StringBuilder(StringUtils.removeEnd(tableColumnOptions.toString(), ","));
++                }
++
++                tableColumnOptions.append("]");
++                templateOptions.put(UifConstants.TableToolsKeys.AO_COLUMNS, tableColumnOptions.toString());
++            } else if (!StringUtils.isEmpty(templateOptions.get(UifConstants.TableToolsKeys.AO_COLUMN_DEFS))
++                    && forceAoColumnDefsOverride) {
++                String jsArray = templateOptions.get(UifConstants.TableToolsKeys.AO_COLUMN_DEFS);
++                int startBrace = StringUtils.indexOf(jsArray, "[");
++                int endBrace = StringUtils.lastIndexOf(jsArray, "]");
++                tableColumnOptions.append(StringUtils.substring(jsArray, startBrace + 1, endBrace) + ",");
++
++                if (actionFieldVisible && (actionIndex == -1 || actionIndex >= colIndex)) {
++                    String options = constructTableColumnOptions(colIndex, false, useServerPaging, null, null);
++                    tableColumnOptions.append(options);
++                } else {
++                    tableColumnOptions = new StringBuilder(StringUtils.removeEnd(tableColumnOptions.toString(), ","));
++                }
++
++                tableColumnOptions.append("]");
++                templateOptions.put(UifConstants.TableToolsKeys.AO_COLUMN_DEFS, tableColumnOptions.toString());
++            } else if (layoutManager instanceof TableLayoutManager) {
++                List<Field> rowFields = ((TableLayoutManager) layoutManager).getFirstRowFields();
++
++                // build column defs from the the first row of the table
++                for (Component component : rowFields) {
++                    if (actionFieldVisible && colIndex + 1 == actionIndex) {
++                        String options = constructTableColumnOptions(colIndex, false, useServerPaging, null, null);
++                        tableColumnOptions.append(options + ",");
++                        colIndex++;
++                    }
++
++                    // for FieldGroup, get the first field from that group
++                    if (component instanceof FieldGroup) {
++                        component = ((FieldGroup) component).getItems().get(0);
++                    }
++
++                    if (component instanceof DataField) {
++                        DataField field = (DataField) component;
++
++                        // if a field is marked as invisible in hiddenColumns, append options and skip sorting
++                        if (getHiddenColumns() != null && getHiddenColumns().contains(field.getPropertyName())) {
++                            tableColumnOptions.append("{"
++                                    + visible(false)
++                                    + ","
++                                    + mData(useServerPaging, colIndex)
++                                    + targets(colIndex)
++                                    + "},");
++                        } else if (getSortableColumns() != null && !getSortableColumns().isEmpty()) {
++                            // if specified as a column as sortable then add it
++                            if (getSortableColumns().contains(field.getPropertyName())) {
++                                tableColumnOptions.append(getDataFieldColumnOptions(colIndex, collectionGroup, field)
++                                        + ",");
++                            } else { // else designate it as not sortable
++                                tableColumnOptions.append("{"
++                                        + sortable(false)
++                                        + ","
++                                        + mData(useServerPaging, colIndex)
++                                        + targets(colIndex)
++                                        + "},");
++                            }
++                        } else { // sortable columns not defined
++                            String options = getDataFieldColumnOptions(colIndex, collectionGroup, field);
++                            tableColumnOptions.append(options + ",");
++                        }
++                        colIndex++;
++                    } else if (component instanceof MessageField) {
++                        if (component.getDataAttributes() != null && UifConstants.RoleTypes.ROW_GROUPING.equals(
++                                component.getDataAttributes().get(UifConstants.DataAttributes.ROLE))) {
++                            // Grouping column is never shown, so skip
++                            tableColumnOptions.append("{"
++                                    + visible(false)
++                                    + ","
++                                    + mData(useServerPaging, colIndex)
++                                    + targets(colIndex)
++                                    + "},");
++                        } else {
++                            String options = constructTableColumnOptions(colIndex, true, useServerPaging, String.class,
++                                    UifConstants.TableToolsValues.DOM_TEXT);
++                            tableColumnOptions.append(options + ",");
++                        }
++                        colIndex++;
++                    } else if (component instanceof LinkField) {
++                        LinkField linkField = (LinkField) component;
++
++                        Class<?> dataTypeClass = String.class;
++                        // check to see if field has custom sort type
++                        if (linkField.getSortAs() != null && linkField.getSortAs().length() > 0) {
++                            if (linkField.getSortAs().equals(UifConstants.TableToolsValues.DATE)) {
++                                dataTypeClass = java.sql.Date.class;
++                            } else if (linkField.getSortAs().equals(UifConstants.TableToolsValues.NUMERIC)) {
++                                dataTypeClass = Number.class;
++                            } else if (linkField.getSortAs().equals(UifConstants.TableToolsValues.STRING)) {
++                                dataTypeClass = String.class;
++                            }
++                        }
++
++                        String options = constructTableColumnOptions(colIndex, true, useServerPaging, dataTypeClass,
++                                UifConstants.TableToolsValues.DOM_TEXT);
++                        tableColumnOptions.append(options + ",");
++                        colIndex++;
++                    } else {
++                        String options = constructTableColumnOptions(colIndex, false, useServerPaging, null, null);
++                        tableColumnOptions.append(options + ",");
++                        colIndex++;
++                    }
++                }
++
++                if (actionFieldVisible && (actionIndex == -1 || actionIndex >= colIndex)) {
++                    String options = constructTableColumnOptions(colIndex, false, useServerPaging, null, null);
++                    tableColumnOptions.append(options);
++                } else {
++                    tableColumnOptions = new StringBuilder(StringUtils.removeEnd(tableColumnOptions.toString(), ","));
++                }
++
++                // merge the aoColumnDefs passed in
++                if (!StringUtils.isEmpty(templateOptions.get(UifConstants.TableToolsKeys.AO_COLUMN_DEFS))) {
++                    String origAoOptions = templateOptions.get(UifConstants.TableToolsKeys.AO_COLUMN_DEFS).trim();
++                    origAoOptions = StringUtils.removeStart(origAoOptions, "[");
++                    origAoOptions = StringUtils.removeEnd(origAoOptions, "]");
++                    tableColumnOptions.append("," + origAoOptions);
++                }
++
++                tableColumnOptions.append("]");
++                templateOptions.put(UifConstants.TableToolsKeys.AO_COLUMN_DEFS, tableColumnOptions.toString());
++            }
++        }
++    }
++
++    /**
++     * Builds default sorting options.
++     *
++     * @param lookupView the view for the lookup
++     * @param collectionGroup the collection group for the table
++     */
++    protected void buildSortOptions(LookupView lookupView, CollectionGroup collectionGroup) {
++        if (!isDisableTableSort() && lookupView.getDefaultSortAttributeNames() != null
++                && !lookupView.getDefaultSortAttributeNames().isEmpty()) {
++            LayoutManager layoutManager = collectionGroup.getLayoutManager();
++
++            if (layoutManager instanceof TableLayoutManager) {
++                TableLayoutManager tableLayoutManager = (TableLayoutManager) layoutManager;
++
++                List<String> firstRowPropertyNames = getFirstRowPropertyNames(tableLayoutManager.getFirstRowFields());
++                List<String> defaultSortAttributeNames = lookupView.getDefaultSortAttributeNames();
++                String sortDirection = lookupView.isDefaultSortAscending() ? "'asc'" : "'desc'";
++                boolean actionFieldVisible = collectionGroup.isRenderLineActions() && !Boolean.TRUE.equals(
++                        collectionGroup.getReadOnly());
++                int actionIndex = ((TableLayoutManager) layoutManager).getActionColumnIndex();
++                int columnIndexPrefix = 0;
++
++                if (tableLayoutManager.isRenderSequenceField()) {
++                    columnIndexPrefix++;
++                }
++
++                if (tableLayoutManager.getRowDetailsGroup() != null && tableLayoutManager.getRowDetailsGroup().getItems() != null &&
++                        !tableLayoutManager.getRowDetailsGroup().getItems().isEmpty()) {
++                    columnIndexPrefix++;
++                }
++
++                StringBuffer tableToolsSortOptions = new StringBuffer("[");
++
++                for (String defaultSortAttributeName : defaultSortAttributeNames) {
++                    int index = firstRowPropertyNames.indexOf(defaultSortAttributeName);
++                    if (index >= 0) {
++                        if (tableToolsSortOptions.length() > 1) {
++                            tableToolsSortOptions.append(",");
++                        }
++                        int columnIndex = columnIndexPrefix + index;
++                        if (actionFieldVisible && actionIndex != -1 && actionIndex <= columnIndex + 1) {
++                            columnIndex++;
++                        }
++                        tableToolsSortOptions.append("[" + columnIndex + "," + sortDirection + "]");
++                    }
++                }
++
++                tableToolsSortOptions.append("]");
++
++                if (templateOptions.isEmpty()) {
++                    setTemplateOptions(new HashMap<String, String>());
++                }
++                templateOptions.put(UifConstants.TableToolsKeys.AASORTING, tableToolsSortOptions.toString());
++            }
++        }
++    }
++
++    private List<String> getFirstRowPropertyNames(List<Field> firstRowFields) {
++        return Lists.transform(firstRowFields, new Function<Field, String>() {
++            @Override
++            public String apply(@Nullable Field field) {
++                if (field != null && field instanceof DataField) {
++                    return ((DataField) field).getPropertyName();
++                } else {
++                    return null;
++                }
++            }
++        });
++    }
++
++    /**
++     * Construct the column options for a data field
++     *
++     * @param target column index
++     * @param collectionGroup the collectionGroup in which the data field is defined
++     * @param field the field to construction options for
++     * @return options as valid for datatable
++     */
++    protected String getDataFieldColumnOptions(int target, CollectionGroup collectionGroup, DataField field) {
++        String sortDataType = null;
++
++        if (!Boolean.TRUE.equals(collectionGroup.getReadOnly())
++                && (field instanceof InputField)
++                && ((InputField) field).getControl() != null) {
++            Control control = ((InputField) field).getControl();
++            if (control instanceof SelectControl) {
++                sortDataType = UifConstants.TableToolsValues.DOM_SELECT;
++            } else if (control instanceof CheckboxControl || control instanceof CheckboxGroupControl) {
++                sortDataType = UifConstants.TableToolsValues.DOM_CHECK;
++            } else if (control instanceof RadioGroupControl) {
++                sortDataType = UifConstants.TableToolsValues.DOM_RADIO;
++            } else {
++                sortDataType = UifConstants.TableToolsValues.DOM_TEXT;
++            }
++        } else {
++            sortDataType = UifConstants.TableToolsValues.DOM_TEXT;
++        }
++
++        Class<?> dataTypeClass = ObjectPropertyUtils.getPropertyType(collectionGroup.getCollectionObjectClass(),
++                field.getPropertyName());
++        // check to see if field has custom sort type
++        if (field.getSortAs() != null && field.getSortAs().length() > 0) {
++            if (field.getSortAs().equals(UifConstants.TableToolsValues.CURRENCY)) {
++                dataTypeClass = KualiDecimal.class;
++            } else if (field.getSortAs().equals(UifConstants.TableToolsValues.DATE)) {
++                dataTypeClass = java.sql.Date.class;
++            } else if (field.getSortAs().equals(UifConstants.TableToolsValues.NUMERIC)) {
++                dataTypeClass = Number.class;
++            } else if (field.getSortAs().equals(UifConstants.TableToolsValues.STRING)) {
++                dataTypeClass = String.class;
++            }
++        }
++
++        boolean isSortable = true;
++        if (field.isApplyMask()) {
++            isSortable = false;
++        }
++
++        return constructTableColumnOptions(target, isSortable, collectionGroup.isUseServerPaging(), dataTypeClass,
++                sortDataType);
++    }
++
++    /**
++     * Constructs the sort data type for each data table columns in a format that will be used to
++     * initialize the data table widget via javascript
++     *
++     * @param target the column index
++     * @param isSortable whether a column should be marked as sortable
++     * @param isUseServerPaging is server side paging enabled?
++     * @param dataTypeClass the class type of the column value - used determine the sType option -
++     * which identifies the search plugin to use
++     * @param sortDataType Defines a data source type for the sorting which can be used to read
++     * realtime information from the table
++     * @return a formatted string with data table options for one column
++     */
++    public String constructTableColumnOptions(int target, boolean isSortable, boolean isUseServerPaging,
++            Class<?> dataTypeClass, String sortDataType) {
++        String options = "null";
++
++        if (!isSortable || dataTypeClass == null) {
++            options = sortable(false) + "," + sortType(UifConstants.TableToolsValues.STRING);
++        } else {
++            options = sortType(getSortType(dataTypeClass));
++
++            if (!isUseServerPaging && !this.forceLocalJsonData) {
++                options += "," + sortDataType(sortDataType);
++            }
++        }
++
++        if (target < cellCssClasses.size() && target >= 0) {
++            options += ", \"" + UifConstants.TableToolsKeys.CELL_CLASS + "\" : \"" + cellCssClasses.get(target) + "\"";
++        }
++
++        // only use the mDataProp when using json data (only relevant for this table type)
++        options += mData(isUseServerPaging, target);
++
++        if (!options.equals("null")) {
++            options = "{" + options + "," + targets(target) + "}";
++        } else {
++            options = "{" + options + "}";
++        }
++
++        return options;
++    }
++
++    private String sortable(boolean sortable) {
++        return "\"" + UifConstants.TableToolsKeys.SORTABLE + "\": " + (sortable ? UifConstants.TableToolsValues.TRUE :
++                UifConstants.TableToolsValues.FALSE);
++    }
++
++    private String sortDataType(String sortDataType) {
++        return "\"" + UifConstants.TableToolsKeys.SORT_DATA_TYPE + "\": \"" + sortDataType + "\"";
++    }
++
++    private String getSortType(Class<?> dataTypeClass) {
++        String sortType = UifConstants.TableToolsValues.STRING;
++        if (ClassUtils.isAssignable(dataTypeClass, KualiPercent.class)) {
++            sortType = UifConstants.TableToolsValues.PERCENT;
++        } else if (ClassUtils.isAssignable(dataTypeClass, KualiInteger.class) || ClassUtils.isAssignable(dataTypeClass,
++                KualiDecimal.class)) {
++            sortType = UifConstants.TableToolsValues.CURRENCY;
++        } else if (ClassUtils.isAssignable(dataTypeClass, Timestamp.class)) {
++            sortType = "date";
++        } else if (ClassUtils.isAssignable(dataTypeClass, java.sql.Date.class) || ClassUtils.isAssignable(dataTypeClass,
++                java.util.Date.class)) {
++            sortType = UifConstants.TableToolsValues.DATE;
++        } else if (ClassUtils.isAssignable(dataTypeClass, Number.class)) {
++            sortType = UifConstants.TableToolsValues.NUMERIC;
++        }
++        return sortType;
++    }
++
++    private String sortType(String sortType) {
++        return "\"" + UifConstants.TableToolsKeys.SORT_TYPE + "\": \"" + sortType + "\"";
++    }
++
++    private String targets(int target) {
++        return "\"" + UifConstants.TableToolsKeys.TARGETS + "\": [" + target + "]";
++    }
++
++    private String visible(boolean visible) {
++        return "\"" + UifConstants.TableToolsKeys.VISIBLE + "\": " + (visible ? UifConstants.TableToolsValues.TRUE :
++                UifConstants.TableToolsValues.FALSE);
++    }
++
++    private String mData(boolean isUseServerPaging, int target) {
++        if (isUseServerPaging || this.forceLocalJsonData) {
++            return ", \"" + UifConstants.TableToolsKeys.MDATA +
++                    "\" : function(row,type,newVal){ return _handleColData(row,type,'c" + target + "',newVal);}";
++        }
++        return "";
++    }
++
++    /**
++     * Returns the text which is used to display text when the table is empty
++     *
++     * @return empty table message
++     */
++    @BeanTagAttribute
++    public String getEmptyTableMessage() {
++        return emptyTableMessage;
++    }
++
++    /**
++     * Setter for a text to be displayed when the table is empty
++     *
++     * @param emptyTableMessage
++     */
++    public void setEmptyTableMessage(String emptyTableMessage) {
++        this.emptyTableMessage = emptyTableMessage;
++    }
++
++    /**
++     * Returns true if sorting is disabled
++     *
++     * @return the disableTableSort
++     */
++    @BeanTagAttribute
++    public boolean isDisableTableSort() {
++        return this.disableTableSort;
++    }
++
++    /**
++     * Enables/disables the table sorting
++     *
++     * @param disableTableSort the disableTableSort to set
++     */
++    public void setDisableTableSort(boolean disableTableSort) {
++        this.disableTableSort = disableTableSort;
++    }
++
++    /**
++     * Returns true if export option is enabled
++     *
++     * @return the showExportOption
++     */
++    @BeanTagAttribute
++    public boolean isShowExportOption() {
++        return this.showExportOption;
++    }
++
++    /**
++     * Show/Hide the search and export option in tabletools
++     *
++     * @param showExportOption the showExportOptions to set
++     */
++    public void setShowExportOption(boolean showExportOption) {
++        this.showExportOption = showExportOption;
++    }
++
++    /**
++     * Holds propertyNames for the ones meant to be hidden since columns are visible by default
++     *
++     * <p>
++     * Duplicate entries are ignored and the order of entries is not significant
++     * </p>
++     *
++     * @return a set with propertyNames of columns to be hidden
++     */
++    @BeanTagAttribute(type = BeanTagAttribute.AttributeType.SETVALUE)
++    public Set<String> getHiddenColumns() {
++        return hiddenColumns;
++    }
++
++    /**
++     * Setter for the hidden columns set
++     *
++     * @param hiddenColumns a set containing propertyNames
++     */
++    public void setHiddenColumns(Set<String> hiddenColumns) {
++        this.hiddenColumns = hiddenColumns;
++    }
++
++    /**
++     * Holds the propertyNames for columns that are to be sorted
++     *
++     * <p>
++     * Duplicate entries are ignored and the order of entries is not significant
++     * </p>
++     *
++     * @return a set of propertyNames with for columns that will be sorted
++     */
++    @BeanTagAttribute(type = BeanTagAttribute.AttributeType.SETVALUE)
++    public Set<String> getSortableColumns() {
++        return sortableColumns;
++    }
++
++    /**
++     * Setter for sortable columns
++     *
++     * @param sortableColumns a set containing propertyNames of columns to be sorted
++     */
++    public void setSortableColumns(Set<String> sortableColumns) {
++        this.sortableColumns = sortableColumns;
++    }
++
++    /**
++     * Specifies a URL for acquiring the table data with ajax
++     *
++     * <p>
++     * When the ajax source URL is specified the rich table plugin will retrieve the data by
++     * invoking the URL and building the table rows from the result. This is different from the
++     * standard use of the rich table plugin with uses progressive enhancement to decorate a table
++     * that has already been rendereed
++     * </p>
++     *
++     * @return URL for ajax source
++     */
++    @BeanTagAttribute
++    public String getAjaxSource() {
++        return ajaxSource;
++    }
++
++    /**
++     * Setter for the Ajax source URL
++     *
++     * @param ajaxSource
++     */
++    public void setAjaxSource(String ajaxSource) {
++        this.ajaxSource = ajaxSource;
++    }
++
++    /**
++     * Get groupingOption
++     *
++     * @return grouping options as a JS string
++     */
++    public String getGroupingOptionsJSString() {
++        return groupingOptionsJSString;
++    }
++
++    /**
++     * Set the groupingOptions js data. <b>This should not be set through XML configuration.</b>
++     *
++     * @param groupingOptionsJSString
++     */
++    public void setGroupingOptionsJSString(String groupingOptionsJSString) {
++        this.groupingOptionsJSString = groupingOptionsJSString;
++    }
++
++    /**
++     * If set to true and the aoColumnDefs template option is explicitly defined in templateOptions,
++     * those aoColumnDefs will be used for this table. Otherwise, if false, the aoColumnDefs will
++     * attempt to be merged with those that are automatically generated by RichTable
++     *
++     * @return true if the aoColumnDefs set will completely override those that are generated
++     *         automatically by RichTable
++     */
++    @BeanTagAttribute
++    public boolean isForceAoColumnDefsOverride() {
++        return forceAoColumnDefsOverride;
++    }
++
++    /**
++     * Set forceAoColumnDefsOverride
++     *
++     * @param forceAoColumnDefsOverride
++     */
++    public void setForceAoColumnDefsOverride(boolean forceAoColumnDefsOverride) {
++        this.forceAoColumnDefsOverride = forceAoColumnDefsOverride;
++    }
++
++    /**
++     * If true, the table will automatically use row JSON data generated by this widget
++     *
++     * <p>
++     * This forces the table backed by this RichTable to get its content from a template option
++     * called aaData. This will automatically skip row generation in the template, and cause the
++     * table receive its data from the aaData template option automatically generated and set by
++     * this RichTable. This allows the table to take advantage of the bDeferRender option (also
++     * automatically set to true) when this table is a paged table (performance increase for tables
++     * that are more than one page). Note: the CollectionGroup's isUseServerPaging flag will always
++     * override this functionality if it is also true.
++     * </p>
++     *
++     * @return true if backed by the aaData option in JSON, that is generated during the ftl
++     *         rendering process by this widget for this table
++     */
++    @BeanTagAttribute
++    public boolean isForceLocalJsonData() {
++        return forceLocalJsonData;
++    }
++
++    /**
++     * Set the forceLocalJsonData flag to force this table to use generated row json data
++     *
++     * @param forceLocalJsonData
++     */
++    public void setForceLocalJsonData(boolean forceLocalJsonData) {
++        this.forceLocalJsonData = forceLocalJsonData;
++    }
++
++    /**
++     * The nestedLevel property represents how many collection tables deep this particular table is
++     *
++     * <p>
++     * This property must be manually set if the flag forceLocalJsonData is being used and the
++     * collection table this RichTable represents is a subcollection of a TABLE collection (not
++     * stacked collection). If this is true, add 1 for each level deep (ex. subCollection would be
++     * 1, sub-subCollection would be 2). If this property is not set javascript errors will occur on
++     * the page, as this determines how deep to escape certain characters.
++     * </p>
++     *
++     * @return the nestedLevel representing the
++     */
++    @BeanTagAttribute
++    public int getNestedLevel() {
++        return nestedLevel;
++    }
++
++    /**
++     * Set the nestedLevel for this table - must be set if using forceLocalJsonData and this is a
++     * subCollection of a TableCollection (also using forceLocalJsonData)
++     *
++     * @param nestedLevel
++     */
++    public void setNestedLevel(int nestedLevel) {
++        this.nestedLevel = nestedLevel;
++    }
++
++    /**
++     * Get the translated aaData array generated by calls to addRowToTableData by the ftl
++     *
++     * <p>
++     * This data is in JSON format and expected to be consumed by datatables when utilizing the
++     * forceLocalJsonData option. This will be populated automatically if that flag is set to true.
++     * </p>
++     *
++     * @return the generated aaData
++     */
++    public String getAaData() {
++        return aaData;
++    }
++
++    /**
++     * Set the translated aaData array
++     *
++     * <p>
++     * This data is in JSON format and expected to be consumed by datatables when utilizing the
++     * forceLocalJsonData. This setter is required for copyProperties()
++     * </p>
++     *
++     * @param aaData the generated aaData
++     */
++    protected void setAaData(String aaData) {
++        this.aaData = aaData;
++    }
++
++    /**
++     * Get the simple value as a string that represents the field's sortable value, to be used as
++     * val in the custom uif json data object (accessed by mDataProp option on datatables -
++     * automated by framework) when using the forceLocalJsonData option or the CollectionGroup's
++     * isUseServerPaging option
++     *
++     * @param model model the current model
++     * @param field the field to retrieve a sortable value from for use in custom json data
++     * @return the value as a String
++     */
++    public String getCellValue(Object model, Field field) {
++        String value = KRADUtils.getSimpleFieldValue(model, field);
++
++        if (value == null) {
++            value = "null";
++        } else {
++            value = KRADConstants.QUOTE_PLACEHOLDER + value + KRADConstants.QUOTE_PLACEHOLDER;
++        }
++
++        return value;
++    }
++
++    /**
++     * Add row content passed from table ftl to the aaData array by converting and escaping the
++     * content to an object (in an array of objects) in JSON format
++     *
++     * <p>
++     * The data in aaData is expected to be consumed by a call by the datatables plugin using
++     * sAjaxSource or aaData. The addRowToTableData generation call is additive must be made per a
++     * row in the ftl.
++     * </p>
++     *
++     * @param row the row of content with each cell content surrounded by the @quot@ token and
++     * followed by a comma
++     */
++    public void addRowToTableData(String row) {
++        String escape = "";
++
++        if (templateOptions.isEmpty()) {
++            setTemplateOptions(new HashMap<String, String>());
++        }
++
++        // if nestedLevel is set add the appropriate amount of escape characters per a level of nesting
++        for (int i = 0; i < nestedLevel && forceLocalJsonData; i++) {
++            escape = escape + "\\";
++        }
++
++        // remove newlines and replace quotes and single quotes with unicode characters
++        row = row.trim().replace("\"", escape + "\\u0022").replace("'", escape + "\\u0027").replace("\n", "").replace(
++                "\r", "");
++
++        // remove hanging comma
++        row = StringUtils.removeEnd(row, ",");
++
++        // replace all quote placeholders with actual quote characters
++        row = row.replace(KRADConstants.QUOTE_PLACEHOLDER, "\"");
++        row = "{" + row + "}";
++
++        // if first call create aaData and force defer render option, otherwise append
++        if (StringUtils.isBlank(aaData)) {
++            aaData = "[" + row + "]";
++
++            if (templateOptions.get(UifConstants.TableToolsKeys.DEFER_RENDER) == null) {
++                //make sure deferred rendering is forced if not explicitly set
++                templateOptions.put(UifConstants.TableToolsKeys.DEFER_RENDER, UifConstants.TableToolsValues.TRUE);
++            }
++
++        } else if (StringUtils.isNotBlank(row)) {
++            aaData = aaData.substring(0, aaData.length() - 1) + "," + row + "]";
++        }
++
++        //force json data use if forceLocalJsonData flag is set
++        if (forceLocalJsonData) {
++            templateOptions.put(UifConstants.TableToolsKeys.AA_DATA, aaData);
++        }
++    }
++
++    protected ConfigurationService getConfigurationService() {
++        return CoreApiServiceLocator.getKualiConfigurationService();
++    }
++}

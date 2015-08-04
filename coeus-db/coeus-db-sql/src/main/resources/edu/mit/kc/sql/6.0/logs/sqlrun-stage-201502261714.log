@@ -1,0 +1,46 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Thu Feb 26 17:16:08 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+
+'RUNNINGDDLSNAPSHOT'
+--------------------
+running ddl snapshot
+
+
+'RUNNINGDDLSNAPSHOT'
+--------------------
+running ddl snapshot
+
+
+'RUNNINGDMLSNAPSHOT'
+--------------------
+running dml snapshot
+
+delete	from KREW_TYP_T where NM = 'Sample Type'
+*
+ERROR at line 1:
+ORA-02292: integrity constraint (KCSO.KREW_TYP_ATTR_FK2) violated - child
+record found
+
+
+
+1106165 rows updated.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

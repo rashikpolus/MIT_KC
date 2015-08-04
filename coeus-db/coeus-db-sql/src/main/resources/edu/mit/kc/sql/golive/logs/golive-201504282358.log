@@ -1,0 +1,1270 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Wed Apr 29 00:20:38 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+
+Table truncated.
+
+
+914 rows created.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+0 rows created.
+
+
+Table truncated.
+
+
+172 rows created.
+
+
+Table truncated.
+
+
+116 rows created.
+
+
+Table truncated.
+
+
+129 rows created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+delete from table rolodex
+            *
+ERROR at line 1:
+ORA-00903: invalid table name
+
+
+INSERT INTO rolodex(
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.ROLODEXP1) violated
+
+
+
+PL/SQL procedure successfully completed.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+586 rows created.
+
+
+Table truncated.
+
+
+3303 rows created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+PL/SQL procedure successfully completed.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+Commit complete.
+
+
+43125 rows created.
+
+INSERT INTO BUDGET_DOCUMENT(DOCUMENT_NUMBER,PARENT_DOCUMENT_KEY,VER_NBR,UPDATE_TIMESTAMP,UPDATE_USER,PARENT_DOCUMENT_TYPE_CODE,OBJ_ID,BUDGET_DELETED)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.BUDGET_DOCUMENTP1) violated
+
+
+
+Commit complete.
+
+
+Table created.
+
+
+PL/SQL procedure successfully completed.
+
+
+Table dropped.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+0 rows created.
+
+
+Commit complete.
+
+
+0 rows created.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+Table created.
+
+
+PL/SQL procedure successfully completed.
+
+
+Table dropped.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+43125 rows created.
+
+
+Commit complete.
+
+
+61135 rows created.
+
+
+Commit complete.
+
+
+46602 rows created.
+
+
+Commit complete.
+
+
+6 rows created.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+268 rows created.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+134 rows created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+108 rows created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+147 rows created.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+108 rows created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+10 rows created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+442 rows created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+0 rows created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+9 rows created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+28 rows created.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+13 rows created.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+0 rows created.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+9 rows created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+199 rows created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+27 rows created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+0 rows created.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+218 rows created.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+141 rows created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+0 rows created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+0 rows created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+0 rows created.
+
+
+Table truncated.
+
+
+0 rows created.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+1518 rows created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+590 rows created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+0 rows created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+111 rows created.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+148 rows created.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+85 rows created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+0 rows created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+0 rows created.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+85 rows created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+140 rows created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+195 rows created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+202 rows created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+ALTER TABLE KRMS_TERM_T ENABLE CONSTRAINT KRMS_TERM_T__FK1
+                                          *
+ERROR at line 1:
+ORA-02298: cannot validate (KCSO.KRMS_TERM_T__FK1) - parent keys not found
+
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+213 rows created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+15 rows created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+0 rows created.
+
+
+Table truncated.
+
+
+18 rows created.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+declare
+*
+ERROR at line 1:
+ORA-06502: PL/SQL: numeric or value error: number precision too large
+ORA-06512: at line 7
+
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

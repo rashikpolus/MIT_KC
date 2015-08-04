@@ -1,0 +1,242 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="Dashboard-View" parent="Dashboard-View-parentBean"/>
+    <bean id="Dashboard-View-parentBean" abstract="true"
+          parent="Uif-FormView" p:viewHelperService="#{#getService('dashboardViewHelperService')}"
+          p:formClass="edu.mit.kc.dashboard.core.DashboardForm"
+          p:stickyFooter="true" p:singlePageView="true">
+        <property name="contentContainerCssClasses">
+          <list>
+            <value>container</value>
+          </list>
+        </property>
+        <property name="additionalScriptFiles">
+            <list>
+                <value>scripts/propdev/core.js</value>
+                <value>scripts/common/dialog.js</value>
+                <value>scripts/dashboard.js</value>
+                <value>scripts/graph/raphael.min.js</value>
+                <value>scripts/graph/morris.min.js</value>
+            </list>
+        </property>
+        <property name="additionalCssFiles">
+            <list>
+                <value>css/mitDashboard.css</value>
+                <value>css/graph/morris.css</value>
+            </list>
+        </property>
+        <property name="header">
+            <null/>
+        </property>
+        <property name="page" ref="Dashboard-Page"/>
+        <property name="onDocumentReadyScript" value="setupTabRetrieval();"/>
+        <property name="dialogs">
+            <list>
+                <ref bean="Dashboard-SpecifyUser-Dialog"/>
+            </list>
+        </property>
+    </bean>
+    
+    <bean id="Dashboard-SpecifyUser-Dialog" parent="Uif-DialogGroup" p:retrieveViaAjax="true"
+          p:enterKeyAction="Dashboard-SpecifyUser-Button"
+          p:headerText="Change Dashboard User">
+        <property name="destroyDialogOnHidden" value="true"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:required="true" p:label="Username"
+                      p:propertyName="tempUserName" p:labelLeft="true">
+                    <property name="control">
+                        <bean parent="Uif-TextControl"/>
+                    </property>
+                    <property name="quickfinder">
+                        <bean parent="Uif-QuickFinder" p:returnByScript="true"
+                              p:fieldConversions="userName:tempUserName"
+                              p:dataObjectClassName="org.kuali.coeus.common.framework.person.KcPerson"/>
+                    </property>
+                </bean>
+
+            </list>
+        </property>
+        <property name="footer.items">
+            <list>
+
+                <bean parent="Uif-DialogDismissButton" p:actionLabel="Cancel"/>
+                <bean id="Dashboard-SpecifyUser-Button" parent="Uif-PrimaryActionButton"
+                      p:actionLabel="Show User's Dashboard"
+                      p:methodToCall="changeDashboard"
+                      p:successCallback="Kc.Dialog.closeDialogWithoutError('Dashboard-SpecifyUser-Dialog')"
+                      p:refreshId="Dashboard-Page" p:defaultEnterKeyAction="true"
+                      p:performClientSideValidation="true"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Dashboard-Page" parent="Uif-Page" p:headerText="Dashboard">
+         <property name="header.rightGroup">
+          <bean parent="Uif-HeaderRightGroup">
+            <property name="items">
+              <list>
+                  <bean parent="Uif-DropdownToggleMenu" p:toggleText="@{#form.dashboardPerson.fullName}'s Dashboard">
+                    <property name="menuItems">
+                      <list>
+                        <bean parent="Uif-MenuAction" p:actionLabel="Specify User..."
+                              p:actionScript="showDialog('Dashboard-SpecifyUser-Dialog');"/>
+                      </list>
+                    </property>
+                  </bean>
+              </list>
+            </property>
+          </bean>
+        </property> 
+        <property name="items">
+            <list>
+                <ref bean="Dashboard-Top"/>
+                <ref bean="Dashboard-Activity"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Dashboard-Top" parent="Uif-CssGridSection">
+        <property name="items">
+            <list>
+                <bean parent="Uif-VerticalBoxSection" p:headerText="Expenditures Volume" p:colSpan="6">
+                    <property name="items">
+                        <list>
+                            <bean id="Dashboard-ExpendituresGraph" p:render="@{#ViewHelper.showDashBoardGraph(dashboardPerson.personId)}" p:style="height:250px; width:100%;" p:onDocumentReadyScript="setupGraph(@{#form.expenditureDataAsJSON});"
+                                  p:additionalCssClasses="dashboard-graph" parent="Uif-Div"/>
+                        </list>
+                    </property>
+                </bean>
+
+                <bean parent="Uif-ListCollectionSection" p:headerText="Alerts [span class='dashboard-alert-num']@{#form.alerts.size()}[/span]" p:colSpan="6"
+                        p:additionalCssClasses="dashboard-alert-list">
+                    <property name="collectionObjectClass" value="edu.mit.kc.dashboard.bo.Alert"/>
+                    <property name="propertyName" value="alerts"/>
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-MessageField"
+                                  p:messageText="[span class='icon-warning-sign alert-priority@{#line.priority}'][/span] @{#line.alert}"/>
+                        </list>
+                    </property>
+                </bean>
+
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Dashboard-Activity" parent="Uif-TabSection" p:headerText="My Research Activity">
+        <property name="items">
+            <list>
+                <ref bean="Dashboard-MyProposals"/>
+                <ref bean="Dashboard-MyAwards"/>
+                <ref bean="Dashboard-ProjectDocuments"/>
+                <ref bean="Dashboard-KeyPerson"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Dashboard-MyProposals" parent="Uif-LightTableSection">
+        <property name="headerText" value="Proposals"/>
+        <property name="propertyName" value="myProposals"/>
+        <property name="readOnly" value="true"/>
+        <property name="richTable.templateOptions">
+            <map>
+                <entry key="bAutoWidth" value="false" />
+                <entry key="sDom" value="tip" />
+                <entry key="bRetrieve" value="true" />
+                <entry key="sPaginationType" value="full_numbers" />
+                <entry key="aaSorting" value="[]" />
+                <entry key="aoColumnDefs"
+                       value="[{'sWidth' : '20px', 'bSortable':false, 'aTargets' : [0]}]" />
+            </map>
+        </property>
+
+        <property name="items">
+            <list>
+                <bean parent="Uif-LinkField" p:label="Proposal" p:linkText="@{#line.developmentProposal.proposalNumber}"
+                      p:href="@{T(org.kuali.coeus.propdev.impl.dashboard.DashboardViewHelperService).buildPropDevLink(#line.developmentProposal.proposalDocument.documentNumber)}">
+                </bean>
+                <bean parent="Uif-DataField" p:label="Project Title" p:propertyName="developmentProposal.title"></bean>
+                <bean parent="Uif-DataField" p:label="Sponsor Name"
+                      p:propertyName="developmentProposal.sponsorName">
+                </bean>
+                <bean parent="Uif-DataField" p:label="Status" p:propertyName="developmentProposal.proposalState.description"></bean>
+                <bean parent="Uif-DataField" p:label="Deadline Date"
+                      p:propertyName="developmentProposal.deadlineDate"></bean>
+                <bean parent="Uif-DataField" p:label="Start Date"
+                      p:propertyName="developmentProposal.requestedStartDateInitial"></bean>
+                <bean parent="Uif-DataField" p:label="End Date"
+                      p:propertyName="developmentProposal.requestedEndDateInitial"></bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Dashboard-MyAwards" parent="Uif-LightTableSection" p:retrieveViaAjax="true">
+        <property name="headerText" value="Awards"/>
+        <property name="propertyName" value="myAwards"/>
+        <property name="richTable.templateOptions">
+            <map>
+                <entry key="bAutoWidth" value="false" />
+                <entry key="sDom" value="tip" />
+                <entry key="bRetrieve" value="true" />
+                <entry key="sPaginationType" value="full_numbers" />
+                <entry key="aaSorting" value="[]" />
+                <entry key="aoColumnDefs"
+                       value="[{'sWidth' : '20px', 'bSortable':false, 'aTargets' : [0]}]" />
+            </map>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="Uif-LinkField" p:label="Award" p:linkText="@{#line.awardNumber}"
+                      p:href="@{T(org.kuali.coeus.propdev.impl.dashboard.DashboardViewHelperService).buildAwardLink(#line.awardDocument.documentNumber)}">
+                </bean>
+                <bean parent="Uif-DataField" p:label="Award Title" p:propertyName="title"></bean>
+                <bean parent="Uif-DataField" p:label="Sponsor Name" p:propertyName="sponsorName"></bean>
+                <bean parent="Uif-DataField" p:label="Status" p:propertyName="awardStatus.description"></bean>
+                <bean parent="Uif-DataField" p:label="Account Number" p:propertyName="accountNumber"></bean>
+                <bean parent="Uif-DataField" p:label="Start Date" p:propertyName="requestedStartDateInitial"></bean>
+                <bean parent="Uif-DataField" p:label="End Date" p:propertyName="requestedEndDateInitial"></bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Dashboard-ProjectDocuments" parent="Dashboard-MyAwards">
+        <property name="headerText" value="Project Documents"/>
+        <property name="propertyName" value="myProjects"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-LinkField" p:label="Actions" p:linkText="View"
+                      p:href="@{T(org.kuali.coeus.propdev.impl.dashboard.DashboardViewHelperService).buildProjectDocLink(#line.awardDocument.documentNumber,#line.awardId)}">
+                </bean>
+                <bean parent="Uif-DataField" p:label="Award Title" p:propertyName="title"></bean>
+                <bean parent="Uif-DataField" p:label="Sponsor Name" p:propertyName="sponsorName"></bean>
+                <bean parent="Uif-DataField" p:label="Status" p:propertyName="awardStatus.description"></bean>
+                <bean parent="Uif-DataField" p:label="Account Number" p:propertyName="accountNumber"></bean>
+                <bean parent="Uif-DataField" p:label="Start Date" p:propertyName="requestedStartDateInitial"></bean>
+                <bean parent="Uif-DataField" p:label="End Date" p:propertyName="requestedEndDateInitial"></bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Dashboard-KeyPerson" parent="Dashboard-MyAwards">
+        <property name="propertyName" value="myProjects"/>
+        <property name="headerText" value="Key Person Maintenance"/>
+        <property name="items">
+            <list>
+                <bean parent="Uif-LinkField" p:label="Actions" p:linkText="View"
+                      p:href="@{T(org.kuali.coeus.propdev.impl.dashboard.DashboardViewHelperService).buildKeyPersonLink(#line.awardDocument.documentNumber,#line.awardId)}">
+                </bean>
+                <bean parent="Uif-DataField" p:label="Award Title" p:propertyName="title"></bean>
+                <bean parent="Uif-DataField" p:label="Sponsor Name" p:propertyName="sponsorName"></bean>
+                <bean parent="Uif-DataField" p:label="Status" p:propertyName="awardStatus.description"></bean>
+                <bean parent="Uif-DataField" p:label="Account Number" p:propertyName="accountNumber"></bean>
+                <bean parent="Uif-DataField" p:label="Start Date" p:propertyName="requestedStartDateInitial"></bean>
+                <bean parent="Uif-DataField" p:label="End Date" p:propertyName="requestedEndDateInitial"></bean>
+            </list>
+        </property>
+    </bean>
+
+</beans>

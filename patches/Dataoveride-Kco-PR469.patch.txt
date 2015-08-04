@@ -1,0 +1,82 @@
+From 4e0173e80c4174eaaad4a369c519fd3647e13b3c Mon Sep 17 00:00:00 2001
+From: Gayathri <gathreya@email.arizona.edu>
+Date: Wed, 27 May 2015 14:45:39 -0700
+Subject: [PATCH] RESKC-494: Suppress notification if business rule failure on
+ data override In the Kualico instance, the system still presents the Data
+ Override Notification even if entered item was invalid.The Notice should NOT
+ be sent. Steps: In an enroute proposal; OSP admin uses Data Override.
+ Example: Award ID: If user enters a value in the 'change' field that does not
+ match the valid criteria (too few #/, too long, not a true Award ID) the
+ system outlines the field in red and presents an error warning in the window;
+ but the user can still click 'create override'; the window closes, and the
+ Notification window still presents to alert Aggregator of override. But the
+ override did NOT occur. The Notification window should NOT be generated if
+ the override did not occur. In the MIT QA instance, the data override
+ notification "prompt user' is NOT CHECKED. So these incorrect notices are
+ being sent. The RESKC-485 case fixes the issue of the override validation
+ error message not appearing on the proposal screen when the override modal
+ window closes. This case is to fix the notice from being generated when the
+ override action is not performed due to invalid/incomplete entry.
+
+---
+ .../ProposalDevelopmentDataOverrideController.java     | 18 ++++++++++++++----
+ .../java/org/kuali/kra/infrastructure/Constants.java   |  1 +
+ 2 files changed, 15 insertions(+), 4 deletions(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/dataovveride/ProposalDevelopmentDataOverrideController.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/dataovveride/ProposalDevelopmentDataOverrideController.java
+index 738c341..d6f8f6e 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/dataovveride/ProposalDevelopmentDataOverrideController.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/dataovveride/ProposalDevelopmentDataOverrideController.java
+@@ -27,6 +27,7 @@
+ import org.kuali.coeus.propdev.impl.editable.ProposalDataOverrideEvent;
+ import org.kuali.coeus.propdev.impl.notification.ProposalDevelopmentNotificationContext;
+ import org.kuali.coeus.propdev.impl.notification.ProposalDevelopmentNotificationRenderer;
++import org.kuali.kra.infrastructure.Constants;
+ import org.kuali.rice.core.api.data.DataType;
+ import org.kuali.rice.core.api.datetime.DateTimeService;
+ import org.kuali.rice.core.api.exception.RiceRuntimeException;
+@@ -118,19 +119,28 @@ public ModelAndView createOverride(@ModelAttribute("KualiForm") ProposalDevelopm
+             form.setNewProposalChangedData(new ProposalChangedData());
+ 
+             ProposalDevelopmentNotificationContext context =
+-                    new ProposalDevelopmentNotificationContext(pdDocument.getDevelopmentProposal(), "103", "Proposal Data Override");
++                    new ProposalDevelopmentNotificationContext(pdDocument.getDevelopmentProposal(), Constants.PROPOSAL_DATA_OVVERRIDE_ACTION_TYPE_CODE, Constants.DATA_OVERRIDE_CONTEXT);
+             ((ProposalDevelopmentNotificationRenderer) context.getRenderer()).setProposalChangedData(newProposalChangedData);
+             ((ProposalDevelopmentNotificationRenderer) context.getRenderer()).setDevelopmentProposal(pdDocument.getDevelopmentProposal());
++
++            sendNotificationIfNoErrors(form, context);
++
++        }
++
++       return getRefreshControllerService().refresh(form);
++    }
++
++    protected void sendNotificationIfNoErrors(ProposalDevelopmentDocumentForm form, ProposalDevelopmentNotificationContext context) {
++        if (getGlobalVariableService().getMessageMap().hasNoErrors()) {
+             if (form.getNotificationHelper().getPromptUserForNotificationEditor(context)) {
+                 form.getNotificationHelper().initializeDefaultValues(context);
+                 form.setSendOverrideNotification(true);
+             } else {
+                 getKcNotificationService().sendNotification(context);
+             }
+-
++        } else {
++            form.setSendOverrideNotification(false);
+         }
+-
+-       return getRefreshControllerService().refresh(form);
+     }
+ 
+     protected void setChangedValue(DevelopmentProposal developmentProposal, ProposalChangedData proposalChangedData) throws Exception {
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/infrastructure/Constants.java b/coeus-impl/src/main/java/org/kuali/kra/infrastructure/Constants.java
+index bce27aa..72fe704 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/infrastructure/Constants.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/infrastructure/Constants.java
+@@ -187,6 +187,7 @@
+     /*Proposal notification constants*/
+     public static final String DATA_OVERRIDE_NOTIFICATION_ACTION = "102";
+     public static final String DATA_OVERRIDE_CONTEXT = "Proposal Data Override";
++    public static final String PROPOSAL_DATA_OVVERRIDE_ACTION_TYPE_CODE = "103";
+    
+     /* set values for ynq */
+     public static final Integer ANSWER_YES_NO = 2;

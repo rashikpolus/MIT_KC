@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+    <context:annotation-config />
+
+    <!-- Need to scan this package to pick up on Autowired and Qualifier once configured with @Component-->
+    <context:component-scan base-package="org.kuali.kra.personmasschange.service.impl" />
+
+    <bean id="personMassChangeModuleConfiguration" parent="personMassChangeModuleConfiguration-parentBean" />
+    <bean id="personMassChangeModuleConfiguration-parentBean" class="org.kuali.rice.krad.bo.ModuleConfiguration" abstract="true">
+        <property name="databaseRepositoryFilePaths">
+            <list>
+                <value>org/kuali/kra/personmasschange/repository-personmasschange.xml</value>
+            </list>
+        </property>
+    </bean>
+
+
+    <!-- Ready for Component annotation, person editable autowiring -->
+    <bean id="iacucProtocolPersonMassChangeService" class="org.kuali.kra.personmasschange.service.impl.IacucProtocolPersonMassChangeServiceImpl">
+        <property name="businessObjectService" ref="businessObjectService" />
+        <property name="personEditableService" ref="personEditableService" />
+        <property name="protocolPersonTrainingService" ref="iacucProtocolPersonTrainingService" />
+        <property name="rolodexService" ref="rolodexService" />
+        <property name="kcPersonService" ref="kcPersonService" />
+    </bean>
+
+    <bean id="personEditableService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="personEditableService" />
+    </bean>
+
+    <bean id="proposalDevelopmentPersonMassChangeService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="proposalDevelopmentPersonMassChangeService" />
+    </bean>
+
+    <!-- Only base object's fields annotated with "Autowired" -->
+    
+    <bean id="protocolPersonMassChangeService" class="org.kuali.kra.personmasschange.service.impl.ProtocolPersonMassChangeServiceImpl">
+        <property name="businessObjectService" ref="businessObjectService" />
+        <property name="personEditableService" ref="personEditableService" />
+        <property name="protocolPersonTrainingService" ref="protocolPersonTrainingService" />
+        <property name="kcPersonService" ref="kcPersonService" />
+        <property name="rolodexService" ref="rolodexService" />
+    </bean>
+    
+    <bean id="personMassChangeService" class="org.kuali.kra.personmasschange.service.impl.PersonMassChangeServiceImpl" lazy-init="true">
+        <property name="awardPersonMassChangeService" ref="awardPersonMassChangeService" />
+        <property name="iacucProtocolPersonMassChangeService" ref="iacucProtocolPersonMassChangeService" />
+        <property name="institutionalProposalPersonMassChangeService" ref="institutionalProposalPersonMassChangeService" />
+        <property name="proposalDevelopmentPersonMassChangeService" ref="proposalDevelopmentPersonMassChangeService" />
+        <property name="proposalLogPersonMassChangeService" ref="proposalLogPersonMassChangeService" />
+        <property name="subawardPersonMassChangeService" ref="subawardPersonMassChangeService" />
+        <property name="negotiationPersonMassChangeService" ref="negotiationPersonMassChangeService" />
+        <property name="protocolPersonMassChangeService" ref="protocolPersonMassChangeService" />
+        <property name="unitAdministratorPersonMassChangeService" ref="unitAdministratorPersonMassChangeService" />
+    </bean>
+
+    <bean id="globalVariableService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="globalVariableService" />
+    </bean>
+
+</beans>

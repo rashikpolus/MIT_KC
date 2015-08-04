@@ -1,0 +1,11 @@
+SP2-0310: unable to open file "./rice/bootstrap/V1505_003__add_schemaspy_auth.sql"
+SP2-0310: unable to open file "./rice/bootstrap/V1505_005__hide_ip_review.sql"
+SP2-0310: unable to open file "./rice/bootstrap/V1505_006__KRACOEUS-8109.sql"
+SP2-0310: unable to open file "./rice/bootstrap/V1505_008__SalariesDocumentLevel.sql"
+SP2-0310: unable to open file "./rice/bootstrap/V1505_011__RESOPS-114.sql"
+SP2-0310: unable to open file "./rice/bootstrap/V1505_012__clean_term_spec.sql"
+SP2-0310: unable to open file "./rice/bootstrap/V1505_015__RESKC-5.sql"
+
+Commit complete.
+
+SQL> exit

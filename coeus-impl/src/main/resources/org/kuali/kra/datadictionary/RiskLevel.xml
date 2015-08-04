@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean id="RiskLevel" parent="RiskLevel-parentBean" />
+	<bean id="RiskLevel-parentBean" abstract="true" parent="BusinessObjectEntry">
+		<property name="businessObjectClass" value="org.kuali.kra.bo.RiskLevel" />
+		<property name="objectLabel" value="Risk Level" />
+		<property name="inquiryDefinition" >
+			<ref bean="RiskLevel-inquiryDefinition" />
+		</property>
+		<property name="lookupDefinition" >
+			<ref bean="RiskLevel-lookupDefinition" />
+		</property>
+		<property name="titleAttribute" value="riskLevelCode" />
+		<property name="attributes" >
+			<list>
+				<ref bean="RiskLevel-riskLevelCode" />
+				<ref bean="RiskLevel-description" />
+				<ref bean="RiskLevel-versionNumber" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- Attribute Definitions -->
+	<bean id="RiskLevel-riskLevelCode" parent="RiskLevel-riskLevelCode-parentBean" />
+	<bean id="RiskLevel-riskLevelCode-parentBean" abstract="true" parent="AttributeDefinition" >
+		<property name="name" value="riskLevelCode" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="Risk Level Code" />
+		<property name="shortLabel" value="Risk Level Code" />
+		<property name="maxLength" value="3" />
+		<property name="validationPattern" >
+			<bean parent="AlphaNumericValidationPattern" />
+		</property>
+    <property name="validCharactersConstraint">
+      <bean parent="AlphaNumericPatternConstraint"/>
+    </property>
+		<property name="control" >
+      <bean parent="TextControlDefinition" p:size="3"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="3" parent="Uif-TextControl"/>
+		</property>
+		<property name="summary" value="Risk Level Code" />
+		<property name="description" value="Risk Level Code" />
+	</bean>
+
+  	<bean id="RiskLevel-description" parent="RiskLevel-description-parentBean" />
+  	<bean id="RiskLevel-description-parentBean" abstract="true" parent="KraAttributeReferenceDummy-description"/>
+	<bean id="RiskLevel-versionNumber" parent="RiskLevel-versionNumber-parentBean" />
+  <bean id="RiskLevel-versionNumber-parentBean" abstract="true" parent="AttributeReferenceDummy-versionNumber"/>
+	<!-- Business Object Inquiry Definition -->
+	<bean id="RiskLevel-inquiryDefinition" parent="RiskLevel-inquiryDefinition-parentBean" />
+  <bean id="RiskLevel-InquiryView" parent="RiskLevel-InquiryView-parentBean"/>
+	<bean id="RiskLevel-inquiryDefinition-parentBean" abstract="true" parent="InquiryDefinition">
+		<property name="title" value="Risk Level Code" />
+		<property name="inquirySections" >
+			<list>
+				<bean parent="InquirySectionDefinition">
+					<property name="title" value="Risk Level Code" />
+					<property name="numberOfColumns" value="1" />
+					<property name="inquiryFields" >
+						<list>
+              <bean parent="FieldDefinition" p:attributeName="riskLevelCode" p:forceInquiry="true"/>
+              <bean parent="FieldDefinition" p:attributeName="description"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="RiskLevel-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView">
+    <property name="headerText" value="Risk Level Code"/>
+    <property name="dataObjectClassName" value="org.kuali.kra.bo.RiskLevel"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-GridSection">
+          <property name="headerText" value="Risk Level Code"/>
+          <property name="layoutManager.numberOfColumns" value="2"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="riskLevelCode" parent="Uif-DataField"/>
+              <bean p:propertyName="description" parent="Uif-DataField"/>
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<!-- Business Object Lookup Definition -->
+	<bean id="RiskLevel-lookupDefinition" parent="RiskLevel-lookupDefinition-parentBean" />
+  <bean id="RiskLevel-LookupView" parent="RiskLevel-LookupView-parentBean"/>
+	<bean id="RiskLevel-lookupDefinition-parentBean" abstract="true" parent="LookupDefinition">
+		<property name="title" value="Risk Level Lookup" /><property name="defaultSort" >
+      <bean parent="SortDefinition"/>
+		</property>
+		<property name="lookupFields" >
+			<list>
+        <bean parent="FieldDefinition" p:attributeName="riskLevelCode" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="description"/>
+      </list>
+    </property>
+    <property name="resultFields">
+      <list>
+        <bean parent="FieldDefinition" p:attributeName="riskLevelCode" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="description"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="RiskLevel-LookupView-parentBean" abstract="true" parent="Uif-LookupView">
+    <property name="dataObjectClassName" value="org.kuali.kra.bo.RiskLevel"/>
+    <property name="headerText" value="Risk Level Lookup"/>
+    <property name="criteriaFields">
+      <list>
+        <bean p:propertyName="riskLevelCode" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="description" parent="Uif-LookupCriteriaInputField"/>
+			</list>
+		</property>
+		<property name="resultFields" >
+			<list>
+        <bean p:propertyName="riskLevelCode" parent="Uif-DataField"/>
+        <bean p:propertyName="description" parent="Uif-DataField"/>
+			</list>
+		</property>
+	</bean>
+</beans>

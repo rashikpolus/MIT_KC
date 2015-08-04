@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx.xsd
+                           http://www.springframework.org/schema/util
+                           http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <tx:annotation-driven transaction-manager="transactionManager" />
+    <context:annotation-config />
+    <context:component-scan base-package="org.kuali.coeus.propdev" />
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="properties" value="#{T(org.kuali.rice.core.api.config.property.ConfigContext).getCurrentContextConfig().getProperties()}" />
+    </bean>
+
+    <import resource="classpath:org/kuali/coeus/sys/framework/ImportRiceKradSpringBeans.xml"/>
+    <import resource="classpath:org/kuali/coeus/propdev/impl/PropDevImportRiceSpringBeans.xml"/>
+    <import resource="classpath:org/kuali/coeus/propdev/impl/PropDevImportModuleSpringBeans.xml"/>
+
+    <!-- TEMP until S2S is fully removed -->
+    <import resource="classpath:org/kuali/kra/s2s/S2SSpringBeans.xml"/>
+
+    <bean id="proposalDevelopmentModule" class="org.kuali.rice.krad.service.impl.ModuleServiceBase">
+        <property name="moduleConfiguration" ref="proposalDevelopmentModuleConfiguration"/>
+        <property name="kualiModuleService" ref="kualiModuleService"/>
+    </bean>
+
+    <bean id="proposalDevelopmentModuleConfiguration" parent="proposalDevelopmentModuleConfiguration-parentBean" />
+    <bean id="proposalDevelopmentModuleConfiguration-parentBean" class="org.kuali.rice.krad.bo.ModuleConfiguration" abstract="true">
+        <property name="initializeDataDictionary" value="true" />
+        <property name="namespaceCode" value="KC-PD" />
+        <property name="packagePrefixes">
+            <list>
+                <value>org.kuali.coeus.propdev</value>
+            </list>
+        </property>
+        <property name="databaseRepositoryFilePaths">
+            <list>
+                <value>org/kuali/coeus/propdev/impl/repository-proposaldevelopment.xml</value>
+            </list>
+        </property>
+        <property name="dataDictionaryPackages">
+            <list>
+                <value>classpath:org/kuali/coeus/sys/impl/view/KcTransactionalDocumentView.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/attachment/ProposalAttachmentsPage.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/core/ProposalCommon.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/specialreview/ProposalCompliancePage.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/core/ProposalDetailsPage.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/core/ProposalDocumentView.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/core/ProposalInitiatePage.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/core/ProposalInitiateView.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/core/ProposalDeletedView.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/core/ProposalDeletedPage.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/core/ProposalReprocessedView.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/core/ProposalReprocessedPage.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/core/ProposalMedusaSection.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/core/ProposalSubmitPage.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/core/ProposalUtilityViews.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/s2s/ProposalOpportunitySearchPage.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/deliver/ProposalDeliveryInfoPage.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/location/ProposalOrganizationLocationsPage.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/person/ProposalPersonnelPage.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/question/ProposalQuestionnairePage.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/s2s/S2sOpportunityLookup.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/sponsor/ProposalSponsorProgramInfoPage.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/supplemental/ProposalSupplementalPage.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/person/creditsplit/ProposalCreditAllocationPage.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/copy/ProposalCopyDialogSection.xml</value>
+				<value>classpath:org/kuali/coeus/propdev/impl/core/ProposalHierarchyPage.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/core/ProposalDataOverrideDialog.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/docperm/ProposalPermissionsPage.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/action/SuperUserActionsPage.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/core/ProposalPrintDialog.xml</value>
+
+                <!--  PD Budget -->
+                <value>classpath:org/kuali/coeus/propdev/impl/budget/core/ProposalBudgetShared.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/budget/core/ProposalBudgetView.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/budget/core/ProposalBudgetPage.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/budget/core/ProposalBudgetPeriodsPage.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/budget/income/ProposalBudgetIncomePage.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/budget/person/ProposalBudgetProjectPersonnelPage.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/budget/person/ProposalBudgetAddProjectPersonnelPage.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/budget/rate/ProposalBudgetRatesPage.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/budget/core/ProposalBudgetCommon.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/budget/core/ProposalBudgetSettings.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/budget/distribution/ProposalBudgetFandAPage.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/budget/distribution/ProposalBudgetCostSharingPage.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/budget/person/ProposalBudgetAssignPersonnelToPeriodsPage.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/budget/nonpersonnel/ProposalBudgetBudgetNotesPage.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/budget/nonpersonnel/ProposalBudgetNonPersonnelCostsPage.xml</value>
+         		<value>classpath:org/kuali/coeus/propdev/impl/budget/singlepointentry/SinglePointEntryPage.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/budget/nonpersonnel/ProposalBudgetLineItemShared.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/budget/subaward/ProposalBudgetSubawardsPage.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/budget/modular/ProposalBudgetModularPage.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/budget/core/ProposalBudgetSummaryPage.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/budget/core/ProposalBudgetPrintForms.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/budget/core/ProposalBudgetHierarchy.xml</value>
+                <value>classpath:org/kuali/coeus/propdev/impl/budget/core/ProposalBudgetHierarchySummary.xml</value>
+
+                <!--Common-->
+                <value>classpath:org/kuali/coeus/common/impl/DataValidationSection.xml</value>
+                <value>classpath:org/kuali/coeus/common/wizard/impl/WizardCommon.xml</value>
+                <value>classpath:org/kuali/coeus/common/notification/impl/SendNotificationDialog.xml</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="sponsorHierarchyDao" class="org.kuali.coeus.common.impl.sponsor.hierarchy.SponsorHierarchyDaoOjb" parent="platformAwareDao" />
+    
+    <!-- Load Business Rules for this module -->
+    <bean id="propDevKcBusinessRulesHandler" class="org.kuali.coeus.common.framework.ruleengine.KcBusinessRulesHandler"/>
+
+    <!-- Proposal Development Services -->
+<bean id="parameterService"
+		class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+		<property name="serviceName" value="parameterService" />
+	</bean>
+	<bean id="dbFunctionExecuteService"
+		class="org.kuali.coeus.common.dbfunctionmanager.DbFunctionExecuteServiceImpl">
+	</bean>
+	<bean id="coiDbFunctionService"
+		class="org.kuali.coeus.propdev.impl.proposalperson.CoiDbFunctionServiceImpl">
+		<property name="dbFunctionExecuteService" ref="dbFunctionExecuteService" />
+		<property name="parameterService" ref="parameterService" />
+	</bean> 
+    
+     
+    <bean id="proposalDevelopmentLookupable" class="org.kuali.rice.kns.lookup.KualiLookupableImpl" scope="prototype">
+        <property name="lookupableHelperService" ref="proposalDevelopmentLookupableHelperService" />
+    </bean>
+
+    <bean id="lookupableDevelopmentProposalLookupable" class="org.kuali.rice.kns.lookup.KualiLookupableImpl" scope="prototype">
+        <property name="lookupableHelperService" ref="lookupableDevelopmentProposalLookupableHelperService" />
+    </bean>
+
+    <bean id="kcCoreCallbackService" abstract="true" class="org.kuali.rice.ksb.api.bus.support.CallbackServiceExporter"
+          p:serviceBus-ref="rice.ksb.serviceBus">
+        <property name="serviceNameSpaceURI">
+            <util:constant static-field="org.kuali.kra.infrastructure.Constants.KC_CORE_SERVICE_NAMESPACE"/>
+        </property>
+    </bean>
+
+    <bean id="proposalAllUnitAdministratorDerivedRoleTypeServiceCallback" parent="kcCoreCallbackService"
+          p:callbackService-ref="proposalAllUnitAdministratorDerivedRoleTypeService"
+          p:localServiceName="proposalAllUnitAdministratorDerivedRoleTypeService"
+          p:serviceInterface="org.kuali.rice.kim.framework.role.RoleTypeService"/>
+
+    <bean id="platformAwareDao" class="org.kuali.rice.core.framework.persistence.ojb.dao.PlatformAwareDaoBaseOjb" abstract="true">
+        <property name="jcdAlias" value="kradApplicationDataSource" />
+        <property name="dbPlatform" ref="dbPlatform" />
+    </bean>
+
+    <bean id="proposalRoleTypeServiceCallback" parent="kcCoreCallbackService"
+          p:callbackService-ref="proposalRoleTypeService"
+          p:localServiceName="proposalRoleTypeService"
+          p:serviceInterface="org.kuali.rice.kim.framework.role.RoleTypeService"/> 
+          
+    	<bean id="proposalPiTypeDerivedRoleTypeServiceCallback" parent="kcCoreCallbackService" 
+		p:callbackService-ref="proposalPiTypeDerivedRoleTypeService" 
+		p:localServiceName="proposalPiTypeDerivedRoleTypeService" 
+		p:serviceInterface="org.kuali.rice.kim.framework.role.RoleTypeService"/>
+
+    <bean id="proposalTypeValuesFinder" class="org.kuali.coeus.sys.framework.keyvalue.ExtendedPersistableBusinessObjectValuesFinder">
+        <property name="businessObjectClass" value="org.kuali.coeus.common.framework.type.ProposalType"/>
+        <property name="includeKeyInDescription" value="false"/>
+        <property name="keyAttributeName" value="code"/>
+        <property name="labelAttributeName" value="description"/>
+    </bean>
+
+    <bean id="s2sSubmissionTypeValueFinder" class="org.kuali.coeus.sys.framework.keyvalue.DataObjectValuesFinder">
+        <property name="dataObjectClass" value="org.kuali.coeus.propdev.impl.s2s.S2sSubmissionType"/>
+        <property name="includeKeyInDescription" value="false"/>
+        <property name="keyAttributeName" value="code"/>
+        <property name="labelAttributeName" value="description"/>
+        <property name="addBlankOption" value="false"/>
+
+    </bean>
+
+    <bean id="s2sRevisionTypeValueFinder" class="org.kuali.coeus.sys.framework.keyvalue.ExtendedPersistableBusinessObjectValuesFinder">
+        <property name="businessObjectClass" value="org.kuali.coeus.propdev.impl.s2s.S2sRevisionType"/>
+        <property name="includeKeyInDescription" value="false"/>
+        <property name="keyAttributeName" value="code"/>
+        <property name="labelAttributeName" value="description"/>
+    </bean>
+
+    <bean id="grantsGovConnectorService"
+          class="org.kuali.coeus.propdev.impl.s2s.connect.S2SConnectorServiceBase">
+        <property name="serviceHost" value="grants.gov.s2s.host"/>
+        <property name="servicePort" value="grants.gov.s2s.port"/>
+        <property name="s2sCertificateReader">
+            <bean class="org.kuali.coeus.propdev.impl.s2s.connect.S2SCertificateReaderBase">
+                <property name="keyStoreLocation" value="s2s.keystore.location"/>
+                <property name="keyStorePassword" value="s2s.keystore.password"/>
+                <property name="trustStoreLocation" value="s2s.truststore.location"/>
+                <property name="trustStorePassword" value="s2s.truststore.password"/>
+                <property name="jksType" value="JKS"/>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="researchGovConnectorService"
+          class="org.kuali.coeus.propdev.impl.s2s.connect.S2SConnectorServiceBase">
+        <property name="serviceHost" value="research.gov.s2s.host"/>
+        <property name="servicePort" value="research.gov.s2s.port"/>
+        <property name="s2sCertificateReader">
+            <bean class="org.kuali.coeus.propdev.impl.s2s.connect.S2SCertificateReaderBase">
+                <property name="keyStoreLocation" value="research.gov.keystore.location"/>
+                <property name="keyStorePassword" value="research.gov.keystore.password"/>
+                <property name="trustStoreLocation" value="research.gov.truststore.location"/>
+                <property name="trustStorePassword" value="research.gov.truststore.password"/>
+                <property name="jksType" value="JKS"/>
+            </bean>
+        </property>
+    </bean>
+
+    <!--  S2S Scheduler configuration start -->
+    <bean id="preValidationTask"
+          class="org.kuali.coeus.propdev.impl.s2s.schedule.S2SPollingTask">
+        <property name="stopPollInterval" value="4320" />
+        <property name="mailInterval" value="20" />
+        <property name="statusMap">
+            <map>
+                <entry key="1" value="Submitted to S2S" />
+                <entry key="2" value="Receiving" />
+                <entry key="3" value="Received" />
+                <entry key="4" value="Processing" />
+            </map>
+        </property>
+        <property name="mailInfoList">
+            <list>
+                <ref bean="mailInfo" />
+            </list>
+        </property>
+    </bean>
+    <bean id="validationTask"
+          class="org.kuali.coeus.propdev.impl.s2s.schedule.S2SPollingTask">
+        <property name="stopPollInterval" value="1440" />
+        <property name="mailInterval" value="120" />
+        <property name="statusMap">
+            <map>
+                <entry key="5" value="Validated" />
+            </map>
+        </property>
+        <property name="mailInfoList">
+            <list>
+                <ref bean="mailInfo" />
+            </list>
+        </property>
+    </bean>
+    <bean id="postValidationTask"
+          class="org.kuali.coeus.propdev.impl.s2s.schedule.S2SPollingTask">
+        <property name="stopPollInterval" value="1440" />
+        <property name="mailInterval" value="240" />
+        <property name="statusMap">
+            <map>
+                <entry key="6" value="Received by Agency" />
+            </map>
+        </property>
+        <property name="mailInfoList">
+            <list>
+                <ref bean="mailInfo" />
+            </list>
+        </property>
+    </bean>
+    <bean id="errorOutTask"
+          class="org.kuali.coeus.propdev.impl.s2s.schedule.S2SPollingTask">
+        <property name="stopPollInterval" value="24" />
+        <property name="mailInterval" value="40" />
+        <property name="statusMap">
+            <map>
+                <entry key="10" value="S2S Submission Error" />
+            </map>
+        </property>
+        <property name="mailInfoList">
+            <list>
+                <ref bean="mailInfo" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="mailInfo" class="org.kuali.coeus.propdev.impl.s2s.schedule.MailInfo">
+        <property name="dunsNumber" value="" />
+        <property name="to" value="" />
+        <property name="cc" value="" />
+        <property name="bcc" value="" />
+        <property name="footer" value="" />
+        <property name="message" value="S2S Submissions" />
+        <property name="subject" value="S2S Submissions" />
+    </bean>
+    <bean id="preValidation"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="preValidationTask" />
+        <property name="targetMethod" value="execute" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="validation"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="validationTask" />
+        <property name="targetMethod" value="execute" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="postValidation"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="postValidationTask" />
+        <property name="targetMethod" value="execute" />
+        <property name="concurrent" value="false" />
+    </bean>
+    <bean id="errorOut"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="errorOutTask" />
+        <property name="targetMethod" value="execute" />
+        <property name="concurrent" value="false" />
+    </bean>
+
+    <bean id="preValidationTrigger"
+          class="org.kuali.coeus.sys.framework.scheduling.KcCronTriggerBean">
+        <property name="jobDetail" ref="preValidation" />
+        <property name="parameterService" ref="parameterService" />
+        <property name="dateTimeService" ref="dateTimeService" />
+        <property name="defaultCronExpression" value="0 0/20 * * * ?" />
+        <property name="triggerEnabledParameterName" value="s2s.polling.scheduler.enabled" />
+        <property name="parameterNamespace" value="KC-PD" />
+        <property name="parameterComponent" value="Document" />
+        <property name="cronExpressionParameterName" value="s2sScheduler.preValidation.cronExpression"/>
+    </bean>
+    <bean id="validationTrigger"
+          class="org.kuali.coeus.sys.framework.scheduling.KcCronTriggerBean">
+        <property name="jobDetail" ref="validation" />
+        <property name="parameterService" ref="parameterService" />
+        <property name="dateTimeService" ref="dateTimeService" />
+        <property name="defaultCronExpression" value="0 0/20 * * * ?" />
+        <property name="triggerEnabledParameterName" value="s2s.polling.scheduler.enabled" />
+        <property name="parameterNamespace" value="KC-PD" />
+        <property name="parameterComponent" value="Document" />
+        <property name="cronExpressionParameterName"
+                  value="s2sScheduler.validation.cronExpression">
+        </property>
+    </bean>
+    <bean id="postValidationTrigger"
+          class="org.kuali.coeus.sys.framework.scheduling.KcCronTriggerBean">
+        <property name="jobDetail" ref="postValidation" />
+        <property name="parameterService" ref="parameterService" />
+        <property name="dateTimeService" ref="dateTimeService" />
+        <property name="defaultCronExpression" value="0 0/20 * * * ?" />
+        <property name="triggerEnabledParameterName" value="s2s.polling.scheduler.enabled" />
+        <property name="parameterNamespace" value="KC-PD" />
+        <property name="parameterComponent" value="Document" />
+        <property name="cronExpressionParameterName"
+                  value="s2sScheduler.postValidation.cronExpression">
+        </property>
+    </bean>
+    <bean id="errorOutTrigger"
+          class="org.kuali.coeus.sys.framework.scheduling.KcCronTriggerBean">
+        <property name="jobDetail" ref="errorOut" />
+        <property name="parameterService" ref="parameterService" />
+        <property name="dateTimeService" ref="dateTimeService" />
+        <property name="defaultCronExpression" value="0 0/20 * * * ?" />
+        <property name="triggerEnabledParameterName" value="s2s.polling.scheduler.enabled" />
+        <property name="parameterNamespace" value="KC-PD" />
+        <property name="parameterComponent" value="Document" />
+        <property name="cronExpressionParameterName"
+                  value="s2sScheduler.errorOut.cronExpression">
+        </property>
+    </bean>
+
+    <bean id="s2SSchedulerStarter"
+          class="org.kuali.coeus.propdev.impl.s2s.schedule.S2SSchedulerFactoryBean">
+        <property name="exposeSchedulerInRepository" value="true" />
+        <property name="triggers">
+            <list>
+                <ref bean="preValidationTrigger" />
+                <ref bean="validationTrigger" />
+                <ref bean="postValidationTrigger" />
+                <ref bean="errorOutTrigger" />
+            </list>
+        </property>
+    </bean>
+
+    <!--  S2S Scheduler configuration end -->
+    
+    <bean id="exemptionTypeValuesFinder" class="org.kuali.coeus.sys.framework.keyvalue.DataObjectValuesFinder">
+        <property name="dataObjectClass" value="org.kuali.coeus.common.framework.compliance.exemption.ExemptionType"/>
+        <property name="keyAttributeName" value="code"/>
+        <property name="labelAttributeName" value="description"/>
+        <property name="addBlankOption" value="false"/>
+    </bean>
+    
+    <bean id="budgetStatusValuesFinder" class="org.kuali.coeus.sys.framework.keyvalue.DataObjectValuesFinder">
+        <property name="dataObjectClass" value="org.kuali.coeus.propdev.impl.budget.BudgetStatus"/>
+        <property name="keyAttributeName" value="budgetStatusCode"/>
+        <property name="labelAttributeName" value="description"/>
+        <property name="addBlankOption" value="false"/>
+    </bean>
+    
+    <bean id="budgetRateTypeValuesFinder" class="org.kuali.coeus.sys.framework.keyvalue.DataObjectValuesFinder">
+        <property name="dataObjectClass" value="org.kuali.coeus.common.budget.framework.rate.RateClass"/>
+        <property name="keyAttributeName" value="code"/>
+        <property name="labelAttributeName" value="description"/>
+        <property name="addBlankOption" value="false"/>
+        <property name="matchingCriteria">
+        	<map>
+        		<entry key="rateClassTypeCode" value="O"/>
+        	</map>
+        </property>
+    </bean>
+
+       <bean id="citizenshipVisaTypeService" class="edu.mit.kc.citizenship.CitizenshipVisaTypeServiceImpl" scope="prototype">
+    </bean>
+   
+
+</beans>

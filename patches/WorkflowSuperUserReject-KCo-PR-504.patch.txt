@@ -1,0 +1,160 @@
+From 263dea90d8bc15669d9606e97a04d8fc8f4b0548 Mon Sep 17 00:00:00 2001
+From: Gayathri Athreya <gathreya@email.arizona.edu>
+Date: Fri, 5 Jun 2015 08:36:11 -0700
+Subject: [PATCH] RESKC-521: Make reject action permission based.
+
+---
+ .../V1506_006__KR_Adding_reject_permission.sql     | 29 ++++++++++++++++++++++
+ .../V1506_006__KR_Adding_reject_permission.sql     | 25 +++++++++++++++++++
+ .../ProposalDevelopmentDocumentAuthorizer.java     | 11 ++++++--
+ ...posalDevelopmentWorkflowDocumentAuthorizer.java |  9 +++++++
+ .../kra/infrastructure/PermissionConstants.java    |  1 +
+ pom.xml                                            |  2 +-
+ 6 files changed, 74 insertions(+), 3 deletions(-)
+ create mode 100644 coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/mysql/rice_server/bootstrap/V1506_006__KR_Adding_reject_permission.sql
+ create mode 100644 coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/oracle/rice_server/bootstrap/V1506_006__KR_Adding_reject_permission.sql
+
+diff --git a/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/mysql/rice_server/bootstrap/V1506_006__KR_Adding_reject_permission.sql b/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/mysql/rice_server/bootstrap/V1506_006__KR_Adding_reject_permission.sql
+new file mode 100644
+index 0000000..e4408c9
+--- /dev/null
++++ b/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/mysql/rice_server/bootstrap/V1506_006__KR_Adding_reject_permission.sql
+@@ -0,0 +1,29 @@
++--
++-- Kuali Coeus, a comprehensive research administration system for higher education.
++--
++-- Copyright 2005-2015 Kuali, Inc.
++--
++-- This program is free software: you can redistribute it and/or modify
++-- it under the terms of the GNU Affero General Public License as
++-- published by the Free Software Foundation, either version 3 of the
++-- License, or (at your option) any later version.
++--
++-- This program is distributed in the hope that it will be useful,
++-- but WITHOUT ANY WARRANTY; without even the implied warranty of
++-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++-- GNU Affero General Public License for more details.
++--
++-- You should have received a copy of the GNU Affero General Public License
++-- along with this program.  If not, see <http://www.gnu.org/licenses/>.
++--
++
++INSERT INTO KRIM_PERM_ID_S VALUES (null);
++
++INSERT INTO KRIM_PERM_T (PERM_ID,PERM_TMPL_ID,NMSPC_CD,NM,DESC_TXT,ACTV_IND,OBJ_ID,VER_NBR)
++    VALUES ((SELECT MAX(ID) FROM KRIM_PERM_ID_S),(SELECT PERM_TMPL_ID FROM KRIM_PERM_TMPL_T WHERE NMSPC_CD = 'KR-IDM' AND NM = 'Perform Document Action'),'KC-PD','Reject ProposalDevelopmentDocument','Reject Proposal Development Document','Y',UUID(),1);
++INSERT INTO KRIM_ROLE_PERM_ID_S VALUES (null);
++INSERT INTO KRIM_ROLE_PERM_T (ROLE_PERM_ID,ROLE_ID,PERM_ID,ACTV_IND,OBJ_ID,VER_NBR)
++    VALUES ((SELECT MAX(ID) FROM KRIM_ROLE_PERM_ID_S),(SELECT ROLE_ID FROM KRIM_ROLE_T WHERE NMSPC_CD = 'KC-ADM' AND ROLE_NM = 'OSP Administrator'
++),(SELECT PERM_ID FROM KRIM_PERM_T WHERE NMSPC_CD = 'KC-PD' AND NM = 'Reject ProposalDevelopmentDocument'),'Y',UUID(),1);
++
++
+diff --git a/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/oracle/rice_server/bootstrap/V1506_006__KR_Adding_reject_permission.sql b/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/oracle/rice_server/bootstrap/V1506_006__KR_Adding_reject_permission.sql
+new file mode 100644
+index 0000000..1b08492
+--- /dev/null
++++ b/coeus-db/coeus-db-sql/src/main/resources/co/kuali/coeus/data/migration/sql/oracle/rice_server/bootstrap/V1506_006__KR_Adding_reject_permission.sql
+@@ -0,0 +1,25 @@
++--
++-- Kuali Coeus, a comprehensive research administration system for higher education.
++--
++-- Copyright 2005-2015 Kuali, Inc.
++--
++-- This program is free software: you can redistribute it and/or modify
++-- it under the terms of the GNU Affero General Public License as
++-- published by the Free Software Foundation, either version 3 of the
++-- License, or (at your option) any later version.
++--
++-- This program is distributed in the hope that it will be useful,
++-- but WITHOUT ANY WARRANTY; without even the implied warranty of
++-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++-- GNU Affero General Public License for more details.
++--
++-- You should have received a copy of the GNU Affero General Public License
++-- along with this program.  If not, see <http://www.gnu.org/licenses/>.
++--
++
++INSERT INTO KRIM_PERM_T (PERM_ID,PERM_TMPL_ID,NMSPC_CD,NM,DESC_TXT,ACTV_IND,OBJ_ID,VER_NBR)
++    VALUES (KRIM_PERM_ID_S.NEXTVAL,(SELECT PERM_TMPL_ID FROM KRIM_PERM_TMPL_T WHERE NMSPC_CD = 'KR-IDM' AND NM = 'Perform Document Action'),'KC-PD','Reject ProposalDevelopmentDocument','Reject Proposal Development Document','Y',SYS_GUID(),1);
++INSERT INTO KRIM_ROLE_PERM_T (ROLE_PERM_ID,ROLE_ID,PERM_ID,ACTV_IND,OBJ_ID,VER_NBR)
++    VALUES (KRIM_ROLE_PERM_ID_S.NEXTVAL,(SELECT ROLE_ID FROM KRIM_ROLE_T WHERE NMSPC_CD = 'KC-ADM' AND ROLE_NM = 'OSP Administrator'),(SELECT PERM_ID FROM KRIM_PERM_T WHERE NMSPC_CD = 'KC-PD' AND NM = 'Reject ProposalDevelopmentDocument'),'Y',SYS_GUID(),1);
++
++
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/auth/ProposalDevelopmentDocumentAuthorizer.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/auth/ProposalDevelopmentDocumentAuthorizer.java
+index fd826ad..3f5e5d3 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/auth/ProposalDevelopmentDocumentAuthorizer.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/auth/ProposalDevelopmentDocumentAuthorizer.java
+@@ -348,7 +348,7 @@ public boolean canCopy(Document document, Person user) {
+     
+     @Override
+     public boolean canApprove( Document document, Person user ) {
+-        return super.canApprove(document,user) && isAuthorizedToHierarchyChildWorkflowAction(document, user);
++        return super.canApprove(document, user) && isAuthorizedToHierarchyChildWorkflowAction(document, user);
+     }
+     
+     @Override
+@@ -627,7 +627,14 @@ protected boolean isAuthorizedToRejectProposal(Document document, Person user) {
+         DocumentRequestAuthorizationCache.WorkflowDocumentInfo workflowDocumentInfo =
+                 getDocumentRequestAuthorizationCache(document).getWorkflowDocumentInfo();
+ 
+-        return (!workflowDocumentInfo.isCompletionRequested()) && (!getKcDocumentRejectionService().isDocumentOnInitialNode(pdDocument.getDocumentHeader().getWorkflowDocument())) && (workflowDocumentInfo.isApprovalRequested()) && (workflowDocumentInfo.isEnroute());
++        return ((!workflowDocumentInfo.isCompletionRequested() && workflowDocumentInfo.isApprovalRequested()) || canReject(user)) &&
++                !getKcDocumentRejectionService().isDocumentOnInitialNode(pdDocument.getDocumentHeader().getWorkflowDocument())
++                && workflowDocumentInfo.isEnroute();
++    }
++
++    protected boolean canReject(Person user) {
++        return getPermissionService().hasPermission(user.getPrincipalId(), Constants.MODULE_NAMESPACE_PROPOSAL_DEVELOPMENT,
++                PermissionConstants.REJECT_PROPOSAL_DEVELOPMENT_DOCUMENT);
+     }
+ 
+     protected boolean isAuthorizedToSubmitToWorkflow(Document document, Person user) {
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/auth/ProposalDevelopmentWorkflowDocumentAuthorizer.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/auth/ProposalDevelopmentWorkflowDocumentAuthorizer.java
+index b14fe5e..d6939d0 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/auth/ProposalDevelopmentWorkflowDocumentAuthorizer.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/auth/ProposalDevelopmentWorkflowDocumentAuthorizer.java
+@@ -21,7 +21,10 @@
+ import org.kuali.coeus.propdev.impl.core.ProposalDevelopmentDocument;
+ import org.kuali.coeus.common.framework.auth.KcWorkflowDocumentAuthorizerBase;
+ import org.kuali.coeus.common.framework.auth.perm.Permissionable;
++import org.kuali.kra.infrastructure.Constants;
++import org.kuali.kra.infrastructure.PermissionConstants;
+ import org.kuali.rice.kew.api.exception.WorkflowException;
++import org.kuali.rice.kew.routeheader.DocumentRouteHeaderValue;
+ 
+ public class
+         ProposalDevelopmentWorkflowDocumentAuthorizer extends KcWorkflowDocumentAuthorizerBase {
+@@ -37,4 +40,10 @@ protected Permissionable getPermissionable(String documentId) {
+         return null;
+     }
+ 
++    @Override
++    public boolean canReturnToPreviousRouteNode(String principalId, DocumentRouteHeaderValue document) {
++        return getPermissionService().hasPermission(principalId, Constants.MODULE_NAMESPACE_PROPOSAL_DEVELOPMENT,
++                PermissionConstants.REJECT_PROPOSAL_DEVELOPMENT_DOCUMENT);
++    }
++
+ }
+diff --git a/coeus-impl/src/main/java/org/kuali/kra/infrastructure/PermissionConstants.java b/coeus-impl/src/main/java/org/kuali/kra/infrastructure/PermissionConstants.java
+index f0d4500..1bedfee 100644
+--- a/coeus-impl/src/main/java/org/kuali/kra/infrastructure/PermissionConstants.java
++++ b/coeus-impl/src/main/java/org/kuali/kra/infrastructure/PermissionConstants.java
+@@ -265,4 +265,5 @@
+      /* COI Undisclosed events */
+      public static final String VIEW_COI_UNDISCLOSED_EVENTS = "View COI Undisclosed Events";
+ 
++    String REJECT_PROPOSAL_DEVELOPMENT_DOCUMENT = "Reject ProposalDevelopmentDocument";
+ }
+diff --git a/pom.xml b/pom.xml
+index b41a2f1..ce3ba97 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -124,7 +124,7 @@
+         <org.eclipse.persistence.version>2.6.0</org.eclipse.persistence.version>
+         <pdfbox.version>1.8.6</pdfbox.version>
+         <quartz.version>1.8.4</quartz.version>
+-        <rice.version>2.5.3.1506.1-kckualico</rice.version>
++        <rice.version>2.5.3.1506.3-kckualico</rice.version>
+         <schemaspy.version>1505.5</schemaspy.version>
+         <servlet.version>3.0.1</servlet.version>
+         <slf4j.version>1.7.7</slf4j.version>

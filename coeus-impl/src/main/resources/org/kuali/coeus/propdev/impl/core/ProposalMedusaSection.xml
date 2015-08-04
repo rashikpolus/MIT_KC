@@ -1,0 +1,549 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                    http://www.springframework.org/schema/util
+                    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+    <bean id="PropDev-MedusaSection" parent="PropDev-MedusaSection-parentBean"/>
+    <bean id="PropDev-MedusaSection-parentBean" abstract="true" parent="Uif-DialogBase" p:resetDataOnRefresh="true" p:dialogCssClass="modal-lg">
+        <property name="header">
+            <bean parent="Uif-DialogHeader" p:headerText="Medusa"/>
+        </property>
+
+        <property name="items">
+            <list>
+                <bean parent="Uif-FieldGroupBase" p:order="10">
+                    <property name="group">
+                        <bean parent="PropDev-MedusaSection-TabGroup"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+
+        <property name="footer">
+            <bean parent="Uif-FooterBase">
+                <property name="items">
+                    <list>
+                        <bean parent="Uif-SecondaryActionButton" p:actionLabel="Close"
+                              p:dialogDismissOption="IMMEDIATE" p:dialogResponse="false" p:order="10"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="onShowDialogScript" value="Kc.Medusa.minimizeMedusaTrees();"/>
+    </bean>
+
+    <bean id="PropDev-MedusaSection-TabGroup" parent="PropDev-MedusaSection-TabGroup-parentBean"/>
+    <bean id="PropDev-MedusaSection-TabGroup-parentBean" abstract="true" parent="Uif-TabGroup">
+        <property name="items"><list>
+            <bean parent="PropDev-MedusaSection-TabItem" p:headerText="Proposal > Award" p:order="10"/>
+            <bean parent="PropDev-MedusaSection-TabItem" p:headerText="Award > Proposal" p:order="20"/>
+        </list></property>
+    </bean>
+
+    <bean id="PropDev-MedusaSection-TabItem" parent="PropDev-MedusaSection-TabItem-parentBean"/>
+    <bean id="PropDev-MedusaSection-TabItem-parentBean" abstract="true" parent="Uif-TreeSection" p:additionalCssClasses="medusa"
+          p:propertyName="medusaTreeView">
+        <property name="nodePrototypeMap">
+            <map key-type="java.lang.Class">
+                <entry key="#{ T(org.kuali.coeus.propdev.impl.core.DevelopmentProposal) }">
+                    <bean parent="Proposal-MedusaSection-PropDevSummary"/>
+                </entry>
+                <entry key="#{ T(org.kuali.kra.institutionalproposal.home.InstitutionalProposal)}">
+                    <bean parent="Proposal-MedusaSection-InstPropSummary"/>
+                </entry>
+                <entry key="#{ T(org.kuali.kra.award.home.Award)}">
+                    <bean parent="Proposal-MedusaSection-AwardSummary"/>
+                </entry>
+                <entry key="#{ T(org.kuali.kra.subaward.bo.SubAward)}">
+                    <bean parent="Proposal-MedusaSection-SubAwardSummary"/>
+                </entry>
+                <entry key="#{ T(org.kuali.kra.irb.Protocol)}">
+                    <bean parent="Proposal-MedusaSection-IRBSummary"/>
+                </entry>
+                <entry key="#{ T(org.kuali.kra.iacuc.IacucProtocol)}">
+                    <bean parent="Proposal-MedusaSection-IacucSummary"/>
+                </entry>
+                <entry key="#{ T(org.kuali.kra.negotiations.bo.Negotiation)}">
+                    <bean parent="Proposal-MedusaSection-NegotiationSummary"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+
+    <!-- our custom node prototype -->
+
+
+    <bean id="Proposal-MedusaSection-PropDevSummary" parent="Proposal-MedusaSection-Summary">
+        <property name="dataGroupPrototype" ref="Proposal-MedusaSection-PropDevSummary-Section"/>
+    </bean>
+
+    <bean id="Proposal-MedusaSection-PropDevSummary-Section" parent="Proposal-MedusaSection-SummarySection">
+        <property name="items">
+            <list>
+                <bean parent="Proposal-MedusaSection-Actions" p:render="@{#lp.document.documentNumber ne #np.proposalDocument.documentNumber}" p:order="5">
+                    <property name="group" ref="Proposal-MedusaSection-PropDevSummary-Actions" />
+                </bean>
+                <bean parent="Proposal-ProposalDevelopment-Property" p:propertyName="proposalNumber" p:order="10"/>
+                <bean parent="Proposal-ProposalDevelopment-Property" p:propertyName="proposalState.description" p:order="20"/>
+                <bean parent="Proposal-ProposalDevelopment-Property" p:propertyName="ownedByUnitNumber" p:order="30"/>
+                <bean parent="Proposal-ProposalDevelopment-Property" p:propertyName="requestedStartDateInitial" p:order="40"/>
+                <bean parent="Proposal-ProposalDevelopment-Property" p:propertyName="requestedEndDateInitial" p:order="50"/>
+                <bean parent="Proposal-ProposalDevelopment-Property" p:propertyName="title" p:order="60"/>
+                <bean parent="Proposal-ProposalDevelopment-Property" p:propertyName="nsfCode" p:order="70"/>
+                <bean parent="Proposal-ProposalDevelopment-Property" p:propertyName="sponsorName" p:label="Sponsor Name" p:order="80"/>
+                <bean parent="Proposal-ProposalDevelopment-Property" p:propertyName="primeSponsor.sponsorName" p:label="Prime Sponsor Name" p:order="90"/>
+                <bean parent="Proposal-ProposalDevelopment-Property" p:propertyName="sponsorProposalNumber" p:order="100"/>
+                <bean parent="Proposal-ProposalDevelopment-Property" p:propertyName="programAnnouncementTitle" p:order="110"/>
+                <bean parent="Proposal-ProposalDevelopment-Property" p:propertyName="noticeOfOpportunityCode" p:order="120"/>
+                <bean parent="Proposal-ProposalDevelopment-Property" p:propertyName="proposalType.description" p:order="130"/>
+                <bean parent="Proposal-ProposalDevelopment-Property" p:propertyName="programAnnouncementNumber" p:order="140"/>
+                <bean parent="Proposal-ProposalDevelopment-Property" p:propertyName="agencyProgramCode" p:order="150"/>
+                <bean parent="Proposal-ProposalDevelopment-Property" p:propertyName="budgetStatus" p:order="160"/>
+                <bean parent="Proposal-ProposalDevelopment-Property" p:propertyName="attachmentsStatus"
+                      p:colSpan="3" p:fieldLabel.colSpan="1" p:label="Attachment Status" p:order="170"/>
+                <bean parent="Proposal-MedusaSection-PropDevSummary-Investigators" p:order="180" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Proposal-MedusaSection-PropDevSummary-Actions" parent="Uif-HorizontalBoxGroup">
+        <property name="items">
+            <list>
+                <bean parent="Proposal-Medusa-Link" p:linkText="Open Proposal"
+                      p:href="@{#ConfigProperties['application.url']}/kc-pd-krad/proposalDevelopment?methodToCall=docHandler&amp;command=displayDocSearchView&amp;docId=@{#np.proposalDocument.documentNumber}"/>
+                <bean parent="Proposal-Medusa-Link" p:linkText="Open Proposal Notes"
+                      p:href="@{#ConfigProperties['application.url']}/kc-pd-krad/proposalDevelopment?methodToCall=docHandler&amp;command=displayDocSearchView&amp;docId=@{#np.proposalDocument.documentNumber}&amp;navigateToPageId=PropDev-AttachmentsPage&amp;defaultOpenTab=PropDev-AttachmentsPage-NotesSection"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Proposal-MedusaSection-PropDevSummary-Investigators" parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false" p:colSpan="4">
+        <property name="group">
+            <bean parent="Uif-StackedCollectionSection" p:renderAddLine="false" p:renderLineActions="false"
+                  p:collectionObjectClass="org.kuali.coeus.propdev.impl.person.ProposalPerson"
+                  p:propertyName="investigators">
+                <property name="header">
+                    <null />
+                </property>
+                <property name="items">
+                    <list>
+                        <bean parent="Uif-MessageField" p:fieldLabel.labelText="Investigator" p:messageText="@{#line.fullName} (@{#line.role.description})" p:order="10"/>
+                    </list>
+                </property>
+                <property name="subCollections">
+                    <list>
+                        <bean parent="Proposal-Person-UnitSummary" p:collectionObjectClass="org.kuali.coeus.propdev.impl.person.ProposalPersonUnit"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="Proposal-MedusaSection-InstPropSummary" parent="Proposal-MedusaSection-Summary">
+        <property name="dataGroupPrototype" ref="Proposal-MedusaSection-InstPropSummary-Section"/>
+    </bean>
+
+    <bean id="Proposal-MedusaSection-InstPropSummary-Section" parent="Proposal-MedusaSection-SummarySection">
+        <property name="items">
+            <list>
+                <bean parent="Proposal-MedusaSection-Actions" p:render="@{#lp.document.documentNumber ne #np.institutionalProposalDocument.documentNumber}" p:order="5">
+                    <property name="group" ref="Proposal-MedusaSection-InstPropSummary-Actions"/>
+                </bean>
+                <bean parent="Proposal-InstitutionalProposal-Property" p:propertyName="proposalNumber" p:order="10" />
+                <bean parent="Proposal-InstitutionalProposal-Property" p:propertyName="proposalType.description" p:order="20" />
+                <bean parent="Proposal-InstitutionalProposal-Property" p:propertyName="title" p:order="30" />
+                <bean parent="Proposal-InstitutionalProposal-Property" p:propertyName="unitNumber" p:label="Unit" p:order="40" />
+                <bean parent="Proposal-InstitutionalProposal-Property" p:propertyName="proposalStatus.description" p:order="50" />
+                <bean parent="Proposal-InstitutionalProposal-Property" p:propertyName="sponsorProposalNumber" p:order="60" />
+                <bean parent="Proposal-InstitutionalProposal-Property" p:propertyName="currentAccountNumber" p:order="70" />
+                <bean parent="Proposal-InstitutionalProposal-Property" p:propertyName="activityType.description" p:order="80" />
+                <bean parent="Proposal-InstitutionalProposal-Property" p:propertyName="nsfCodeBo.description" p:order="90" />
+                <bean parent="Proposal-InstitutionalProposal-Property" p:propertyName="noticeOfOpportunity.description" p:order="100" />
+                <bean parent="Proposal-InstitutionalProposal-Property" p:propertyName="sponsor.sponsorName" p:forcedValue="@{#ViewHelper.getSponsorString(#np.institutionalProposalDocument.institutionalProposal.sponsor)}" p:order="110" />
+                <bean parent="Proposal-InstitutionalProposal-Property" p:propertyName="primeSponsor.sponsorName" p:forcedValue="@{#ViewHelper.getSponsorString(#np.institutionalProposalDocument.institutionalProposal.primeSponsor)}" p:order="120" />
+                <bean parent="Proposal-InstitutionalProposal-Property" p:propertyName="requestedStartDateInitial" p:order="130" />
+                <bean parent="Proposal-InstitutionalProposal-Property" p:propertyName="requestedEndDateInitial" p:order="140" />
+                <bean parent="Proposal-InstitutionalProposal-Property" p:propertyName="requestedStartDateTotal" p:order="150" />
+                <bean parent="Proposal-InstitutionalProposal-Property" p:propertyName="requestedEndDateTotal" p:order="160" />
+                <bean parent="Proposal-InstitutionalProposal-Property" p:propertyName="totalDirectCostInitial" p:order="170" />
+                <bean parent="Proposal-InstitutionalProposal-Property" p:propertyName="totalDirectCostTotal" p:order="180" />
+                <bean parent="Proposal-InstitutionalProposal-Property" p:propertyName="totalIndirectCostInitial" p:order="190" />
+                <bean parent="Proposal-InstitutionalProposal-Property" p:propertyName="totalIndirectCostTotal" p:order="200" />
+                <bean parent="Proposal-InstitutionalProposal-Property" p:propertyName="totalInitialCost" p:order="210" />
+                <bean parent="Proposal-InstitutionalProposal-Property" p:propertyName="totalCost" p:order="220" />
+                <bean parent="Proposal-InstitutionalProposal-Property" p:propertyName="costSharingIndicator"
+                      p:propertyEditorClass="org.kuali.coeus.sys.framework.model.KcYNBooleanEditor" p:order="230" />
+                <bean parent="Proposal-InstitutionalProposal-Property" p:propertyName="specialReviewIndicator"
+                      p:propertyEditorClass="org.kuali.coeus.sys.framework.model.KcYNBooleanEditor" p:order="240" />
+                <bean parent="Proposal-InstitutionalProposal-Property" p:propertyName="idcRateIndicator"
+                      p:propertyEditorClass="org.kuali.coeus.sys.framework.model.KcYNBooleanEditor"
+                      p:colSpan="3" p:fieldLabel.colSpan="1" p:order="250" />
+                <bean parent="Proposal-MedusaSection-InstPropSummary-Investigators" p:order="260" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Proposal-MedusaSection-InstPropSummary-Actions" parent="Uif-HorizontalBoxGroup">
+        <property name="items">
+            <list>
+                <bean parent="Proposal-Medusa-Link" p:linkText="Open Proposal"
+                      p:href="@{#ConfigProperties['application.url']}/institutionalProposalHome.do?methodToCall=docHandler&amp;command=displayDocSearchView&amp;docId=@{#np.institutionalProposalDocument.documentNumber}&amp;medusaOpenedDoc=true"/>
+                <bean parent="Proposal-Medusa-Link" p:linkText="Open Proposal Notes"
+                      p:href="@{#ConfigProperties['application.url']}/institutionalProposalHome.do?methodToCall=docHandler&amp;command=displayDocSearchView&amp;docId=@{#np.institutionalProposalDocument.documentNumber}&amp;medusaOpenedDoc=true&amp;tabStates(NotesandAttachments)=OPEN#Notes"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Proposal-MedusaSection-InstPropSummary-Investigators" parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false" p:colSpan="4">
+        <property name="group">
+            <bean parent="Uif-StackedCollectionSection" p:renderAddLine="false" p:renderLineActions="false"
+                  p:collectionObjectClass="org.kuali.kra.institutionalproposal.contacts.InstitutionalProposalPerson"
+                  p:propertyName="projectPersons">
+                <property name="header">
+                    <null />
+                </property>
+                <property name="items">
+                    <list>
+                        <bean parent="Uif-MessageField" p:fieldLabel.labelText="Investigator" p:messageText="@{#line.fullName + (#line.principalInvestigator?' (Principal Investigator)':'')}" p:order="10"/>
+                    </list>
+                </property>
+                <property name="subCollections">
+                    <list>
+                        <bean parent="Proposal-Person-UnitSummary" p:collectionObjectClass="org.kuali.kra.institutionalproposal.contacts.InstitutionalProposalPersonUnit"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="Proposal-MedusaSection-AwardSummary" parent="Proposal-MedusaSection-Summary">
+        <property name="dataGroupPrototype" ref="Proposal-MedusaSection-AwardSummary-Section"/>
+    </bean>
+
+    <bean id="Proposal-MedusaSection-AwardSummary-Section" parent="Proposal-MedusaSection-SummarySection">
+        <property name="items">
+            <list>
+                <bean parent="Proposal-MedusaSection-Actions" p:render="@{#lp.document.documentNumber ne #np.awardDocument.documentNumber}" p:order="5">
+                    <property name="group" ref="Proposal-MedusaSection-AwardSummary-Actions"/>
+                </bean>
+
+                <bean parent="Proposal-Award-Property" p:propertyName="awardNumber" p:order="10" />
+                <bean parent="Proposal-Award-Property" p:propertyName="awardType.description" p:label="Award Type" p:order="20" />
+                <bean parent="Proposal-Award-Property" p:propertyName="sponsorAwardNumber" p:order="30" />
+                <bean parent="Proposal-Award-Property" p:propertyName="activityType.description" p:label="Activity Type" p:order="40" />
+                <bean parent="Proposal-Award-Property" p:propertyName="accountNumber" p:order="50" />
+                <bean parent="Proposal-Award-Property" p:propertyName="accountTypeDescription" p:order="60" />
+                <bean parent="Proposal-Award-Property" p:propertyName="awardStatus.description" p:label="Award Status" p:order="70" />
+                <bean parent="Proposal-Award-Property" p:propertyName="title" p:order="80" />
+
+
+                <bean parent="Proposal-Award-Property" p:propertyName="sponsorName" p:label="Award Sponsor"
+                      p:forcedValue="@{#ViewHelper.getSponsorString(#np.awardDocument.award.sponsor)}" p:order="100" />
+                <bean parent="Proposal-Award-Property" p:propertyName="awardEffectiveDate" p:order="110" />
+                <bean parent="Proposal-Award-Property" p:propertyName="latestAwardAmountInfo.currentFundEffectiveDate" p:order="120" />
+                <bean parent="Proposal-Award-Property" p:propertyName="latestAwardAmountInfo.finalExpirationDate" p:order="130" />
+                <bean parent="Proposal-Award-Property" p:propertyName="latestAwardAmountInfo.obligationExpirationDate" p:order="140" />
+                <bean parent="Proposal-Award-Property" p:propertyName="latestAwardAmountInfo.anticipatedTotalAmount" p:order="150" />
+                <bean parent="Proposal-Award-Property" p:propertyName="latestAwardAmountInfo.amountObligatedToDate"
+                      p:colSpan="3" p:fieldLabel.colSpan="1" p:order="160" />
+
+                <bean parent="Proposal-Award-Property" p:propertyName="awardApprovedSubawards" p:label="Approved Subaward?"
+                      p:forcedValue="@{#emptyList(#np.awardDocument.award.awardApprovedSubawards)?'No':'Yes'}" p:order="180" />
+                <bean parent="Proposal-Award-Property" p:propertyName="paymentScheduleItems" p:label="Payment Schedule?"
+                      p:forcedValue="@{#emptyList(#np.awardDocument.award.paymentScheduleItems)?'No':'Yes'}" p:order="190" />
+                <bean parent="Proposal-Award-Property" p:propertyName="approvedEquipmentItems" p:label="Approved Equipment?"
+                      p:forcedValue="@{#emptyList(#np.awardDocument.award.approvedEquipmentItems)?'No':'Yes'}" p:order="200" />
+                <bean parent="Proposal-Award-Property" p:propertyName="awardTransferringSponsors" p:label="Sponsor Fund Transferred?"
+                      p:forcedValue="@{#emptyList(#np.awardDocument.award.awardTransferringSponsors)?'No':'Yes'}" p:order="210" />
+                <bean parent="Proposal-Award-Property" p:propertyName="approvedForeignTravelTrips" p:label="Approved Foreign Travel?"
+                      p:forcedValue="@{#emptyList(#np.awardDocument.award.approvedForeignTravelTrips)?'No':'Yes'}" p:order="220" />
+                <bean parent="Proposal-Award-Property" p:propertyName="awardCostShares" p:label="Cost Share?"
+                      p:forcedValue="@{#emptyList(#np.awardDocument.award.awardCostShares)?'No':'Yes'}"  p:order="230" />
+                <bean parent="Proposal-Award-Property" p:propertyName="awardFandaRate" p:label="F&amp;A?"
+                      p:forcedValue="@{#emptyList(#np.awardDocument.award.awardFandaRate)?'No':'Yes'}"
+                      p:colSpan="3" p:fieldLabel.colSpan="1" p:order="240" />
+                <bean parent="Proposal-MedusaSection-AwardSummary-Investigators" p:order="250" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Proposal-MedusaSection-AwardSummary-Actions" parent="Uif-HorizontalBoxGroup">
+        <property name="items">
+            <list>
+                <bean parent="Proposal-Medusa-Link" p:linkText="Open Award"
+                      p:href="@{#ConfigProperties['application.url']}/awardHome.do?methodToCall=docHandler&amp;command=displayDocSearchView&amp;docId=@{#np.awardDocument.documentNumber}&amp;medusaOpenedDoc=true"/>
+                <bean parent="Proposal-Medusa-Link" p:linkText="Open Award Notes"
+                      p:href="@{#ConfigProperties['application.url']}/awardNotesAndAttachments.do?methodToCall=docHandler&amp;command=displayDocSearchView&amp;docId=@{#np.awardDocument.documentNumber}&amp;medusaOpenedDoc=true&amp;tabStates(Notes)=OPEN#Notes"/>
+                <bean parent="Proposal-Medusa-Link" p:linkText="Open Award Hierarchy Actions"
+                      p:href="@{#ConfigProperties['application.url']}/awardActions.do?methodToCall=docHandler&amp;command=displayDocSearchView&amp;docId=@{#np.awardDocument.documentNumber}&amp;medusaOpenedDoc=true&amp;tabStates(HierarchyActions)=OPEN#Hierarchy Actions"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Proposal-MedusaSection-AwardSummary-Investigators" parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false" p:colSpan="4">
+        <property name="group">
+            <bean parent="Uif-StackedCollectionSection" p:renderAddLine="false" p:renderLineActions="false"
+                  p:collectionObjectClass="org.kuali.kra.award.contacts.AwardPerson"
+                  p:propertyName="projectPersons">
+                <property name="header">
+                    <null />
+                </property>
+                <property name="items">
+                    <list>
+                        <bean parent="Uif-MessageField" p:fieldLabel.labelText="Investigator" p:messageText="@{#line.fullName + (#line.principalInvestigator?' (Principal Investigator)':'')}" p:order="10"/>
+                    </list>
+                </property>
+                <property name="subCollections">
+                    <list>
+                        <bean parent="Proposal-Person-UnitSummary" p:collectionObjectClass="org.kuali.kra.award.contacts.AwardPersonUnit"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="Proposal-MedusaSection-SubAwardSummary" parent="Proposal-MedusaSection-Summary">
+        <property name="dataGroupPrototype" ref="Proposal-MedusaSection-SubAwardSummary-Section"/>
+    </bean>
+
+    <bean id="Proposal-MedusaSection-SubAwardSummary-Section" parent="Proposal-MedusaSection-SummarySection">
+        <property name="items">
+            <list>
+                <bean parent="Proposal-MedusaSection-Actions" p:render="@{#lp.document.documentNumber ne #np.subAwardDocument.documentNumber}" p:order="5">
+                    <property name="group" ref="Proposal-MedusaSection-SubAwardSummary-Actions"/>
+                </bean>
+                <bean parent="Proposal-SubAward-Property" p:propertyName="subAwardCode" p:order="10" />
+                <bean parent="Proposal-SubAward-Property" p:propertyName="statusDescription" p:label="Status" p:order="20" />
+                <bean parent="Proposal-SubAward-Property" p:propertyName="accountNumber" p:order="30" />
+                <bean parent="Proposal-SubAward-Property" p:propertyName="organizationName" p:order="40" />
+                <bean parent="Proposal-SubAward-Property" p:propertyName="startDate" p:order="50" />
+                <bean parent="Proposal-SubAward-Property" p:propertyName="endDate" p:order="60" />
+                <bean parent="Proposal-SubAward-Property" p:propertyName="subAwardType.description" p:order="70" />
+                <bean parent="Proposal-SubAward-Property" p:propertyName="purchaseOrderNum" p:order="80" />
+                <bean parent="Proposal-SubAward-Property" p:propertyName="title" p:order="90" />
+                <bean parent="Proposal-SubAward-Property" p:propertyName="requisitioner.fullName" p:label="Requisitioner" p:order="100" />
+                <bean parent="Proposal-SubAward-Property" p:propertyName="unit.unitName" p:order="110" />
+                <bean parent="Proposal-SubAward-Property" p:propertyName="vendorNumber" p:order="120" />
+                <bean parent="Proposal-SubAward-Property" p:propertyName="closeoutDate" p:order="130" />
+                <bean parent="Proposal-SubAward-Property" p:propertyName="archiveLocation" p:order="140" />
+                <bean parent="Proposal-SubAward-Property" p:propertyName="comments" p:order="150" />
+                <bean parent="Proposal-SubAward-Property" p:propertyName="totalAnticipatedAmount" p:order="160" />
+                <bean parent="Proposal-SubAward-Property" p:propertyName="totalObligatedAmount" p:order="170" />
+                <bean parent="Proposal-SubAward-Property" p:propertyName="totalAmountReleased" p:order="180" />
+                <bean parent="Proposal-SubAward-Property" p:propertyName="totalAvailableAmount" p:order="190" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Proposal-MedusaSection-SubAwardSummary-Actions" parent="Uif-HorizontalBoxGroup">
+        <property name="items">
+            <list>
+                <bean parent="Proposal-Medusa-Link" p:linkText="Open Sub Award"
+                      p:href="@{#ConfigProperties['application.url']}/subAwardHome.do?methodToCall=docHandler&amp;command=displayDocSearchView&amp;docId=@{#np.subAwardDocument.documentNumber}&amp;medusaOpenedDoc=true"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Proposal-MedusaSection-IRBSummary" parent="Proposal-MedusaSection-Summary">
+        <property name="dataGroupPrototype" ref="Proposal-MedusaSection-IRBSummary-Section"/>
+    </bean>
+
+
+    <bean id="Proposal-MedusaSection-IRB-Investigators" parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false" p:colSpan="4">
+        <property name="group">
+            <bean parent="Uif-StackedCollectionSection" p:renderAddLine="false" p:renderLineActions="false"
+                  p:collectionObjectClass="org.kuali.kra.protocol.personnel.ProtocolPersonBase"
+                  p:propertyName="protocolPersons">
+                <property name="header">
+                    <null />
+                </property>
+                <property name="items">
+                    <list>
+                        <bean parent="Uif-MessageField" p:fieldLabel.labelText="Investigator" p:messageText="@{#line.fullName} (@{#line.protocolPersonRole.description})" p:order="10"/>
+                    </list>
+                </property>
+                <property name="subCollections">
+                    <list>
+                        <bean parent="Proposal-Person-UnitSummary" p:propertyName="protocolUnits"
+                              p:collectionObjectClass="org.kuali.kra.protocol.personnel.ProtocolUnitBase"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="Proposal-MedusaSection-IRBSummary-Section" parent="Proposal-MedusaSection-SummarySection">
+        <property name="items">
+            <list>
+                <bean parent="Proposal-MedusaSection-Actions"
+                      p:render="@{#lp.document.documentNumber ne #np.protocolDocument.documentNumber}" p:order="5">
+                    <property name="group" ref="Proposal-MedusaSection-IRBSummary-Actions"/>
+                </bean>
+                <bean parent="Proposal-IRBProtocol-Property" p:propertyName="protocolNumber" p:order="10"/>
+                <bean parent="Proposal-IRBProtocol-Property" p:propertyName="leadUnitNumber" p:order="20"/>
+                <bean parent="Proposal-IRBProtocol-Property" p:propertyName="active" p:order="30"/>
+                <bean parent="Proposal-IRBProtocol-Property" p:propertyName="title" p:order="40"/>
+                <bean parent="Proposal-IRBProtocol-Property" p:propertyName="description" p:order="50"/>
+                <bean parent="Proposal-IRBProtocol-Property" p:propertyName="approvalDate" p:order="60"/>
+                <bean parent="Proposal-IRBProtocol-Property" p:propertyName="expirationDate" p:order="70"/>
+                <bean parent="Proposal-IRBProtocol-Property" p:propertyName="protocolStatus.description" p:order="80"/>
+                <bean parent="Proposal-IRBProtocol-Property" p:propertyName="protocolType.description" p:order="90"
+                      p:colSpan="3" p:fieldLabel.colSpan="1"/>
+                <bean parent="Proposal-MedusaSection-IRB-Investigators" p:order="100"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Proposal-MedusaSection-IRBSummary-Actions" parent="Uif-HorizontalBoxGroup">
+        <property name="items">
+            <list>
+                <bean parent="Proposal-Medusa-Link" p:linkText="Open Protocol"
+                      p:href="@{#ConfigProperties['application.url']}/protocolProtocol.do?methodToCall=docHandler&amp;command=displayDocSearchView&amp;docId=@{#np.protocolDocument.documentNumber}&amp;medusaOpenedDoc=true"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Proposal-MedusaSection-IacucSummary" parent="Proposal-MedusaSection-Summary">
+        <property name="dataGroupPrototype" ref="Proposal-MedusaSection-IacucSummary-Section"/>
+    </bean>
+
+    <bean id="Proposal-MedusaSection-IacucSummary-Section" parent="Proposal-MedusaSection-SummarySection">
+        <property name="items">
+            <list>
+                <bean parent="Proposal-MedusaSection-Actions" p:render="@{#lp.document.documentNumber ne #np.protocolDocument.documentNumber}" p:order="5">
+                    <property name="group" ref="Proposal-MedusaSection-IacucSummary-Actions"/>
+                </bean>
+                <bean parent="Proposal-IacucProtocol-Property" p:propertyName="protocolNumber" p:order="10"/>
+                <bean parent="Proposal-IacucProtocol-Property" p:propertyName="leadUnitNumber" p:order="20"/>
+                <bean parent="Proposal-IacucProtocol-Property" p:propertyName="active" p:order="30"/>
+                <bean parent="Proposal-IacucProtocol-Property" p:propertyName="title" p:order="40"/>
+                <bean parent="Proposal-IacucProtocol-Property" p:propertyName="description" p:order="50"/>
+                <bean parent="Proposal-IacucProtocol-Property" p:propertyName="approvalDate" p:order="60"/>
+                <bean parent="Proposal-IacucProtocol-Property" p:propertyName="expirationDate" p:order="70"/>
+                <bean parent="Proposal-IacucProtocol-Property" p:propertyName="protocolStatus.description" p:order="80"/>
+                <bean parent="Proposal-IacucProtocol-Property" p:propertyName="protocolType.description" p:order="90"
+                      p:colSpan="3" p:fieldLabel.colSpan="1"/>
+                <bean parent="Proposal-MedusaSection-IRB-Investigators" p:order="100"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Proposal-MedusaSection-IacucSummary-Actions" parent="Uif-HorizontalBoxGroup">
+        <property name="items">
+            <list>
+                <bean parent="Proposal-Medusa-Link" p:linkText="Open Protocol"
+                      p:href="@{#ConfigProperties['application.url']}/iacucProtocolProtocol.do?methodToCall=docHandler&amp;command=displayDocSearchView&amp;docId=@{#np.protocolDocument.documentNumber}&amp;medusaOpenedDoc=true"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Proposal-MedusaSection-NegotiationSummary" parent="Proposal-MedusaSection-Summary">
+        <property name="dataGroupPrototype" ref="Proposal-MedusaSection-NegotiationSummary-Section"/>
+    </bean>
+
+    <bean id="Proposal-MedusaSection-NegotiationSummary-Section" parent="Proposal-MedusaSection-SummarySection">
+        <property name="items">
+            <list>
+                <bean parent="Proposal-MedusaSection-Actions"
+                      p:render="@{#lp.document.documentNumber ne #np.documentNumber}" p:order="5">
+                    <property name="group" ref="Proposal-MedusaSection-NegotiationSummary-Actions"/>
+                </bean>
+                <bean parent="Proposal-Negotiation-Property" p:propertyName="negotiationId" p:order="10"/>
+                <bean parent="Proposal-Negotiation-Property" p:propertyName="negotiationStatus.description" p:order="20"/>
+                <bean parent="Proposal-Negotiation-Property" p:propertyName="negotiator.userName" p:label="Negotiatior" p:order="30"/>
+                <bean parent="Proposal-Negotiation-Property" p:propertyName="negotiationStartDate" p:order="40"/>
+                <bean parent="Proposal-Negotiation-Property" p:propertyName="negotiationAgreementType.description" p:label="Agreement Type" p:order="50"/>
+                <bean parent="Proposal-Negotiation-Property" p:propertyName="negotiationEndDate" p:order="60"/>
+                <bean parent="Proposal-Negotiation-Property" p:propertyName="negotiationAge" p:order="70"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Proposal-MedusaSection-NegotiationSummary-Actions" parent="Uif-HorizontalBoxGroup">
+        <property name="items">
+            <list>
+                <bean parent="Proposal-Medusa-Link" p:linkText="Open Negotiation"
+                      p:href="@{#ConfigProperties['application.url']}/negotiationNegotiation.do?methodToCall=docHandler&amp;command=displayDocSearchView&amp;docId=@{#np.documentNumber}&amp;medusaOpenedDoc=true"/>
+            </list>
+        </property>
+    </bean>
+
+    <!--Common Medusa beans -->
+
+    <bean id="Proposal-MedusaSection-Summary" class="org.kuali.rice.krad.uif.container.NodePrototype">
+        <property name="labelPrototype">
+            <bean parent="Uif-Message" p:renderWrapperTag="false"/>
+        </property>
+        <property name="dataGroupPrototype">
+            <bean parent="Uif-GridGroup">
+                <property name="layoutManager.numberOfColumns" value="4"/>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="Proposal-MedusaSection-SummarySection" parent="Uif-GridGroup" p:layoutManager.numberOfColumns="4" p:additionalCssClasses="medusa-node"/>
+
+    <bean id="Proposal-MedusaSection-Actions" parent="Uif-HorizontalFieldGroup" p:fieldLabel.render="false" p:colSpan="4" />
+
+    <bean id="Proposal-InstitutionalProposal-Property" parent="Medusa-DataField"
+          p:dictionaryObjectEntry="org.kuali.kra.institutionalproposal.home.InstitutionalProposal" />
+
+    <bean id="Proposal-ProposalDevelopment-Property" parent="Medusa-DataField" p:additionalCssClasses="medusa-node-value"
+          p:dictionaryObjectEntry="org.kuali.coeus.propdev.impl.core.DevelopmentProposal" />
+
+    <bean id="Proposal-Award-Property" parent="Medusa-DataField" p:additionalCssClasses="medusa-node-value"
+          p:dictionaryObjectEntry="org.kuali.kra.award.home.Award" />
+
+    <bean id="Proposal-AwardAmountInfo-Property" parent="Medusa-DataField" p:additionalCssClasses="medusa-node-value"
+          p:dictionaryObjectEntry="org.kuali.kra.award.home.AwardAmountInfo" />
+
+    <bean id="Proposal-SubAward-Property" parent="Medusa-DataField" p:additionalCssClasses="medusa-node-value"
+          p:dictionaryObjectEntry="org.kuali.kra.subaward.bo.SubAward" />
+
+    <bean id="Proposal-IRBProtocol-Property" parent="Medusa-DataField" p:additionalCssClasses="medusa-node-value"
+          p:dictionaryObjectEntry="org.kuali.kra.irb.Protocol" />
+
+    <bean id="Proposal-IacucProtocol-Property" parent="Medusa-DataField" p:additionalCssClasses="medusa-node-value"
+          p:dictionaryObjectEntry="org.kuali.kra.iacuc.IacucProtocol" />
+
+    <bean id="Proposal-Negotiation-Property" parent="Medusa-DataField" p:additionalCssClasses="medusa-node-value"
+          p:dictionaryObjectEntry="org.kuali.kra.negotiations.bo.Negotiation" />
+
+    <bean id="Proposal-Person-UnitSummary" parent="Uif-StackedSubCollection-WithinSubSection" p:propertyName="units" p:renderAddLine="false" p:renderLineActions="false">
+        <property name="items">
+            <list>
+                <bean parent="Uif-MessageField" p:fieldLabel.labelText="Unit" p:messageText="@{#line.unit.unitNumber} : @{#line.unit.unitName}" p:order="10"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Medusa-DataField" parent="Medusa-DataField-parentBean"/>
+    <bean id="Medusa-DataField-parentBean" abstract="true" parent="Uif-DataField"
+          p:multiLineReadOnlyDisplay="true"/>
+
+
+    <bean id="Proposal-Medusa-Link" parent="Uif-LinkField" p:target="_blank" p:cssClasses="btn,btn-default,btn-xs" />
+</beans>

@@ -1,0 +1,356 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Sat Apr 25 23:04:36 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+
+Started role right migration.25-APR-15 11.04.38.186540 PM
+
+ddl_role_rights.sql started 25-APR-15 11.04.41.788397 PM
+
+kc_coeus_role_mapping started 25-APR-15 11.04.47.056245 PM
+
+kc_coeus_right_mapping started 25-APR-15 11.05.05.419835 PM
+
+role_bootstrap.sql started 25-APR-15 11.05.20.962336 PM
+
+perm_bootstrap.sql started 25-APR-15 11.05.52.343889 PM
+
+role_perm_bootstrap.sql started 25-APR-15 11.07.19.209619 PM
+ALTER TABLE KRIM_PERM_ATTR_DATA_T ENABLE CONSTRAINT KRIM_PERM_ATTR_DATA_TR3
+                                                    *
+ERROR at line 1:
+ORA-02298: cannot validate (KCSO.KRIM_PERM_ATTR_DATA_TR3) - parent keys not
+found
+
+
+
+truncate_and_apply_bootstrap.sql started 25-APR-15 11.07.27.602411 PM
+
+kc_coeus_role_perm_mapping.sql started 25-APR-15 11.07.52.607192 PM
+Sync role rights begin!!
+ALTER TABLE KRIM_PERM_ATTR_DATA_T ENABLE CONSTRAINT KRIM_PERM_ATTR_DATA_TR3
+*
+ERROR at line 1:
+ORA-02270: no matching unique or primary key for this column-list
+
+
+ALTER TABLE KRIM_ROLE_PERM_T ENABLE CONSTRAINT KRIM_ROLE_PERM_TR1
+*
+ERROR at line 1:
+ORA-02270: no matching unique or primary key for this column-list
+
+
+
+      2159
+Role is not in krim_role_t , role_nm is Maintain Subcontract and nmspc_cd is
+KC-ADM.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Maintain Template and nmspc_cd is
+KC-SYS.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Run Rolodex Reports and nmspc_cd is
+KC-UNT.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Run Global Reports and nmspc_cd is
+KC-UNT.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Maintain Award Budget and nmspc_cd is
+KC-AB.	The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Approve Award Budget and nmspc_cd is
+KC-AB.	The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Maintain Rolodex and nmspc_cd is KC-ADM.
+The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Modify Award and nmspc_cd is KC-T.  The
+error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Modify Award and nmspc_cd is KC-AWARD.
+The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Run Protocol Reports and nmspc_cd is
+KC-UNT.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Run User Reports and nmspc_cd is KC-UNT.
+The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Award Budget Aggregator and nmspc_cd is
+KC-AB.	The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is IRB Reviewer and nmspc_cd is KC-UNT.
+The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Maintain Negotiations and nmspc_cd is
+KC-ADM.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Negotiation SuperUser and nmspc_cd is
+KC-NEGOTIATION.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Modify Subcontract and nmspc_cd is
+KC-SUBAWARD.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Run Person Reports and nmspc_cd is
+KC-UNT.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Budget Creator and nmspc_cd is KC-PD.
+The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Maintain Sponsor and nmspc_cd is KC-ADM.
+The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is View Institute Proposal Attachments and
+nmspc_cd is KC-ADM.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is View Shared Institute Proposal
+Attachments and nmspc_cd is KC-ADM.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is IRB Administrator and nmspc_cd is
+KC-PROTOCOL.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Protocol Aggregator and nmspc_cd is
+KC-PROTOCOL.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Rolodex Maintainer and nmspc_cd is
+KC-UNT.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Maintain Questionnaire and nmspc_cd is
+KC-QUESTIONNAIRE.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Run Sponsor Reports and nmspc_cd is
+KC-UNT.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Maintain Institute Proposal Attachments
+and nmspc_cd is KC-ADM.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is IACUC Reviewer and nmspc_cd is KC-UNT.
+The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Modify Award Budget and nmspc_cd is
+KC-AB.	The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Run Committee Reports and nmspc_cd is
+KC-UNT.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is View WL  and nmspc_cd is KC-ADM.  The
+error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Modify Negotiations and nmspc_cd is
+KC-NEGOTIATION.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Access Institutionally Maintained
+Salaries and nmspc_cd is KC-PD.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Protocol Creator and nmspc_cd is KC-UNT.
+The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Delete Any Protocol and nmspc_cd is
+KC-PROTOCOL.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Maintain Award Attachments and nmspc_cd
+is KC-ADM.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Modify All Dev Proposals and nmspc_cd is
+KC-PD.	The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is IACUC Administrator and nmspc_cd is
+KC-UNT.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Maintain Conflict of Interest and
+nmspc_cd is KC-COIDISCLOSURE.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is View Award Attachments and nmspc_cd is
+KC-ADM.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is View Shared Subaward Attachments and
+nmspc_cd is KC-SUBAWARD.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is View Subcontract Attachments and
+nmspc_cd is KC-ADM.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Protocol Viewer and nmspc_cd is
+KC-PROTOCOL.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is View Template and nmspc_cd is KC-AWARD.
+The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Aggregator and nmspc_cd is KC-PD.  The
+error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Award Budget Administrator and nmspc_cd
+is KC-AB.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Run Award Reports and nmspc_cd is
+KC-UNT.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is IACUC Protocol Creator and nmspc_cd is
+KC-IACUC.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Maintain Key Person and nmspc_cd is
+KC-AWARD.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is IACUC Protocol Aggregator and nmspc_cd
+is KC-IACUC.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is View Proposal Log and nmspc_cd is KC-IP.
+The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Proposal Creator and nmspc_cd is KC-UNT.
+The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Maintain Custom Reports and nmspc_cd is
+KC-UNT.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Maintain Proposal Log and nmspc_cd is
+KC-ADM.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is View Shared Award Attachments and
+nmspc_cd is KC-ADM.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Access Proposal Person Institutional
+Salaries and nmspc_cd is KC-PD.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Sponsor Maintainer and nmspc_cd is
+KC-UNT.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is View Award Budget and nmspc_cd is KC-AB.
+The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Run Unit Reports and nmspc_cd is KC-UNT.
+The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is View all IACUC Protocols and nmspc_cd is
+KC-UNT.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Maintain Award Reporting Tracking and
+nmspc_cd is KC-ADM.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Maintain Institute Proposal and nmspc_cd
+is KC-ADM.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Maintain Organizations and nmspc_cd is
+KC-SYS.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Run Dev Proposal Reports and nmspc_cd is
+KC-UNT.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Viewer and nmspc_cd is KC-PD.  The error
+is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is View Institute Proposal Document and
+nmspc_cd is KC-IP.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Run Budget Reports and nmspc_cd is
+KC-UNT.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is All Unit Administrators Document Level
+and nmspc_cd is KC-PD.	The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is Maintain Sponsor Hierarchy and nmspc_cd
+is KC-ADM.  The error is: ORA-01403: no data found
+Role is not in krim_role_t , role_nm is IACUC Protocol Viewer and nmspc_cd is
+KC-IACUC.  The error is: ORA-01403: no data found
+Sync role rights end!!
+
+syncing_role_rights.sql started 25-APR-15 11.08.01.507705 PM
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM Approver. The Error is: ORA-01403: no
+data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM Aggregator. The Error is: ORA-01403:
+no data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM Aggregator. The Error is: ORA-01403:
+no data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM Aggregator. The Error is: ORA-01403:
+no data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM Aggregator. The Error is: ORA-01403:
+no data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM Aggregator. The Error is: ORA-01403:
+no data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM IRB Protocol Aggregator. The Error
+is: ORA-01403: no data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM IRB Protocol Aggregator. The Error
+is: ORA-01403: no data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM Aggregator. The Error is: ORA-01403:
+no data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM Aggregator. The Error is: ORA-01403:
+no data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM Budget Creator. The Error is:
+ORA-01403: no data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM Viewer. The Error is: ORA-01403: no
+data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM Viewer. The Error is: ORA-01403: no
+data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM Aggregator. The Error is: ORA-01403:
+no data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM Budget Creator. The Error is:
+ORA-01403: no data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM Aggregator. The Error is: ORA-01403:
+no data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM Budget Creator. The Error is:
+ORA-01403: no data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM IRB Protocol Aggregator. The Error
+is: ORA-01403: no data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM Viewer. The Error is: ORA-01403: no
+data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM Aggregator. The Error is: ORA-01403:
+no data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM Aggregator. The Error is: ORA-01403:
+no data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM Budget Creator. The Error is:
+ORA-01403: no data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM IRB Protocol Aggregator. The Error
+is: ORA-01403: no data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM Viewer. The Error is: ORA-01403: no
+data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM Aggregator. The Error is: ORA-01403:
+no data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM Viewer. The Error is: ORA-01403: no
+data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM Aggregator. The Error is: ORA-01403:
+no data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM Viewer. The Error is: ORA-01403: no
+data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM Aggregator. The Error is: ORA-01403:
+no data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM Viewer. The Error is: ORA-01403: no
+data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM Aggregator. The Error is: ORA-01403:
+no data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM Viewer. The Error is: ORA-01403: no
+data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM Viewer. The Error is: ORA-01403: no
+data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM Aggregator. The Error is: ORA-01403:
+no data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM IRB Protocol Aggregator. The Error
+is: ORA-01403: no data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM Aggregator. The Error is: ORA-01403:
+no data found
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM Aggregator. The Error is: ORA-01403:
+no data found
+Loading user roles Completed!!
+
+load_coeus_user_roles.sql started 25-APR-15 11.12.27.462296 PM
+
+add_role_perm_manually.sql started 25-APR-15 11.12.27.872536 PM
+CREATE INDEX OSP$PROTOCOL_USER_ROLES_I ON OSP$PROTOCOL_USER_ROLES(PROTOCOL_NUMBER,SEQUENCE_NUMBER,ROLE_ID,USER_ID)
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+document_access_irb.sql started 25-APR-15 11.12.33.384957 PM
+CREATE INDEX OSP$EPS_PROP_USER_ROLES_I ON OSP$EPS_PROP_USER_ROLES(PROPOSAL_NUMBER,ROLE_ID,USER_ID)
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+PRNCPL_ID is missing for userID pauli and Proposal Number 2773
+PRNCPL_ID is missing for userID pauli and Proposal Number 4631
+PRNCPL_ID is missing for userID pauli and Proposal Number 2614
+PRNCPL_ID is missing for userID pauli and Proposal Number 4633
+PRNCPL_ID is missing for userID pauli and Proposal Number 4854
+PRNCPL_ID is missing for userID pauli and Proposal Number 4618
+PRNCPL_ID is missing for userID pauli and Proposal Number 4368
+PRNCPL_ID is missing for userID pauli and Proposal Number 3922
+PRNCPL_ID is missing for userID pauli and Proposal Number 5072
+PRNCPL_ID is missing for userID pauli and Proposal Number 4618
+PRNCPL_ID is missing for userID pauli and Proposal Number 4634
+PRNCPL_ID is missing for userID pauli and Proposal Number 4652
+PRNCPL_ID is missing for userID pauli and Proposal Number 4345
+PRNCPL_ID is missing for userID pauli and Proposal Number 4424
+PRNCPL_ID is missing for userID pauli and Proposal Number 2742
+PRNCPL_ID is missing for userID pauli and Proposal Number 4374
+PRNCPL_ID is missing for userID pauli and Proposal Number 4243
+PRNCPL_ID is missing for userID pauli and Proposal Number 4634
+PRNCPL_ID is missing for userID pauli and Proposal Number 4620
+PRNCPL_ID is missing for userID pauli and Proposal Number 4665
+PRNCPL_ID is missing for userID pauli and Proposal Number 4492
+PRNCPL_ID is missing for userID pauli and Proposal Number 4625
+PRNCPL_ID is missing for userID pauli and Proposal Number 4579
+PRNCPL_ID is missing for userID pauli and Proposal Number 4496
+PRNCPL_ID is missing for userID pauli and Proposal Number 4971
+PRNCPL_ID is missing for userID pauli and Proposal Number 4493
+PRNCPL_ID is missing for userID pauli and Proposal Number 4495
+PRNCPL_ID is missing for userID pauli and Proposal Number 4653
+PRNCPL_ID is missing for userID pauli and Proposal Number 4422
+PRNCPL_ID is missing for userID pauli and Proposal Number 4751
+PRNCPL_ID is missing for userID pauli and Proposal Number 4676
+PRNCPL_ID is missing for userID pauli and Proposal Number 4667
+PRNCPL_ID is missing for userID pauli and Proposal Number 4127
+PRNCPL_ID is missing for userID pauli and Proposal Number 4454
+PRNCPL_ID is missing for userID pauli and Proposal Number 4497
+PRNCPL_ID is missing for userID pauli and Proposal Number 4494
+PRNCPL_ID is missing for userID pauli and Proposal Number 4893
+PRNCPL_ID is missing for userID pauli and Proposal Number 4666
+PRNCPL_ID is missing for userID pauli and Proposal Number 4632
+PRNCPL_ID is missing for userID pauli and Proposal Number 4355
+PRNCPL_ID is missing for userID pauli and Proposal Number 5331
+PRNCPL_ID is missing for userID pauli and Proposal Number 4921
+PRNCPL_ID is missing for userID pauli and Proposal Number 4515
+PRNCPL_ID is missing for userID pauli and Proposal Number 4308
+PRNCPL_ID is missing for userID pauli and Proposal Number 4338
+PRNCPL_ID is missing for userID pauli and Proposal Number 4621
+PRNCPL_ID is missing for userID pauli and Proposal Number 4115
+PRNCPL_ID is missing for userID csodini and Proposal Number 13922
+PRNCPL_ID is missing for userID csodini and Proposal Number 12881
+PRNCPL_ID is missing for userID pauli and Proposal Number 2894
+PRNCPL_ID is missing for userID pauli and Proposal Number 4345
+PRNCPL_ID is missing for userID pauli and Proposal Number 4465
+PRNCPL_ID is missing for userID pauli and Proposal Number 4630
+PRNCPL_ID is missing for userID pauli and Proposal Number 2614
+PRNCPL_ID is missing for userID pauli and Proposal Number 4635
+PRNCPL_ID is missing for userID csodini and Proposal Number 13570
+PRNCPL_ID is missing for userID pauli and Proposal Number 4664
+PRNCPL_ID is missing for userID pauli and Proposal Number 4491
+PRNCPL_ID is missing for userID pauli and Proposal Number 4781
+PRNCPL_ID is missing for userID pauli and Proposal Number 4617
+PRNCPL_ID is missing for userID pauli and Proposal Number 4616
+PRNCPL_ID is missing for userID pauli and Proposal Number 4490
+
+ddl_role_rights.sql started 25-APR-15 11.15.48.475072 PM
+
+ddl_role_rights.sql started 25-APR-15 11.15.49.695659 PM
+
+completed role right migration.25-APR-15 11.15.49.891406 PM
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

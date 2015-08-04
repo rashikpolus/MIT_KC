@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean id="ProtocolAttachmentProtocol" parent="ProtocolAttachmentProtocol-parentBean" />
+	<bean id="ProtocolAttachmentProtocol-parentBean" abstract="true" parent="ProtocolAttachmentBase">
+		<property name="businessObjectClass" value="org.kuali.kra.irb.noteattachment.ProtocolAttachmentProtocol" />
+		<property name="objectLabel" value="Protocol Attachment Protocol" />
+		<property name="inquiryDefinition" >
+			<ref bean="ProtocolAttachmentProtocol-inquiryDefinition" />
+    <!--<bean parent="SelectControlDefinition"
+	            p:valuesFinderClass="org.kuali.kra.irb.noteattachment.ProtocolAttachmentTypeByGroupValuesFinder" />-->
+		</property>
+		<property name="lookupDefinition" >
+			<ref bean="ProtocolAttachmentProtocol-lookupDefinition" />
+		</property>
+		<property name="helpDefinition" >
+            <bean parent="HelpDefinition" p:parameterNamespace="KC-PROTOCOL" p:parameterName="protocolAddProtocolAttachmentHelpUrl" p:parameterDetailType="Document" />
+        </property>
+		<property name="titleAttribute" value="id" />
+		<property name="attributes" >
+			<list>
+				<ref bean="ProtocolAttachmentProtocol-id" />
+				<ref bean="ProtocolAttachmentProtocol-typeCode" />
+				<ref bean="ProtocolAttachmentProtocol-sequenceNumber" />
+				<ref bean="ProtocolAttachmentProtocol-documentId" />
+				<ref bean="ProtocolAttachmentProtocol-fileId" />
+				<ref bean="ProtocolAttachmentProtocol-description" />
+				<ref bean="ProtocolAttachmentProtocol-statusCode" />
+				<ref bean="ProtocolAttachmentProtocol-contactName" />
+				<ref bean="ProtocolAttachmentProtocol-contactEmailAddress" />
+				<ref bean="ProtocolAttachmentProtocol-contactPhoneNumber" />
+				<ref bean="ProtocolAttachmentProtocol-comments" />
+				<ref bean="ProtocolAttachmentProtocol-versionNumber" />
+				<ref bean="ProtocolAttachmentProtocol-updateUser" />
+				<ref bean="ProtocolAttachmentProtocol-updateTimestamp" />
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="ProtocolAttachmentProtocol-id" parent="ProtocolAttachmentProtocol-id-parentBean" />
+	<bean id="ProtocolAttachmentProtocol-id-parentBean" abstract="true" parent="ProtocolAttachmentBase-id" />
+
+	<bean id="ProtocolAttachmentProtocol-sequenceNumber" parent="ProtocolAttachmentProtocol-sequenceNumber-parentBean" />
+	<bean id="ProtocolAttachmentProtocol-sequenceNumber-parentBean" abstract="true" parent="ProtocolAttachmentBase-sequenceNumber"/>
+
+	<bean id="ProtocolAttachmentProtocol-typeCode" parent="ProtocolAttachmentProtocol-typeCode-parentBean" />
+	<bean id="ProtocolAttachmentProtocol-typeCode-parentBean" abstract="true" parent="ProtocolAttachmentType-code">
+		<property name="name" value="typeCode" />
+		<property name="label" value="Attachment Type" />
+        <property name="shortLabel" value="Attachment Type" />
+        <property name="summary" value="Attachment Type" />
+        <property name="description" value="Attachment Type" />
+        <property name="maxLength" value="3" />
+        <property name="required" value="true" />
+	    <property name="control" >
+      <bean parent="SelectControlDefinition" p:businessObjectClass="org.kuali.kra.irb.noteattachment.ProtocolAttachmentType" p:valuesFinderClass="org.kuali.coeus.sys.framework.keyvalue.ExtendedPersistableBusinessObjectValuesFinder" p:includeKeyInLabel="false" p:includeBlankRow="false" p:keyAttribute="code" p:labelAttribute="description"/>
+    </property>
+    <property name="optionsFinder">
+      <bean class="org.kuali.coeus.sys.framework.keyvalue.ExtendedPersistableBusinessObjectValuesFinder">
+        <property name="businessObjectClass" value="org.kuali.kra.irb.noteattachment.ProtocolAttachmentType"/>
+        <property name="includeKeyInDescription" value="false"/>
+        <property name="includeBlankRow" value="false"/>
+        <property name="keyAttributeName" value="code"/>
+        <property name="labelAttributeName" value="description"/>
+      </bean>
+    </property>
+    <property name="controlField">
+      <bean parent="Uif-DropdownControl"/>
+	    </property>
+	</bean>
+	
+	<bean id="ProtocolAttachmentProtocol-documentId" parent="ProtocolAttachmentProtocol-documentId-parentBean" />
+	<bean id="ProtocolAttachmentProtocol-documentId-parentBean" abstract="true" parent="ProtocolAttachmentBase-documentId" />
+	<bean id="ProtocolAttachmentProtocol-fileId" parent="ProtocolAttachmentProtocol-fileId-parentBean" />
+	<bean id="ProtocolAttachmentProtocol-fileId-parentBean" abstract="true" parent="ProtocolAttachmentBase-fileId"/>
+	<bean id="ProtocolAttachmentProtocol-description" parent="ProtocolAttachmentProtocol-description-parentBean" />
+	<bean id="ProtocolAttachmentProtocol-description-parentBean" abstract="true" parent="KraAttributeReferenceDummy-description">
+	    <property name="required" value="true" />	
+		<property name="control" >
+      <bean parent="TextareaControlDefinition" p:rows="3" p:cols="40"/>
+    </property>
+    <property name="controlField">
+      <bean p:rows="3" p:cols="40" parent="Uif-TextAreaControl"/>
+        </property>
+	</bean>
+	
+	<bean id="ProtocolAttachmentProtocol-statusCode" parent="ProtocolAttachmentProtocol-statusCode-parentBean" />
+	<bean id="ProtocolAttachmentProtocol-statusCode-parentBean" abstract="true" parent="ProtocolAttachmentStatus-code">
+		<property name="name" value="statusCode" />
+		<property name="label" value="Status" />
+        <property name="shortLabel" value="Status" />
+        <property name="summary" value="Status" />
+        <property name="description" value="Status" />
+        <property name="maxLength" value="3"/>
+		<property name="required" value="false"/>
+	    <property name="control" >
+      <bean parent="SelectControlDefinition" p:businessObjectClass="org.kuali.kra.irb.noteattachment.ProtocolAttachmentStatus" p:valuesFinderClass="org.kuali.coeus.sys.framework.keyvalue.ExtendedPersistableBusinessObjectValuesFinder" p:includeKeyInLabel="false" p:includeBlankRow="false" p:keyAttribute="code" p:labelAttribute="description"/>
+    </property>
+    <property name="optionsFinder">
+      <bean class="org.kuali.coeus.sys.framework.keyvalue.ExtendedPersistableBusinessObjectValuesFinder">
+        <property name="businessObjectClass" value="org.kuali.kra.irb.noteattachment.ProtocolAttachmentStatus"/>
+        <property name="includeKeyInDescription" value="false"/>
+        <property name="includeBlankRow" value="false"/>
+        <property name="keyAttributeName" value="code"/>
+        <property name="labelAttributeName" value="description"/>
+      </bean>
+    </property>
+    <property name="controlField">
+      <bean parent="Uif-DropdownControl"/>
+	    </property>
+	</bean>
+	
+	<bean id="ProtocolAttachmentProtocol-contactName" parent="ProtocolAttachmentProtocol-contactName-parentBean" />
+	<bean id="ProtocolAttachmentProtocol-contactName-parentBean" abstract="true" parent="AttributeDefinition">
+	  <property name="name" value="contactName" />
+	  <property name="forceUppercase" value="false" />
+	  <property name="label" value="Contact Name" />
+	  <property name="shortLabel" value="Contact Name" />
+	  <property name="maxLength" value="30" />
+	  <property name="validationPattern" >
+	    <bean parent="AnyCharacterValidationPattern" p:allowWhitespace="true"/>
+	  </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AnyCharacterPatternConstraint">
+        <property name="allowWhitespace" value="true"/>
+      </bean>
+    </property>
+	  <property name="control" >
+      <bean parent="TextControlDefinition" p:size="35"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="35" parent="Uif-TextControl"/>
+	  </property>
+	  <property name="summary" value="Contact Name" />
+	  <property name="description" value="Contact Name" />
+	</bean>
+	
+	<bean id="ProtocolAttachmentProtocol-contactEmailAddress" parent="ProtocolAttachmentProtocol-contactEmailAddress-parentBean" />
+	<bean id="ProtocolAttachmentProtocol-contactEmailAddress-parentBean" abstract="true" parent="KraAttributeReferenceDummy-emailAddress">
+	  <property name="name" value="contactEmailAddress" />
+	  <property name="label" value="Email" />
+	  <property name="shortLabel" value="Email" />
+	  <property name="summary" value="Email" />
+	  <property name="description" value="Email" />
+	</bean>
+	
+	<bean id="ProtocolAttachmentProtocol-contactPhoneNumber" parent="ProtocolAttachmentProtocol-contactPhoneNumber-parentBean" />
+	<bean id="ProtocolAttachmentProtocol-contactPhoneNumber-parentBean" abstract="true" parent="KraAttributeReferenceDummy-phoneNumber">
+	  <property name="name" value="contactPhoneNumber" />
+	  <property name="label" value="Phone" />
+	  <property name="shortLabel" value="Phone" />
+      <property name="validationPattern" >
+	    <bean parent="AnyCharacterValidationPattern" p:allowWhitespace="true"/>
+      </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AnyCharacterPatternConstraint">
+        <property name="allowWhitespace" value="true"/>
+      </bean>
+    </property>
+	  <property name="summary" value="Phone" />
+	  <property name="description" value="Phone" />
+	</bean>
+	
+	<bean id="ProtocolAttachmentProtocol-comments" parent="ProtocolAttachmentProtocol-comments-parentBean" />
+	<bean id="ProtocolAttachmentProtocol-comments-parentBean" abstract="true" parent="KraAttributeReferenceDummy-description">
+	  <property name="name" value="comments" />
+	  <property name="label" value="Comments" />
+	  <property name="shortLabel" value="Comments" />
+	  <property name="summary" value="Comments" />
+	  <property name="maxLength" value="300" />
+	  <property name="description" value="Comments" />
+		<property name="control" >
+      <bean parent="TextareaControlDefinition" p:rows="3" p:cols="40"/>
+    </property>
+    <property name="controlField">
+      <bean p:rows="3" p:cols="40" parent="Uif-TextAreaControl"/>
+        </property>
+	</bean>
+	
+	<bean id="ProtocolAttachmentProtocol-versionNumber" parent="ProtocolAttachmentProtocol-versionNumber-parentBean" />
+	<bean id="ProtocolAttachmentProtocol-versionNumber-parentBean" abstract="true" parent="ProtocolAttachmentBase-versionNumber" />
+	<bean id="ProtocolAttachmentProtocol-updateUser" parent="ProtocolAttachmentProtocol-updateUser-parentBean" />
+	<bean id="ProtocolAttachmentProtocol-updateUser-parentBean" abstract="true" parent="ProtocolAttachmentBase-updateUser"/>
+	<bean id="ProtocolAttachmentProtocol-updateTimestamp" parent="ProtocolAttachmentProtocol-updateTimestamp-parentBean" />
+	<bean id="ProtocolAttachmentProtocol-updateTimestamp-parentBean" abstract="true" parent="ProtocolAttachmentBase-updateTimestamp"/>
+	<!-- Business Object Inquiry Definition -->
+	<bean id="ProtocolAttachmentProtocol-inquiryDefinition" parent="ProtocolAttachmentProtocol-inquiryDefinition-parentBean" />
+  <bean id="ProtocolAttachmentProtocol-InquiryView" parent="ProtocolAttachmentProtocol-InquiryView-parentBean"/>
+	<bean id="ProtocolAttachmentProtocol-inquiryDefinition-parentBean" abstract="true" parent="ProtocolAttachmentBase-inquiryDefinition">
+		<property name="inquirySections" >
+			<list>
+				<bean parent="InquirySectionDefinition">
+					<property name="title" value="Id" />
+					<property name="numberOfColumns" value="1" />
+					<property name="inquiryFields" >
+						<list merge="true">
+              <bean parent="FieldDefinition" p:attributeName="typeCode"/>
+              <bean parent="FieldDefinition" p:attributeName="description"/>
+              <bean parent="FieldDefinition" p:attributeName="statusCode"/>
+              <bean parent="FieldDefinition" p:attributeName="contactName"/>
+              <bean parent="FieldDefinition" p:attributeName="contactEmailAddress"/>
+              <bean parent="FieldDefinition" p:attributeName="contactPhoneNumber"/>
+              <bean parent="FieldDefinition" p:attributeName="comments"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="ProtocolAttachmentProtocol-InquiryView-parentBean" abstract="true" parent="ProtocolAttachmentBase-InquiryView">
+    <property name="dataObjectClassName" value="org.kuali.kra.irb.noteattachment.ProtocolAttachmentProtocol"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-GridSection">
+          <property name="headerText" value="Id"/>
+          <property name="layoutManager.numberOfColumns" value="2"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="typeCode" parent="Uif-DataField"/>
+              <bean p:propertyName="description" parent="Uif-DataField"/>
+              <bean p:propertyName="statusCode" parent="Uif-DataField"/>
+              <bean p:propertyName="contactName" parent="Uif-DataField"/>
+              <bean p:propertyName="contactEmailAddress" parent="Uif-DataField"/>
+              <bean p:propertyName="contactPhoneNumber" parent="Uif-DataField"/>
+              <bean p:propertyName="comments" parent="Uif-DataField"/>
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+		<!-- Business Object Lookup Definition -->
+	<bean id="ProtocolAttachmentProtocol-lookupDefinition" parent="ProtocolAttachmentProtocol-lookupDefinition-parentBean" />
+  <bean id="ProtocolAttachmentProtocol-LookupView" parent="ProtocolAttachmentProtocol-LookupView-parentBean"/>
+	<bean id="ProtocolAttachmentProtocol-lookupDefinition-parentBean" abstract="true" parent="ProtocolAttachmentBase-lookupDefinition">
+		<property name="title" value="Protocol Attachment Lookup" />
+        <property name="lookupableID" value="protocolAttachmentProtocolLookupable" /><property name="lookupFields" >
+			<list merge="true">
+        <bean parent="FieldDefinition" p:attributeName="typeCode"/>
+        <bean parent="FieldDefinition" p:attributeName="description"/>
+        <bean parent="FieldDefinition" p:attributeName="statusCode"/>
+        <bean parent="FieldDefinition" p:attributeName="contactName"/>
+        <bean parent="FieldDefinition" p:attributeName="contactEmailAddress"/>
+        <bean parent="FieldDefinition" p:attributeName="contactPhoneNumber"/>
+        <bean parent="FieldDefinition" p:attributeName="comments"/>
+			</list>
+		</property>
+		<property name="resultFields" >
+			<list merge="true">
+        <bean parent="FieldDefinition" p:attributeName="typeCode"/>
+        <bean parent="FieldDefinition" p:attributeName="description"/>
+        <bean parent="FieldDefinition" p:attributeName="statusCode"/>
+        <bean parent="FieldDefinition" p:attributeName="contactName"/>
+        <bean parent="FieldDefinition" p:attributeName="contactEmailAddress"/>
+        <bean parent="FieldDefinition" p:attributeName="contactPhoneNumber"/>
+        <bean parent="FieldDefinition" p:attributeName="comments"/>
+			</list>
+		</property>
+	</bean>
+
+  <bean id="ProtocolAttachmentProtocol-LookupView-parentBean" abstract="true" parent="ProtocolAttachmentBase-LookupView">
+    <property name="dataObjectClassName" value="org.kuali.kra.irb.noteattachment.ProtocolAttachmentProtocol"/>
+    <property name="headerText" value="Protocol Attachment Lookup"/>
+    <property name="criteriaFields">
+      <list>
+        <bean p:propertyName="typeCode" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="description" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="statusCode" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="contactName" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="contactEmailAddress" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="contactPhoneNumber" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="comments" parent="Uif-LookupCriteriaInputField"/>
+      </list>
+    </property>
+    <property name="resultFields">
+      <list>
+        <bean p:propertyName="typeCode" parent="Uif-DataField"/>
+        <bean p:propertyName="description" parent="Uif-DataField"/>
+        <bean p:propertyName="statusCode" parent="Uif-DataField"/>
+        <bean p:propertyName="contactName" parent="Uif-DataField"/>
+        <bean p:propertyName="contactEmailAddress" parent="Uif-DataField"/>
+        <bean p:propertyName="contactPhoneNumber" parent="Uif-DataField"/>
+        <bean p:propertyName="comments" parent="Uif-DataField"/>
+      </list>
+    </property>
+  </bean>
+
+</beans>

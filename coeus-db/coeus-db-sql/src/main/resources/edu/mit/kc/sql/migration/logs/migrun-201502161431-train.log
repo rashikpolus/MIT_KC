@@ -1,0 +1,90 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Mon Feb 16 17:10:00 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+
+7711 rows deleted.
+
+
+Commit complete.
+
+
+Table created.
+
+FROM  TEMP_AWARD_REPORT_RCNT T INNER JOIN TEMP_AWARD_REPORT Ta
+                                          *
+ERROR at line 3:
+ORA-00942: table or view does not exist
+
+
+
+Commit complete.
+
+
+Index created.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+Table dropped.
+
+drop index TEMP_REP_TERMS_RECNT_I1
+           *
+ERROR at line 1:
+ORA-01418: specified index does not exist
+
+
+
+1 row created.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+Index created.
+
+
+Table created.
+
+
+239905 rows created.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Table dropped.
+
+
+Index dropped.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

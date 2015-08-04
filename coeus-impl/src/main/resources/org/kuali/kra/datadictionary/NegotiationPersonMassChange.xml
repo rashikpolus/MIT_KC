@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="NegotiationPersonMassChange" parent="NegotiationPersonMassChange-parentBean" />
+    <bean id="NegotiationPersonMassChange-parentBean" abstract="true" parent="BusinessObjectEntry">
+        <property name="businessObjectClass" value="org.kuali.kra.personmasschange.bo.NegotiationPersonMassChange" />
+        <property name="objectLabel" value="Negotiation Person Mass Change" />
+        <property name="attributes" >
+            <list>
+                <ref bean="NegotiationPersonMassChange-negotiationPersonMassChangeId" />
+                <ref bean="NegotiationPersonMassChange-personMassChangeId" />
+                <ref bean="NegotiationPersonMassChange-negotiator" />
+                <ref bean="NegotiationPersonMassChange-versionNumber" />
+            </list>
+        </property>
+    </bean>
+
+    <!-- Attribute Definitions -->
+    <bean id="NegotiationPersonMassChange-negotiationPersonMassChangeId" parent="NegotiationPersonMassChange-negotiationPersonMassChangeId-parentBean" />
+    <bean id="NegotiationPersonMassChange-negotiationPersonMassChangeId-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="negotiationPersonMassChangeId" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Negotiation Person Mass Change Id" />
+        <property name="shortLabel" value="Negotiation Person Mass Change Id" />
+        <property name="maxLength" value="12" />
+        <property name="validationPattern" >
+            <bean parent="NumericValidationPattern" />
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+        <property name="control" >
+      <bean parent="TextControlDefinition" p:size="12"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="12" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="Negotiation Person Mass Change Id" />
+        <property name="description" value="Negotiation Person Mass Change Id" />
+    </bean>
+    
+    <bean id="NegotiationPersonMassChange-personMassChangeId" parent="NegotiationPersonMassChange-personMassChangeId-parentBean" />
+    <bean id="NegotiationPersonMassChange-personMassChangeId-parentBean" abstract="true" parent="PersonMassChange-personMassChangeId" />
+    <bean id="NegotiationPersonMassChange-negotiator" parent="NegotiationPersonMassChange-negotiator-parentBean" />
+    <bean id="NegotiationPersonMassChange-negotiator-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="negotiator" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Negotiator" />
+        <property name="shortLabel" value="Negotiator" />
+        <property name="maxLength" value="1" />
+        <property name="control" >
+            <bean parent="CheckboxControlDefinition" />
+        </property>
+    <property name="controlField">
+      <bean parent="Uif-CheckboxControl"/>
+    </property>
+        <property name="summary" value="Negotiator" />
+        <property name="description" value="Negotiator" />
+    </bean>
+    
+    <bean id="NegotiationPersonMassChange-versionNumber" parent="NegotiationPersonMassChange-versionNumber-parentBean" />
+    <bean id="NegotiationPersonMassChange-versionNumber-parentBean" abstract="true" parent="AttributeReferenceDummy-versionNumber" />
+</beans>

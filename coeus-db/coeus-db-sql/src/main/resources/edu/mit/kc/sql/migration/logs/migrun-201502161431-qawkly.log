@@ -1,0 +1,87 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Mon Feb 16 15:50:22 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+
+7736 rows deleted.
+
+
+Commit complete.
+
+
+Table created.
+
+
+1537594 rows created.
+
+
+Commit complete.
+
+
+Index created.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Commit complete.
+
+
+Table dropped.
+
+drop index TEMP_REP_TERMS_RECNT_I1
+           *
+ERROR at line 1:
+ORA-01418: specified index does not exist
+
+
+
+1 row created.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+Index created.
+
+
+Table created.
+
+
+240128 rows created.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+Table dropped.
+
+
+Index dropped.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

@@ -1,0 +1,158 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Wed Apr 29 00:08:23 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+
+Started role right migration.29-APR-15 12.08.24.652664 AM
+
+ddl_role_rights.sql started 29-APR-15 12.08.28.197085 AM
+
+kc_coeus_role_mapping started 29-APR-15 12.08.32.647033 AM
+
+kc_coeus_right_mapping started 29-APR-15 12.08.48.044437 AM
+
+role_bootstrap.sql started 29-APR-15 12.09.00.891249 AM
+
+perm_bootstrap.sql started 29-APR-15 12.09.26.906960 AM
+
+role_perm_bootstrap.sql started 29-APR-15 12.10.39.617283 AM
+ALTER TABLE KRIM_PERM_ATTR_DATA_T ENABLE CONSTRAINT KRIM_PERM_ATTR_DATA_TR3
+                                                    *
+ERROR at line 1:
+ORA-02298: cannot validate (KCSO.KRIM_PERM_ATTR_DATA_TR3) - parent keys not
+found
+
+
+
+truncate_and_apply_bootstrap.sql started 29-APR-15 12.11.07.013391 AM
+
+kc_coeus_role_perm_mapping.sql started 29-APR-15 12.11.27.676183 AM
+Sync role rights begin!!
+ALTER TABLE KRIM_PERM_ATTR_DATA_T ENABLE CONSTRAINT KRIM_PERM_ATTR_DATA_TR3
+*
+ERROR at line 1:
+ORA-02270: no matching unique or primary key for this column-list
+
+
+ALTER TABLE KRIM_ROLE_PERM_T ENABLE CONSTRAINT KRIM_ROLE_PERM_TR1
+*
+ERROR at line 1:
+ORA-02270: no matching unique or primary key for this column-list
+
+
+
+      2158
+Sync role rights end!!
+Error while updating kim_typ_id Subaward Requisitioner Review Approver.
+Exception is ORA-01403: no data found
+Error while updating kim_typ_id Maintain Award Report Tracking. Exception is
+ORA-01403: no data found
+Error while updating kim_typ_id Maintain IRB Questionnaire. Exception is
+ORA-01403: no data found
+Error while updating kim_typ_id Maintain IACUC Questionnaire. Exception is
+ORA-01403: no data found
+Error while updating kim_typ_id Maintain COI Questionnaire. Exception is
+ORA-01403: no data found
+Error while updating kim_typ_id Maintain Proposal Questionnaire. Exception is
+ORA-01403: no data found
+Error while updating kim_typ_id COI Reporter. Exception is ORA-01403: no data
+found
+
+syncing_role_rights.sql started 29-APR-15 12.11.37.415510 AM
+Missing ROLE_ID in KRIM_ROLE_T for ROLE_NM Approver. The Error is: ORA-01403: no
+data found
+Loading user roles Completed!!
+
+load_coeus_user_roles.sql started 29-APR-15 12.16.34.986378 AM
+
+add_role_perm_manually.sql started 29-APR-15 12.16.35.278692 AM
+CREATE INDEX OSP$PROTOCOL_USER_ROLES_I ON OSP$PROTOCOL_USER_ROLES(PROTOCOL_NUMBER,SEQUENCE_NUMBER,ROLE_ID,USER_ID)
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+document_access_irb.sql started 29-APR-15 12.16.45.231300 AM
+CREATE INDEX OSP$EPS_PROP_USER_ROLES_I ON OSP$EPS_PROP_USER_ROLES(PROPOSAL_NUMBER,ROLE_ID,USER_ID)
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+PRNCPL_ID is missing for userID pauli and Proposal Number 4676
+PRNCPL_ID is missing for userID pauli and Proposal Number 4652
+PRNCPL_ID is missing for userID pauli and Proposal Number 4665
+PRNCPL_ID is missing for userID pauli and Proposal Number 4368
+PRNCPL_ID is missing for userID pauli and Proposal Number 3922
+PRNCPL_ID is missing for userID pauli and Proposal Number 2742
+PRNCPL_ID is missing for userID pauli and Proposal Number 4496
+PRNCPL_ID is missing for userID pauli and Proposal Number 4781
+PRNCPL_ID is missing for userID pauli and Proposal Number 4630
+PRNCPL_ID is missing for userID pauli and Proposal Number 4618
+PRNCPL_ID is missing for userID pauli and Proposal Number 4308
+PRNCPL_ID is missing for userID pauli and Proposal Number 5072
+PRNCPL_ID is missing for userID pauli and Proposal Number 4491
+PRNCPL_ID is missing for userID csodini and Proposal Number 13922
+PRNCPL_ID is missing for userID pauli and Proposal Number 4374
+PRNCPL_ID is missing for userID pauli and Proposal Number 4422
+PRNCPL_ID is missing for userID pauli and Proposal Number 4495
+PRNCPL_ID is missing for userID pauli and Proposal Number 4490
+PRNCPL_ID is missing for userID pauli and Proposal Number 4338
+PRNCPL_ID is missing for userID pauli and Proposal Number 5331
+PRNCPL_ID is missing for userID pauli and Proposal Number 4667
+PRNCPL_ID is missing for userID pauli and Proposal Number 4751
+PRNCPL_ID is missing for userID pauli and Proposal Number 4893
+PRNCPL_ID is missing for userID pauli and Proposal Number 4971
+PRNCPL_ID is missing for userID pauli and Proposal Number 4127
+PRNCPL_ID is missing for userID pauli and Proposal Number 4635
+PRNCPL_ID is missing for userID pauli and Proposal Number 4345
+PRNCPL_ID is missing for userID pauli and Proposal Number 2773
+PRNCPL_ID is missing for userID pauli and Proposal Number 4617
+PRNCPL_ID is missing for userID pauli and Proposal Number 4493
+PRNCPL_ID is missing for userID pauli and Proposal Number 4243
+PRNCPL_ID is missing for userID pauli and Proposal Number 4854
+PRNCPL_ID is missing for userID pauli and Proposal Number 4515
+PRNCPL_ID is missing for userID pauli and Proposal Number 4494
+PRNCPL_ID is missing for userID pauli and Proposal Number 4631
+PRNCPL_ID is missing for userID pauli and Proposal Number 4664
+PRNCPL_ID is missing for userID pauli and Proposal Number 4633
+PRNCPL_ID is missing for userID pauli and Proposal Number 2614
+PRNCPL_ID is missing for userID pauli and Proposal Number 4424
+PRNCPL_ID is missing for userID pauli and Proposal Number 4492
+PRNCPL_ID is missing for userID pauli and Proposal Number 4634
+PRNCPL_ID is missing for userID pauli and Proposal Number 4465
+PRNCPL_ID is missing for userID csodini and Proposal Number 13570
+PRNCPL_ID is missing for userID pauli and Proposal Number 2614
+PRNCPL_ID is missing for userID pauli and Proposal Number 4345
+PRNCPL_ID is missing for userID pauli and Proposal Number 4497
+PRNCPL_ID is missing for userID pauli and Proposal Number 4632
+PRNCPL_ID is missing for userID csodini and Proposal Number 12881
+PRNCPL_ID is missing for userID pauli and Proposal Number 2894
+PRNCPL_ID is missing for userID pauli and Proposal Number 4625
+PRNCPL_ID is missing for userID pauli and Proposal Number 4921
+PRNCPL_ID is missing for userID pauli and Proposal Number 4621
+PRNCPL_ID is missing for userID pauli and Proposal Number 4618
+PRNCPL_ID is missing for userID pauli and Proposal Number 4579
+PRNCPL_ID is missing for userID pauli and Proposal Number 4653
+PRNCPL_ID is missing for userID pauli and Proposal Number 4616
+PRNCPL_ID is missing for userID pauli and Proposal Number 4666
+PRNCPL_ID is missing for userID pauli and Proposal Number 4620
+PRNCPL_ID is missing for userID pauli and Proposal Number 4634
+PRNCPL_ID is missing for userID pauli and Proposal Number 4355
+PRNCPL_ID is missing for userID pauli and Proposal Number 4454
+PRNCPL_ID is missing for userID pauli and Proposal Number 4115
+
+ddl_role_rights.sql started 29-APR-15 12.20.29.587436 AM
+
+ddl_role_rights.sql started 29-APR-15 12.20.37.929137 AM
+
+completed role right migration.29-APR-15 12.20.38.102485 AM
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

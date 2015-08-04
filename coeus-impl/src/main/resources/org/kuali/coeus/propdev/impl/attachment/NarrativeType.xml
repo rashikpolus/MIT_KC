@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans.xsd">
+  <bean id="NarrativeType" parent="NarrativeType-parentBean" />
+  <bean id="NarrativeType-parentBean" abstract="true" parent="BusinessObjectEntry">
+    <property name="businessObjectClass" value="org.kuali.coeus.propdev.impl.attachment.NarrativeType" />
+		<property name="objectLabel" value="Narrative Type" />
+    <property name="inquiryDefinition" >
+      <ref bean="NarrativeType-inquiryDefinition" />
+    </property>
+    <property name="lookupDefinition" >
+      <ref bean="NarrativeType-lookupDefinition" />
+    </property>
+    <property name="titleAttribute" value="code" />
+    <property name="attributes" >
+      <list>
+        <ref bean="NarrativeType-code" />
+        <ref bean="NarrativeType-systemGenerated" />
+        <ref bean="NarrativeType-allowMultiple" />
+        <ref bean="NarrativeType-narrativeTypeGroup" />
+        <ref bean="NarrativeType-description" />
+        <ref bean="NarrativeType-versionNumber" />
+      </list>
+    </property>
+  </bean>
+
+<!-- Attribute Definitions -->
+
+
+  <bean id="NarrativeType-code" parent="NarrativeType-code-parentBean" />
+
+  <bean id="NarrativeType-code-parentBean" abstract="true" parent="AttributeDefinition">
+    <property name="name" value="code" />
+    <property name="forceUppercase" value="false" />
+    <property name="label" value="Narrative Type" />
+    <property name="shortLabel" value="Narrative Type" />
+    <property name="maxLength" value="3" />
+    <property name="validationPattern" >
+      <bean parent="AlphaNumericValidationPattern" />
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AlphaNumericPatternConstraint"/>
+    </property>
+    <property name="control" >
+      <bean parent="TextControlDefinition" p:size="4"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="4" parent="Uif-TextControl"/>
+    </property>
+    <property name="summary" value="Narrative Type" />
+    <property name="description" value="Narrative Type" />
+  </bean>
+
+  <bean id="NarrativeType-systemGenerated" parent="NarrativeType-systemGenerated-parentBean"/>
+  <bean id="NarrativeType-systemGenerated-parentBean" abstract="true" parent="AttributeReferenceDummy-genericBoolean">
+    <property name="name" value="systemGenerated" />
+    <property name="label" value="System Generated" />
+    <property name="shortLabel" value="System Generated" />
+    <property name="summary" value="System Generated" />
+    <property name="description" value="System Generated" />
+  </bean>
+
+  <bean id="NarrativeType-allowMultiple" parent="NarrativeType-allowMultiple-parentBean"/>
+  <bean id="NarrativeType-allowMultiple-parentBean" abstract="true" parent="AttributeReferenceDummy-genericBoolean">
+    <property name="name" value="allowMultiple" />
+    <property name="label" value="Allow Multiple" />
+    <property name="shortLabel" value="Allow Multiple" />
+    <property name="summary" value="Allow Multiple" />
+    <property name="description" value="Allow Multiple" />
+  </bean>
+
+  <bean id="NarrativeType-narrativeTypeGroup" parent="NarrativeType-narrativeTypeGroup-parentBean"/>
+  <bean id="NarrativeType-narrativeTypeGroup-parentBean" abstract="true" parent="AttributeDefinition">
+    <property name="name" value="narrativeTypeGroup" />
+    <property name="forceUppercase" value="false" />
+    <property name="label" value="Narrative Type Group" />
+    <property name="shortLabel" value="Narrative Type Group" />
+    <property name="maxLength" value="1" />
+    <property name="validationPattern" >
+      <bean parent="AlphaNumericValidationPattern" />
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AlphaNumericPatternConstraint"/>
+    </property>
+    <property name="control" >
+      <bean parent="TextControlDefinition" p:size="4"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="4" parent="Uif-TextControl"/>
+    </property>
+    <property name="summary" value="Narrative Type Group" />
+    <property name="description" value="Narrative Type Group" />
+  </bean>
+
+  <bean id="NarrativeType-description" parent="NarrativeType-description-parentBean"/>
+  <bean id="NarrativeType-description-parentBean" abstract="true" parent="KraAttributeReferenceDummy-description">
+  	<property name="maxLength" value="200" />
+  </bean>
+  
+  <bean id="NarrativeType-versionNumber" parent="NarrativeType-versionNumber-parentBean" />
+  <bean id="NarrativeType-versionNumber-parentBean" abstract="true" parent="AttributeReferenceDummy-versionNumber"/>
+<!-- Business Object Inquiry Definition -->
+  <bean id="NarrativeType-inquiryDefinition" parent="NarrativeType-inquiryDefinition-parentBean" />
+  <bean id="NarrativeType-InquiryView" parent="NarrativeType-InquiryView-parentBean"/>
+  <bean id="NarrativeType-inquiryDefinition-parentBean" abstract="true" parent="InquiryDefinition">
+    <property name="title" value="Narrative Type" />
+    <property name="inquirySections" >
+      <list>
+        <bean parent="InquirySectionDefinition">
+          <property name="title" value="Narrative Type" />
+          <property name="numberOfColumns" value="1" />
+          <property name="inquiryFields" >
+            <list>
+              <bean parent="FieldDefinition" p:attributeName="code" p:forceInquiry="true"/>
+              <bean parent="FieldDefinition" p:attributeName="description"/>
+              <bean parent="FieldDefinition" p:attributeName="systemGenerated"/>
+              <bean parent="FieldDefinition" p:attributeName="allowMultiple"/>
+              <bean parent="FieldDefinition" p:attributeName="narrativeTypeGroup"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="NarrativeType-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView">
+    <property name="headerText" value="Narrative Type"/>
+    <property name="dataObjectClassName" value="org.kuali.coeus.propdev.impl.attachment.NarrativeType"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-GridSection">
+          <property name="headerText" value="Narrative Type"/>
+          <property name="layoutManager.numberOfColumns" value="2"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="code" parent="Uif-DataField"/>
+              <bean p:propertyName="description" parent="Uif-DataField"/>
+              <bean p:propertyName="systemGenerated" parent="Uif-DataField"/>
+              <bean p:propertyName="allowMultiple" parent="Uif-DataField"/>
+              <bean p:propertyName="narrativeTypeGroup" parent="Uif-DataField"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <!-- Business Object Lookup Definition -->
+  <bean id="NarrativeType-lookupDefinition" parent="NarrativeType-lookupDefinition-parentBean" />
+  <bean id="NarrativeType-LookupView" parent="NarrativeType-LookupView-parentBean"/>
+  <bean id="NarrativeType-lookupDefinition-parentBean" abstract="true" parent="LookupDefinition">
+    <property name="title" value="Narrative Type Lookup" /><property name="defaultSort" >
+      <bean parent="SortDefinition"/>
+    </property>
+	<property name="helpDefinition" >
+      <bean parent="HelpDefinition" p:parameterNamespace="KC-M" p:parameterName="narrativeTypeMaintenanceHelp" p:parameterDetailType="Document"/>
+   	</property>      
+    <property name="lookupFields" >
+      <list>
+        <bean parent="FieldDefinition" p:attributeName="code"/>
+        <bean parent="FieldDefinition" p:attributeName="description"/>
+        <bean parent="FieldDefinition" p:attributeName="systemGenerated"/>
+        <bean parent="FieldDefinition" p:attributeName="allowMultiple"/>
+        <bean parent="FieldDefinition" p:attributeName="narrativeTypeGroup"/>
+      </list>
+    </property>
+    <property name="resultFields">
+      <list>
+        <bean parent="FieldDefinition" p:attributeName="code" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="description"/>
+        <bean parent="FieldDefinition" p:attributeName="systemGenerated"/>
+        <bean parent="FieldDefinition" p:attributeName="allowMultiple"/>
+        <bean parent="FieldDefinition" p:attributeName="narrativeTypeGroup"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="NarrativeType-LookupView-parentBean" abstract="true" parent="Uif-LookupView">
+    <property name="dataObjectClassName" value="org.kuali.coeus.propdev.impl.attachment.NarrativeType"/>
+    <property name="headerText" value="Narrative Type Lookup"/>
+    <property name="criteriaFields">
+      <list>
+        <bean p:propertyName="code" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="description" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="systemGenerated" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="allowMultiple" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="narrativeTypeGroup" parent="Uif-LookupCriteriaInputField"/>
+      </list>
+    </property>
+    <property name="resultFields" >
+      <list>
+        <bean p:propertyName="code" parent="Uif-DataField"/>
+        <bean p:propertyName="description" parent="Uif-DataField"/>
+        <bean p:propertyName="systemGenerated" parent="Uif-DataField"/>
+        <bean p:propertyName="allowMultiple" parent="Uif-DataField"/>
+        <bean p:propertyName="narrativeTypeGroup" parent="Uif-DataField"/>
+      </list>
+    </property>
+  </bean>
+</beans>

@@ -1,0 +1,20 @@
+#0,10,20,30,40,50 * * * * /opt/kc/jobs/R3-Feeds/ftp.cron -u prd
+#2,12,22,32,42,52 * * * * /opt/kc/jobs/R3-Feeds/ftp.cron -u dev
+#5,15,25,35,45,55 * * * * /opt/kc/jobs/R3-Feeds/ftp.cron -u tst
+#0 7 * * * /opt/kc/jobs/pfeed/pfeed.sh > /opt/kc/jobs/pfeed/pfeed.log 2>&1
+#0 7 * * * /opt/kc/jobs/rcr/load_appnt.sh > /home/coeus/rcr/rcr_load.log 2>&1 &
+#0 8 * * * /opt/kc/jobs/rcr/notify.sh > /home/coeus/rcr/notify.log 2>&1 &
+#####15 7 * * * /opt/kc/jobs/coi/notify.sh > /home/coeus/coi/notify.log 2>&1 &
+#30 8 * * * /opt/kc/jobs/subnotify/notify.sh > /home/coeus/subnotify/notify.log 2>&1 &
+## sync content from DFS
+#0 7 * * * /opt/kc/jobs/cac/sync_cac_content.sh 2>/dev/null >/dev/null
+#5 7 * * * /opt/kc/jobs/cac/load_cac.sh > /home/coeus/cac/load_cac_sh.log 2>&1
+#30 7,11,15 * * * /opt/kc/jobs/awardhold/awardhold.sh > /home/coeus/awardhold/awardhold.log 2>&1
+#0 18 * * * /opt/kc/jobs/everify/notify.sh > /home/coeus/everify/notify_everify.log 2>&1
+#####15 6 * * * /home/coeus/opa/roles_refresh_daily.sh > /home/coeus/opa/roles_refresh_daily.log 2>&1
+#####0 * * * * /home/coeus/opa/roles_refresh.sh > /home/coeus/opa/roles_refresh.log 2>&1
+#####0 6 * * * /home/coeus/wl/wl.sh > /home/coeus/wl/wl.log 2>&1
+# EDS Roles refresh
+#####5 * * * * /home/coeus/eds/roles_refresh.sh > /home/coeus/eds/roles_refresh.log 2>&1
+# Run deactivate IP script once a month
+######30 6 1 * * /home/coeus/deactivateip/deactivate.sh > /home/coeus/deactivateip/deactivate_cron.log 2>&1

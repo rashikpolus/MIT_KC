@@ -1,0 +1,148 @@
+From c815a720344cb0ff4bfdf62f5aea4e20028040f6 Mon Sep 17 00:00:00 2001
+From: Gayathri Athreya <gathreya@Gayathris-MacBook-Pro.local>
+Date: Thu, 4 Jun 2015 20:33:58 -0700
+Subject: [PATCH] RESKC-521: Reject Enhancement Control the reject action with
+ permissions.
+
+---
+ .../src/main/java/org/kuali/rice/kew/actions/RecallAction.java    | 1 -
+ .../org/kuali/rice/kew/actions/ReturnToPreviousNodeAction.java    | 7 ++++++-
+ .../rice/kew/doctype/service/DocumentTypePermissionService.java   | 6 ++++++
+ .../kew/doctype/service/impl/DocumentActionsPermissionBase.java   | 4 ++++
+ .../service/impl/DocumentTypePermissionServiceAuthorizerImpl.java | 8 ++++++++
+ .../doctype/service/impl/DocumentTypePermissionServiceImpl.java   | 6 ++++++
+ .../rice/kew/doctype/service/impl/KimDocumentTypeAuthorizer.java  | 4 ++++
+ 7 files changed, 34 insertions(+), 2 deletions(-)
+
+diff --git a/rice-middleware/impl/src/main/java/org/kuali/rice/kew/actions/RecallAction.java b/rice-middleware/impl/src/main/java/org/kuali/rice/kew/actions/RecallAction.java
+index a90c154..b527b3f 100644
+--- a/rice-middleware/impl/src/main/java/org/kuali/rice/kew/actions/RecallAction.java
++++ b/rice-middleware/impl/src/main/java/org/kuali/rice/kew/actions/RecallAction.java
+@@ -177,7 +177,6 @@ public String validateActionRules(List<ActionRequestValue> actionRequests) {
+             return errMsg;
+         }
+ 
+-
+         if (!KEWServiceLocator.getDocumentTypePermissionService().canRecall(getPrincipal().getPrincipalId(), getRouteHeader())) {
+             return "User is not authorized to Recall document";
+         }
+diff --git a/rice-middleware/impl/src/main/java/org/kuali/rice/kew/actions/ReturnToPreviousNodeAction.java b/rice-middleware/impl/src/main/java/org/kuali/rice/kew/actions/ReturnToPreviousNodeAction.java
+index a77f19e..10210d6 100644
+--- a/rice-middleware/impl/src/main/java/org/kuali/rice/kew/actions/ReturnToPreviousNodeAction.java
++++ b/rice-middleware/impl/src/main/java/org/kuali/rice/kew/actions/ReturnToPreviousNodeAction.java
+@@ -198,12 +198,17 @@ public String validateActionRules(List<ActionRequestValue> actionRequests) {
+             return "Document of status '" + docStatus + "' cannot taken action '" + KewApiConstants.ACTION_TAKEN_RETURNED_TO_PREVIOUS + "' to node name "+nodeName;
+         }
+         List<ActionRequestValue> filteredActionRequests = findApplicableActionRequests(actionRequests);
+-        if (! isActionCompatibleRequest(filteredActionRequests) && ! isSuperUserUsage()) {
++        if (! isActionCompatibleRequest(filteredActionRequests) && ! isSuperUserUsage() && ! canReturnToPreviousNode()) {
+             return "No request for the user is compatible with the " + ActionType.fromCode(this.getActionTakenCode()).getLabel() + " action";
+         }
+         return "";
+     }
+ 
++    protected boolean canReturnToPreviousNode() {
++        return KEWServiceLocator.getDocumentTypePermissionService().canReturnToPreviousRouteNode(this.getPrincipal().getPrincipalId(),
++                this.getRouteHeader());
++    }
++
+     /**
+      * Allows subclasses to determine which actionrequests to inspect for purposes of action validation
+      * @param actionRequests all actionrequests for this document
+diff --git a/rice-middleware/impl/src/main/java/org/kuali/rice/kew/doctype/service/DocumentTypePermissionService.java b/rice-middleware/impl/src/main/java/org/kuali/rice/kew/doctype/service/DocumentTypePermissionService.java
+index 7fa55a7..f49691a 100644
+--- a/rice-middleware/impl/src/main/java/org/kuali/rice/kew/doctype/service/DocumentTypePermissionService.java
++++ b/rice-middleware/impl/src/main/java/org/kuali/rice/kew/doctype/service/DocumentTypePermissionService.java
+@@ -120,4 +120,10 @@ boolean canSuperUserDisapproveDocument(String principalId, DocumentType document
+      */
+     boolean canRecall(String principalId, DocumentRouteHeaderValue document);
+ 
++	/**
++	 * Determines if the given principal has the permission to return document to previous route node.
++	 *
++	 */
++	boolean canReturnToPreviousRouteNode(String principalId, DocumentRouteHeaderValue document);
++
+ }
+diff --git a/rice-middleware/impl/src/main/java/org/kuali/rice/kew/doctype/service/impl/DocumentActionsPermissionBase.java b/rice-middleware/impl/src/main/java/org/kuali/rice/kew/doctype/service/impl/DocumentActionsPermissionBase.java
+index 9fefd2a..d32d77e 100644
+--- a/rice-middleware/impl/src/main/java/org/kuali/rice/kew/doctype/service/impl/DocumentActionsPermissionBase.java
++++ b/rice-middleware/impl/src/main/java/org/kuali/rice/kew/doctype/service/impl/DocumentActionsPermissionBase.java
+@@ -200,6 +200,10 @@ public boolean canCancel(String principalId, DocumentRouteHeaderValue document)
+         }
+     }
+ 
++    public boolean canReturnToPreviousRouteNode(String principalId, DocumentRouteHeaderValue document) {
++        return false;
++    }
++
+     /**
+      * Implements {@link org.kuali.rice.kew.doctype.service.DocumentTypePermissionService#canRecall(String, org.kuali.rice.kew.routeheader.DocumentRouteHeaderValue)}
+      */
+diff --git a/rice-middleware/impl/src/main/java/org/kuali/rice/kew/doctype/service/impl/DocumentTypePermissionServiceAuthorizerImpl.java b/rice-middleware/impl/src/main/java/org/kuali/rice/kew/doctype/service/impl/DocumentTypePermissionServiceAuthorizerImpl.java
+index 6df870d..5fb8146 100644
+--- a/rice-middleware/impl/src/main/java/org/kuali/rice/kew/doctype/service/impl/DocumentTypePermissionServiceAuthorizerImpl.java
++++ b/rice-middleware/impl/src/main/java/org/kuali/rice/kew/doctype/service/impl/DocumentTypePermissionServiceAuthorizerImpl.java
+@@ -110,6 +110,11 @@ public boolean canRecall(String principalId, DocumentRouteHeaderValue document)
+     }
+ 
+     @Override
++    public boolean canReturnToPreviousRouteNode(String principalId, DocumentRouteHeaderValue document) {
++        return getDocumentTypeAuthorizer(document.getDocumentType()).isActionAuthorized(new AuthorizableAction(ActionType.RETURN_TO_PREVIOUS), principalId, org.kuali.rice.kew.api.doctype.DocumentType.Builder.create(document.getDocumentType()).build(), Document.Builder.create(document).build(), Collections.EMPTY_MAP).isAuthorized();
++    }
++
++    @Override
+     public boolean canSave(String principalId, DocumentRouteHeaderValue document) {
+         validateDocument(document);
+         return getDocumentTypeAuthorizer(document.getDocumentType()).isActionAuthorized(new AuthorizableAction(ActionType.SAVE), principalId, org.kuali.rice.kew.api.doctype.DocumentType.Builder.create(document.getDocumentType()).build(), Document.Builder.create(document).build(), Collections.EMPTY_MAP).isAuthorized();
+@@ -144,4 +149,7 @@ protected boolean canSuperUserApproveSingleActionRequest(String principalId, Doc
+         actionParams.put(DocumentTypeAuthorizer.ActionArgument.DOCSTATUS, routeStatusCode);
+         return getDocumentTypeAuthorizer(documentType).isActionAuthorized(new AuthorizableAction(AuthorizableAction.CheckType.SU_APPROVE_ACTION_REQUEST), principalId, org.kuali.rice.kew.api.doctype.DocumentType.Builder.create(documentType).build(), null, actionParams).isAuthorized();
+     }
++
++
++
+ }
+diff --git a/rice-middleware/impl/src/main/java/org/kuali/rice/kew/doctype/service/impl/DocumentTypePermissionServiceImpl.java b/rice-middleware/impl/src/main/java/org/kuali/rice/kew/doctype/service/impl/DocumentTypePermissionServiceImpl.java
+index 9fb5da2..f66f491 100644
+--- a/rice-middleware/impl/src/main/java/org/kuali/rice/kew/doctype/service/impl/DocumentTypePermissionServiceImpl.java
++++ b/rice-middleware/impl/src/main/java/org/kuali/rice/kew/doctype/service/impl/DocumentTypePermissionServiceImpl.java
+@@ -141,6 +141,11 @@ public boolean canAddRouteLogMessage(String principalId, DocumentRouteHeaderValu
+         return false;
+     }
+ 
++    public boolean canReturnToPreviousRouteNode(String principalId, DocumentRouteHeaderValue document) {
++        return false;
++    }
++
++
+     /**
+      * Converts list of RouteNodeInstance objects to a list of the route node names
+      * @param routeNodeInstances the list RouteNodeInstance objects, may be null
+@@ -188,4 +193,5 @@ private void validateActionRequestType(String actionRequestType) {
+     protected GroupService getGroupService() {
+         return KimApiServiceLocator.getGroupService();
+     }
++
+ }
+diff --git a/rice-middleware/impl/src/main/java/org/kuali/rice/kew/doctype/service/impl/KimDocumentTypeAuthorizer.java b/rice-middleware/impl/src/main/java/org/kuali/rice/kew/doctype/service/impl/KimDocumentTypeAuthorizer.java
+index dd07e09..af5237f 100644
+--- a/rice-middleware/impl/src/main/java/org/kuali/rice/kew/doctype/service/impl/KimDocumentTypeAuthorizer.java
++++ b/rice-middleware/impl/src/main/java/org/kuali/rice/kew/doctype/service/impl/KimDocumentTypeAuthorizer.java
+@@ -67,6 +67,9 @@ public Authorization isActionAuthorized(AuthorizableAction action, String princi
+                     case SAVE:
+                         success = canSave(principalId, DocumentRouteHeaderValue.from(document));
+                         break;
++                    case RETURN_TO_PREVIOUS:
++                        success = canReturnToPreviousRouteNode(principalId, DocumentRouteHeaderValue.from(document));
++                        break;
+                     default:
+                         throw new RuntimeException("Unknown document action check");
+                 }
+@@ -76,4 +79,5 @@ public Authorization isActionAuthorized(AuthorizableAction action, String princi
+         }
+         return new Authorization(success);
+     }
++
+ }
+\ No newline at end of file

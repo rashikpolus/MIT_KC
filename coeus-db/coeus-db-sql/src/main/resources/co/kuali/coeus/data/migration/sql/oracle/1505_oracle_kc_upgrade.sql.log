@@ -1,0 +1,91 @@
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+PL/SQL procedure successfully completed.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+0 rows updated.
+
+
+Table created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Sequence created.
+
+
+1 row created.
+
+ALTER TABLE AWARD_REPORT_TRACKING MODIFY(LAST_UPDATE_USER NULL)
+                                         *
+ERROR at line 1:
+ORA-01451: column to be modified to NULL cannot be modified to NULL 
+
+
+
+Table altered.
+
+
+82643 rows updated.
+
+
+82643 rows updated.
+
+
+82643 rows updated.
+
+
+Table altered.
+
+
+Commit complete.
+
+SQL> exit

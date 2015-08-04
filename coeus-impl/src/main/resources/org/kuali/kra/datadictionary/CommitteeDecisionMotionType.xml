@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="CommitteeDecisionMotionType" parent="CommitteeDecisionMotionType-parentBean" />
+    <bean id="CommitteeDecisionMotionType-parentBean" abstract="true" parent="BusinessObjectEntry">
+        <property name="businessObjectClass" value="org.kuali.coeus.common.committee.impl.bo.CommitteeDecisionMotionType" />
+        <property name="objectLabel" value="Committee Decision Motion Type" />
+        <property name="inquiryDefinition" >
+            <ref bean="CommitteeDecisionMotionType-inquiryDefinition" />
+        </property>
+        <property name="lookupDefinition" >
+            <ref bean="CommitteeDecisionMotionType-lookupDefinition" />
+        </property>
+        <property name="titleAttribute" value="motionTypeCode" />
+        <property name="attributes" >
+            <list>
+		        <ref bean="CommitteeDecisionMotionType-motionTypeCode" />
+		        <ref bean="CommitteeDecisionMotionType-description" />
+		        <ref bean="CommitteeDecisionMotionType-versionNumber" />
+            </list>
+        </property>
+    </bean>
+
+    <!-- Attribute Definitions -->
+
+    <bean id="CommitteeDecisionMotionType-motionTypeCode" parent="CommitteeDecisionMotionType-motionTypeCode-parentBean" />
+    <bean id="CommitteeDecisionMotionType-motionTypeCode-parentBean" abstract="true" parent="AttributeDefinition">
+        <property name="name" value="motionTypeCode" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Motion Type" />
+        <property name="shortLabel" value="Motion Type" />
+        <property name="maxLength" value="3" />
+        <property name="validationPattern" >
+            <bean parent="NumericValidationPattern" />
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+        <property name="control" >
+            <bean parent="TextControlDefinition" p:size="3" />
+        </property>
+    <property name="controlField">
+      <bean p:size="3" parent="Uif-TextControl"/>
+    </property>
+        <property name="summary" value="Motion Type" />
+        <property name="description" value="Motion Type" />
+    </bean>
+  
+    <bean id="CommitteeDecisionMotionType-description" parent="CommitteeDecisionMotionType-description-parentBean" />
+    <bean id="CommitteeDecisionMotionType-description-parentBean" abstract="true" parent="KraAttributeReferenceDummy-description" />
+    <bean id="CommitteeDecisionMotionType-versionNumber" parent="CommitteeDecisionMotionType-versionNumber-parentBean" />
+    <bean id="CommitteeDecisionMotionType-versionNumber-parentBean" abstract="true" parent="AttributeReferenceDummy-versionNumber" />
+    <!-- Business Object Inquiry Definition -->
+    <bean id="CommitteeDecisionMotionType-inquiryDefinition" parent="CommitteeDecisionMotionType-inquiryDefinition-parentBean" />
+  <bean id="CommitteeDecisionMotionType-InquiryView" parent="CommitteeDecisionMotionType-InquiryView-parentBean"/>
+    <bean id="CommitteeDecisionMotionType-inquiryDefinition-parentBean" abstract="true" parent="InquiryDefinition">
+        <property name="title" value="Committee Decision Motion Type" />
+        <property name="inquirySections" >
+            <list>
+                <bean parent="InquirySectionDefinition">
+                    <property name="title" value="Committee Decision Motion Type" />
+                    <property name="numberOfColumns" value="1" />
+                    <property name="inquiryFields" >
+                        <list>
+              <bean parent="FieldDefinition" p:attributeName="motionTypeCode" p:forceInquiry="true"/>
+              <bean parent="FieldDefinition" p:attributeName="description"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+  <bean id="CommitteeDecisionMotionType-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView">
+    <property name="headerText" value="Committee Decision Motion Type"/>
+    <property name="dataObjectClassName" value="org.kuali.coeus.common.committee.impl.bo.CommitteeDecisionMotionType"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-GridSection">
+          <property name="headerText" value="Committee Decision Motion Type"/>
+          <property name="layoutManager.numberOfColumns" value="2"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="motionTypeCode" parent="Uif-DataField"/>
+              <bean p:propertyName="description" parent="Uif-DataField"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <!-- Business Object Lookup Definition -->
+    <bean id="CommitteeDecisionMotionType-lookupDefinition" parent="CommitteeDecisionMotionType-lookupDefinition-parentBean" />
+  <bean id="CommitteeDecisionMotionType-LookupView" parent="CommitteeDecisionMotionType-LookupView-parentBean"/>
+    <bean id="CommitteeDecisionMotionType-lookupDefinition-parentBean" abstract="true" parent="LookupDefinition">
+        <property name="title" value="Committee Decision Motion Type Lookup" /><property name="defaultSort" >
+            <bean parent="SortDefinition" />
+        </property>
+        <property name="lookupFields" >
+            <list>
+        <bean parent="FieldDefinition" p:attributeName="motionTypeCode"/>
+        <bean parent="FieldDefinition" p:attributeName="description"/>
+      </list>
+    </property>
+    <property name="resultFields">
+      <list>
+        <bean parent="FieldDefinition" p:attributeName="motionTypeCode" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="description"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="CommitteeDecisionMotionType-LookupView-parentBean" abstract="true" parent="Uif-LookupView">
+    <property name="dataObjectClassName" value="org.kuali.coeus.common.committee.impl.bo.CommitteeDecisionMotionType"/>
+    <property name="headerText" value="Committee Decision Motion Type Lookup"/>
+    <property name="criteriaFields">
+      <list>
+        <bean p:propertyName="motionTypeCode" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="description" parent="Uif-LookupCriteriaInputField"/>
+            </list>
+        </property>
+        <property name="resultFields" >
+            <list>
+        <bean p:propertyName="motionTypeCode" parent="Uif-DataField"/>
+        <bean p:propertyName="description" parent="Uif-DataField"/>
+            </list>
+        </property>
+    </bean>
+    
+</beans>

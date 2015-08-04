@@ -1,0 +1,9 @@
+.feed-detail {
+  border-bottom: 1px solid #dddddd;
+  margin-bottom: 0px;
+  min-width: 250px;
+  border: aliceblue;
+}
+.uif-table-pos {
+  table-layout: auto;
+}

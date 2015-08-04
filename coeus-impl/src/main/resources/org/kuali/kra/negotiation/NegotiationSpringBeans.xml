@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx.xsd
+                           http://www.springframework.org/schema/util
+                           http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <tx:annotation-driven transaction-manager="transactionManager" />
+    <context:annotation-config />
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="properties" value="#{T(org.kuali.rice.core.api.config.property.ConfigContext).getCurrentContextConfig().getProperties()}" />
+    </bean>
+
+    <bean id="ccImporter" abstract="true" class="org.kuali.coeus.sys.framework.service.ConfigContextConfigObjectFactoryBean" p:singleton="true" p:mustExist="true" />
+
+    <bean id="dataSource" parent="ccImporter" p:objectName="datasource" />
+    <bean id="transactionManager" parent="ccImporter" p:objectName="KC_TRANSACTION_MANAGER" />
+
+    <bean id="negotiationModule" class="org.kuali.rice.krad.service.impl.ModuleServiceBase">
+        <property name="moduleConfiguration" ref="negotiationModuleConfiguration"/>
+        <property name="kualiModuleService" ref="kualiModuleService"/>
+    </bean>
+    
+    <bean id="negotiationModuleConfiguration" parent="negotiationModuleConfiguration-parentBean" />
+    <bean id="negotiationModuleConfiguration-parentBean" class="org.kuali.rice.krad.bo.ModuleConfiguration" abstract="true">
+        <property name="namespaceCode" value="KC-NEGOTIATION" />
+        <property name="packagePrefixes">
+            <list>
+                <value>org.kuali.kra.negotiations</value>
+            </list>
+        </property>
+        <property name="databaseRepositoryFilePaths">
+            <list>
+                <value>org/kuali/kra/negotiation/repository-negotiation.xml</value>
+            </list>
+        </property>
+    </bean>
+    
+    <bean id="awardBudgetService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="awardBudgetService" />
+    </bean>
+    
+    <bean id="businessObjectService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="businessObjectService" />
+    </bean>
+    
+    <bean id="businessObjectDictionaryService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="businessObjectDictionaryService" />
+    </bean>
+    
+    <bean id="businessObjectMetaDataService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="businessObjectMetaDataService" />
+    </bean>
+    
+    <bean id="dataDictionaryService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="dataDictionaryService" />
+    </bean>
+    
+    <bean id="dateTimeService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="dateTimeService" />
+    </bean>
+    
+    <bean id="documentService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="documentService" />
+    </bean>
+    
+    <bean id="encryptionService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="encryptionService" />
+    </bean>
+    
+    <bean id="institutionalProposalService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="institutionalProposalService" />
+    </bean>
+    
+    <bean id="kcAuthorizationService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="kcAuthorizationService" />
+    </bean>
+    
+    <bean id="kcPersonService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="kcPersonService" />
+    </bean>
+    
+    <bean id="kcWorkflowService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="kcWorkflowService" />
+    </bean>
+    
+    <bean id="kualiModuleService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="kualiModuleService" />
+    </bean>
+    
+    <bean id="lookupService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="lookupService" />
+    </bean>
+    
+    <bean id="lookupResultsService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="lookupResultsService" />
+    </bean>
+    
+    <bean id="parameterService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="parameterService" />
+    </bean>
+    
+    <bean id="persistenceStructureService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="persistenceStructureService" />
+    </bean>
+    
+    <bean id="persistenceStructureServiceOjb" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="persistenceStructureServiceOjb" />
+    </bean>
+    
+    <bean id="printingService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="printingService" />
+    </bean>
+    
+    <bean id="sequenceAccessorService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="sequenceAccessorService" />
+    </bean>
+    
+    <bean id="unitAdministratorDerivedRoleTypeService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="unitAdministratorDerivedRoleTypeService" />
+    </bean>
+    
+    <bean id="unitAuthorizationService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="unitAuthorizationService" />
+    </bean>
+    
+    <bean id="versionHistoryService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="versionHistoryService" />
+    </bean>    
+    
+    <bean id="parentLookupableHelperService" abstract="true">
+        <property name="persistenceStructureService" ref="persistenceStructureService" />
+        <property name="businessObjectDictionaryService" ref="businessObjectDictionaryService" />
+        <property name="dataDictionaryService" ref="dataDictionaryService" />
+        <property name="encryptionService" ref="encryptionService" />
+        <property name="lookupService" ref="lookupService" />
+        <property name="businessObjectMetaDataService" ref="businessObjectMetaDataService" />
+        <property name="sequenceAccessorService" ref="sequenceAccessorService" />
+        <property name="businessObjectService" ref="businessObjectService" />
+        <property name="lookupResultsService" ref="lookupResultsService" />
+    </bean>
+    
+    <!-- Negotiation Services -->
+
+    <bean id="negotiationService" class="org.kuali.kra.negotiations.service.NegotiationServiceImpl">
+        <property name="parameterService" ref="parameterService" />
+        <property name="businessObjectService" ref="businessObjectService" />
+        <property name="awardBudgetService" ref="awardBudgetService" />
+        <property name="institutionalProposalService" ref="institutionalProposalService" />   
+        <property name="unitAdministratorDerivedRoleTypeServiceImpl" ref="unitAdministratorDerivedRoleTypeService" />
+        <property name="kcPersonService" ref="kcPersonService" />
+        <property name="versionHistoryService" ref="versionHistoryService" />   
+    </bean>
+    
+    <bean id="negotiationLookupable" class="org.kuali.rice.kns.lookup.KualiLookupableImpl" scope="prototype">
+        <property name="lookupableHelperService" ref="negotiationLookupableHelperService" />
+    </bean>
+    
+    <bean id="negotiationLookupableHelperService" class="org.kuali.kra.negotiations.lookup.NegotiationLookupableHelperServiceImpl" 
+          parent="parentLookupableHelperService" scope="prototype">
+        <property name="negotiationDao" ref="negotiationDao" />
+    </bean>
+
+    <bean id="dbPlatform" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="dbPlatform" />
+    </bean>
+
+    <bean id="platformAwareDao" class="org.kuali.rice.core.framework.persistence.ojb.dao.PlatformAwareDaoBaseOjb" abstract="true">
+        <property name="jcdAlias" value="kradApplicationDataSource" />
+        <property name="dbPlatform" ref="dbPlatform" />
+    </bean>
+
+    <bean id="negotiationDao" class="org.kuali.kra.negotiations.lookup.NegotiationDaoOjb" parent="platformAwareDao">
+        <property name="negotiationService" ref="negotiationService" />
+        <property name="persistenceStructureService" ref="persistenceStructureService" />
+        <property name="dateTimeService" ref="dateTimeService" />
+    </bean>
+    
+    <bean id="negotiationNotificationRenderer" class="org.kuali.kra.negotiations.notifications.NegotiationNotificationRenderer" scope="prototype"/>
+    
+    <bean id="negotiationNotificationRoleQualifierService" class="org.kuali.kra.negotiations.notifications.NegotiationNotificationRoleQualifierServiceImpl"
+          scope="prototype" />
+    
+    <bean id="negotiationNegotiatorDerivedRoleType" class="org.kuali.kra.negotiations.service.NegotiationNegotiatorDerivedRoleTypeServiceImpl"/>
+
+    <bean id="kc.import.serviceBus" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="rice.ksb.serviceBus" />
+    </bean>
+
+    <bean id="kcCoreCallbackService" abstract="true" class="org.kuali.rice.ksb.api.bus.support.CallbackServiceExporter"
+          p:serviceBus-ref="kc.import.serviceBus">
+        <property name="serviceNameSpaceURI">
+            <util:constant static-field="org.kuali.kra.infrastructure.Constants.KC_CORE_SERVICE_NAMESPACE"/>
+        </property>
+    </bean>
+
+    <bean id="negotiationNegotiatorDerivedRoleTypeCallback" parent="kcCoreCallbackService"
+		p:callbackService-ref="negotiationNegotiatorDerivedRoleType" 
+		p:localServiceName="negotiationNegotiatorDerivedRoleType" 
+		p:serviceInterface="org.kuali.rice.kim.framework.role.RoleTypeService"/>
+    
+    <bean id="negotiationPersonDerivedRoleType" class="org.kuali.kra.negotiations.service.NegotiationPersonDerivedRoleTypeServiceImpl">
+        <property name="negotiationService" ref="negotiationService" />
+    </bean>
+   
+    <bean id="negotiationPersonDerivedRoleTypeCallback" parent="kcCoreCallbackService"
+		p:callbackService-ref="negotiationPersonDerivedRoleType" 
+		p:localServiceName="negotiationPersonDerivedRoleType" 
+		p:serviceInterface="org.kuali.rice.kim.framework.role.RoleTypeService"/>
+    
+    <!-- Negotiation Printing Services -->
+
+    <bean id="negotiationPrintingService" class="org.kuali.kra.negotiations.printing.service.impl.NegotiationPrintingServiceImpl">   
+        <property name="printingService" ref="printingService" />
+        <property name="negotiationActivityPrint" ref="negotiationActivityPrint" />
+    </bean>
+    
+    <bean id="negotiationActivityPrint" class="org.kuali.kra.negotiations.printing.print.NegotiationActivityprint" scope="prototype">
+        <property name="xmlStream" ref="negotiationActivityXmlStream" />
+    </bean>
+    
+    <bean id="negotiationActivityXmlStream" class="org.kuali.kra.negotiations.printing.xmlstream.NegotiationActivityXmlStream" scope="prototype">
+        <property name="dateTimeService" ref="dateTimeService" />
+        <property name="businessObjectService" ref="businessObjectService" />
+        <property name="documentService" ref="documentService" />           
+    </bean>
+    
+    <!-- Negotiation Task Authorizers -->
+    
+    <bean id="parentNegotiationAuthorizer" abstract="true">
+        <property name="unitAuthorizationService" ref="unitAuthorizationService" />
+        <property name="kraAuthorizationService" ref="kcAuthorizationService" />
+    </bean>
+    
+    <bean id="negotiationTaskAuthorizers" class="org.kuali.coeus.common.framework.auth.task.TaskAuthorizerGroup">
+        <property name="groupName" value="negotiation" />
+        <property name="taskAuthorizers">
+            <list>
+                <bean class="org.kuali.kra.negotiations.auth.ModifyNegotiationAuthorizer" parent="parentNegotiationAuthorizer">
+                    <property name="taskName" value="modifyNegotiation" />
+                </bean>
+                <bean class="org.kuali.kra.negotiations.auth.CreateActivitiesAuthorizer" parent="parentNegotiationAuthorizer">
+                    <property name="taskName" value="createNegotiationActivities" />
+                </bean>                
+                <bean class="org.kuali.kra.negotiations.auth.ModifyActivitiesAuthorizer" parent="parentNegotiationAuthorizer">
+                    <property name="taskName" value="modifyNegotiationActivities" />
+                </bean>
+                <bean class="org.kuali.kra.negotiations.auth.ViewNegotiationUnRestrictedAuthorizer" parent="parentNegotiationAuthorizer">
+                    <property name="taskName" value="viewNegotiationUnRestricted" />
+                </bean>
+                <bean class="org.kuali.kra.negotiations.auth.ViewNegotiationAuthorizer" parent="parentNegotiationAuthorizer">
+                    <property name="taskName" value="viewNegotiation" />
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+</beans>

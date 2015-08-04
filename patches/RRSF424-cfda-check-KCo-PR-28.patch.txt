@@ -1,0 +1,25 @@
+From 22eb3c18ca2cf86f1595a9d339cee403d17ea67a Mon Sep 17 00:00:00 2001
+From: Gayathri Athreya <gathreya@email.arizona.edu>
+Date: Wed, 17 Jun 2015 10:28:44 -0700
+Subject: [PATCH] RESKC-552: If CFDA is null, do not add it to the element to
+ the XML.
+
+---
+ .../kuali/coeus/s2sgen/impl/generate/support/SF424AV1_0Generator.java | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/coeus-s2sgen-impl/src/main/java/org/kuali/coeus/s2sgen/impl/generate/support/SF424AV1_0Generator.java b/coeus-s2sgen-impl/src/main/java/org/kuali/coeus/s2sgen/impl/generate/support/SF424AV1_0Generator.java
+index eb497ba..10b9f47 100644
+--- a/coeus-s2sgen-impl/src/main/java/org/kuali/coeus/s2sgen/impl/generate/support/SF424AV1_0Generator.java
++++ b/coeus-s2sgen-impl/src/main/java/org/kuali/coeus/s2sgen/impl/generate/support/SF424AV1_0Generator.java
+@@ -241,7 +241,9 @@ private BudgetSummary getBudgetSummary() {
+         
+         if (pdDoc.getDevelopmentProposal().getS2sOpportunity() != null && pdDoc.getDevelopmentProposal().getS2sOpportunity().getS2sSubmissionType() != null) {
+             summaryLineItem.setActivityTitle(pdDoc.getDevelopmentProposal().getS2sOpportunity().getOpportunityTitle());
+-            summaryLineItem.setCFDANumber(pdDoc.getDevelopmentProposal().getS2sOpportunity().getCfdaNumber());
++            if (pdDoc.getDevelopmentProposal().getS2sOpportunity().getCfdaNumber() != null) {
++                summaryLineItem.setCFDANumber(pdDoc.getDevelopmentProposal().getS2sOpportunity().getCfdaNumber());
++            }
+         }
+         if (budget != null) {
+             ScaleTwoDecimal fedNonFedCost = budget.getTotalCost();

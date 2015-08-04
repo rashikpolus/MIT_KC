@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans         http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="MessageOfTheDay" parent="MessageOfTheDay-parentBean" />
+    <bean id="MessageOfTheDay-parentBean" abstract="true" parent="BusinessObjectEntry">
+        <property name="businessObjectClass" value="org.kuali.coeus.common.framework.motd.MessageOfTheDay" />
+		<property name="objectLabel" value="Message Of The Day" />
+        <property name="inquiryDefinition" >
+            <ref bean="MessageOfTheDay-inquiryDefinition" />
+        </property>
+        <property name="lookupDefinition" >
+            <ref bean="MessageOfTheDay-lookupDefinition" />
+        </property>
+        <property name="titleAttribute" value="messageOfTheDayId" />
+        <property name="attributes" >
+            <list>
+                <ref bean="MessageOfTheDay-messageOfTheDayId" />
+                <ref bean="MessageOfTheDay-active" />
+                <ref bean="MessageOfTheDay-displayOrder" />
+                <ref bean="MessageOfTheDay-message" />
+                <ref bean="MessageOfTheDay-versionNumber" />
+            </list>
+        </property>
+    </bean>
+
+    <!-- Attribute Definitions -->
+    <bean id="MessageOfTheDay-messageOfTheDayId" parent="MessageOfTheDay-messageOfTheDayId-parentBean" />
+    <bean id="MessageOfTheDay-messageOfTheDayId-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="messageOfTheDayId" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Message Of The Day Id" />
+        <property name="shortLabel" value="Message Of The Day Id" />
+        <property name="maxLength" value="22" />
+        <property name="validationPattern" >
+            <bean parent="NumericValidationPattern" />
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+        <property name="control" >
+      <bean parent="TextControlDefinition" p:size="3"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="3" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="Message Of The Day Id" />
+        <property name="description" value="Message Of The Day Id" />
+    </bean>
+
+    <bean id="MessageOfTheDay-message" parent="MessageOfTheDay-message-parentBean" />
+    <bean id="MessageOfTheDay-message-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="message" />
+        <property name="label" value="Message" />
+        <property name="shortLabel" value="Message" />
+        <property name="summary" value="Message" />
+        <property name="description" value="Message" />
+        <property name="maxLength" value="4000" />
+        <property name="required" value = "true"/> 
+         <property name="control" >
+      <bean parent="TextareaControlDefinition" p:rows="5" p:cols="40"/>
+    </property>
+    <property name="controlField">
+      <bean p:rows="5" p:cols="40" parent="Uif-TextAreaControl"/>
+        </property>
+    </bean>
+
+
+	<bean id="MessageOfTheDay-displayOrder" parent="MessageOfTheDay-displayOrder-parentBean" />
+    <bean id="MessageOfTheDay-displayOrder-parentBean" abstract="true" parent="AttributeDefinition" >
+        <property name="name" value="displayOrder" />
+        <property name="forceUppercase" value="false" />
+        <property name="label" value="Display Order" />
+        <property name="shortLabel" value="Display Order" />
+        <property name="maxLength" value="22" />
+        <property name="validationPattern" >
+            <bean parent="NumericValidationPattern" />
+        </property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+        <property name="control" >
+      <bean parent="TextControlDefinition" p:size="3"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="3" parent="Uif-TextControl"/>
+        </property>
+        <property name="summary" value="Display Order" />
+        <property name="description" value="Display Order" />
+    </bean>
+	
+	<bean id="MessageOfTheDay-active" parent="MessageOfTheDay-active-parentBean" />
+ 	<bean id="MessageOfTheDay-active-parentBean" abstract="true" parent="AttributeDefinition">
+    	<property name="name" value="active" />
+    	<property name="label" value="active" />
+    	<property name="shortLabel" value="active" />
+    	<property name="summary" value="active" />
+    	<property name="description" value="active" />
+    	<property name="maxLength" value="1" />
+    	<property name="validationPattern" >
+      	<bean parent="AlphaNumericValidationPattern" />
+    	</property>
+    <property name="validCharactersConstraint">
+      <bean parent="AlphaNumericPatternConstraint"/>
+    </property>
+    	<property name="control" >
+      		<bean parent="CheckboxControlDefinition" />
+    	</property>
+    <property name="controlField">
+      <bean parent="Uif-CheckboxControl"/>
+    </property>
+  	</bean>
+ 
+    <bean id="MessageOfTheDay-versionNumber" parent="MessageOfTheDay-versionNumber-parentBean" />
+  <bean id="MessageOfTheDay-versionNumber-parentBean" abstract="true" parent="AttributeReferenceDummy-versionNumber"/>
+    <!-- Business Object Inquiry Definition -->
+    <bean id="MessageOfTheDay-inquiryDefinition" parent="MessageOfTheDay-inquiryDefinition-parentBean" />
+  <bean id="MessageOfTheDay-InquiryView" parent="MessageOfTheDay-InquiryView-parentBean"/>
+    <bean id="MessageOfTheDay-inquiryDefinition-parentBean" abstract="true" parent="InquiryDefinition">
+        <property name="title" value="Message Of The Day Id" />
+        <property name="inquirySections" >
+            <list>
+                <bean parent="InquirySectionDefinition">
+                    <property name="title" value="Message Of The Day Id" />
+                    <property name="numberOfColumns" value="1" />
+                    <property name="inquiryFields" >
+                        <list>
+              <bean parent="FieldDefinition" p:attributeName="messageOfTheDayId" p:forceInquiry="true"/>
+              <bean parent="FieldDefinition" p:attributeName="active"/>
+              <bean parent="FieldDefinition" p:attributeName="displayOrder"/>
+              <bean parent="FieldDefinition" p:attributeName="message"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="MessageOfTheDay-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView">
+    <property name="headerText" value="Message Of The Day Id"/>
+    <property name="dataObjectClassName" value="org.kuali.coeus.common.framework.motd.MessageOfTheDay"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-GridSection">
+          <property name="headerText" value="Message Of The Day Id"/>
+          <property name="layoutManager.numberOfColumns" value="2"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="messageOfTheDayId" parent="Uif-DataField"/>
+              <bean p:propertyName="active" parent="Uif-DataField"/>
+              <bean p:propertyName="displayOrder" parent="Uif-DataField"/>
+              <bean p:propertyName="message" parent="Uif-DataField"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <!-- Business Object Lookup Definition -->
+    <bean id="MessageOfTheDay-lookupDefinition" parent="MessageOfTheDay-lookupDefinition-parentBean" />
+  <bean id="MessageOfTheDay-LookupView" parent="MessageOfTheDay-LookupView-parentBean"/>
+    <bean id="MessageOfTheDay-lookupDefinition-parentBean" abstract="true" parent="LookupDefinition">
+        <property name="title" value="Messages Of The Day Lookup" /><property name="defaultSort" >
+      <bean parent="SortDefinition"/>
+        </property>
+        <property name="lookupFields" >
+            <list>
+        <bean parent="FieldDefinition" p:attributeName="messageOfTheDayId" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="active"/>
+        <bean parent="FieldDefinition" p:attributeName="displayOrder"/>
+        <bean parent="FieldDefinition" p:attributeName="message"/>
+      </list>
+    </property>
+    <property name="resultFields">
+      <list>
+        <bean parent="FieldDefinition" p:attributeName="messageOfTheDayId" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="active"/>
+        <bean parent="FieldDefinition" p:attributeName="displayOrder"/>
+        <bean parent="FieldDefinition" p:attributeName="message"/>
+      </list>
+    </property>
+  </bean>
+                    
+  <bean id="MessageOfTheDay-LookupView-parentBean" abstract="true" parent="Uif-LookupView">
+    <property name="dataObjectClassName" value="org.kuali.coeus.common.framework.motd.MessageOfTheDay"/>
+    <property name="headerText" value="Messages Of The Day Lookup"/>
+    <property name="criteriaFields">
+      <list>
+        <bean p:propertyName="messageOfTheDayId" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="active" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="displayOrder" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="message" parent="Uif-LookupCriteriaInputField"/>
+            </list>
+        </property>
+        <property name="resultFields" >
+            <list>
+        <bean p:propertyName="messageOfTheDayId" parent="Uif-DataField"/>
+        <bean p:propertyName="active" parent="Uif-DataField"/>
+        <bean p:propertyName="displayOrder" parent="Uif-DataField"/>
+        <bean p:propertyName="message" parent="Uif-DataField"/>
+            </list>
+        </property>
+    </bean>
+</beans>

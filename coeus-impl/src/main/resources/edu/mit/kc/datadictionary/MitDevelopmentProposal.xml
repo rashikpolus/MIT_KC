@@ -1,0 +1,173 @@
+<!-- /* * Copyright 2005-2014 The Kuali Foundation * * Licensed under the 
+	GNU Affero General Public License, Version 3 (the "License"); * you may not 
+	use this file except in compliance with the License. * You may obtain a copy 
+	of the License at * * http://www.osedu.org/licenses/ECL-2.0 * * Unless required 
+	by applicable law or agreed to in writing, software * distributeand under the 
+	License is distributed on an "AS IS" BASIS, * WITHOUT WARRANTIES OR CONDITIONS 
+	OF ANY KIND, either express or implied. * See the License for the specific 
+	language governing permissions and * limitations under the License. */ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<bean id="DevelopmentProposal-title" parent="DevelopmentProposal-title-parentBean" />
+	<bean id="DevelopmentProposal-title-parentBean" abstract="true"
+		parent="AttributeDefinition">
+		<property name="name" value="title" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="Project Title" />
+		<property name="shortLabel" value="Title" />
+		<property name="maxLength" value="200" />
+		<property name="required" value="true" />
+		<property name="control">
+			<bean parent="TextareaControlDefinition" p:rows="3" p:cols="80" />
+		</property>
+		<property name="summary" value="The title of the propsal." />
+		<property name="description" value="The proposed title of the project." />
+	</bean>
+	
+	<bean id="DevelopmentProposal" parent="MIT-DevelopmentProposal-parentBean" />
+	<bean id="MIT-DevelopmentProposal-parentBean" 
+		parent="DevelopmentProposal-parentBean">
+		<property name="attributes">
+			<list>
+				<ref bean="DevelopmentProposal-proposalNumber" />
+				<ref bean="DevelopmentProposal-title" />
+				<ref bean="DevelopmentProposal-sponsorCode" />
+				<ref bean="DevelopmentProposal-sponsor.sponsorName" />
+				<ref bean="DevelopmentProposal-requestedStartDateInitial" />
+				<ref bean="DevelopmentProposal-requestedEndDateInitial" />
+				<ref bean="DevelopmentProposal-activityTypeCode" />
+				<ref bean="DevelopmentProposal-ownedByUnitNumber" />				
+				<ref bean="DevelopmentProposal-ownedByUnit.unitName" />
+				<ref bean="DevelopmentProposal-proposalTypeCode" />
+				<ref bean="DevelopmentProposal-proposalType.description" />
+				<ref bean="DevelopmentProposal-currentAwardNumber" />
+				<ref bean="DevelopmentProposal-continuedFrom" />
+				<ref bean="DevelopmentProposal-deadlineDate" />
+				<ref bean="DevelopmentProposal-deadlineTime" />
+				<ref bean="DevelopmentProposal-deadlineType" />
+				<ref bean="DevelopmentProposal-primeSponsorCode" />
+				<ref bean="DevelopmentProposal-nsfCode" />
+				<ref bean="DevelopmentProposal-agencyDivisionCode" />
+				<ref bean="DevelopmentProposal-programAnnouncementTitle" />
+				<ref bean="DevelopmentProposal-noticeOfOpportunityCode" />
+				<ref bean="DevelopmentProposal-cfdaNumber" />
+				<ref bean="DevelopmentProposal-programAnnouncementNumber" />
+				<ref bean="DevelopmentProposal-sponsorProposalNumber" />
+				<ref bean="DevelopmentProposal-subcontracts" />
+				<ref bean="DevelopmentProposal-agencyProgramCode" />
+				<ref bean="DevelopmentProposal-mailBy" />
+				<ref bean="DevelopmentProposal-mailType" />
+				<ref bean="DevelopmentProposal-mailAccountNumber" />
+				<ref bean="DevelopmentProposal-numberOfCopies" />					
+				<ref bean="DevelopmentProposal-mailingAddressId" />
+				<ref bean="DevelopmentProposal-mailDescription" />
+				<ref bean="DevelopmentProposal-proposalStateTypeCode" />
+				<ref bean="DevelopmentProposal-proposalState.description" />
+				<ref bean="DevelopmentProposal-versionNumber" />
+				<ref bean="DevelopmentProposal-hierarchyBudgetType" />
+				<ref bean="DevelopmentProposal-hierarchyStatus" />
+				<ref bean="DevelopmentProposal-hierarchyStatusName" />
+				<ref bean="DevelopmentProposal-principalInvestigatorName" />
+				<ref bean="DevelopmentProposal-proposalPersons.fullName" />
+				<ref bean="DevelopmentProposal-proposalDocument.documentNumber" />
+				<ref bean="DevelopmentProposal-anticipatedAwardTypeCode" />
+				<ref bean="DevelopmentProposal-budgetStatus" />
+				<ref bean="DevelopmentProposal-proposalNumberForGG" />
+				<ref bean="DevelopmentProposal-opportunityIdForGG" />
+				<ref bean="DevelopmentProposal-agencyRoutingIdentifier" />
+				<ref bean="DevelopmentProposal-prevGrantsGovTrackingID" />
+			</list>
+		</property>
+	</bean>
+		<bean id="DevelopmentProposal-proposalPersons.fullName" parent="DevelopmentProposal-proposalPersons.fullName-parentBean" /> 
+		<bean id="DevelopmentProposal-proposalPersons.fullName-parentBean" abstract="true" parent="AttributeDefinition" > 
+			<property name="name" value="proposalPersons.fullName" /> 
+			<property name="forceUppercase" value="false" /> <property name="label" value="Proposal Person" /> 
+			<property name="shortLabel" value="Proposal Person" /> 
+			<property name="maxLength" value="60" /> <property name="validationPattern" > 
+				<bean p:allowWhitespace="true" parent="AnyCharacterValidationPattern" /> 
+			</property> 
+			<property name="control" > 
+				<bean p:size="30" parent="TextControlDefinition" /> 
+			</property> 
+			<property name="summary" value="Proposal Person" /> 
+			<property name="description" value="Proposal Person" /> 
+		</bean>
+   <bean id="DevelopmentProposal-numberOfCopies" parent="DevelopmentProposal-numberOfCopies-parent" />
+   <bean id="DevelopmentProposal-numberOfCopies-parent" abstract="true" parent="AttributeDefinition">
+		<property name="name" value="numberOfCopies" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="Number of Copies" />
+		<property name="maxLength" value="3" />
+		<property name="validationPattern">
+			<bean parent="NumericValidationPattern" />
+		</property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+		<property name="required" value="false" />
+		<property name="control">
+			<bean parent="TextControlDefinition" p:size="3" />
+		</property>
+    <property name="controlField">
+      <bean p:size="3" parent="Uif-TextControl"/>
+    </property>
+		<property name="summary" value="Number of Copies" />
+    <property name="description" value="The number of paper copies of the proposal that should be mailed to the agency/sponsor."/>
+	</bean>
+	<bean id="DevelopmentProposal-sponsor.sponsorName" parent="Mit-DevelopmentProposal-sponsor.sponsorName-parentBean" />
+  <bean id="Mit-DevelopmentProposal-sponsor.sponsorName-parentBean" abstract="true" parent="AttributeDefinition">
+		<property name="name" value="sponsor.sponsorName" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="Sponsor Name" />
+		<property name="shortLabel" value="Sponsor Name" />
+		<property name="maxLength" value="150" />
+		<property name="validationPattern">
+			<bean p:allowWhitespace="true" parent="AnyCharacterValidationPattern" />
+		</property>
+    <property name="validCharactersConstraint">
+      <bean parent="AnyCharacterPatternConstraint">
+        <property name="allowWhitespace" value="true"/>
+      </bean>
+    </property>
+		<property name="control">
+			<bean p:size="60" parent="TextControlDefinition" />
+		</property>
+    <property name="controlField">
+      <bean p:size="60" parent="Uif-TextControl"/>
+    </property>
+    <property name="summary" value="The sponsor name for the DevelopmentProposal."/>
+    <property name="description" value="The sponsor name for the DevelopmentProposal."/>
+	</bean> 
+	
+	<bean id="DevelopmentProposal-lookupDefinition" parent="MIT-DevelopmentProposal-lookupDefinition" />
+	<bean id="MIT-DevelopmentProposal-lookupDefinition"
+		parent="MIT-DevelopmentProposal-lookupDefinition-parentBean">
+		<property name="lookupableID" value="mitProposalDevelopmentLookupable" />
+		<property name="lookupFields">
+			<list>
+				<bean parent="FieldDefinition" p:attributeName="proposalNumber"
+					p:noLookup="true" />
+				<bean parent="FieldDefinition" p:attributeName="proposalTypeCode" />
+				<bean parent="FieldDefinition" p:attributeName="proposalStateTypeCode" />
+				<bean parent="FieldDefinition" p:attributeName="title" />
+				<bean parent="FieldDefinition" p:attributeName="proposalPersons.fullName" />
+				<!--  bean parent="FieldDefinition" p:attributeName="principalInvestigatorName" /-->
+				<bean parent="FieldDefinition" p:attributeName="deadlineDate" />
+				<bean parent="FieldDefinition" p:attributeName="sponsorCode" />
+				<bean parent="FieldDefinition" p:attributeName="sponsor.sponsorName" />
+				<bean parent="FieldDefinition" p:attributeName="ownedByUnitNumber" />
+				<bean parent="FieldDefinition" p:attributeName="ownedByUnit.unitName" />
+				<bean parent="FieldDefinition" p:attributeName="currentAwardNumber" />
+				<bean parent="FieldDefinition" p:attributeName="opportunityIdForGG" />
+				<bean parent="FieldDefinition" p:attributeName="hierarchyStatus" />
+				<bean parent="FieldDefinition" p:attributeName="proposalDocument.documentNumber" />	
+			</list>
+		</property>
+		
+	</bean>
+</beans>
+  

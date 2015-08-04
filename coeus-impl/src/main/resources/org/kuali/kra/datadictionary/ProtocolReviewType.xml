@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean id="ProtocolReviewType" parent="ProtocolReviewType-parentBean" />
+	<bean id="ProtocolReviewType-parentBean" abstract="true" parent="BusinessObjectEntry">
+		<property name="businessObjectClass" value="org.kuali.kra.irb.actions.submit.ProtocolReviewType" />
+		<property name="objectLabel" value="Protocol Review Type" />
+		<property name="inquiryDefinition" >
+			<ref bean="ProtocolReviewType-inquiryDefinition" />
+		</property>
+		<property name="lookupDefinition" >
+			<ref bean="ProtocolReviewType-lookupDefinition" />
+		</property>
+		<property name="titleAttribute" value="protocolReviewTypeCode" />
+		<property name="attributes" >
+			<list>
+				<ref bean="ProtocolReviewType-protocolReviewTypeCode" />
+				<ref bean="ProtocolReviewType-description" />
+				<ref bean="ProtocolReviewType-globalFlag" />
+				<ref bean="ProtocolReviewType-versionNumber" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- Attribute Definitions -->
+	<bean id="ProtocolReviewType-protocolReviewTypeCode" parent="ProtocolReviewType-protocolReviewTypeCode-parentBean" />
+	<bean id="ProtocolReviewType-protocolReviewTypeCode-parentBean" abstract="true" parent="AttributeDefinition" >
+		<property name="name" value="reviewTypeCode" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="Protocol Review Type Code" />
+		<property name="shortLabel" value="Protocol Review Type Code" />
+		<property name="maxLength" value="3" />
+		<property name="validationPattern" >
+			<bean parent="AlphaNumericValidationPattern" />
+		</property>
+    <property name="validCharactersConstraint">
+      <bean parent="AlphaNumericPatternConstraint"/>
+    </property>
+		<property name="control" >
+      <bean parent="TextControlDefinition" p:size="3"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="3" parent="Uif-TextControl"/>
+		</property>
+		<property name="summary" value="Protocol Review Type Code" />
+		<property name="description" value="Protocol Review Type Code" />
+	</bean>
+	
+    <bean id="ProtocolReviewType-description" parent="ProtocolReviewType-description-parentBean" />
+    <bean id="ProtocolReviewType-description-parentBean" abstract="true" parent="KraAttributeReferenceDummy-description" />
+
+    <bean id="ProtocolReviewType-globalFlag" parent="ProtocolReviewType-globalFlag-parentBean"/>
+    <bean id="ProtocolReviewType-globalFlag-parentBean" abstract="true" parent="AttributeReferenceDummy-genericBoolean">
+        <property name="name" value="globalFlag"/>
+        <property name="label" value="Global Flag"/>
+        <property name="shortLabel" value="Global Flag"/>
+        <property name="summary" value="Global Flag"/>
+        <property name="description" value="Global Flag"/>
+    </bean>
+    
+	<bean id="ProtocolReviewType-versionNumber" parent="ProtocolReviewType-versionNumber-parentBean" />
+  <bean id="ProtocolReviewType-versionNumber-parentBean" abstract="true" parent="AttributeReferenceDummy-versionNumber"/>
+	<!-- Business Object Inquiry Definition -->
+	<bean id="ProtocolReviewType-inquiryDefinition" parent="ProtocolReviewType-inquiryDefinition-parentBean" />
+  <bean id="ProtocolReviewType-InquiryView" parent="ProtocolReviewType-InquiryView-parentBean"/>
+	<bean id="ProtocolReviewType-inquiryDefinition-parentBean" abstract="true" parent="InquiryDefinition">
+		<property name="title" value="Protocol Review Type Code" />
+		<property name="inquirySections" >
+			<list>
+				<bean parent="InquirySectionDefinition">
+					<property name="title" value="Protocol Review Type Code" />
+					<property name="numberOfColumns" value="1" />
+					<property name="inquiryFields" >
+						<list>
+              <bean parent="FieldDefinition" p:attributeName="reviewTypeCode" p:forceInquiry="true"/>
+              <bean parent="FieldDefinition" p:attributeName="description"/>
+              <bean parent="FieldDefinition" p:attributeName="globalFlag"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="ProtocolReviewType-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView">
+    <property name="headerText" value="Protocol Review Type Code"/>
+    <property name="dataObjectClassName" value="org.kuali.kra.irb.actions.submit.ProtocolReviewType"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-GridSection">
+          <property name="headerText" value="Protocol Review Type Code"/>
+          <property name="layoutManager.numberOfColumns" value="2"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="reviewTypeCode" parent="Uif-DataField"/>
+              <bean p:propertyName="description" parent="Uif-DataField"/>
+              <bean p:propertyName="globalFlag" parent="Uif-DataField"/>
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<!-- Business Object Lookup Definition -->
+	<bean id="ProtocolReviewType-lookupDefinition" parent="ProtocolReviewType-lookupDefinition-parentBean" />
+  <bean id="ProtocolReviewType-LookupView" parent="ProtocolReviewType-LookupView-parentBean"/>
+	<bean id="ProtocolReviewType-lookupDefinition-parentBean" abstract="true" parent="LookupDefinition">
+		<property name="title" value="Protocol Review Type Lookup" /><property name="defaultSort" >
+      <bean parent="SortDefinition"/>
+		</property>
+		<property name="lookupFields" >
+			<list>
+        <bean parent="FieldDefinition" p:attributeName="reviewTypeCode" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="description"/>
+        <bean parent="FieldDefinition" p:attributeName="globalFlag"/>
+      </list>
+    </property>
+    <property name="resultFields">
+      <list>
+        <bean parent="FieldDefinition" p:attributeName="reviewTypeCode" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="description"/>
+        <bean parent="FieldDefinition" p:attributeName="globalFlag"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="ProtocolReviewType-LookupView-parentBean" abstract="true" parent="Uif-LookupView">
+    <property name="dataObjectClassName" value="org.kuali.kra.irb.actions.submit.ProtocolReviewType"/>
+    <property name="headerText" value="Protocol Review Type Lookup"/>
+    <property name="criteriaFields">
+      <list>
+        <bean p:propertyName="reviewTypeCode" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="description" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="globalFlag" parent="Uif-LookupCriteriaInputField"/>
+			</list>
+		</property>
+		<property name="resultFields" >
+			<list>
+        <bean p:propertyName="reviewTypeCode" parent="Uif-DataField"/>
+        <bean p:propertyName="description" parent="Uif-DataField"/>
+        <bean p:propertyName="globalFlag" parent="Uif-DataField"/>
+			</list>
+		</property>
+	</bean>
+</beans>

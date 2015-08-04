@@ -1,0 +1,142 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Mon Mar 30 21:41:23 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+SP2-0103: Nothing in SQL buffer to run.
+
+Table dropped.
+
+
+Table created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+CREATE TABLE SAP_BUDGET_FEED(
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE SAP_BUDGET_FEED_DETAILS(
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE TABLE SAP_BUDGET_FEED_BATCH_LIST(
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+INSERT INTO KRCR_PARM_T(NMSPC_CD, CMPNT_CD, PARM_NM, OBJ_ID, VER_NBR, PARM_TYP_CD, VAL, PARM_DESC_TXT, EVAL_OPRTR_CD, APPL_ID)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+CREATE SEQUENCE SEQ_SAP_BUDGET_FEED_BATCH_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_SAP_BUDGET_FEED_DETAILS_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_SAP_BUDGET_FEED_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+Function created.
+
+
+Function created.
+
+
+Function created.
+
+
+Package created.
+
+
+Package body created.
+
+
+Function created.
+
+
+Function created.
+
+
+Function created.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

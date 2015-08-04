@@ -1,0 +1,410 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Thu Dec 11 22:18:44 2014
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+
+Started syncing, start time: 11-DEC-14 10.18.45.966381 PM
+
+insert bo: 11-DEC-14 10.18.46.294169 PM
+
+Completed bo : 11-DEC-14 10.18.47.670524 PM
+
+Completed bo : 11-DEC-14 10.18.47.805798 PM
+
+insert award: 11-DEC-14 10.18.56.966405 PM
+CREATE INDEX OSP$PERSON_I ON OSP$PERSON(PERSON_ID)
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+ Start time of AWARD is
+alter table award add constraint UQ_AWARD unique(AWARD_NUMBER,SEQUENCE_NUMBER)
+                                          *
+ERROR at line 1:
+ORA-02261: such unique or primary key already exists in the table
+
+
+alter table proposal add constraint UQ_PROPOSAL unique(PROPOSAL_NUMBER,SEQUENCE_NUMBER)
+                                                *
+ERROR at line 1:
+ORA-02261: such unique or primary key already exists in the table
+
+
+
+     23873
+
+ End time of AWARD is
+select ' Start time of insert AWARD Krew is ' from dual;--populating krew_tables in insert_award.sqlselect ' End time of insert AWARD Krew is ' from dual;/
+                                                       *
+ERROR at line 1:
+ORA-00911: invalid character
+
+
+
+ End time of TEMP TABLES FOR AWARD MODULE  is
+
+ Start time of VERSION_HISTORY	is
+Completed VERSION_HISTORY!!!
+
+ End time of VERSION_HISTORY  is
+
+ Start time of AWARD_SPECIAL_REVIEW script is
+
+ End time of AWARD_SPECIAL_REVIEW script is
+
+ Start time of AWARD_SPECIAL_REVIEW Update script is
+
+ End time of AWARD_SPECIAL_REVIEW Update script is
+
+ Start time of AWARD_COST_SHARE  script is
+
+ End time of AWARD_COST_SHARE script is
+
+ Start time of AWARD_APPROVED_EQUIPMENT  script is
+
+ End time of AWARD_APPROVED_EQUIPMENT  script is
+
+ Start time of AWARD_APPROVED_FOREIGN_TRAVEL  script is
+
+ End time of AWARD_APPROVED_FOREIGN_TRAVEL script is
+
+ Start time of AWARD_PAYMENT_SCHEDULE script is
+
+ End time of AWARD_PAYMENT_SCHEDULE script is
+
+ Start time of AWARD_SCIENCE_KEYWORD script is
+
+ End time of AWARD_SCIENCE_KEYWORD script is
+
+ Start time of AWARD_IDC_RATE script is
+
+ End time of AWARD_IDC_RATE script is
+
+ Start time of AWARD_APPROVED_SUBAWARDS script is
+
+ End time of AWARD_APPROVED_SUBAWARDS script is
+
+ Start time of AWARD_TRANSFERRING_SPONSOR is
+
+ End time of AWARD_TRANSFERRING_SPONSOR is
+
+ Start time of AWARD_PERSONS(Key Person) script is
+
+ End time of AWARD_PERSONS(Key Person) script is
+
+ Start time of AWARD_PERSONS(Investigators) script is
+
+ End time of AWARD_PERSONS(Investigators) script is
+
+ Start time of AWARD_SPONSOR_TERM script is
+
+ End time of AWARD_SPONSOR_TERM script is
+
+ Start time of AWARD_ATTACHMENT is
+Completed AWARD_ATTACHMENT!!!
+
+ End time of AWARD_ATTACHMENT is
+
+ Start time of AWARD_ATTACHMENT VERSIONNING  is
+
+ End time of AWARD_ATTACHMENT VERSIONNING  is
+
+ Start time of AWARD_CUSTOM_DATA  is
+
+ End time of AWARD_CUSTOM_DATA	is
+CREATE INDEX AWARD_COMMENT_I1 ON AWARD_COMMENT(AWARD_NUMBER,SEQUENCE_NUMBER,COMMENT_TYPE_CODE)
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+ Start time of AWARD_COMMENT update script is
+
+ End time of AWARD_COMMENT update script is
+
+ Start time of AWARD_CLOSEOUT  is
+
+ End time of AWARD_CLOSEOUT  is
+
+ Start time of AWARD_PERSON_UNITS script is
+
+ End time of AWARD_PERSON_UNITS script is
+
+ Start time of AWARD_NOTEPAD script is
+Completed AWARD_NOTEPAD!!!
+
+ End time of AWARD_NOTEPAD script is
+
+ Start time of AWARD_SPONSOR_CONTACTS script is
+
+ End time of AWARD_SPONSOR_CONTACTS script is
+
+ Start time of AWARD_REPORT_TERMS,AWARD_REP_TERMS_RECNT script is
+
+ End time of AWARD_REPORT_TERMS,AWARD_REP_TERMS_RECNT is
+
+ Start time of AWARD_REPORT_TRACKING script is
+
+ End time of AWARD_REPORT_TRACKING  is
+SP2-0027: Input is too long (> 2499 characters) - line ignored
+
+ Start time of AWARD_UNIT_CONTACTS is
+
+ End time of AWARD_UNIT_CONTACTS is
+
+ Start time of AWARD_HIERARCHY script is
+Completed AWARD_HIERARCHY!!!
+
+ End time of AWARD_HIERARCHY script is
+
+ Start time of AWARD_AMOUNT_TRANSACTION is
+Completed AWARD_AMOUNT_INFO!!!
+
+ End time of AWARD_AMOUNT_TRANSACTION is
+
+ Start time of AWARD_AMOUNT_INFO is
+
+ End time of AWARD_AMOUNT_INFO is
+
+update award: 11-DEC-14 10.39.45.561879 PM
+
+ Star time of UPDATE_AWARD is
+
+ End time of UPDATE_AWARD is
+
+ Start time of UPDATE_AWARD_SPECIAL_REVIEW is
+
+ End time of UPDATE_AWARD_SPECIAL_REVIEW is
+
+ Start time of AWARD_SPECIAL_REVIEW Update script is
+
+ End time of AWARD_SPECIAL_REVIEW Update script is
+
+ Start time of UPDATE_AWARD_COST_SHARE is
+
+ End time of UPDATE_AWARD_COST_SHARE is
+
+ Start time of UPDATE_AWARD_APPROVED_EQUIPMENT is
+
+ End time of UPDATE_AWARD_APPROVED_EQUIPMENT is
+
+ Start time of UPDATE_AWARD_APPROVED_FOREIGN_TRAVEL is
+
+ End time of UPDATE_AWARD_APPROVED_FOREIGN_TRAVEL is
+
+ Start time of UPDATE_AWARD_PAYMENT_SCHEDULE is
+
+ End time of UPDATE_AWARD_PAYMENT_SCHEDULE is
+
+ Start time of UPDATE_AWARD_SCIENCE_KEYWORD is
+
+ End time of UPDATE_AWARD_SCIENCE_KEYWORD is
+
+ Start time of UPDATE_AWARD_IDC_RATE is
+
+ End time of UPDATE_AWARD_IDC_RATE is
+
+ Start time of UPDATE_AWARD_APPROVED_SUBAWARDS is
+
+ End time of UPDATE_AWARD_APPROVED_SUBAWARDS is
+
+ Start time of UPDATE_AWARD_TRANSFERRING_SPONSOR is
+
+ End time of UPDATE_AWARD_TRANSFERRING_SPONSOR is
+
+ Start time of UPDATE_AWARD_PERSONS is
+
+ End time of UPDATE_AWARD_PERSONS is
+
+ Start time of UPDATE_AWARD_PERSONS is
+
+ End time of UPDATE_AWARD_PERSONS is
+
+ Start time of UPDATE_AWARD_ATTACHMENT is
+Completed AWARD_ATTACHMENT!!!
+
+ End time of UPDATE_AWARD_ATTACHMENT is
+
+ Start time of UPDATE_AWARD_CUSTOM_DATA is
+
+ End time of UPDATE_AWARD_CUSTOM_DATA is
+
+ Start time of UPDATE_AWARD_COMMENT is
+
+ End time of UPDATE_AWARD_COMMENT is
+
+ Start time of UPDATE_AWARD_CLOSEOUT is
+
+ End time of UPDATE_AWARD_CLOSEOUT is
+
+ Start time of UPDATE_AWARD_PERSON_UNITS is
+
+ End time of UPDATE_AWARD_PERSON_UNITS is
+
+ Start time of UPDATE_AWARD_NOTEPAD is
+
+ End time of UPDATE_AWARD_NOTEPAD is
+
+ Start time of UPDATE_AWARD_SPONSOR_CONTACTS is
+
+ End time of UPDATE_AWARD_SPONSOR_CONTACTS is
+
+ Start time of UPDATE_AWARD_REP_TERMS_RECNT is
+
+ End time of UPDATE_AWARD_REP_TERMS_RECNT is
+
+ Start time of UPDATE_AWARD_SPONSOR_TERM is
+
+ End time of UPDATE_AWARD_SPONSOR_TERM is
+
+ Start time of UPDATE_AWARD_REPORT_TRACKING is
+
+ End time of UPDATE_AWARD_REPORT_TRACKING is
+
+ Start time of UPDATE_AWARD_FUNDING_PROPOSALS is
+
+ End time of UPDATE_AWARD_FUNDING_PROPOSALS is
+
+ Start time of UPDATE_AWARD_UNIT_CONTACTS is
+
+ End time of UPDATE_AWARD_UNIT_CONTACTS is
+
+ Start time of UPDATE_AWARD_AMOUNT_INFO is
+Completed AWARD_AMOUNT_INFO!!!
+
+ End time of UPDATE_AWARD_AMOUNT_INFO is
+
+ Start time of UPDATE_AWARD_AMOUNT_TRANSACTION is
+
+ End time of UPDATE_AWARD_AMOUNT_TRANSACTION is
+
+ Start time of UPDATE_AWARD_AMT_FNA_DISTRIBUTION is
+
+ End time of UPDATE_AWARD_AMT_FNA_DISTRIBUTION is
+
+ Start time of award_sequence_status_update is
+
+ End time of award_sequence_status_update is
+
+Completed Award : 11-DEC-14 10.56.52.767330 PM
+
+Completed Award : 11-DEC-14 10.56.52.869588 PM
+
+insert development proposal: 11-DEC-14 10.56.53.165254 PM
+
+ Start time of insert to EPS_PROPOSAL is
+
+
+Successfully inserted EPS_PROPOSAL and EPS_PROPOSAL_DOCUMENT
+
+    793380
+
+ End time of insert to EPS_PROPOSAL is
+
+ Start time of insert to EPS_PROPOSAL is
+
+ End time of updating EPS_PROPOSAL is
+
+Completed development proposal: 11-DEC-14 10.56.55.460377 PM
+
+insert budget proposal: 11-DEC-14 10.56.55.569699 PM
+
+ Start time of BUDGET is
+
+ End time of BUDGET is
+
+ Start time of BUDGET_PERIODS is
+
+ End time of BUDGET_PERIODS is
+
+ Start time of BUDGET_MODULAR is
+
+ End time of BUDGET_MODULAR is
+
+ Start time of BUDGET_MODULAR_IDC script is
+
+ End time of BUDGET_MODULAR_IDC script is
+
+ Start time of BUDGET_PERSONS is
+
+ End time of BUDGET_PERSONS is
+
+ Start time of BUDGET_DETAILS,BUDGET_DETAILS_CAL_AMTS,BUDGET_RATE_AND_BASE  scri
+pt is
+
+
+ End time of BUDGET_DETAILS,BUDGET_DETAILS_CAL_AMTS,BUDGET_RATE_AND_BASE  script
+ is
+
+
+ Start time of BUDGET_PERSONNEL_DETAILS,BUDGET_PERSONNEL_CAL_AMTS,BUDGET_PER_DET
+_RATE_AND_BASE	script is
+
+
+ End time of BUDGET_PERSONNEL_DETAILS,BUDGET_PERSONNEL_CAL_AMTS,BUDGET_PER_DET_R
+ATE_AND_BASE  script is
+
+
+ Start time of BUDGET_PROJECT_INCOME is
+
+ End time of BUDGET_PROJECT_INCOME is
+
+ Start time of EPS_PROP_COST_SHARING is
+
+ End time of EPS_PROP_COST_SHARING is
+
+ Start time of EPS_PROP_RATES, EPS_PROP_LA_RATES script is
+
+ End time of EPS_PROP_RATES, EPS_PROP_LA_RATES script is
+
+ Start time of EPS_PROP_IDC_RATE script is
+
+ End time of EPS_PROP_IDC_RATE script is
+
+Completed budget : 11-DEC-14 10.57.00.664821 PM
+
+Completed budget : 11-DEC-14 10.57.00.772313 PM
+
+insert Institute proposal: 11-DEC-14 10.57.01.060609 PM
+
+ Start time of	Insert to PROPOSAL is
+Completed PROPOSAL  AND ITS INDICATOR TABLES!!!
+
+ 594732654
+
+ End time of PROPOSAL KREW TABLES  is
+
+ End time of  Insert to PROPOSAL is
+
+ Start time of Insert to PROPOSAL_ADMIN_DETAILS is
+
+ End time of  Insert to PROPOSAL_ADMIN_DETAILS is
+
+ Start time of insert_proposal_version_history is
+Completed VERSION_HISTORY !!!
+
+ End time of insert_proposal_version_history is
+
+ Start time of	update PROPOSAL is
+
+ End time of  update PROPOSAL is
+
+ Start time of update PROPOSAL_ADMIN_DETAILS is
+
+ End time of  Update PROPOSAL_ADMIN_DETAILS is
+
+Completed Institute proposal : 11-DEC-14 10.57.03.669789 PM
+
+Completed Institute proposal : 11-DEC-14 10.57.03.777077 PM
+
+Completed syncing, end time: 11-DEC-14 10.57.06.378204 PM
+SQL> 

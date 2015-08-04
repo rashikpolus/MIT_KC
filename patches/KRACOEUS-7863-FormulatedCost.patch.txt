@@ -1,0 +1,363 @@
+From ef3d3ba03a72a3b0596d4dbce870a41a9fa7ee45 Mon Sep 17 00:00:00 2001
+From: rmancher <rajeev@genesistec.com>
+Date: Wed, 4 Feb 2015 15:54:32 -0500
+Subject: [PATCH] KRACOEUS-7863 Implement Budget Non-Personnel Costs -
+ Formulated Costs
+
+---
+ .../calculator/BudgetCalculationService.java       |   2 +
+ .../nonpersonnel/BudgetFormulatedCostDetail.java   |   2 -
+ .../calculator/BudgetCalculationServiceImpl.java   |  32 ++++++
+ .../BudgetPersonnelBudgetServiceImpl.java          |  29 +----
+ .../ProposalBudgetPeriodProjectCostController.java |  29 +++++
+ .../ProposalBudgetNonPersonnelCostsPage.xml        | 121 ++++++++++++++++-----
+ 6 files changed, 159 insertions(+), 56 deletions(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/common/budget/framework/calculator/BudgetCalculationService.java b/coeus-impl/src/main/java/org/kuali/coeus/common/budget/framework/calculator/BudgetCalculationService.java
+index 706f07f..cc7e4c5 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/common/budget/framework/calculator/BudgetCalculationService.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/common/budget/framework/calculator/BudgetCalculationService.java
+@@ -143,4 +143,6 @@
+     
+     public void resetBudgetLineItemCalculatedAmounts(Budget budget);
+     
++    public void calculateAndUpdateFormulatedCost(BudgetLineItem budgetLineItem);
++    
+ }
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/common/budget/framework/nonpersonnel/BudgetFormulatedCostDetail.java b/coeus-impl/src/main/java/org/kuali/coeus/common/budget/framework/nonpersonnel/BudgetFormulatedCostDetail.java
+index e07e949..a2f4e3b 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/common/budget/framework/nonpersonnel/BudgetFormulatedCostDetail.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/common/budget/framework/nonpersonnel/BudgetFormulatedCostDetail.java
+@@ -39,8 +39,6 @@
+     @Column(name = "BUD_FORMULATED_COST_DETAIL_ID")
+     private Long budgetFormulatedCostDetailId;
+ 
+-    @Column(name = "BUDGET_DETAILS_ID", insertable = false, updatable = false)
+-    private Long budgetLineItemId;
+     
+     @Column(name = "FORMULATED_NUMBER")
+     private Integer formulatedNumber;
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/common/budget/impl/calculator/BudgetCalculationServiceImpl.java b/coeus-impl/src/main/java/org/kuali/coeus/common/budget/impl/calculator/BudgetCalculationServiceImpl.java
+index 6989dfa..951eb5e 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/common/budget/impl/calculator/BudgetCalculationServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/common/budget/impl/calculator/BudgetCalculationServiceImpl.java
+@@ -30,6 +30,7 @@
+ import org.kuali.coeus.common.budget.framework.core.category.BudgetCategoryType;
+ import org.kuali.coeus.common.budget.framework.core.*;
+ import org.kuali.coeus.common.budget.framework.distribution.BudgetDistributionService;
++import org.kuali.coeus.common.budget.framework.nonpersonnel.BudgetFormulatedCostDetail;
+ import org.kuali.coeus.common.budget.framework.nonpersonnel.BudgetLineItem;
+ import org.kuali.coeus.common.budget.framework.nonpersonnel.BudgetLineItemCalculatedAmount;
+ import org.kuali.coeus.common.budget.framework.nonpersonnel.BudgetRateAndBase;
+@@ -1269,6 +1270,37 @@ public void resetBudgetLineItemCalculatedAmounts(Budget budget) {
+     	}
+     }
+     
++    public void calculateAndUpdateFormulatedCost(BudgetLineItem budgetLineItem) {
++        if(budgetLineItem.getFormulatedCostElementFlag()){
++            ScaleTwoDecimal formulatedCostTotal = getFormulatedCostsTotal(budgetLineItem);
++            if(formulatedCostTotal!=null){
++                budgetLineItem.setLineItemCost(formulatedCostTotal);
++            }
++        }
++    }
++
++    private ScaleTwoDecimal getFormulatedCostsTotal(BudgetLineItem budgetLineItem) {
++        List<BudgetFormulatedCostDetail> budgetFormulatedCosts = budgetLineItem.getBudgetFormulatedCosts();
++        ScaleTwoDecimal formulatedExpenses = ScaleTwoDecimal.ZERO;
++        Budget budget = budgetLineItem.getBudget();
++        for (BudgetFormulatedCostDetail budgetFormulatedCostDetail : budgetFormulatedCosts) {
++        	if(budgetFormulatedCostDetail.getFormulatedNumber() == null) {
++        		budgetFormulatedCostDetail.setFormulatedNumber(budget.getNextValue(Constants.BUDGET_FORMULATED_NUMBER));
++        	}
++            calculateBudgetFormulatedCost(budgetFormulatedCostDetail);
++            formulatedExpenses = formulatedExpenses.add(budgetFormulatedCostDetail.getCalculatedExpenses());
++        }
++        return formulatedExpenses;
++    }
++    
++    private void calculateBudgetFormulatedCost( BudgetFormulatedCostDetail budgetFormulatedCost) {
++    	ScaleTwoDecimal unitCost = budgetFormulatedCost.getUnitCost();
++    	ScaleTwoDecimal count = new ScaleTwoDecimal(budgetFormulatedCost.getCount());
++    	ScaleTwoDecimal frequency = new ScaleTwoDecimal(budgetFormulatedCost.getFrequency());
++    	ScaleTwoDecimal calculatedExpense = unitCost.multiply(count).multiply(frequency);
++        budgetFormulatedCost.setCalculatedExpenses(calculatedExpense);
++    }
++    
+ 	public DataObjectService getDataObjectService() {
+ 		return dataObjectService;
+ 	}
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/common/budget/impl/personnel/BudgetPersonnelBudgetServiceImpl.java b/coeus-impl/src/main/java/org/kuali/coeus/common/budget/impl/personnel/BudgetPersonnelBudgetServiceImpl.java
+index f40b9f1..2de0495 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/common/budget/impl/personnel/BudgetPersonnelBudgetServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/common/budget/impl/personnel/BudgetPersonnelBudgetServiceImpl.java
+@@ -377,38 +377,11 @@ public void calculateCurrentBudgetPeriod(BudgetPeriod budgetPeriod) {
+         for(BudgetLineItem budgetLineItem:budgetPeriod.getBudgetLineItems()){
+             getBudgetCalculationService().updatePersonnelBudgetRate(budgetLineItem);
+             if(budgetLineItem.getFormulatedCostElementFlag()){
+-                calculateAndUpdateFormulatedCost(budgetLineItem);
++                getBudgetCalculationService().calculateAndUpdateFormulatedCost(budgetLineItem);
+             }
+         }
+     }
+     
+-    private void calculateAndUpdateFormulatedCost(BudgetLineItem budgetLineItem) {
+-        if(budgetLineItem.getFormulatedCostElementFlag()){
+-            ScaleTwoDecimal formulatedCostTotal = getFormulatedCostsTotal(budgetLineItem);
+-            if(formulatedCostTotal!=null){
+-                budgetLineItem.setLineItemCost(formulatedCostTotal);
+-            }
+-        }
+-    }
+-
+-    private ScaleTwoDecimal getFormulatedCostsTotal(BudgetLineItem budgetLineItem) {
+-        List<BudgetFormulatedCostDetail> budgetFormulatedCosts = budgetLineItem.getBudgetFormulatedCosts();
+-        ScaleTwoDecimal formulatedExpenses = ScaleTwoDecimal.ZERO;
+-        for (BudgetFormulatedCostDetail budgetFormulatedCostDetail : budgetFormulatedCosts) {
+-            calculateBudgetFormulatedCost(budgetFormulatedCostDetail);
+-            formulatedExpenses = formulatedExpenses.add(budgetFormulatedCostDetail.getCalculatedExpenses());
+-        }
+-        return formulatedExpenses;
+-    }
+-    
+-    private void calculateBudgetFormulatedCost( BudgetFormulatedCostDetail budgetFormulatedCost) {
+-    	ScaleTwoDecimal unitCost = budgetFormulatedCost.getUnitCost();
+-    	ScaleTwoDecimal count = new ScaleTwoDecimal(budgetFormulatedCost.getCount());
+-    	ScaleTwoDecimal frequency = new ScaleTwoDecimal(budgetFormulatedCost.getFrequency());
+-    	ScaleTwoDecimal calculatedExpense = unitCost.multiply(count).multiply(frequency);
+-        budgetFormulatedCost.setCalculatedExpenses(calculatedExpense);
+-    }
+-    
+ 	public DataObjectService getDataObjectService() {
+ 		return dataObjectService;
+ 	}
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/budget/nonpersonnel/ProposalBudgetPeriodProjectCostController.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/budget/nonpersonnel/ProposalBudgetPeriodProjectCostController.java
+index c929a12..e99d5cd 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/budget/nonpersonnel/ProposalBudgetPeriodProjectCostController.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/budget/nonpersonnel/ProposalBudgetPeriodProjectCostController.java
+@@ -19,6 +19,7 @@
+ package org.kuali.coeus.propdev.impl.budget.nonpersonnel;
+ 
+ 
++
+ import org.apache.commons.lang3.StringUtils;
+ import org.kuali.coeus.common.budget.framework.core.Budget;
+ import org.kuali.coeus.common.budget.framework.core.BudgetConstants;
+@@ -273,5 +274,33 @@ private boolean isBudgetLineItemExists(Budget budget) {
+ 		}
+ 		return lineItemExists;
+ 	}
++
++	@Transactional @RequestMapping(params="methodToCall=addFormulatedCost")
++	public ModelAndView addFormulatedCost(@ModelAttribute("KualiForm") ProposalBudgetForm form) throws Exception {
++	    getCollectionControllerService().addLine(form);
++		calculateAndUpdateFormulatedCost(form);
++        return getModelAndViewService().getModelAndView(form);
++	}
++    
++	@Transactional @RequestMapping(params="methodToCall=updateFormulatedCost")
++	public ModelAndView updateFormulatedCost(@ModelAttribute("KualiForm") ProposalBudgetForm form) throws Exception {
++	    getCollectionControllerService().editLine(form);
++		calculateAndUpdateFormulatedCost(form);
++        return getModelAndViewService().getModelAndView(form);
++	}
++	
++	@Transactional @RequestMapping(params="methodToCall=deleteFormulatedCost")
++	public ModelAndView deleteFormulatedCost(@ModelAttribute("KualiForm") ProposalBudgetForm form) throws Exception {
++	    getCollectionControllerService().deleteLine(form);
++		calculateAndUpdateFormulatedCost(form);
++        return getModelAndViewService().getModelAndView(form);
++	}
+ 	
++	protected void calculateAndUpdateFormulatedCost(ProposalBudgetForm form) {
++	    BudgetLineItem budgetLineItem = form.getAddProjectBudgetLineItemHelper().getBudgetLineItem();
++	    getBudgetCalculationService().calculateAndUpdateFormulatedCost(budgetLineItem);
++		Budget budget = form.getBudget();
++		BudgetPeriod currentTabBudgetPeriod = form.getAddProjectBudgetLineItemHelper().getCurrentTabBudgetPeriod();
++        getBudgetService().recalculateBudgetPeriod(budget, currentTabBudgetPeriod);
++	}
+ }
+diff --git a/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/budget/nonpersonnel/ProposalBudgetNonPersonnelCostsPage.xml b/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/budget/nonpersonnel/ProposalBudgetNonPersonnelCostsPage.xml
+index 3923355..287f131 100644
+--- a/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/budget/nonpersonnel/ProposalBudgetNonPersonnelCostsPage.xml
++++ b/coeus-impl/src/main/resources/org/kuali/coeus/propdev/impl/budget/nonpersonnel/ProposalBudgetNonPersonnelCostsPage.xml
+@@ -165,14 +165,14 @@
+ 		p:promptText="You are about to enter costs in a later period. Doing so will prevent you from using the generate all periods function to auto-calculate later periods. Do you wish to continue?"/>
+ 
+ 	<bean id="PropBudget-EditNonPersonnelPeriod-Section" parent="PropBudget-EditNonPersonnelPeriod-Section-parent" />
+-	<bean id="PropBudget-EditNonPersonnelPeriod-Section-parent" p:fieldBindingObjectPath="addProjectBudgetLineItemHelper" abstract="true" parent="Uif-DialogGroup" 
++	<bean id="PropBudget-EditNonPersonnelPeriod-Section-parent" abstract="true" parent="Uif-DialogGroup" 
+         p:onHideDialogScript="jQuery('#PropBudget-NonPersonnelCostsPage-EditNonPersonnel-Dialog').one(kradVariables.EVENTS.HIDDEN_MODAL, function(e){Kc.Dialog.resetDialogFields(jQuery('#PropBudget-NonPersonnelCostsPage-EditNonPersonnel-Dialog'));});"
+ 		p:headerText="Edit Assigned Non-Personnel" p:enterKeyAction="@DEFAULT">
+ 		<property name="items">
+ 			<list>
+-				<bean parent="Uif-DataField" p:fieldLabel.labelText=" " p:propertyName="budgetLineItem.lineItemDescription"
++				<bean parent="Uif-DataField" p:fieldLabel.labelText=" " p:propertyName="addProjectBudgetLineItemHelper.budgetLineItem.lineItemDescription"
+ 					p:style="font-weight: bold; font-size: larger;" p:order="10"/>
+-				<bean parent="PropBudget-EditNonPersonnelCosts-Details-TabSection" p:order="20"/>
++				<bean parent="PropBudget-NonPersonnelCosts-Details-TabSection" p:order="20"/>
+ 			</list>
+ 		</property>
+ 		<property name="footer">
+@@ -207,18 +207,6 @@
+ 		</property>
+ 	</bean>
+ 	
+-	<bean id="PropBudget-EditNonPersonnelCosts-Details-TabSection" parent="PropBudget-NonPersonnelCosts-Details-TabSection-parentBean">
+-		<property name="items">
+-			<list>
+-				<bean parent="PropBudget-EditNonPersonnelCosts-Details-Tab"
+-					p:headerText="Details" p:order="10" />
+-				<bean parent="PropBudget-NonPersonnelCosts-CostSharing-Tab"
+-					p:headerText="Cost Sharing" p:order="20" />
+-				<bean parent="PropBudget-NonPersonnelCosts-Rates-Tab"
+-					p:headerText="Rates" p:order="30" />
+-			</list>
+-		</property>
+-	</bean>
+ 	<bean id="PropBudget-EditNonPersonnelCosts-Details-Tab" parent="PropBudget-NonPersonnelCosts-Details-Tab-parentBean">
+ 		<property name="items">
+ 			<list>
+@@ -258,12 +246,14 @@
+ 	<bean id="PropBudget-NonPersonnelCosts-Details-TabSection-parentBean" parent="Uif-TabSection">
+ 		<property name="items">
+ 			<list>
+-				<bean parent="PropBudget-NonPersonnelCosts-Details-Tab"
+-					p:headerText="Details" p:order="10" />
++				<bean parent="PropBudget-NonPersonnelCosts-Details-Tab" p:fieldBindingObjectPath="addProjectBudgetLineItemHelper"
++					p:headerText="Details" p:order="10"/>
++				<bean parent="PropBudget-NonPersonnelCosts-FormulatedCost-Tab"
++					p:headerText="Formulated Cost" p:order="20" p:render="@{addProjectBudgetLineItemHelper.budgetLineItem.formulatedCostElementFlag}"/>
+ 				<bean parent="PropBudget-NonPersonnelCosts-CostSharing-Tab"
+-					p:headerText="Cost Sharing" p:order="20" />
++					p:headerText="Cost Sharing" p:order="30" p:fieldBindingObjectPath="addProjectBudgetLineItemHelper"/>
+ 				<bean parent="PropBudget-NonPersonnelCosts-Rates-Tab"
+-					p:headerText="Rates" p:order="30" />
++					p:headerText="Rates" p:order="40" p:fieldBindingObjectPath="addProjectBudgetLineItemHelper"/>
+ 			</list>
+ 		</property>
+ 	</bean>
+@@ -288,6 +278,83 @@
+ 		</property>
+ 	</bean>
+ 	
++	<bean id="PropBudget-NonPersonnelCosts-FormulatedCost-Tab" parent="PropBudget-NonPersonnelCosts-FormulatedCost-Tab-parentBean" />
++	<bean id="PropBudget-NonPersonnelCosts-FormulatedCost-Tab-parentBean" abstract="true" parent="Uif-VerticalBoxSubSection">
++		<property name="items">
++			<list>				
++				<ref bean="PropBudget-FormulatedCost-Details" />
++			</list>
++		</property>
++	</bean>
++	
++    <!-- Budget line item Formulated cost details-->
++	<bean id="PropBudget-FormulatedCost-Details" parent="PropBudget-FormulatedCost-Details-parentBean" />
++	<bean id="PropBudget-FormulatedCost-Details-parentBean" parent="Uif-TableCollectionSection" abstract="true"
++		p:propertyName="addProjectBudgetLineItemHelper.budgetLineItem.budgetFormulatedCosts"
++		p:collectionObjectClass="org.kuali.coeus.common.budget.framework.nonpersonnel.BudgetFormulatedCostDetail"
++		p:addWithDialog="true" p:layoutManager.renderSequenceField="false"
++		p:editWithDialog="true">
++		<property name="layoutManager.richTable.templateOptions">
++			<map>
++				<entry key="sDom" value="tip" />
++				<entry key="bRetrieve" value="true" />
++				<entry key="bPaginate" value="false" />
++				<entry key="bInfo" value="false" />
++			</map>
++		</property>
++		<property name="editInDialogSaveActionPrototype">
++			<bean parent="Uif-EditLineInDialogSaveAction" p:disabled="@{#parent.readOnly}"
++			      p:methodToCall="updateFormulatedCost" p:performClientSideValidation="true" p:dialogDismissOption=""
++                  p:successCallback="Kc.Dialog.closeDialogWithoutError('Uif-EditLineDialog_PropBudget-FormulatedCost-Details_line@{#index}');retrieveComponent('PropBudget-NonPersonnelCostsPage-EditNonPersonnel-Dialog');"/>
++		</property>
++		<property name="addWithDialogAction">
++			<bean parent="Uif-AddWithDialogAction" p:actionLabel="Add Formulated Cost" p:iconClass="icon-plus" p:render="@{!#parent.readOnly}"/>
++		</property>
++	    <property name="addLineDialog">
++	    	<bean id="PropBudget-FormulatedCost-Details-AddDialog" parent="Uif-AddLineDialog" p:headerText="Add Formulated Cost"
++                  p:retrieveViaAjax="true">
++			   <property name="footer.items">
++			     <list>
++			       <bean parent="Uif-DialogDismissButton" p:actionLabel="Cancel"/>
++			       <bean parent="Uif-AddLineAction-Dialog" p:actionLabel="Add Formulated Cost" p:dialogDismissOption="" 
++			       		 p:methodToCall="addFormulatedCost" p:performClientSideValidation="true"
++                         p:successCallback="Kc.Dialog.closeDialogWithoutError('PropBudget-FormulatedCost-Details-AddDialog');retrieveComponent('PropBudget-NonPersonnelCostsPage-EditNonPersonnel-Dialog');"/>
++ 			     </list>
++			   </property>	    	    	
++	    	</bean>
++	    </property>
++		<property name="addLineItems">
++			<list>
++				<bean parent="Uif-InputField" p:propertyName="formulatedTypeCode" p:order="10"/>			
++				<bean parent="Uif-InputField" p:propertyName="unitCost" p:order="20"/>			
++				<bean parent="Uif-InputField" p:propertyName="count" p:order="30"/>			
++				<bean parent="Uif-InputField" p:propertyName="frequency" p:order="40"/>			
++			</list>
++		</property>
++		<property name="items">
++			<list>
++				<bean parent="Uif-InputField" p:propertyName="formulatedTypeCode" p:order="10"/>			
++				<bean parent="Uif-InputField" p:propertyName="unitCost" p:order="20"/>			
++				<bean parent="Uif-InputField" p:propertyName="count" p:order="30"/>			
++				<bean parent="Uif-InputField" p:propertyName="frequency" p:order="40"/>			
++				<bean parent="Uif-DataField" p:propertyName="calculatedExpenses" p:order="50"/>			
++			</list>
++		</property>
++		<property name="lineActions">
++			<list>
++				<bean parent="Uif-DeleteLineAction-IconOnly" p:order="40" p:methodToCall="deleteFormulatedCost"
++					p:refreshId="PropBudget-NonPersonnelCostsPage-EditNonPersonnel-Dialog"
++					p:iconClass="icon-trash" p:disabled="@{#parent.readOnly}">
++					<property name="confirmationDialog">
++						<bean parent="Uif-DialogGroup-OkCancel"
++							p:promptText="Are you sure you want to delete this cost?"
++							p:header.headerText="Delete Formulated Cost?"/>
++					</property>
++				</bean>					
++			</list>
++		</property>
++	</bean>
++	
+ 	<bean id="PropBudget-NonPersonnelCosts-CostSharing-Section" parent="PropBudget-NonPersonnelCosts-CostSharing-Section-parentBean" />
+ 	<bean id="PropBudget-NonPersonnelCosts-CostSharing-Section-parentBean" parent="Uif-CssGridSection-1FieldLabelColumn">
+ 		<property name="items">
+@@ -308,7 +375,7 @@
+ 	<bean id="PropBudget-NonPersonnelCosts-LineItem-ObjectFieldSection-parentBean" parent="Uif-CssGridSection-1FieldLabelColumn">
+ 		<property name="items">
+ 			<list>
+-				<bean parent="Uif-InputField" p:propertyName="budgetCategoryTypeCode"
++				<bean parent="Uif-InputField" p:propertyName="budgetCategoryTypeCode" p:readOnly="@{#fp.budgetLineItem.formulatedCostElementFlag}"
+ 					p:label="Category" p:order="10" p:required="false"
+ 					p:optionsFinder="#{#getService('budgetNonPersonnelBudgetCategoryTypeValuesFinder')}" 
+ 					p:optionsFinder.addBlankOption="false">
+@@ -319,10 +386,10 @@
+ 				<bean parent="Uif-InputField" p:propertyName="budgetLineItem.costElement"
+ 					p:refreshWhenChangedPropertyNames="#fp.budgetCategoryTypeCode"
+ 					p:label="Object Code Name" p:optionsFinder="#{#getService('budgetNonPersonnelCostElementValuesFinder')}" 
+-					p:optionsFinder.addBlankOption="false" p:order="20"/>
++					p:optionsFinder.addBlankOption="false" p:order="20" p:readOnly="@{#fp.budgetLineItem.formulatedCostElementFlag}"/>
+ 				<bean parent="Uif-InputField" p:propertyName="budgetLineItem.lineItemCost"
+-					p:label="Total Base Cost" p:order="30" p:required="false"/>
+-				<bean parent="Uif-InputField" p:propertyName="budgetLineItem.quantity"
++					p:label="Total Base Cost" p:order="30" p:required="false" p:readOnly="@{#fp.budgetLineItem.formulatedCostElementFlag}"/>
++				<bean parent="Uif-InputField" p:propertyName="budgetLineItem.quantity" p:readOnly="@{#fp.budgetLineItem.formulatedCostElementFlag}"
+ 					p:order="40" p:required="false"/>
+ 				<bean parent="Uif-InputField" p:propertyName="budgetLineItem.lineItemDescription"
+ 					p:order="50" p:required="false"/>
+@@ -347,11 +414,13 @@
+ 		<property name="items">
+ 			<list>
+ 				<bean parent="Uif-InputField" p:propertyName="budgetLineItem.applyInRateFlag"
+-					p:order="10" p:label="Apply Inflation"/>
+-				<bean parent="Uif-InputField" p:propertyName="budgetLineItem.submitCostSharingFlag"
++					p:order="10" p:label="Apply Inflation" p:readOnly="@{#fp.budgetLineItem.formulatedCostElementFlag}"
++					p:readOnlyDisplayReplacement="@{#fp.budgetLineItem.applyInRateFlag ? 'Yes' : 'No'}"/> 
++				<bean parent="Uif-InputField" p:propertyName="budgetLineItem.submitCostSharingFlag" p:readOnly="@{#fp.budgetLineItem.formulatedCostElementFlag}"
++					p:readOnlyDisplayReplacement="@{#fp.budgetLineItem.submitCostSharingFlag ? 'Yes' : 'No'}" 
+ 					p:order="20" p:label="Submit cost sharing"/>
+ 				<bean parent="Uif-InputField" p:propertyName="budgetLineItem.onOffCampusFlag"
+-                    p:readOnly="@{budget.onOffCampusFlag != '#{T(org.kuali.kra.infrastructure.OnOffCampusFlagConstants).Default.code}'}"
++                    p:readOnly="@{#fp.budgetLineItem.formulatedCostElementFlag or budget.onOffCampusFlag != '#{T(org.kuali.kra.infrastructure.OnOffCampusFlagConstants).Default.code}'}"
+ 					p:readOnlyDisplayReplacement="@{#fp.budgetLineItem.onOffCampusFlag ? 'Yes' : 'No'}" 
+ 					p:order="30" p:label="On Campus"/>
+ 			</list>

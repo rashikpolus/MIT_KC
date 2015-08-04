@@ -1,0 +1,300 @@
+From e886230a92b6eff85f03c7c6281038af0d539cca Mon Sep 17 00:00:00 2001
+From: Joe Williams <jwillia@iastate.edu>
+Date: Mon, 27 Apr 2015 15:35:26 -0500
+Subject: [PATCH] RESKC-352:Fix Wrong Proposal Status after Proposal Approved
+ at Final Stop and Submitted to Sponsor
+
+Create Proposal
+Submit for Review
+Do approvals
+At final stop, approve and then automatic submission to sponsor
+Actual Result: Status is set to 'Approved Post-Submission'
+Expected Result: Status is set to 'Approved and Submitted'
+---
+ .../impl/core/ProposalDevelopmentDocument.java     |  4 +-
+ .../core/ProposalDevelopmentSubmitController.java  |  4 +-
+ .../propdev/impl/state/ProposalStateService.java   |  3 +-
+ .../impl/state/ProposalStateServiceImpl.java       | 44 +++++++++++++++++-----
+ .../service/ProposalStateServiceTest.java          | 41 ++++++++++----------
+ 5 files changed, 61 insertions(+), 35 deletions(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentDocument.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentDocument.java
+index 32b1eba..d9b9188 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentDocument.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentDocument.java
+@@ -259,7 +259,7 @@ public void doRouteStatusChange(DocumentRouteStatusChange dto) {
+                     throw new RuntimeException(String.format("ProposalHierarchyException thrown while updating app doc status for document %s", getDocumentNumber()));
+                 }
+             }
+-            bp.setProposalStateTypeCode(getProposalStateService().getProposalStateTypeCode(this, true, false));
++            bp.setProposalStateTypeCode(getProposalStateService().getProposalStateTypeCode(this, false));
+             
+         }
+     }
+@@ -287,7 +287,7 @@ public void doActionTaken(ActionTakenEvent event) {
+                 }
+             }
+             String pCode = getDevelopmentProposal().getProposalStateTypeCode();
+-            getDevelopmentProposal().setProposalStateTypeCode(getProposalStateService().getProposalStateTypeCode(this, false, getKcDocumentRejectionService().isDocumentOnInitialNode(this.getDocumentHeader().getWorkflowDocument())));
++            getDevelopmentProposal().setProposalStateTypeCode(getProposalStateService().getProposalStateTypeCode(this, getKcDocumentRejectionService().isDocumentOnInitialNode(this.getDocumentHeader().getWorkflowDocument())));
+             if (!StringUtils.equals(pCode, getDevelopmentProposal().getProposalStateTypeCode())) {
+                 getDataObjectService().save(getDevelopmentProposal());
+                 getDevelopmentProposal().refreshReferenceObject("proposalState");
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentSubmitController.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentSubmitController.java
+index 4cb0071..3cd889f 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentSubmitController.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentSubmitController.java
+@@ -465,7 +465,7 @@ protected void setProposalStateType(boolean generateIp, ProposalDevelopmentDocum
+             if (ProposalState.APPROVED.equals(proposalDevelopmentDocument.getDevelopmentProposal().getProposalStateTypeCode())) {
+                 proposalDevelopmentDocument.getDevelopmentProposal().setProposalStateTypeCode(ProposalState.APPROVED_AND_SUBMITTED);
+             } else {
+-                proposalDevelopmentDocument.getDevelopmentProposal().setProposalStateTypeCode(proposalStateService.getProposalStateTypeCode(proposalDevelopmentDocument, false, false));
++                proposalDevelopmentDocument.getDevelopmentProposal().setProposalStateTypeCode(proposalStateService.getProposalStateTypeCode(proposalDevelopmentDocument, false));
+             }
+         } else {
+             if (proposalDevelopmentDocument.getDocumentHeader().getWorkflowDocument().isFinal()) {
+@@ -694,7 +694,7 @@ protected ModelAndView updateProposalState(ProposalDevelopmentDocumentForm form)
+         getGlobalVariableService().getMessageMap().getInfoMessages().clear();
+         getGlobalVariableService().getMessageMap().putInfoForSectionId(ProposalDevelopmentConstants.KradConstants.SUBMIT_PAGE, KeyConstants.APPROVAL_CYCLE_COMPLETE);
+     } else {
+-        form.getDevelopmentProposal().setProposalStateTypeCode(getProposalStateService().getProposalStateTypeCode(form.getProposalDevelopmentDocument(), true, false));
++        form.getDevelopmentProposal().setProposalStateTypeCode(getProposalStateService().getProposalStateTypeCode(form.getProposalDevelopmentDocument(), false));
+     }
+     getDataObjectService().wrap(form.getDevelopmentProposal()).fetchRelationship("proposalState");
+     return getModelAndViewService().getModelAndView(form);
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/state/ProposalStateService.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/state/ProposalStateService.java
+index 790b5e6..f6418ef 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/state/ProposalStateService.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/state/ProposalStateService.java
+@@ -48,10 +48,9 @@
+      * then approved, the state is "Approved Post-Submission".
+      * 
+      * @param proposalDevelopmentDocument the proposal development document
+-     * @param isRouteStatusChanged was the route status just changed (if false, the proposal was submitted to the sponsor)
+      * @param isReject was the action taken a rejection of the document?
+      * @return the proposal state type code
+      */
+-    public String getProposalStateTypeCode(ProposalDevelopmentDocument proposalDevelopmentDocument, boolean isRouteStatusChanged, boolean isReject);
++    public String getProposalStateTypeCode(ProposalDevelopmentDocument proposalDevelopmentDocument, boolean isReject);
+ 
+ }
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/state/ProposalStateServiceImpl.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/state/ProposalStateServiceImpl.java
+index 8a5afdd..a175ca8 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/state/ProposalStateServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/state/ProposalStateServiceImpl.java
+@@ -18,8 +18,10 @@
+  */
+ package org.kuali.coeus.propdev.impl.state;
+ 
++import org.apache.commons.lang3.StringUtils;
+ import org.kuali.coeus.propdev.impl.core.ProposalDevelopmentDocument;
+ import org.kuali.coeus.propdev.impl.hierarchy.ProposalHierarchyService;
++import org.kuali.coeus.sys.framework.workflow.KcWorkflowService;
+ import org.kuali.rice.kew.api.WorkflowDocument;
+ import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.beans.factory.annotation.Qualifier;
+@@ -31,9 +33,13 @@
+ 	@Autowired
+ 	@Qualifier("proposalHierarchyService")
+ 	private ProposalHierarchyService proposalHierarchyService;
++
++    @Autowired
++    @Qualifier("kcWorkflowService")
++    private KcWorkflowService kcWorkflowService;
+     
+     @Override
+-    public String getProposalStateTypeCode(ProposalDevelopmentDocument proposalDevelopmentDocument, boolean isRouteStatusChanged, boolean isRejectAction ) {
++    public String getProposalStateTypeCode(ProposalDevelopmentDocument proposalDevelopmentDocument, boolean isRejectAction) {
+         WorkflowDocument wd = proposalDevelopmentDocument.getDocumentHeader().getWorkflowDocument();
+         
+         if (wd.isInitiated()) {
+@@ -45,9 +51,9 @@ public String getProposalStateTypeCode(ProposalDevelopmentDocument proposalDevel
+         } else if (wd.isEnroute()) {
+             return computeProposalStateForEnRoute(proposalDevelopmentDocument);
+         } else if (wd.isApproved()) {
+-            return computeProposalStateForApproved(proposalDevelopmentDocument, isRouteStatusChanged);
++            return computeProposalStateForApproved(proposalDevelopmentDocument);
+         } else if (wd.isDisapproved()) {
+-            return computeProposalStateForDisapproved(proposalDevelopmentDocument, isRouteStatusChanged);
++            return computeProposalStateForDisapproved(proposalDevelopmentDocument);
+         } else if (wd.isCanceled()) {
+             return ProposalState.CANCELED;
+         } else {
+@@ -64,16 +70,27 @@ protected String computeProposalStateForSaved(ProposalDevelopmentDocument propos
+     }
+ 
+     protected String computeProposalStateForEnRoute(ProposalDevelopmentDocument proposalDevelopmentDocument) {
+-        if (isSubmitted(proposalDevelopmentDocument)) {
++        String proposalStateTypeCode = proposalDevelopmentDocument.getDevelopmentProposal().getProposalStateTypeCode();
++        if ((isSubmitted(proposalDevelopmentDocument) && !isFinalApproval(proposalDevelopmentDocument.getDocumentHeader().getWorkflowDocument())) ||
++                StringUtils.equals(proposalStateTypeCode,ProposalState.APPROVAL_PENDING_SUBMITTED)) {
+             return ProposalState.APPROVAL_PENDING_SUBMITTED;
+         } else {
+             return ProposalState.APPROVAL_PENDING;
+         }
+     }
+ 
+-    protected String computeProposalStateForApproved(ProposalDevelopmentDocument proposalDevelopmentDocument, boolean isRouteStatusChanged) {
++    protected boolean isFinalApproval(WorkflowDocument workflowDocument) {
++        if (StringUtils.isNotEmpty(workflowDocument.getDocumentId())) {
++            return getKcWorkflowService().isFinalApproval(workflowDocument);
++        }
++        return false;
++    }
++
++    protected String computeProposalStateForApproved(ProposalDevelopmentDocument proposalDevelopmentDocument) {
++        String proposalStateTypeCode = proposalDevelopmentDocument.getDevelopmentProposal().getProposalStateTypeCode();
+         if (isSubmitted(proposalDevelopmentDocument)) {
+-            if (isRouteStatusChanged) {
++            if (StringUtils.equals(proposalStateTypeCode,ProposalState.APPROVAL_PENDING_SUBMITTED) ||
++                    StringUtils.equals(proposalStateTypeCode,ProposalState.APPROVED_POST_SUBMISSION)) {
+                 return ProposalState.APPROVED_POST_SUBMISSION;
+             } else {
+                 return ProposalState.APPROVED_AND_SUBMITTED;
+@@ -83,8 +100,8 @@ protected String computeProposalStateForApproved(ProposalDevelopmentDocument pro
+         }
+     }
+ 
+-    protected String computeProposalStateForDisapproved(ProposalDevelopmentDocument proposalDevelopmentDocument, boolean isRouteStatusChanged) {
+-        if (isSubmitted(proposalDevelopmentDocument) && isRouteStatusChanged) {
++    protected String computeProposalStateForDisapproved(ProposalDevelopmentDocument proposalDevelopmentDocument) {
++        if (isSubmitted(proposalDevelopmentDocument)) {
+             return ProposalState.DISAPPROVED_POST_SUBMISSION;
+         } else {
+             return ProposalState.DISAPPROVED;
+@@ -101,6 +118,13 @@ public ProposalHierarchyService getProposalHierarchyService() {
+ 
+     public void setProposalHierarchyService(ProposalHierarchyService proposalHierarchyService) {
+         this.proposalHierarchyService = proposalHierarchyService;
+-    } 
+-    
++    }
++
++    public KcWorkflowService getKcWorkflowService() {
++        return kcWorkflowService;
++    }
++
++    public void setKcWorkflowService(KcWorkflowService kcWorkflowService) {
++        this.kcWorkflowService = kcWorkflowService;
++    }
+ }
+diff --git a/coeus-it/src/test/java/org/kuali/kra/proposaldevelopment/service/ProposalStateServiceTest.java b/coeus-it/src/test/java/org/kuali/kra/proposaldevelopment/service/ProposalStateServiceTest.java
+index b221083..7d89979 100644
+--- a/coeus-it/src/test/java/org/kuali/kra/proposaldevelopment/service/ProposalStateServiceTest.java
++++ b/coeus-it/src/test/java/org/kuali/kra/proposaldevelopment/service/ProposalStateServiceTest.java
+@@ -66,7 +66,7 @@ public void initTest() {
+      */
+     @Test
+     public void testInitiated() {
+-        runTest(INITIATED, false, false, ProposalState.IN_PROGRESS, ProposalState.IN_PROGRESS);  
++        runTest(INITIATED, false, false, ProposalState.IN_PROGRESS, ProposalState.IN_PROGRESS, null);
+     }
+     
+     /**
+@@ -75,8 +75,8 @@ public void testInitiated() {
+      */
+     @Test
+     public void testSaved() {
+-        runTest(SAVED, false, false, ProposalState.IN_PROGRESS, ProposalState.IN_PROGRESS);
+-        runTest(SAVED, true, false, ProposalState.APPROVAL_NOT_INITIATED_SUBMITTED, ProposalState.APPROVAL_NOT_INITIATED_SUBMITTED);
++        runTest(SAVED, false, false, ProposalState.IN_PROGRESS, ProposalState.IN_PROGRESS, null);
++        runTest(SAVED, true, false, ProposalState.APPROVAL_NOT_INITIATED_SUBMITTED, ProposalState.APPROVAL_NOT_INITIATED_SUBMITTED, null);
+     }
+     
+     /**
+@@ -85,9 +85,9 @@ public void testSaved() {
+      */
+     @Test
+     public void testEnroute() {
+-        runTest(ENROUTE, false, false, ProposalState.APPROVAL_PENDING, ProposalState.APPROVAL_PENDING );
+-        runTest(ENROUTE, true, false, ProposalState.APPROVAL_PENDING_SUBMITTED, ProposalState.APPROVAL_PENDING_SUBMITTED );
+-        runTest(ENROUTE, true, true, ProposalState.REVISIONS_REQUESTED, ProposalState.REVISIONS_REQUESTED );
++        runTest(ENROUTE, false, false, ProposalState.APPROVAL_PENDING, ProposalState.APPROVAL_PENDING, ProposalState.APPROVAL_PENDING);
++        runTest(ENROUTE, true, false, ProposalState.APPROVAL_PENDING_SUBMITTED, ProposalState.APPROVAL_PENDING_SUBMITTED, ProposalState.APPROVAL_PENDING);
++        runTest(ENROUTE, true, true, ProposalState.REVISIONS_REQUESTED, ProposalState.REVISIONS_REQUESTED, null);
+     }
+     
+     /**
+@@ -99,8 +99,8 @@ public void testEnroute() {
+      */
+     @Test
+     public void testApproved() {
+-        runTest(APPROVED, false, false, ProposalState.APPROVAL_GRANTED, ProposalState.APPROVAL_GRANTED);
+-        runTest(APPROVED, true, false, ProposalState.APPROVED_AND_SUBMITTED, ProposalState.APPROVED_POST_SUBMISSION);
++        runTest(APPROVED, false, false, ProposalState.APPROVAL_GRANTED, ProposalState.APPROVAL_GRANTED, ProposalState.APPROVAL_PENDING);
++        runTest(APPROVED, true, false, ProposalState.APPROVED_POST_SUBMISSION, ProposalState.APPROVED_POST_SUBMISSION, ProposalState.APPROVAL_PENDING_SUBMITTED);
+     }
+    
+     /**
+@@ -113,8 +113,8 @@ public void testApproved() {
+      */
+     @Test
+     public void testDisapproved() {
+-        runTest(DISAPPROVED, false, false, ProposalState.DISAPPROVED, ProposalState.DISAPPROVED);
+-        runTest(DISAPPROVED, true, false, ProposalState.DISAPPROVED, ProposalState.DISAPPROVED_POST_SUBMISSION);
++        runTest(DISAPPROVED, false, false, ProposalState.DISAPPROVED, ProposalState.DISAPPROVED, null);
++        runTest(DISAPPROVED, true, false, ProposalState.DISAPPROVED_POST_SUBMISSION, ProposalState.DISAPPROVED_POST_SUBMISSION, null);
+     }
+     
+     /**
+@@ -122,8 +122,8 @@ public void testDisapproved() {
+      */
+     @Test
+     public void testCanceled() {
+-        runTest(CANCELED, false, false, ProposalState.CANCELED, ProposalState.CANCELED);
+-        runTest(CANCELED, true, false, ProposalState.CANCELED, ProposalState.CANCELED);
++        runTest(CANCELED, false, false, ProposalState.CANCELED, ProposalState.CANCELED, null);
++        runTest(CANCELED, true, false, ProposalState.CANCELED, ProposalState.CANCELED, null);
+     }
+     
+     /**
+@@ -131,8 +131,8 @@ public void testCanceled() {
+      */
+     @Test
+     public void testException() {
+-        runTest(EXCEPTION, false, false, ProposalState.DOCUMENT_ERROR, ProposalState.DOCUMENT_ERROR);
+-        runTest(EXCEPTION, true, false, ProposalState.DOCUMENT_ERROR, ProposalState.DOCUMENT_ERROR );
++        runTest(EXCEPTION, false, false, ProposalState.DOCUMENT_ERROR, ProposalState.DOCUMENT_ERROR, null);
++        runTest(EXCEPTION, true, false, ProposalState.DOCUMENT_ERROR, ProposalState.DOCUMENT_ERROR, null);
+     }
+     
+     
+@@ -146,15 +146,17 @@ public void testException() {
+      * @param isRejected has the proposal been rejected? ( Revisions Requested ).
+      * @param expectedState1 the first expected proposal state value
+      * @param expectedState2 the second expected proposal state value
++     * @param previousStateTypeCode
+      *  
+      */
+-    private void runTest(int workflowState, boolean isSubmitted, boolean isRejected, String expectedState1, String expectedState2 ) {
++    private void runTest(int workflowState, boolean isSubmitted, boolean isRejected, String expectedState1, String expectedState2, String previousStateTypeCode) {
+         ProposalDevelopmentDocument doc = createProposalDevelopmentDocument(workflowState, isSubmitted);
+-        
+-        String state = service.getProposalStateTypeCode(doc, false, isRejected );
++
++        doc.getDevelopmentProposal().setProposalStateTypeCode(previousStateTypeCode);
++        String state = service.getProposalStateTypeCode(doc, isRejected );
+         assertEquals("Proposal State", expectedState1, state);
+         
+-        state = service.getProposalStateTypeCode(doc, true, isRejected);
++        state = service.getProposalStateTypeCode(doc, isRejected);
+         assertEquals("Proposal State", expectedState2, state );
+         
+     }
+@@ -176,7 +178,7 @@ private ProposalDevelopmentDocument createProposalDevelopmentDocument(int workfl
+          
+         docHdr.setWorkflowDocument((WorkflowDocument) mock);
+         doc.setDocumentHeader(docHdr);
+-        
++
+         return doc;
+     }
+     
+@@ -203,6 +205,7 @@ private void setMockExpectations(final WorkflowDocument mock, final int workflow
+                     atLeast(1).of(mock).isInitiated(); will(returnValue(false));
+                     atLeast(1).of(mock).isSaved(); will(returnValue(false));
+                     atLeast(2).of(mock).isEnroute(); will(returnValue(true));
++                    atLeast(1).of(mock).getDocumentId(); will(returnValue(null));
+                     break;
+                     
+                 case APPROVED:

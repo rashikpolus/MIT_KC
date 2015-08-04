@@ -1,0 +1,182 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Sun Nov 30 08:08:57 2014
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+
+Table altered.
+
+
+Table altered.
+
+CREATE SEQUENCE SEQ_COMM_SCHED_ATTACH_ID INCREMENT BY 1 START WITH 1 NOCACHE
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+Table altered.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+1 row deleted.
+
+
+0 rows deleted.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+alter table BUDGET_SUB_AWARDS drop column ORGANIZATION_NAME
+                                          *
+ERROR at line 1:
+ORA-00904: "ORGANIZATION_NAME": invalid identifier
+
+
+SP2-0310: unable to open file "dml/KR_DML_01_KRACOEUS-8105_B000.sql"
+SP2-0310: unable to open file "dml/KR_DML_02_KRACOEUS-8105_B000.sql"
+INSERT INTO KRCR_CMPNT_T (NMSPC_CD, CMPNT_CD, NM, ACTV_IND, OBJ_ID, VER_NBR)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_DTL_TYP_TP1) violated
+
+
+
+1 row updated.
+
+
+1 row created.
+
+
+20072 rows updated.
+
+
+Table altered.
+
+
+20072 rows updated.
+
+
+Table altered.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row updated.
+
+
+Commit complete.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+ALTER TABLE KRMS_NL_TMPL_T ADD ACTV VARCHAR2(1) DEFAULT 'Y' NOT NULL
+                               *
+ERROR at line 1:
+ORA-01430: column being added already exists in table
+
+
+
+0 rows updated.
+
+
+0 rows created.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+Table altered.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+INSERT INTO KRCR_PARM_T(NMSPC_CD, CMPNT_CD, PARM_NM, OBJ_ID, VER_NBR, PARM_TYP_CD, VAL, PARM_DESC_TXT, EVAL_OPRTR_CD, APPL_ID) VALUES ('KC-GEN', 'All', 'DisableFrequencyValidationForNull', SYS_GUID(), '1', 'CONFG', 'Y', 'Disable Frequency	Validation for Null', 'A', 'KC')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+
+Commit complete.
+
+
+Table altered.
+
+
+Commit complete.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

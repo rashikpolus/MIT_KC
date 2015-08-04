@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2005-2013 The Kuali Foundation Licensed under the Educational 
+	Community License, Version 2.0 (the "License"); you may not use this file 
+	except in compliance with the License. You may obtain a copy of the License 
+	at http://www.opensource.org/licenses/ecl2.php Unless required by applicable 
+	law or agreed to in writing, software distributed under the License is distributed 
+	on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either 
+	express or implied. See the License for the specific language governing permissions 
+	and limitations under the License. -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <bean id="WorkloadBalancing-View" parent="WorkloadBalancing-View-parentBean"/>
+    <bean id="WorkloadBalancing-View-parentBean" abstract="true"
+          parent="Uif-FormView"
+          p:formClass="edu.mit.kc.workloadbalancing.core.WorkloadForm"
+          p:viewName="initiate" p:stickyFooter="true" p:singlePageView="true">
+        <property name="additionalScriptFiles">
+            <list>
+                <value>rice-contrib/plugins/jquery.multiselect/jquery.multiselect.min.js</value>
+                <value>rice-contrib/plugins/jquery.multiselect/jquery.multiselect.filter.min.js</value>
+                <value>rice-contrib/multiselect.js</value>
+                <value>scripts/propdev/core.js</value>
+                <value>scripts/common/dialog.js</value>
+                <value>scripts/workloadbalancing/workloadBalancing.js</value>
+            </list>
+        </property>
+        <property name="additionalCssFiles">
+            <list>
+                <value>rice-contrib/plugins/jquery.multiselect/jquery.multiselect.css</value>
+                <value>rice-contrib/plugins/jquery.multiselect/jquery.multiselect.filter.css</value>
+                <value>rice-contrib/multiselect.css</value>
+                <value>css/workloadbalancing/workload_matrix.css</value>
+
+            </list>
+        </property>
+        <property name="onDocumentReadyScript" value="setupColumnHover();"/>
+        <property name="header">
+            <null/>
+        </property>
+        <property name="page" ref="WorkloadBalancing-Page"/>
+        <property name="dialogs">
+            <list>
+                <ref bean="Workload-Add-Dialog"/>
+                <ref bean="Workload-Capacity-Edit"/>
+                <ref bean="Workload-Unit-Edit"/>
+                <ref bean="Workload-Absentee-Edit"/>
+                <ref bean="Workload-ReassignUnit-Dialog"/>
+                <ref bean="Workload-LoadSimulation-Dialog"/>
+            </list>
+        </property>
+    </bean>
+
+</beans>

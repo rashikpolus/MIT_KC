@@ -1,0 +1,184 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+
+    <bean id="Workload-Unit-Edit" parent="Uif-DialogGroup" p:retrieveViaAjax="true"
+          p:headerText="@{#form.workloadLineItemEdit.personName}" p:dialogCssClass="modal-lg"
+          p:readOnly="@{!canEdit}">
+        <property name="destroyDialogOnHidden" value="true"/>
+        <property name="items">
+            <list>
+                <bean parent="Workload-Simulation-Message"/>
+                <bean parent="Uif-VerticalBoxSection" p:headerText="Unit Assignments">
+                    <property name="items">
+                        <list>
+                            <ref bean="Workload-Unit-Collection"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+        <property name="footer.items">
+            <list>
+                <bean parent="Uif-DialogDismissButton" p:actionLabel="Close"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Workload-Unit-Collection" parent="Uif-TableCollectionSection"
+          p:addWithDialog="true">
+        <property name="collectionObjectClass"
+                  value="org.kuali.coeus.common.framework.unit.admin.UnitAdministrator"/>
+        <property name="propertyName" value="unitListEdit"/>
+        <property name="layoutManager.renderSequenceField" value="false"/>
+        <property name="layoutManager.generateAutoSequence" value="false"/>
+        <property name="layoutManager.richTable.render" value="false"/>
+        <property name="addWithDialogAction">
+            <bean parent="Uif-AddWithDialogAction" p:actionLabel="Add Assignment"
+                  p:iconClass="icon-plus" p:hidden="@{!canEdit}"/>
+        </property>
+
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:label="Unit Name"
+                      p:propertyName="unit.unitName" p:readOnly="true"/>
+            </list>
+        </property>
+
+        <property name="lineActions">
+            <list>
+                <bean parent="Uif-Action"
+                      p:actionScript="writeHiddenToForm('reassignUnitItem', @{#index}); showDialog('Workload-ReassignUnit-Dialog')"
+                      p:actionLabel="Reassign Unit"
+                      p:additionalCssClasses="btn-default btn-xs" p:hidden="@{!canEdit}"/>
+                <bean parent="Uif-Action" p:methodToCall="deleteUnitAssignment"
+                      p:actionLabel="Unassign Unit"
+                      p:additionalCssClasses="btn-default btn-xs" p:hidden="@{!canEdit}"/>
+            </list>
+        </property>
+
+        <property name="addLineDialog">
+            <ref bean="Workload-Unit-Add-Dialog"/>
+        </property>
+    </bean>
+
+    <bean id="Workload-Unit-Add-Dialog" parent="Uif-AddLineDialog"
+          p:retrieveViaAjax="true" p:enterKeyAction="Workload-Unit-Collection_add"
+          p:headerText="Add Unit Assignments">
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" p:propertyName="unitNumber"
+                      p:label="Unit Number" p:required="true"
+                      p:enableAutoDirectInquiry="false">
+                    <property name="quickfinder">
+                        <bean parent="Uif-QuickFinder" p:returnByScript="true"/>
+                    </property>
+                    <property name="propertyNamesForAdditionalDisplay"
+                              value="unit.unitName"/>
+                    <property name="attributeQuery">
+                        <bean parent="Uif-AttributeQueryConfig"
+                              p:dataObjectClassName="org.kuali.coeus.common.framework.unit.Unit"
+                              p:queryFieldMapping="unitNumber:unitNumber"
+                              p:returnFieldMapping="unitName:unit.unitName"/>
+                    </property>
+                </bean>
+
+                <bean p:hidden="@{#lp.unitNumber eq null or #lp.unitNumber eq ''}"
+                      p:fieldLabel.hidden="true"
+                      id="Workload-Unit-AssignedTo"
+                      parent="Uif-MessageField" p:label="Unit currently assigned to"
+                      p:refreshWhenChangedPropertyNames="#lp.unitNumber"
+                      p:messageText="@{#form.unitAssignedTo}"/>
+
+            </list>
+        </property>
+        <property name="footer.items">
+            <list>
+                <bean parent="Uif-AddLineAction-Dialog" p:dialogDismissOption=""
+                      p:successCallback="Kc.Dialog.closeDialogWithoutError('Workload-Unit-Add-Dialog');"
+                      p:performClientSideValidation="true"
+                      p:methodToCall="addUnitAssignment"
+                      p:actionLabel="Add Assignment"/>
+                <bean parent="Uif-DialogDismissButton" p:actionLabel="Cancel"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="Workload-ReassignUnit-Dialog" parent="Uif-DialogGroup" p:retrieveViaAjax="true"
+          p:headerText="Reassign Unit" p:refreshWhenChangedPropertyNames="reassignPersonInfo.tempUserName"
+          p:enterKeyAction="Workload-Reassign-Button">
+        <property name="destroyDialogOnHidden" value="true"/>
+        <property name="items">
+            <list>
+
+                <bean parent="Uif-VerticalBoxSection"
+                      p:headerText="@{#form.unitAssignmentEdit.unit.unitName}">
+                    <property name="items">
+                        <list>
+                            <bean parent="Uif-InputField" p:label="Unit ID" p:labelLeft="true"
+                                  p:readOnly="true" p:propertyName="unitAssignmentEdit.unitNumber"
+                                  p:enableAutoQuickfinder="false"
+                                  p:enableAutoDirectInquiry="false"/>
+                            <bean parent="Uif-InputField" p:label="Organization Id" p:labelLeft="true"
+                                  p:readOnly="true" p:propertyName="unitAssignmentEdit.unit.organizationId"
+                                  p:enableAutoQuickfinder="false"/>
+                            <bean parent="Uif-MessageField" p:label="Currently Assigned To" p:labelLeft="true"
+                                  p:messageText="@{workloadLineItemEdit.personName} (@{workloadLineItemEdit.userName})"/>
+
+                            <bean id="Workload-Reassign-Info"
+                                  parent="Uif-VerticalBoxGroup"
+                                  p:additionalCssClasses="well well-sm workload-reassign-field">
+                                <property name="items">
+                                    <list>
+                                        <bean parent="Uif-InputField" p:required="true"
+                                              p:label="Reassign this unit to user"
+                                              p:propertyName="reassignPersonInfo.tempUserName">
+                                            <property name="control">
+                                                <bean parent="Uif-TextControl"/>
+                                            </property>
+                                            <property name="quickfinder">
+                                                <bean parent="Uif-QuickFinder" p:returnByScript="true"
+                                                      p:fieldConversions="personId:reassignPersonInfo.tempPersonId,fullName:reassignPersonInfo.tempPersonName,userName:reassignPersonInfo.tempUserName"
+                                                      p:dataObjectClassName="org.kuali.coeus.common.framework.person.KcPerson"/>
+                                            </property>
+                                        </bean>
+
+                                        <bean parent="Uif-InputField"
+                                              p:hidden="@{#form.reassignPersonInfo.tempPersonId eq ''}"
+                                              p:labelLeft="true" p:label="Name"
+                                              p:propertyName="reassignPersonInfo.tempPersonName" p:readOnly="true">
+                                        </bean>
+
+                                        <bean parent="Uif-InputField"
+                                              p:hidden="@{#form.reassignPersonInfo.tempPersonId eq ''}"
+                                              p:labelLeft="true" p:label="Person Id"
+                                              p:propertyName="reassignPersonInfo.tempPersonId" p:readOnly="true">
+                                        </bean>
+                                    </list>
+                                </property>
+                            </bean>
+
+
+                        </list>
+                    </property>
+                </bean>
+
+            </list>
+        </property>
+        <property name="footer.items">
+            <list>
+
+                <bean parent="Uif-DialogDismissButton" p:actionLabel="Cancel"/>
+
+                <bean id="Workload-Reassign-Button" parent="Uif-PrimaryActionButton" p:actionLabel="Reassign"
+                      p:methodToCall="reassignUnitAssignment"
+                      p:successCallback="Kc.Dialog.closeDialogWithoutError('Workload-ReassignUnit-Dialog')"
+                      p:refreshId="Workload-Unit-Collection" p:defaultEnterKeyAction="true"
+                      p:performClientSideValidation="true"/>
+            </list>
+        </property>
+    </bean>
+
+</beans>

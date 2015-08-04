@@ -1,0 +1,654 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Sun May 3 01:52:03 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+
+Package created.
+
+
+Package body created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+0 rows updated.
+
+
+0 rows updated.
+
+
+1 row updated.
+
+Insert into KRCR_PARM_T (NMSPC_CD,CMPNT_CD,PARM_NM,OBJ_ID,VER_NBR,PARM_TYP_CD,VAL,PARM_DESC_TXT,EVAL_OPRTR_CD,APPL_ID) values ('KC-GEN','Document','KC_COI_DB_LINK',sys_guid(),1,'AUTH','COEUS.KUALI','DB Link to connect with Coeus DB to get the COI Functions','A','KUALI')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+
+1 row updated.
+
+INSERT INTO KRCR_PARM_T(NMSPC_CD, CMPNT_CD, PARM_NM, OBJ_ID, VER_NBR, PARM_TYP_CD, VAL, PARM_DESC_TXT, EVAL_OPRTR_CD, APPL_ID) VALUES ('KC-GEN', 'Document', 'disableAttachmentRemoval', SYS_GUID(), '1', 'CONFG', 'Y', 'Disable Attachment Removal', 'A', 'KC')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+Insert into KRCR_PARM_T (NMSPC_CD,CMPNT_CD,PARM_NM,OBJ_ID,VER_NBR,PARM_TYP_CD,VAL,PARM_DESC_TXT,EVAL_OPRTR_CD,APPL_ID) values ('KC-GEN','Document','ENABLE_SEP_LINK',sys_guid(),1,'AUTH','Y','Parameter for enabling Single Point Entry menu under Proposal Budget','A','KUALI')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+INSERT INTO KRCR_PARM_T(NMSPC_CD, CMPNT_CD, PARM_NM, OBJ_ID, VER_NBR, PARM_TYP_CD, VAL, PARM_DESC_TXT, EVAL_OPRTR_CD, APPL_ID) VALUES ('KC-AWARD', 'Document', 'ENABLE_ANIMAL_REVIEW_VALID', SYS_GUID(), '1', 'CONFG', '1', 'Specifies Animal Usage Special Review Status.If value of the parameter is N, this hold prompt is off.', 'A', 'KC')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+INSERT INTO KRCR_PARM_T(NMSPC_CD, CMPNT_CD, PARM_NM, OBJ_ID, VER_NBR, PARM_TYP_CD, VAL, PARM_DESC_TXT, EVAL_OPRTR_CD, APPL_ID) VALUES ('KC-AWARD', 'Document', 'ENABLE_AWARD_BIOHAZARD_REVIEW_VALID', SYS_GUID(), '1', 'CONFG', '1', 'Specifies Biohazard Materials Special Review Status.If value of the parameter is N, this hold prompt is off.', 'A', 'KC')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+INSERT INTO KRCR_PARM_T(NMSPC_CD, CMPNT_CD, PARM_NM, OBJ_ID, VER_NBR, PARM_TYP_CD, VAL, PARM_DESC_TXT, EVAL_OPRTR_CD, APPL_ID) VALUES ('KC-AWARD', 'Document', 'ENABLE_AWARD_HUMAN_REVIEW_VALID', SYS_GUID(), '1', 'CONFG', '1', 'Specifies Human Subjects  Special Review Status.If value of the parameter is N, this hold prompt is off.', 'A', 'KC')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+INSERT INTO KRCR_PARM_T(NMSPC_CD, CMPNT_CD, PARM_NM, OBJ_ID, VER_NBR, PARM_TYP_CD, VAL, PARM_DESC_TXT, EVAL_OPRTR_CD, APPL_ID) VALUES ('KC-AWARD', 'Document', 'ENABLE_AWARD_DNA_REVIEW_VALID', SYS_GUID(), '1', 'CONFG', '1', 'Specifies Recombinant DNA  Special Review Status.If value of the parameter is N, this hold prompt is off.', 'A', 'KC')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+INSERT INTO KRCR_PARM_T(NMSPC_CD, CMPNT_CD, PARM_NM, OBJ_ID, VER_NBR, PARM_TYP_CD, VAL, PARM_DESC_TXT, EVAL_OPRTR_CD, APPL_ID) VALUES ('KC-AWARD', 'Document', 'ENABLE_AWARD_ISOTOPE_REVIEW_VALID', SYS_GUID(), '1', 'CONFG', '1', 'Specifies Radioactive Isotopes Special Review Status.If value of the parameter is N, this hold prompt is off.', 'A', 'KC')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+INSERT INTO KRCR_PARM_T(NMSPC_CD, CMPNT_CD, PARM_NM, OBJ_ID, VER_NBR, PARM_TYP_CD, VAL, PARM_DESC_TXT, EVAL_OPRTR_CD, APPL_ID) VALUES ('KC-AWARD', 'Document', 'ENABLE_AWARD_INTER_REVIEW_VALID', SYS_GUID(), '1', 'CONFG', '1', 'Specifies International Programs  Special Review Status.If value of the parameter is N, this hold prompt is off.', 'A', 'KC')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+INSERT INTO KRCR_PARM_T(NMSPC_CD, CMPNT_CD, PARM_NM, OBJ_ID, VER_NBR, PARM_TYP_CD, VAL, PARM_DESC_TXT, EVAL_OPRTR_CD, APPL_ID) VALUES ('KC-AWARD', 'Document', 'AWARD_ON_HOLD_BASED_ON_COI' , SYS_GUID(), '1', 'CONFG', 'Y', 'This is the decide whether Award Hold Prompt is enabled for COI/Financial Dsiclosures.If value of the parameter is N, this hold prompt is off.', 'A', 'KC')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+INSERT INTO KRCR_PARM_T(NMSPC_CD, CMPNT_CD, PARM_NM, OBJ_ID, VER_NBR, PARM_TYP_CD, VAL, PARM_DESC_TXT, EVAL_OPRTR_CD, APPL_ID) VALUES ('KC-AWARD', 'Document', 'ENABLE_AWARD_NSF_RCR_REVIEW_VALID' , SYS_GUID(), '1', 'CONFG', 'Y', 'This is the decide whether Award Hold Prompt is needed to trigger if NSF is sponsor.If value of the parameter is N, this hold prompt is off.', 'A', 'KC')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+INSERT INTO KRCR_PARM_T(NMSPC_CD, CMPNT_CD, PARM_NM, OBJ_ID, VER_NBR, PARM_TYP_CD, VAL, PARM_DESC_TXT, EVAL_OPRTR_CD, APPL_ID) VALUES ('KC-AWARD', 'Document', 'ENABLE_AWARD_REPORT_VALIDATION' , SYS_GUID(), '1', 'CONFG', 'Y', 'This is the decide whether Award Hold Prompt is needed to trigger if	Lead Unit PI has a Final Technical Report.If value of the parameter is N, this hold prompt is off.', 'A', 'KC')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+INSERT INTO KRCR_PARM_T(NMSPC_CD, CMPNT_CD, PARM_NM, OBJ_ID, VER_NBR, PARM_TYP_CD, VAL, PARM_DESC_TXT, EVAL_OPRTR_CD, APPL_ID) VALUES ('KC-AWARD', 'Document', 'ENABLE_AWARD_TERM_REVIEW_VALID' , SYS_GUID(), '1', 'CONFG', 'Y', 'This is the decide whether Award Hold Prompt is needed to trigger if If award term (143) is missing when Animal and/or Human subjects special reviews are present.If value of the parameter is N, this hold prompt is off.', 'A', 'KC')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+INSERT INTO KRCR_PARM_T(NMSPC_CD, CMPNT_CD, PARM_NM, OBJ_ID, VER_NBR, PARM_TYP_CD, VAL, PARM_DESC_TXT, EVAL_OPRTR_CD, APPL_ID) VALUES ('KC-AWARD', 'Document', 'ENABLE_AWARD_VALIDATIONS' , SYS_GUID(), '1', 'CONFG', 'Y', 'Turning on (1) or off (0) of this parameter will turn on /off all the triggers for Hold prompt irrespective of the individual parameter values', 'A', 'KC')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+INSERT INTO KRCR_PARM_T(NMSPC_CD, CMPNT_CD, PARM_NM, OBJ_ID, VER_NBR, PARM_TYP_CD, VAL, PARM_DESC_TXT, EVAL_OPRTR_CD, APPL_ID) VALUES ('KC-AWARD', 'Document', 'IACUC_SPL_REV_TYPE_CODE' , SYS_GUID(), '1', 'CONFG', '2', 'IACUC Special Review Type Code', 'A', 'KC')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+INSERT INTO KRCR_PARM_T(NMSPC_CD, CMPNT_CD, PARM_NM, OBJ_ID, VER_NBR, PARM_TYP_CD, VAL, PARM_DESC_TXT, EVAL_OPRTR_CD, APPL_ID) VALUES ('KC-AWARD', 'Document', 'SPL_REV_TYPE_CODE_HUMAN' , SYS_GUID(), '1', 'CONFG', '1', 'Special Review Type Code for Human', 'A', 'KC')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+INSERT INTO KRCR_PARM_T(NMSPC_CD, CMPNT_CD, PARM_NM, OBJ_ID, VER_NBR, PARM_TYP_CD, VAL, PARM_DESC_TXT, EVAL_OPRTR_CD, APPL_ID) VALUES ('KC-GEN', 'All', 'ALL_SPONSOR_HIERARCHY_NIH_MULTI_PI', SYS_GUID(), '1', 'CONFG', 'NIH Multiple PI', 'The name of Sponsors Hierarchy', 'A', 'KC')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (KCSO.KRNS_PARM_TP1) violated
+
+
+
+Table created.
+
+
+Sequence created.
+
+
+Table created.
+
+
+Table created.
+
+
+Sequence created.
+
+
+Sequence created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table altered.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+CREATE TABLE TRAINING_MODULES
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_TRAINING_MODULES_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+CREATE SEQUENCE SEQ_TRAINING_MODULES_ID
+                *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+2729 rows created.
+
+
+2558 rows created.
+
+
+571 rows created.
+
+
+Commit complete.
+
+
+7634 rows created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+PL/SQL procedure successfully completed.
+
+
+   NEXTVAL
+----------
+       573
+
+
+Sequence altered.
+
+
+PL/SQL procedure successfully completed.
+
+
+Table truncated.
+
+
+65 rows created.
+
+
+Function created.
+
+
+Package created.
+
+
+Package body created.
+
+
+Trigger created.
+
+
+Trigger created.
+
+
+Sequence created.
+
+
+Sequence created.
+
+
+Table created.
+
+
+Table created.
+
+CREATE TABLE EVERIFY_NOTIF_DETAILS
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+1 row created.
+
+
+1 row created.
+
+
+540 rows created.
+
+
+2501 rows created.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+   NEXTVAL
+----------
+       558
+
+
+Sequence altered.
+
+
+1 row updated.
+
+
+Package created.
+
+
+Package body created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Package created.
+
+
+Package body created.
+
+
+Trigger created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row created.
+
+
+1 row updated.
+
+
+Package created.
+
+
+Package body created.
+
+
+Trigger created.
+
+
+Table created.
+
+
+Sequence created.
+
+
+Table created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Package created.
+
+
+Warning: Package Body created with compilation errors.
+
+
+Trigger created.
+
+
+Trigger created.
+
+
+Sequence created.
+
+
+Table created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Table truncated.
+
+
+1143 rows created.
+
+
+Commit complete.
+
+
+PL/SQL procedure successfully completed.
+
+
+   NEXTVAL
+----------
+      1193
+
+
+Sequence altered.
+
+
+Warning: Function created with compilation errors.
+
+
+Warning: Trigger created with compilation errors.
+
+
+Warning: Trigger created with compilation errors.
+
+
+Warning: Trigger created with compilation errors.
+
+
+Table created.
+
+
+Sequence created.
+
+
+Sequence created.
+
+
+Table created.
+
+CREATE TABLE  CAC_LOG_DATA
+              *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row deleted.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+724 rows created.
+
+
+219997 rows created.
+
+
+Package created.
+
+
+Package body created.
+
+
+Table created.
+
+
+Table created.
+
+
+Sequence created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+0 rows deleted.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+Package created.
+
+
+Package body created.
+
+
+Table created.
+
+
+PL/SQL procedure successfully completed.
+
+
+Function created.
+
+
+Function created.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

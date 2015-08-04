@@ -1,0 +1,99 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Mon Mar 2 22:19:17 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+
+2 rows updated.
+
+
+2 rows updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+alter table IACUC_ORG_CORRESPONDENT add constraint  FK_IACUC_ORGANIZATION foreign key(ORGANIZATION_ID)
+                                                                          *
+ERROR at line 1:
+ORA-02275: such a referential constraint already exists in the table
+
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+alter table BUDGET_PERSONS add constraint  FK_BUDGET_ROLODEX foreign key(ROLODEX_ID)
+                                           *
+ERROR at line 1:
+ORA-02298: cannot validate (KCSO.FK_BUDGET_ROLODEX) - parent keys not found
+
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

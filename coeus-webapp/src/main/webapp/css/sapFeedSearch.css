@@ -1,0 +1,88 @@
+.modal-backdrop {
+    z-index: 10000;
+}
+
+.modal {
+    z-index: 10001;
+}
+
+.dropdown-menu {
+    left: auto;
+    right: 0;
+}
+
+.sapFeed-batchInfo table {
+  width: auto;
+}
+
+.icon-caret-right {
+    display: none;
+}
+
+.icon-caret-down {
+    display: none !important;
+}
+
+.sapFeed-searchGroup .uif-dropdownControl, .sapFeed-searchGroup .uif-textControl{
+#SapFeedSearch-SearchGroup .uif-dropdownControl, #SapFeedSearch-SearchGroup .uif-textControl{
+    width: 50%;
+}
+
+section[data-parent="SapFeedSearch-BatchResults"] {
+    margin-bottom: 10px;
+}
+
+section[data-parent="SapFeedSearch-BatchResults"] > header{
+    background-color: #f5f5f5;
+    padding: 10px 15px;
+    border: 1px solid #DDDDDD;
+}
+
+section[data-parent="SapFeedSearch-BatchResults"] > header .uif-header-rightGroup {
+    padding-top: 8px;
+}
+
+.sapSearch-batchId {
+    font-size: 16px;
+}
+
+a .sapSearch-batchId, a .sapSearch-batchId:hover {
+    text-decoration: underline;
+}
+
+.toDate {
+    padding-top: .5em;
+}
+
+.sapSearch-batchTime {
+    float: right;
+    padding-right: 50%;
+    padding-top: 5px;
+    color: #999999;
+    font-size: 12px;
+    font-family: Arial,sans-serif;
+}
+
+#SapFeedSearch-SearchFooter {
+    padding-left: 26%;
+    margin-bottom: 10px;
+}
+
+.btn-xs a {
+    color: black
+}
+
+.btn-xs a:hover {
+    text-decoration: none;
+}
+
+[data-role="placeholder"] {
+  display: none;
+}
+
+.sapSearch-subTitle {
+    color: #666;
+    font-size: .7em;
+}
+
+

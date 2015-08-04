@@ -1,0 +1,121 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Wed Apr 8 17:52:29 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+SP2-0103: Nothing in SQL buffer to run.
+ALTER TABLE SAP_FEED ADD SAP_FEED_BATCH_ID NUMBER(12,0)
+                         *
+ERROR at line 1:
+ORA-01430: column being added already exists in table
+
+
+ALTER TABLE SAP_FEED_ERROR_LOG ADD SAP_FEED_BATCH_ID NUMBER(12,0)
+                                   *
+ERROR at line 1:
+ORA-01430: column being added already exists in table
+
+
+ALTER TABLE  SAP_FEED_DETAILS ADD SAP_FEED_BATCH_ID NUMBER(12,0)
+                                  *
+ERROR at line 1:
+ORA-01430: column being added already exists in table
+
+
+ALTER TABLE SAP_FEED_BATCH_LIST DROP CONSTRAINT UQ_BATCH_LIST
+                                                *
+ERROR at line 1:
+ORA-02443: Cannot drop constraint  - nonexistent constraint
+
+
+ALTER TABLE SAP_FEED_ERROR_LOG ADD CONSTRAINT FK_SAP_FEED_ERROR_LOG   FOREIGN KEY (SAP_FEED_BATCH_ID)  REFERENCES SAP_FEED_BATCH_LIST(SAP_FEED_BATCH_ID)
+                                                                      *
+ERROR at line 1:
+ORA-02275: such a referential constraint already exists in the table
+
+
+ALTER TABLE SAP_FEED ADD CONSTRAINT FK_SAP_FEED   FOREIGN KEY (SAP_FEED_BATCH_ID)  REFERENCES SAP_FEED_BATCH_LIST(SAP_FEED_BATCH_ID)
+                                                  *
+ERROR at line 1:
+ORA-02275: such a referential constraint already exists in the table
+
+
+ALTER TABLE SAP_FEED_DETAILS ADD CONSTRAINT FK_SAP_FEED_DETAILS   FOREIGN KEY (SAP_FEED_BATCH_ID)  REFERENCES SAP_FEED_BATCH_LIST(SAP_FEED_BATCH_ID)
+                                                                  *
+ERROR at line 1:
+ORA-02275: such a referential constraint already exists in the table
+
+
+ALTER TABLE SAP_BUDGET_FEED_DETAILS ADD SAP_BUDGET_FEED_BATCH_ID NUMBER(12,0)
+                                        *
+ERROR at line 1:
+ORA-01430: column being added already exists in table
+
+
+ALTER TABLE SAP_BUDGET_FEED ADD SAP_BUDGET_FEED_BATCH_ID NUMBER(12,0)
+                                *
+ERROR at line 1:
+ORA-01430: column being added already exists in table
+
+
+ALTER TABLE AWARD_PERSON_REMOVE  RENAME TO AWARD_KEY_PERS_REMOVED
+*
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+ALTER TABLE AWARD_KEY_PERS_REMOVED RENAME COLUMN AWARD_PERSON_REMOVE_ID TO AWARD_KEY_PERS_REMOVED_ID
+*
+ERROR at line 1:
+ORA-00957: duplicate column name
+
+
+ALTER TABLE AWARD_PERSON_CONFIRM  RENAME TO AWARD_KEY_PERS_CONFIRM
+*
+ERROR at line 1:
+ORA-00942: table or view does not exist
+
+
+ALTER TABLE AWARD_KEY_PERS_CONFIRM RENAME COLUMN AWARD_PERSON_CONFIRM_ID TO AWARD_KEY_PERS_CONFIRM_ID
+*
+ERROR at line 1:
+ORA-00957: duplicate column name
+
+
+
+Procedure created.
+
+
+Function created.
+
+
+Package created.
+
+
+Package body created.
+
+
+Function created.
+
+
+Function created.
+
+
+Function created.
+
+
+Function created.
+
+
+Trigger created.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

@@ -1,0 +1,112 @@
+	<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+        
+	<!-- <bean id="AwardCostShare-parentBean" parent="MIT-AwardCostShare-source-parentBean"/>
+	<bean id="MIT-AwardCostShare-source-parentBean" parent="AwardCostShare-source" >
+	<property name="required" value="true" />
+	</bean> -->
+
+	<!-- <bean id="AwardCostShare-source" parent="MIT-AwardCostShare-source-parentBean"/>
+	<bean id="MIT-AwardCostShare-source-parentBean" parent="AwardCostShare" >
+	<property name="required" value="true" />
+	</bean>
+	
+	<bean id="AwardCostShare-costShareMet" parent="MIT-AwardCostShare-mitsource-parentBean"/>
+	<bean id="MIT-AwardCostShare-mitsource-parentBean" parent="AwardCostShare-costShareMet-parentBean" >
+	<property name="required" value="true" />
+	</bean> -->
+	
+	
+	<bean id="AwardCostShare" parent="MIT-AwardCostShare-parentBean" /> 
+	<bean id="MIT-AwardCostShare-parentBean" parent="AwardCostShare-parentBean">
+	<property name="attributes" >
+      <list>
+        <ref bean="AwardCostShare-awardCostShareId" />
+        <ref bean="AwardCostShare-awardNumber" />
+        <ref bean="AwardCostShare-sequenceNumber" />
+        <ref bean="AwardCostShare-projectPeriod" />
+        <ref bean="AwardCostShare-costSharePercentage" />
+        <ref bean="AwardCostShare-costShareTypeCode" />
+        <ref bean="MIT-AwardCostShare-source" />
+        <ref bean="MIT-AwardCostShare-destination" />
+        <ref bean="AwardCostShare-commitmentAmount" /> 
+        <ref bean="AwardCostShare-verificationDate" />
+        <ref bean="AwardCostShare-costShareMet" />
+        <ref bean="AwardCostShare-unitNumber" />   
+      </list>
+       </property>
+            </bean>           
+    <bean id="MIT-AwardCostShare-source" parent="KraAttributeReferenceDummy-sourceAccount" >
+    <property name="name" value="source" />
+    <property name="label" value="Source" />
+    <property name="shortLabel" value="*Source" />
+    <property name="summary" value="Source" />
+    <property name="description" value="Source" /> 
+  </bean>   
+  
+   <bean id="MIT-AwardCostShare-destination" parent="KraAttributeReferenceDummy-sourceAccount" >
+    <property name="name" value="destination" />
+    <property name="label" value="Destination" />
+    <property name="shortLabel" value="*Destination" />
+    <property name="summary" value="Destination" />
+    <property name="description" value="Destination" />
+  </bean> 
+	<bean id="MIT-Award-Transaction-Type" parent="Award-awardTransactionTypeCode-parentBean" />
+   <bean id="Award-awardTransactionTypeCode-parentBean" abstract="true" parent="AttributeDefinition">
+    	<property name="name" value="awardTransactionTypeCode" />
+    	<property name="forceUppercase" value="false" />
+    	<property name="label" value="Transaction Type" />
+    	<property name="shortLabel" value="Transaction Type" />
+    	<property name="maxLength" value="3" />
+    	<property name="validationPattern" >
+      		<bean parent="AlphaNumericValidationPattern" />
+    	</property>
+    	<!-- <property name="required" value="false" /> -->
+    	<property name="control" >
+     		 <bean parent="SelectControlDefinition"
+           	 	p:businessObjectClass="org.kuali.kra.timeandmoney.transactions.AwardTransactionType"
+            	p:valuesFinderClass="org.kuali.coeus.sys.framework.keyvalue.ExtendedPersistableBusinessObjectValuesFinder"
+            	p:includeKeyInLabel="false"
+            	p:includeBlankRow="false"
+            	p:keyAttribute="awardTransactionTypeCode"
+            	p:labelAttribute="description" />
+    	</property>
+    	<property name="summary" value="Transaction Type" />
+    	<property name="description" value="Transaction Type" />
+  	</bean>  
+  	
+  	<bean id="AwardFandaRate" parent="MIT-AwardFandaRate-parentBean" />
+	<bean id="MIT-AwardFandaRate-parentBean" parent="AwardFandaRate-parentBean">
+		<property name="attributes" >
+			<list>
+				<ref bean="AwardFandaRate-awardFandaRateId" />				
+				<ref bean="AwardFandaRate-applicableFandaRate" />
+				<ref bean="AwardFandaRate-awardNumber" />
+				<ref bean="AwardFandaRate-sequenceNumber" />
+				<ref bean="AwardFandaRate-fandaRateTypeCode" />
+				<ref bean="AwardFandaRate-fiscalYear" />
+				<ref bean="AwardFandaRate-onCampusFlag" />
+				<ref bean="AwardFandaRate-underrecoveryOfIndirectCost" />
+				<ref bean="MIT-AwardFandaRate-sourceAccount" />
+				<ref bean="MIT-AwardFandaRate-destinationAccount" />
+				<ref bean="AwardFandaRate-startDate" />
+				<ref bean="AwardFandaRate-endDate" />
+				<ref bean="AwardFandaRate-versionNumber" />
+			</list>
+		</property>
+	</bean>
+	<bean id="MIT-AwardFandaRate-sourceAccount" parent="KraAttributeReferenceDummy-sourceAccount" >
+		<property name="label" value="*Source" />
+		<property name="shortLabel" value="Source" />
+	</bean>
+
+	<bean id="MIT-AwardFandaRate-destinationAccount"  parent="KraAttributeReferenceDummy-sourceAccount" >
+		<property name="name" value="destinationAccount" />
+		<property name="label" value="*Destination" />
+		<property name="shortLabel" value="Destination" />
+		<property name="summary" value="Destination Account" />
+		<property name="description" value="Destination Account" />
+	</bean>
+  	</beans>

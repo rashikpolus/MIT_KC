@@ -1,0 +1,526 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright 2005-2014 The Kuali Foundation.
+
+    Licensed under the Educational Community License, Version 1.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.opensource.org/licenses/ecl1.php
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+       xmlns:p="http://www.springframework.org/schema/p" 
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:beans="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:lang="http://www.springframework.org/schema/lang"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+                           http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context-3.0.xsd
+                           http://www.springframework.org/schema/lang
+                           http://www.springframework.org/schema/lang/spring-lang-3.0.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+                           http://www.springframework.org/schema/util
+                           http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+    <context:annotation-config />
+    <context:component-scan base-package="edu.mit.kc.protocol.service.impl, edu.mit.kc.alert.service" />
+    
+    <bean id="ccImporter" abstract="true" class="org.kuali.coeus.sys.framework.service.ConfigContextConfigObjectFactoryBean" p:singleton="true" p:mustExist="true" />
+    <bean id="dataSource" parent="ccImporter" p:objectName="datasource" />
+	<bean id="permissionService"
+		class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+		<property name="serviceName" value="kimPermissionService" />
+	</bean>
+	
+	<bean id="mitPropDevJavaFunctionKrmsTermService" class="edu.mit.kc.propdev.krms.MitPropDevJavaFunctionKrmsTermServiceImpl">
+	<property name="documentService" ref="documentService" />
+	</bean>
+	
+	<bean id="mitAwardBudgetJavaFunctionKrmsTermService" class="edu.mit.kc.award.budget.krms.MitAwardBudgetJavaFunctionKrmsTermServiceImpl">
+	</bean>
+
+	<bean id="lookupableHelperService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="lookupableHelperService" />
+    </bean>
+    
+    
+	<bean id="kcMitCustomAttributeDocumentLookupable" class="org.kuali.rice.kns.lookup.KualiLookupableImpl" scope="prototype">
+        <property name="lookupableHelperService" ref="kcMitCustomAttributeDocumentLookupableHelperService" />
+    </bean>
+
+    <bean id="kcMitCustomAttributeDocumentLookupableHelperService" class="edu.mit.kc.lookup.KcMitCustomAttributeLookupHelperServiceImpl" 
+          parent="parentLookupableHelperService" scope="prototype" /> 
+          
+          
+	 <bean id="parentLookupableHelperService" abstract="true">
+        <property name="persistenceStructureService" ref="persistenceStructureService" />
+        <property name="businessObjectDictionaryService" ref="businessObjectDictionaryService" />
+        <property name="dataDictionaryService" ref="dataDictionaryService" />
+        <property name="encryptionService" ref="encryptionService" />
+        <property name="lookupService" ref="lookupService" />
+        <property name="businessObjectMetaDataService" ref="businessObjectMetaDataService" />
+        <property name="sequenceAccessorService" ref="sequenceAccessorService" />
+        <property name="businessObjectService" ref="businessObjectService" />
+        <property name="lookupResultsService" ref="lookupResultsService" />
+    </bean>
+    
+    <bean id="persistenceStructureService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="persistenceStructureService" />
+    </bean>
+    
+    <bean id="businessObjectDictionaryService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="businessObjectDictionaryService" />
+    </bean>
+    
+    <bean id="dataDictionaryService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="dataDictionaryService" />
+    </bean>
+    
+    <bean id="encryptionService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="encryptionService" />
+    </bean>
+    
+    <bean id="lookupService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="lookupService" />
+    </bean>
+    
+    <bean id="businessObjectMetaDataService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="businessObjectMetaDataService" />
+    </bean>
+    
+    <bean id="sequenceAccessorService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="sequenceAccessorService" />
+    </bean>
+    
+     <bean id="businessObjectService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="businessObjectService" />
+    </bean>
+    
+    <bean id="lookupResultsService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="lookupResultsService" />
+    </bean>
+    
+     <bean id="documentService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="documentService" />
+    </bean>
+    
+	<bean id="backDoorLoginAuthorizationService"
+		class="edu.mit.kc.common.BackDoorLoginAuthorizationServiceImpl">
+		<property name="permissionService" ref="permissionService" />
+	</bean> 
+	     <bean id="budgetSummaryService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="budgetSummaryService" />
+    </bean>
+    
+       <bean id="kualiRuleService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="kualiRuleService" />
+    </bean>
+    
+    <bean id="budgetCalculationService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="budgetCalculationService" />
+    </bean>
+    
+    <bean id="budgetDistributionService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="budgetDistributionService" />
+    </bean>
+    
+    <bean id="kcDocumentRejectionService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="kcDocumentRejectionService" />
+    </bean>
+
+    <bean id="budgetRatesService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="budgetRatesService" />
+    </bean>
+    
+    <bean id="pessimisticLockService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="pessimisticLockService" />
+    </bean>  
+    
+    <bean id="fiscalYearMonthService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="fiscalYearMonthService" />
+    </bean>     
+    
+     <bean id="legacyDataAdapter" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="legacyDataAdapter" />
+     </bean>
+      <bean id="kcBusinessRulesEngine" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="kcBusinessRulesEngine" />
+    </bean>
+<!-- 	<bean id="mitPropNarrativeService" class="org.kuali.kra.proposaldevelopment.service.MitPropNarrativeServiceImpl">
+	</bean>
+ -->	    
+    <bean id="kcMitCoreModuleConfiguration" parent="kcMitCoreModuleConfiguration-parentBean"/>
+    <bean id="kcMitCoreModuleConfiguration-parentBean" class="org.kuali.rice.krad.bo.ModuleConfiguration" abstract="true">
+   		 <property name="initializeDataDictionary" value="true" />
+
+        <!-- Rice hack this isn't really the right namespace but we cannot set 
+            it correctly until we address modularity (breaking up our DD files, SpringBeans, 
+            namespaces, etc. -->
+        <property name="namespaceCode" value="KC-CORE" />
+        <property name="packagePrefixes">
+            <list>
+                <value>edu.mit.kc.datadictionary</value>
+            </list>
+        </property>
+		<property name="dataDictionaryPackages">
+			<list>  
+				<value>classpath:edu/mit/kc/datadictionary/MitNegotiation.xml</value>
+				<value>classpath:edu/mit/kc/datadictionary/MITNegotiationActivity.xml</value>
+				<value>classpath:edu/mit/kc/datadictionary/MITUnit.xml</value>
+				<value>classpath:edu/mit/kc/datadictionary/MITTimeAndMoneyDocument.xml</value>
+				<value>classpath:edu/mit/kc/datadictionary/MITSubAwardDocument.xml</value>
+				<value>classpath:edu/mit/kc/datadictionary/MITRolodex.xml</value>
+				<value>classpath:edu/mit/kc/datadictionary/MITSponsor.xml</value>
+				<value>classpath:edu/mit/kc/datadictionary/MITSponsorMaintenanceDocument.xml</value>
+			    <value>classpath:edu/mit/kc/datadictionary/MITRolodexMaintenanceDocument.xml</value>
+				<value>classpath:edu/mit/kc/datadictionary/MITOrganizationMaintenanceDocument.xml</value>
+				<value>classpath:edu/mit/kc/datadictionary/MITNonOrganizationalRolodex.xml</value>
+				<value>classpath:edu/mit/kc/datadictionary/MITOrganization.xml</value>
+				<value>classpath:edu/mit/kc/datadictionary/MitProposalLog.xml</value>
+				<value>classpath:edu/mit/kc/datadictionary/MITInstitutionalProposalDocument.xml</value>
+				<value>classpath:edu/mit/kc/datadictionary/MITInstitutionalProposal.xml</value>
+				<value>classpath:edu/mit/kc/datadictionary/MitDevelopmentProposal.xml</value>
+				<value>classpath:edu/mit/kc/datadictionary/MitAwardSpecialReview.xml</value>
+				<value>classpath:edu/mit/kc/datadictionary/MitAwardReportTermRecipient.xml</value>
+				<value>classpath:edu/mit/kc/datadictionary/MitAwardReportTerm.xml</value>
+				<value>classpath:edu/mit/kc/datadictionary/MITAwardPaymentSchedule.xml</value>
+				<value>classpath:edu/mit/kc/datadictionary/MitAwardFaRateType.xml</value>
+				<value>classpath:edu/mit/kc/datadictionary/MITAwardDocument.xml</value>
+				<value>classpath:edu/mit/kc/datadictionary/MITAward.xml</value>			
+				<value>classpath:edu/mit/kc/datadictionary/KrmsFunctionsParams.xml</value> 
+				<value>classpath:edu/mit/kc/datadictionary/KrmsFunctions.xml</value>
+				<value>classpath:edu/mit/kc/datadictionary/PiAppointmentType.xml</value>
+				<value>classpath:edu/mit/kc/datadictionary/PiAppointmentTypeMaintenanceDocument.xml</value>
+				<value>classpath:edu/mit/kc/datadictionary/KcResultSetLimit.xml</value>
+				<value>classpath:edu/mit/kc/datadictionary/KcMandatoryValidation.xml</value>
+				<!-- <value>classpath:edu/mit/kc/datadictionary/CustomAttributeDocument.xml</value> -->
+				<value>classpath:edu/mit/kc/datadictionary/CitiTraining.xml</value>
+				<value>classpath:edu/mit/kc/datadictionary/RoleCentralMap.xml</value>
+				<value>classpath:edu/mit/kc/datadictionary/docs/RoleCentralMapMaintenanceDocument.xml</value>
+				<value>classpath:edu/mit/kc/datadictionary/MitProposalDevelopmentDocument.xml</value>
+			<!-- 	<value>classpath:edu/mit/kc/datadictionary/MITKcApplicationHeader.xml</value> -->
+				<value>classpath:edu/mit/kc/datadictionary/MITAwardBudgetDocument.xml</value>
+				<value>classpath:edu/mit/kc/datadictionary/SharedDocumentType.xml</value>
+				<value>classpath:edu/mit/kc/datadictionary/SharedDocumentTypeMaintenanceDocument.xml</value>
+			<!-- 	<value>classpath:edu/mit/kc/datadictionary/MitProposalDetailsPage.xml</value> -->
+				<value>classpath:edu/mit/kc/datadictionary/MitNarrativeAttachment.xml</value>
+				<value>classpath:edu/mit/kc/datadictionary/MitProposalSubmitPage.xml</value>
+				
+					<value>classpath:edu/mit/kc/datadictionary/MITLandingPageView.xml</value>
+					<value>classpath:edu/mit/kc/datadictionary/MITHomePage.xml</value>
+				<value>classpath:edu/mit/kc/datadictionary/MitProposalPersonnelPage.xml</value>
+
+				<!-- Sap Feeds -->
+				 <value>classpath:edu/mit/kc/sapfeed/SapFeedInitiateView.xml</value>
+				 <value>classpath:edu/mit/kc/sapfeed/SapFeedMaintainView.xml</value>
+                 <value>classpath:edu/mit/kc/sapfeed/SapFeedGenerateMasterFeedPage.xml</value>
+                 <value>classpath:edu/mit/kc/sapfeed/SapFeedGenerateRolodexFeedPage.xml</value>
+                 <value>classpath:edu/mit/kc/sapfeed/SapFeedGenerateSponsorFeedPage.xml</value>
+                 <value>classpath:edu/mit/kc/sapfeed/SapFeedDetails.xml</value>
+                 <value>classpath:edu/mit/kc/sapfeed/SapFeedBatchDetails.xml</value>
+                 <value>classpath:edu/mit/kc/sapfeed/docs/SapFeedDetailsMaintenanceDocument.xml</value>
+               
+                 <!--  dashboard -->
+                 <value>classpath:edu/mit/kc/dashboard/DashboardView.xml</value>
+                
+                <!-- Sap feed search -->
+                <value>classpath:edu/mit/kc/sapfeed/SapFeedSearchView.xml</value>
+			</list>
+		</property>
+        <property name="databaseRepositoryFilePaths">
+            <list>
+                <value>edu/mit/kc/mitkc-repository.xml</value>
+            </list>
+        </property>
+	</bean>
+	<bean id="kualiConfigurationService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="kualiConfigurationService" />
+    </bean>	
+	<bean id="mitKcAuthService" class="edu.mit.kc.auth.MitKcAuthServiceImpl">
+	        <property name="kualiConfigurationService" ref="kualiConfigurationService"/>
+	</bean>
+	
+	<bean id="MitNegotiationLookupable" class="org.kuali.rice.kns.lookup.KualiLookupableImpl" scope="prototype">
+        <property name="lookupableHelperService" ref="negotiationLookupableHelperService" />
+    </bean>
+    
+    <bean id="negotiationLookupableHelperService" class="edu.mit.kc.negotiations.lookup.MitNegotiationLookupableHelperServiceImpl" 
+          parent="parentLookupableHelperService" scope="prototype">
+        <property name="negotiationDao" ref="negotiationDao" />
+    </bean>
+        
+    <bean id="negotiationDao" class="org.kuali.kra.negotiations.lookup.NegotiationDaoOjb" parent="platformAwareDao">
+        <property name="negotiationService" ref="negotiationService" />
+        <property name="persistenceStructureService" ref="persistenceStructureService" />
+        <property name="dateTimeService" ref="dateTimeService" />
+    </bean>
+    <bean id="negotiationService" class="org.kuali.kra.negotiations.service.NegotiationServiceImpl">
+        <property name="parameterService" ref="parameterService" />
+        <property name="businessObjectService" ref="businessObjectService" />
+        <property name="awardBudgetService" ref="awardBudgetService" />
+        <property name="institutionalProposalService" ref="institutionalProposalService" />   
+        <property name="unitAdministratorDerivedRoleTypeServiceImpl" ref="unitAdministratorDerivedRoleTypeService" />
+        <property name="kcPersonService" ref="kcPersonService" />
+        <property name="versionHistoryService" ref="versionHistoryService" />   
+    </bean>
+    <bean id="parameterService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="parameterService" />
+    </bean>
+	
+	<!-- <bean id="awardBudgetService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="awardBudgetService" />
+    </bean> -->
+	<bean id="institutionalProposalService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="institutionalProposalService" />
+    </bean>
+	
+	 <bean id="unitAdministratorDerivedRoleTypeService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="unitAdministratorDerivedRoleTypeService" />
+    </bean>
+	
+	  <bean id="kcPersonService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="kcPersonService" />
+    </bean>
+	
+	 <bean id="versionHistoryService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="versionHistoryService" />
+    </bean>  	
+	
+	 <bean id="dateTimeService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="dateTimeService" />
+    </bean>    
+    
+     <bean id="platformAwareDao" class="org.kuali.rice.core.framework.persistence.ojb.dao.PlatformAwareDaoBaseOjb" abstract="true">
+        <property name="jcdAlias" value="kradApplicationDataSource" />
+        <property name="dbPlatform" ref="dbPlatform" />
+    </bean>
+	
+	<bean id="dbPlatform" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="dbPlatform" />
+    </bean>
+     <bean id="mitTimeAndMoneyHistoryService" class="edu.mit.kc.timeandmoney.service.impl.MitTimeAndMoneyHistoryServiceImpl" scope="prototype">
+        <property name="awardVersionService" ref="awardVersionService" />
+        <property name="documentService" ref="documentService" />
+        <property name="businessObjectService" ref="businessObjectService" />
+    </bean>
+
+	 <bean id="awardVersionService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="awardVersionService" />
+    </bean>  
+
+      <bean id="awardCommentService" class="edu.mit.kc.award.service.MitAwardCommentServiceImpl">
+        <property name="businessObjectService" ref="businessObjectService" />
+    </bean>
+    
+    <bean id="mitProposalDevelopmentLookupable" class="org.kuali.rice.kns.lookup.KualiLookupableImpl" scope="prototype">
+		<property name="lookupableHelperService" ref="mitProposalDevelopmentLookupableHelperService" />
+	</bean>
+    <bean id="mitProposalDevelopmentLookupableHelperService" class="edu.mit.kc.proposaldevelopment.service.impl.MitDevelopmentProposalLookupableHelperServiceImpl" 
+          parent="parentLookupableHelperService" scope="prototype">
+        <property name="kraAuthorizationService" ref="kraAuthorizationService" />
+    </bean>
+     <bean id="kraAuthorizationService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="kraAuthorizationService" />
+    </bean>
+    <bean id="awardCommonValidationService" class = "edu.mit.kc.award.service.impl.AwardCommonValidationServiceImpl">       
+    </bean>
+    <bean id="dbFunctionExecuteService" class = "edu.mit.kc.common.DbFunctionExecuteServiceImpl">       
+    </bean>
+    
+     <bean id="kcCoiLinkService" class = "edu.mit.kc.coi.KcCoiLinkServiceImpl"> 
+       <property name="dbFunctionExecuteService" ref="dbFunctionExecuteService" />
+       <property name="parameterService" ref="parameterService" />
+           
+    </bean>
+    
+     <bean id="dbFunctionService" class = "org.kuali.coeus.propdev.impl.sapfeed.DbFunctionServiceImpl">       
+    </bean>
+    
+    <bean id="sapFeedService" class = "org.kuali.coeus.propdev.impl.sapfeed.SapFeedServiceImpl"> 
+       <property name="dbFunctionService" ref="dbFunctionService" />
+        <property name="businessObjectService" ref="businessObjectService" />
+          <property name="dataObjectService" ref="dataObjectService" />
+        
+      </bean>
+      
+      <bean id="kcCommonControllerService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="kcCommonControllerService" />
+    </bean>
+    
+     <bean id="transactionalDocumentControllerService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="transactionalDocumentControllerService" />
+    </bean>
+    
+    <bean id="collectionControllerService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="collectionControllerService" />
+    </bean>
+    
+    <bean id="modelAndViewService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="modelAndViewService" />
+    </bean>
+    
+     <bean id="navigationControllerService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="navigationControllerService" />
+    </bean>
+    
+     <bean id="globalVariableService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="globalVariableService" />
+    </bean>
+    
+    <bean id="dataObjectService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="dataObjectService" />
+     </bean>
+     <bean id="roleService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="kimRoleService" />
+    </bean>
+
+	<bean id="roleIntegrationService" class="edu.mit.kc.roleintegration.RoleIntegrationServiceImpl">
+		<property name="dataObjectService" ref="dataObjectService" />
+		<property name="businessObjectService" ref="businessObjectService" />
+		<property name="roleManagementService" ref="roleService" />
+		<property name="kualiConfigurationService" ref="kualiConfigurationService"/>
+		<property name="centralRoleService" ref="centralRoleService"/>
+		<property name="kcPersonService" ref="kcPersonService" />
+	</bean>
+	
+	<bean id="centralRoleService"
+          class="edu.mit.kc.roleintegration.CentralRoleServiceImpl">
+        <property name="serviceHost" value="rolecentraldb.host"/>
+        <property name="servicePort" value="rolecentraldb.port"/>
+        <property name="centralRoleCertificateReader">
+            <bean class="edu.mit.kc.roleintegration.CentralRoleCertificateReaderBase">
+                <property name="keyStoreLocation" value="rolecentraldb.keystore.location"/>
+                <property name="keyStorePassword" value="rolecentraldb.keystore.password"/>
+                <property name="trustStoreLocation" value="rolecentraldb.truststore.location"/>
+                <property name="trustStorePassword" value="rolecentraldb.truststore.password"/>
+                <property name="jksType" value="JKS"/>
+                <property name="kualiConfigurationService" ref="kualiConfigurationService"/>
+            </bean>
+        </property>
+       <property name="kualiConfigurationService" ref="kualiConfigurationService"/>
+       <property name="parameterService" ref="parameterService" />
+    </bean>
+    
+        <bean id="mitAwardLookupable" class="org.kuali.rice.kns.lookup.KualiLookupableImpl" scope="prototype">
+		<property name="lookupableHelperService" ref="mitAwardLookupableHelperService" />
+	</bean>
+        <bean id="mitAwardLookupableHelperService" class="edu.mit.kc.award.service.impl.MitAwardLookupableHelperServiceImpl" parent="parentLookupableHelperService" 
+          scope="prototype">
+           <property name="kcPersonService" ref="kcPersonService" /> 
+        <property name="awardLookupDao" ref="awardLookupDao" />
+           </bean>
+    <bean id="awardLookupDao" parent="platformAwareDao" class="org.kuali.kra.award.dao.ojb.AwardLookupDaoOjb">
+    <property name="versionHistoryLookupDao" ref="versionHistoryLookupDao" /> 
+    </bean>
+     <bean id="versionHistoryLookupDao" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="versionHistoryLookupDao" />
+    </bean>
+    
+    <bean id="awardLeadUnitOspAdministratorDerivedRoleTypeService" class="edu.mit.kc.award.AwardLeadUnitOspAdministratorDerivedRoleTypeServiceImpl">
+        <property name="awardService" ref="awardService"/>
+    </bean>
+    
+     
+     <bean id="awardService" class="org.kuali.kra.award.home.AwardServiceImpl">
+        <property name="businessObjectService" ref="businessObjectService" />
+        <property name="documentService" ref="documentService" />
+        <property name="versioningService" ref="versioningService" />
+        <property name="versionHistoryService" ref="versionHistoryService" />
+        <property name="sponsorHierarchyService" ref="sponsorHierarchyService" />
+        <property name="awardDao" ref="awardDao" />
+    </bean>
+    
+     <bean id="sponsorHierarchyService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="sponsorHierarchyService" />
+    </bean>
+    
+    <bean id="versioningService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="versioningService" />
+    </bean>
+
+    <bean id="awardDao" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="awardDao" />
+    </bean>
+
+    <bean id="mitProposalLogLookupable" class="org.kuali.rice.kns.lookup.KualiLookupableImpl" scope="prototype">
+		<property name="lookupableHelperService" ref="mitProposalLogLookupableHelperService" />
+	</bean>   
+    <bean id="mitProposalLogLookupableHelperService" class="edu.mit.kc.proposallog.service.impl.MitProposalLogLookupableHelperServiceImpl" parent="parentLookupableHelperService" 
+          scope="prototype">
+          <property name="kcPersonService" ref="kcPersonService" />  
+          <property name="documentDictionaryService" ref="documentDictionaryService" />    
+    </bean> 
+     <bean id="documentDictionaryService" class="org.kuali.rice.core.framework.resourceloader.GlobalResourceLoaderServiceFactoryBean">
+        <property name="serviceName" value="documentDictionaryService" />
+     </bean>
+     	<bean id="dashboardMenuService" class="edu.mit.kc.dashboard.DashboardMenuService"/>
+     	
+       <bean id="applicationAlertService"
+	class="edu.mit.kc.alert.service.ApplicationAlertServiceImpl">
+	<property name="dataObjectService" ref="dataObjectService" />
+	</bean>
+	<bean id="coiDisclosureAlertService" class="edu.mit.kc.alert.CoiDisclosureAlertServiceImpl">
+		<property name="dataObjectService" ref="dataObjectService" />
+		<property name="kualiConfigurationService" ref="kualiConfigurationService" />
+		<property name="parameterService" ref="parameterService" />
+		<property name="dbFunctionExecuteService" ref="dbFunctionExecuteService" />
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="awardExpireAlertService" class="edu.mit.kc.alert.AwardExpireAlertServiceImpl">
+		<property name="dataObjectService" ref="dataObjectService" />
+		<property name="kualiConfigurationService" ref="kualiConfigurationService" />
+		<property name="dateTimeService" ref="dateTimeService" />
+		<property name="dashboardService" ref="dashboardService" />
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="finalTechnicalReportAlertService" class="edu.mit.kc.alert.FinalTechnicalReportAlertServiceImpl">
+		<property name="dataObjectService" ref="dataObjectService" />
+		<property name="kualiConfigurationService" ref="kualiConfigurationService" />
+		<property name="dateTimeService" ref="dateTimeService" />
+		<property name="reportFetchingService" ref="reportFetchingService" />
+		<property name="dashboardService" ref="dashboardService" />
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="finalPatentReportAlertService" class="edu.mit.kc.alert.FinalPatentReportAlertServiceImpl">
+		<property name="kualiConfigurationService" ref="kualiConfigurationService" />
+		<property name="dateTimeService" ref="dateTimeService" />
+		<property name="dataObjectService" ref="dataObjectService" />
+		<property name="reportFetchingService" ref="reportFetchingService" />
+		<property name="dashboardService" ref="dashboardService" />
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="reportFetchingService" class="edu.mit.kc.alert.ReportFetchingServiceImpl" />
+	<bean id="dashboardService" class="org.kuali.coeus.propdev.impl.dashboard.DashboardServiceImpl">
+		<property name="dataObjectService" ref="dataObjectService" />
+		<property name="awardService" ref="awardService" />
+	</bean>  
+	<bean id="awardBudgetService"  class="edu.mit.kc.award.budget.MitKcAwardBudgetServiceImpl">
+     <property name="parameterService" ref="parameterService" />
+        <property name="businessObjectService" ref="businessObjectService" />
+        <property name="documentService" ref="documentService" />
+        <property name="budgetSummaryService" ref="budgetSummaryService" />
+        <property name="budgetCalculationService" ref="budgetCalculationService" />
+        <property name="awardBudgetCalculationService" ref="awardBudgetCalculationService" />
+        <property name="versionHistoryService" ref="versionHistoryService" />
+        <property name="awardService" ref="awardService" />
+    </bean>
+    
+     <bean id="awardBudgetCalculationService" class="org.kuali.kra.award.budget.calculator.AwardBudgetCalculationServiceImpl">
+        <property name="businessObjectService" ref="businessObjectService" />
+        <property name="budgetDistributionService" ref="budgetDistributionService" />
+    </bean>
+</beans>

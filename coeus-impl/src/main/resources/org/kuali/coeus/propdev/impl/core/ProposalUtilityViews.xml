@@ -1,0 +1,273 @@
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--Special proposal sub-views for copy and medusa functions accessed from Lookup-->
+    <bean id="PropDev-CopyView" parent="PropDev-CopyView-parentBean"/>
+    <bean id="PropDev-CopyView-parentBean" abstract="true"
+          parent="Uif-FormView" p:header.render="false" p:breadcrumbs.render="false"
+          p:viewHelperService="#{#getService('proposalDevelopmentViewHelperService')}"
+          p:formClass="org.kuali.coeus.propdev.impl.core.ProposalDevelopmentDocumentForm">
+        <property name="stickyFooter" value="@{renderedInDialog}"/>
+        <property name="applicationHeader.render" value="@{!renderedInDialog}"/>
+        <property name="singlePageView" value="true"/>
+        <property name="onDocumentReadyScript"
+                  value="KradResponse.prototype.redirectHandler = function(content, dataAttr) {var redirectUrl = jQuery(content).text().trim();dirtyFormState.skipDirtyChecks = true;window.top.location.href = redirectUrl;};"/>
+        <property name="page">
+            <bean parent="Uif-Page" p:header.render="false">
+                <property name="items">
+                    <list>
+                        <bean parent="PropDev-CopyDialog" p:fieldBindingObjectPath="proposalCopyCriteria" p:order="10"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="footer">
+            <bean parent="Uif-FooterBase">
+                <property name="items">
+                    <list>
+                        <bean parent="PropDev-CopyDialog-Button-Continue"
+                              p:actionLabel="Copy..." p:methodToCall="copy"
+                              p:performClientSideValidation="false" p:order="10"/>
+                        <bean parent="Uif-SecondaryActionButton" p:actionLabel="Close"
+                              p:onClickScript="e.preventDefault();closeIframeDialog();return false;"
+                              p:dialogResponse="false" p:order="20"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="PropDev-MedusaView" parent="PropDev-MedusaView-parentBean"/>
+    <bean id="PropDev-MedusaView-parentBean" abstract="true"
+          parent="Uif-FormView" p:header.render="false" p:breadcrumbs.render="false"
+          p:formClass="org.kuali.coeus.propdev.impl.core.ProposalDevelopmentDocumentForm"
+          p:viewHelperService="#{#getService('proposalDevelopmentViewHelperService')}">
+        <property name="stickyFooter" value="@{renderedInDialog}"/>
+        <property name="applicationHeader.render" value="@{!renderedInDialog}"/>
+        <property name="singlePageView" value="true"/>
+        <property name="additionalScriptFiles">
+            <list>
+                <value>scripts/common/medusa.js</value>
+            </list>
+        </property>
+        <property name="additionalCssFiles">
+            <list>
+                <value>css/common/core.css</value>
+            </list>
+        </property>
+        <property name="page">
+            <bean parent="Uif-Page" p:header.render="false">
+                <property name="items">
+                    <list>
+                        <bean parent="PropDev-MedusaSection-TabGroup"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="footer">
+            <bean parent="Uif-FooterBase">
+                <property name="items">
+                    <list>
+                        <bean parent="Uif-SecondaryActionButton" p:actionLabel="Close"
+                              p:onClickScript="e.preventDefault();closeIframeDialog();return false;"
+                              p:dialogResponse="false" p:order="20"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="onLoadScript" value="Kc.Medusa.externalMedusaLoader();"/>
+    </bean>
+
+    <!--Special proposal summary view for the Action List -->
+    <bean id="PropDev-SummaryView" parent="PropDev-SummaryView-parentBean"/>
+    <bean id="PropDev-SummaryView-parentBean" abstract="true"
+          parent="Uif-FormView" p:header.render="false" p:breadcrumbs.render="false"
+          class="org.kuali.coeus.propdev.impl.core.ProposalDocumentSummaryView"
+          p:formClass="org.kuali.coeus.propdev.impl.core.ProposalDevelopmentDocumentForm"
+          p:authorizer="#{#getService('proposalDevelopmentDocumentViewAuthorizer')}"
+          p:viewHelperService="#{#getService('proposalDevelopmentViewHelperService')}"
+          p:readOnly="true">
+        <property name="stickyFooter" value="true"/>
+        <property name="applicationHeader">
+            <null/>
+        </property>
+        <property name="singlePageView" value="true"/>
+        <property name="page">
+            <bean parent="Uif-Page" p:header.render="false">
+                <property name="items">
+                    <list>
+                        <bean parent="Uif-TabGroup">
+                            <property name="items">
+                                <list>
+                                    <bean parent="PropDev-SubmitPage-ProposalSummary"/>
+                                    <bean parent="PropDev-BudgetPage-Collection" p:headerText="Budget Summary"
+                                            p:renderLineActions="false">
+                                        <property name="header.rightGroup">
+                                            <null/>
+                                        </property>
+                                        <property name="items">
+                                            <list merge="true">
+                                                <bean parent="Uif-DataField" p:label="Name" p:propertyName="name" p:order="10" />
+
+                                            </list>
+                                        </property>
+                                    </bean>
+                                </list>
+                            </property>
+                        </bean>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="footer">
+            <bean parent="Uif-FooterBase">
+                <property name="items">
+                    <list>
+                        <bean parent="Uif-Link" p:linkText="Open Proposal" p:target="_top"
+                              p:href="@{#ConfigProperties['application.url']}/kc-pd-krad/proposalDevelopment?methodToCall=docHandler&amp;docId=@{document.documentNumber}&amp;command=displayActionListView"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+
+    <bean id="PropDev-CertificationView" parent="PropDev-CertificationView-parentBean"/>
+    <bean id="PropDev-CertificationView-parentBean" abstract="true" parent="Uif-FormView"
+          p:formClass="org.kuali.coeus.propdev.impl.core.ProposalDevelopmentDocumentForm"
+          p:viewHelperService="#{#getService('proposalDevelopmentViewHelperService')}">
+        <property name="stickyFooter" value="true"/>
+        <property name="applicationHeader.render" value="true"/>
+        <property name="singlePageView" value="true"/>
+        <property name="additionalScriptFiles">
+            <list>
+                <value>scripts/common/questionnaire.js</value>
+                <value>scripts/propdev/core.js</value>
+            </list>
+        </property>
+        <property name="additionalCssFiles">
+            <list>
+                <value>css/common/questionnaire.css</value>
+            </list>
+        </property>
+        <property name="header" ref="PropDev-CertificationHeader" />
+        <property name="page">
+            <bean id="PropDev-CertificationView-Page" parent="Uif-Page">
+                <property name="items">
+                    <list>
+                    <bean parent="Uif-MessageField" p:label="Proposal#" p:labelLeft="true"
+                              p:messageText="@{document.developmentProposal.proposalNumber}" p:order="10" />
+                        <bean parent="Uif-MessageField" p:label="Title" p:labelLeft="true"
+                              p:messageText="@{document.developmentProposal.title}" p:order="20" />  
+                        <bean parent="Uif-MessageField" p:label="PI" p:labelLeft="true"
+                              p:messageText="@{document.developmentProposal.principalInvestigatorName}" p:order="30" />
+                       <bean parent="Uif-MessageField" p:label="Lead Unit" p:labelLeft="true"
+                              p:messageText="@{document.developmentProposal.unitNumber}" p:order="40" />   
+                       <bean parent="Uif-MessageField" p:label="Sponsor" p:labelLeft="true"
+                              p:messageText="@{document.developmentProposal.sponsorName}" p:order="50" /> 
+                         <bean parent="Uif-MessageField" p:label="Deadline Date" p:labelLeft="true"
+                              p:messageText="@{document.developmentProposal.deadlineDate}" p:order="60" />
+                          <bean parent="Uif-Link" p:linkText="Open Proposal" p:target="_top" p:render= "@{proposalPersonQuestionnaireHelper.validCertUser}"
+                              p:href="@{#ConfigProperties['application.url']}/kc-pd-krad/proposalDevelopment?methodToCall=docHandler&amp;docId=@{document.documentNumber}&amp;command=displayActionListView" p:order="70"/>
+                          <bean parent="Uif-SecondaryActionButton" p:actionLabel="Print" p:order="80" p:render= "@{proposalPersonQuestionnaireHelper.validCertUser}">
+                            <property name="actionUrl">
+                                <bean parent="Uif-Url"
+                                      p:href="../kc-pd-krad/proposalDevelopment?methodToCall=printQuestionnaire&amp;formKey=@{formKey}&amp;helper=proposalPersonQuestionnaireHelper&amp;index=0"/>
+                            </property>
+                        </bean>
+                        <bean parent="Questionnaire-QuestionsGroup" p:propertyName="proposalPersonQuestionnaireHelper.answerHeaders[0].questions"
+                             p:render= "@{proposalPersonQuestionnaireHelper.validCertUser}" p:order="80" />
+                    </list>
+                </property>
+                <property name="footer">
+                    <bean parent="Uif-FooterBase" p:dataAttributes="sticky_footer:true">
+                        <property name="items">
+                            <list>
+                                <bean parent="Uif-SecondaryActionButton" p:actionLabel="Close" p:methodToCall="returnToHub" p:order="10"/>
+                                <bean parent="Uif-PrimaryActionButton" p:actionLabel="Certify Answers" p:methodToCall="certifyAnswers"
+                                      p:order="20" p:render= "@{proposalPersonQuestionnaireHelper.validCertUser}"/>
+                            </list>
+                        </property>
+                    </bean>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="PropDev-CertificationHeader" parent="PropDev-CertificationHeader-parentBean" />
+    <bean id="PropDev-CertificationHeader-parentBean" abstract="true"
+          parent="Uif-ViewHeader" p:headerText="Certification for @{proposalPersonQuestionnaireHelper.proposalPerson.fullName}"
+          p:areaTitleText="Proposal Development"         
+          p:onDocumentReadyScript="Kc.PropDev.setHeaderHeight();">
+        <property name="rightGroup">
+            <bean parent="Uif-VerticalBoxGroup" p:additionalCssClasses="uif-documentInfo">
+                <property name="items">
+                    <list>
+                        <bean parent="Uif-Message" p:messageText="[strong]Document Info[/strong]"
+                              p:order="10" />
+                        <bean parent="Uif-MessageField" p:label="Doc Nbr" p:labelLeft="true"
+                              p:messageText="@{document.documentNumber}" p:order="20" />
+                        <bean parent="Uif-MessageField" p:label="S2S Connected" p:order="30" p:labelLeft="true">
+                            <property name="message">
+                                <bean parent="Uif-Message"
+                                      p:messageText="@{#empty(document.developmentProposal.s2sOpportunity)?'no':'yes'}"
+                                      p:cssClasses="@{#empty(document.developmentProposal.s2sOpportunity)?'label,label-default':'label,label-success'}"
+                                      p:style="margin: 0;"/>
+                            </property>
+                        </bean>
+                        <bean parent="Uif-MessageField" p:label="Initiator" p:labelLeft="true"
+                              p:messageText="@{documentInitiatorNetworkId}" p:order="40" />
+                        <!-- <bean parent="Uif-MessageField" p:label="Status" p:labelLeft="true"
+                              p:messageText="@{#ViewHelper.getProposalStatusForDRviewisplay(document.developmentProposal)}"
+                              p:order="50" /> -->
+                        <bean parent="PropDev-DocumentHeader-MoreInfo" p:order="50" />
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+   <bean id="PropDev-Personal-CertificationCompeleteDialog" parent="Uif-DialogGroup-YesNo" >
+        <property name="items">
+            <list>
+             <bean parent="Uif-MessageField" p:messageText="Certification Completed and Submitted" p:order="10"/>
+             </list>
+        </property>
+	 <property name="footer.items">
+            <list>
+                <bean parent="Uif-PrimaryActionButton" p:actionLabel="OK"  p:methodToCall="returnToHub" p:order="10"
+                      p:dialogDismissOption="REQUEST"  p:successCallback="dismissDialog('PropDev-Personal-CertificationCompeleteDialog');" p:dialogResponse="true"/>
+            </list>
+        </property>
+	</bean>
+	 <bean id="PropDev-Personal-CertificationInCompeletedDialog" parent="Uif-DialogGroup-YesNo" >
+		<property name="items">
+            <list>
+             <bean parent="Uif-MessageField" p:messageText="Certification  Incomplete. Please answer all questions" p:order="10"/>
+             </list>
+        </property>
+	 	<property name="footer.items">
+            <list>
+                <bean parent="Uif-DialogDismissButton" p:actionLabel="OK" p:order="10" />
+            </list>
+        </property>
+	</bean>
+</beans>

@@ -1,0 +1,45 @@
+From a7ab6c301e24f1b181af188852346148241e63af Mon Sep 17 00:00:00 2001
+From: Gayathri Athreya <gathreya@email.arizona.edu>
+Date: Wed, 24 Jun 2015 16:25:23 -0700
+Subject: [PATCH] RESKC-555: Fixing null pointer.
+
+---
+ .../impl/person/ProposalDevelopmentPersonnelController.java  | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/ProposalDevelopmentPersonnelController.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/ProposalDevelopmentPersonnelController.java
+index d838419..16c27a2 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/ProposalDevelopmentPersonnelController.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/ProposalDevelopmentPersonnelController.java
+@@ -159,25 +159,25 @@ public ModelAndView deletePerson(@ModelAttribute("KualiForm") ProposalDevelopmen
+         if (selectedCollectionPath.equals(PROPOSAL_PERSONS_PATH)) {
+             Collection<Object> collection = ObjectPropertyUtils.getPropertyValue(form, selectedCollectionPath);
+             Object deleteLine = ((List<Object>) collection).get(Integer.parseInt(selectedLine));
+-            String personId = ((ProposalPerson)deleteLine).getPersonId();
+ 
+-            deleteProposalPersonBios(form.getDevelopmentProposal(), (ProposalPerson) deleteLine, personId);
++            deleteProposalPersonBios(form.getDevelopmentProposal(), (ProposalPerson) deleteLine);
+         }
+ 
+         return getCollectionControllerService().deleteLine(form);
+     }
+ 
+-    private void deleteProposalPersonBios(DevelopmentProposal proposal, ProposalPerson deleteLine, String personId) {
++    private void deleteProposalPersonBios(DevelopmentProposal proposal, ProposalPerson deleteLine) {
+         List<ProposalPersonBiography> tmpBios= new ArrayList<>();
++        String personIdOfDeletedLine = deleteLine.getPersonId();
+         for (ProposalPersonBiography biography : proposal.getPropPersonBios()) {
+-            if (personId == null) {
++            if (personIdOfDeletedLine == null) {
+                 Integer rolodexId = deleteLine.getRolodexId();
+-                if (rolodexId.compareTo(biography.getRolodexId()) != 0) {
++                if (biography.getRolodexId() == null || rolodexId.compareTo(biography.getRolodexId()) != 0) {
+                     tmpBios.add(biography);
+                 }
+             }
+             else {
+-                if (!biography.getPersonId().equals(personId))
++                if (!biography.getPersonId().equals(personIdOfDeletedLine))
+                     tmpBios.add(biography);
+             }
+         }

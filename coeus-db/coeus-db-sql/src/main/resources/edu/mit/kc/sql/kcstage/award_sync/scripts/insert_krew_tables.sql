@@ -1,0 +1,1 @@
+select ' Started AWARD Krew ' from dual;--populating krew_tables in insert_award.sqlselect ' Ended AWARD Krew ' from dual;/

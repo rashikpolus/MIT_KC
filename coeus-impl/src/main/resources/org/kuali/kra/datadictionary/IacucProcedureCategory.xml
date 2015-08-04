@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean id="IacucProcedureCategory" parent="IacucProcedureCategory-parentBean" />
+	<bean id="IacucProcedureCategory-parentBean" abstract="true" parent="BusinessObjectEntry">
+		<property name="businessObjectClass" value="org.kuali.kra.iacuc.procedures.IacucProcedureCategory" />
+		<property name="objectLabel" value="Procedure Category" />
+		<property name="inquiryDefinition" >
+			<ref bean="IacucProcedureCategory-inquiryDefinition" />
+		</property>
+		<property name="lookupDefinition" >
+			<ref bean="IacucProcedureCategory-lookupDefinition" />
+		</property>
+		<property name="titleAttribute" value="procedureCategoryCode" />
+		<property name="attributes" >
+			<list>
+				<ref bean="IacucProcedureCategory-procedureCategoryCode" />
+				<ref bean="IacucProcedureCategory-procedureCategory" />
+				<ref bean="IacucProcedureCategory-versionNumber" />
+				<ref bean="IacucProcedureCategory-active" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- Attribute Definitions -->
+	<bean id="IacucProcedureCategory-procedureCategoryCode" parent="IacucProcedureCategory-procedureCategoryCode-parentBean" />
+	<bean id="IacucProcedureCategory-procedureCategoryCode-parentBean" abstract="true" parent="AttributeDefinition" >
+		<property name="name" value="procedureCategoryCode" />
+		<property name="forceUppercase" value="false" />
+		<property name="label" value="Procedure Category Code" />
+		<property name="shortLabel" value="Procedure Category Code" />
+		<property name="maxLength" value="3" />
+		<property name="validationPattern" >
+			<bean parent="NumericValidationPattern" />
+		</property>
+    <property name="validCharactersConstraint">
+      <bean parent="NumericPatternConstraint"/>
+    </property>
+		<property name="control" >
+      <bean parent="TextControlDefinition" p:size="3"/>
+    </property>
+    <property name="controlField">
+      <bean p:size="3" parent="Uif-TextControl"/>
+		</property>
+		<property name="summary" value="Procedure Category Code" />
+		<property name="description" value="Procedure Category Code" />
+	</bean>
+	
+	<bean id="IacucProcedureCategory-active" parent="IacucProcedureCategory-active-parentBean"/>
+	<bean abstract="true" id="IacucProcedureCategory-active-parentBean" parent="AttributeReferenceDummy-genericBoolean">
+	    <property name="name" value="active"/>
+	    <property name="label" value="Active"/>
+	    <property name="shortLabel" value="Active"/>
+	    <property name="summary" value="Active"/>
+	    <property name="description" value="Active"/>
+	</bean>
+
+	<bean id="IacucProcedureCategory-procedureCategory" parent="IacucProcedureCategory-procedureCategory-parentBean"/>
+	<bean id="IacucProcedureCategory-procedureCategory-parentBean" abstract="true" parent="AttributeDefinition">
+		<property name="name" value="procedureCategory"/>
+		<property name="forceUppercase" value="false"/>
+		<property name="label" value="Procedure Category"/>
+		<property name="shortLabel" value="Procedure Category"/>
+		<property name="maxLength" value="200"/>
+    <property name="validationPattern">
+      <bean p:allowWhitespace="true" parent="AnyCharacterValidationPattern"/>
+    </property>
+    <property name="validCharactersConstraint">
+      <bean parent="AnyCharacterPatternConstraint">
+        <property name="allowWhitespace" value="true"/>
+      </bean>
+    </property>
+		<property name="control">
+			<bean p:size="100" parent="TextControlDefinition"/>
+		</property>
+    <property name="controlField">
+      <bean p:size="100" parent="Uif-TextControl"/>
+    </property>
+		<property name="summary" value="Procedure Category"/>
+		<property name="description" value="Procedure Category"/>
+	</bean>
+
+	<bean id="IacucProcedureCategory-versionNumber" parent="IacucProcedureCategory-versionNumber-parentBean" />
+  <bean id="IacucProcedureCategory-versionNumber-parentBean" abstract="true" parent="AttributeReferenceDummy-versionNumber"/>
+	<!-- Business Object Inquiry Definition -->
+	<bean id="IacucProcedureCategory-inquiryDefinition" parent="IacucProcedureCategory-inquiryDefinition-parentBean" />
+  <bean id="IacucProcedureCategory-InquiryView" parent="IacucProcedureCategory-InquiryView-parentBean"/>
+	<bean id="IacucProcedureCategory-inquiryDefinition-parentBean" abstract="true" parent="InquiryDefinition">
+		<property name="title" value="Procedure Category" />
+		<property name="inquirySections" >
+			<list>
+				<bean parent="InquirySectionDefinition">
+					<property name="title" value="Procedure Category" />
+					<property name="numberOfColumns" value="1" />
+					<property name="inquiryFields" >
+						<list>
+              <bean parent="FieldDefinition" p:attributeName="procedureCategoryCode" p:forceInquiry="true"/>
+              <bean parent="FieldDefinition" p:attributeName="procedureCategory"/>
+							<bean parent="FieldDefinition" p:attributeName="active" />
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+  <bean id="IacucProcedureCategory-InquiryView-parentBean" abstract="true" parent="Uif-InquiryView">
+    <property name="headerText" value="Procedure Category"/>
+    <property name="dataObjectClassName" value="org.kuali.kra.iacuc.procedures.IacucProcedureCategory"/>
+    <property name="items">
+      <list>
+        <bean parent="Uif-Disclosure-GridSection">
+          <property name="headerText" value="Procedure Category"/>
+          <property name="layoutManager.numberOfColumns" value="2"/>
+          <property name="items">
+            <list>
+              <bean p:propertyName="procedureCategoryCode" parent="Uif-DataField"/>
+              <bean p:propertyName="procedureCategory" parent="Uif-DataField"/>
+              <bean p:propertyName="active" parent="Uif-DataField"/>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+	<!-- Business Object Lookup Definition -->
+	<bean id="IacucProcedureCategory-lookupDefinition" parent="IacucProcedureCategory-lookupDefinition-parentBean" />
+  <bean id="IacucProcedureCategory-LookupView" parent="IacucProcedureCategory-LookupView-parentBean"/>
+	<bean id="IacucProcedureCategory-lookupDefinition-parentBean" abstract="true" parent="LookupDefinition">
+		<property name="title" value="Procedure Category Lookup" /><property name="defaultSort" >
+      <bean parent="SortDefinition"/>
+		</property>
+		<property name="lookupFields" >
+			<list>
+        <bean parent="FieldDefinition" p:attributeName="procedureCategoryCode" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="procedureCategory"/>
+			</list>
+		</property>
+		<property name="resultFields" >
+			<list>
+        <bean parent="FieldDefinition" p:attributeName="procedureCategoryCode" p:forceInquiry="true"/>
+        <bean parent="FieldDefinition" p:attributeName="procedureCategory"/>
+				<bean parent="FieldDefinition" p:attributeName="active" />
+			</list>
+		</property>
+	</bean>
+
+  <bean id="IacucProcedureCategory-LookupView-parentBean" abstract="true" parent="Uif-LookupView">
+    <property name="dataObjectClassName" value="org.kuali.kra.iacuc.procedures.IacucProcedureCategory"/>
+    <property name="headerText" value="Procedure Category Lookup"/>
+    <property name="criteriaFields">
+      <list>
+        <bean p:propertyName="procedureCategoryCode" parent="Uif-LookupCriteriaInputField"/>
+        <bean p:propertyName="procedureCategory" parent="Uif-LookupCriteriaInputField"/>
+      </list>
+    </property>
+    <property name="resultFields">
+      <list>
+        <bean p:propertyName="procedureCategoryCode" parent="Uif-DataField"/>
+        <bean p:propertyName="procedureCategory" parent="Uif-DataField"/>
+        <bean p:propertyName="active" parent="Uif-DataField"/>
+      </list>
+    </property>
+  </bean>
+
+</beans>

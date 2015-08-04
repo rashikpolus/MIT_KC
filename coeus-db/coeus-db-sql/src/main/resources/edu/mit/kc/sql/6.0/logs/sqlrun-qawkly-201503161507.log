@@ -1,0 +1,105 @@
+
+SQL*Plus: Release 10.2.0.4.0 - Production on Mon Mar 16 15:08:03 2015
+
+Copyright (c) 1982, 2007, Oracle.  All Rights Reserved.
+
+
+Connected to:
+Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options
+
+
+'RUNNINGDDLSNAPSHOT'
+--------------------
+running ddl snapshot
+
+
+'RUNNINGDDLSNAPSHOT'
+--------------------
+running ddl snapshot
+
+
+'RUNNINGDMLSNAPSHOT'
+--------------------
+running dml snapshot
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table truncated.
+
+
+7 rows created.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Table altered.
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+1 row updated.
+
+
+1 row updated.
+
+
+1 row updated.
+
+UPDATE KRIM_ROLE_T SET NMSPC_CD='KC-PD' WHERE NMSPC_CD='KC-AWARD' AND NM='WL Super User'
+                                                                      *
+ERROR at line 1:
+ORA-00904: "NM": invalid identifier
+
+
+
+1 row deleted.
+
+
+0 rows deleted.
+
+
+2 rows deleted.
+
+
+1 row deleted.
+
+
+1 row created.
+
+
+1 row created.
+
+(select ROLE_ID from KRIM_ROLE_T where role_nm = 'Maintain Key Person'),
+ *
+ERROR at line 13:
+ORA-01427: single-row subquery returns more than one row
+
+
+
+Commit complete.
+
+
+Commit complete.
+
+
+Commit complete.
+
+Disconnected from Oracle Database 11g Enterprise Edition Release 11.2.0.4.0 - 64bit Production
+With the Partitioning, OLAP, Data Mining and Real Application Testing options

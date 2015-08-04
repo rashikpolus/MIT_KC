@@ -1,0 +1,37 @@
+From c85a0f15a28626e69ec1bf61468d2d751afa2fb1 Mon Sep 17 00:00:00 2001
+From: Joe Williams <jwillia@iastate.edu>
+Date: Tue, 28 Apr 2015 08:39:16 -0500
+Subject: [PATCH] RESOPS-93:release workflow pessimistic locks after approval
+
+Approvers receive the following error message after approving proposal development document:
+
+This document currently has a 160-PROPOSAL DEVELOPMENT lock owned by KR
+---
+ .../propdev/impl/core/ProposalDevelopmentSubmitController.java     | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
+
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentSubmitController.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentSubmitController.java
+index 4cb0071..b739aea 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentSubmitController.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentSubmitController.java
+@@ -227,11 +227,7 @@ public  ModelAndView internalSubmit(@ModelAttribute("KualiForm") ProposalDevelop
+         }
+         form.setEvaluateFlagsAndModes(true);
+         getTransactionalDocumentControllerService().route(form);
+-        for (PessimisticLock lock : form.getProposalDevelopmentDocument().getPessimisticLocks()){
+-            getDataObjectService().delete(lock);
+-        }
+-        form.getProposalDevelopmentDocument().refreshPessimisticLocks();
+-
++        getPessimisticLockService().releaseWorkflowPessimisticLocking(form.getProposalDevelopmentDocument());
+         return updateProposalState(form);
+     }
+ 
+@@ -610,6 +606,7 @@ public ModelAndView approve(@ModelAttribute("KualiForm") ProposalDevelopmentDocu
+         }
+ 
+         getTransactionalDocumentControllerService().performWorkflowAction(form, UifConstants.WorkflowAction.APPROVE);
++        getPessimisticLockService().releaseWorkflowPessimisticLocking(form.getProposalDevelopmentDocument());
+         if (form.getActionFlags().containsKey("submitToSponsor")
+                 && getParameterService().getParameterValueAsBoolean(ProposalDevelopmentDocument.class, "autoSubmitToSponsorOnFinalApproval")
+                 && getKcWorkflowService().isFinalApproval(workflowDoc)) {

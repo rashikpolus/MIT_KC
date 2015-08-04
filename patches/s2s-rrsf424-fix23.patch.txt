@@ -1,0 +1,71 @@
+From a0af6190219dc324acd1f0ff75d95fbae6292dca Mon Sep 17 00:00:00 2001
+From: Joe Williams <jwillia@iastate.edu>
+Date: Mon, 11 May 2015 14:27:40 -0500
+Subject: [PATCH] RESKC-360:Fixed STE on S2S form SF424
+
+Continued testing of s2s forms
+Located SF424 2.1 in opportunity: 03162012-TEST
+Listed as 'available'
+Uses proposal mapped data, must have authorized approver info and requires s2s questionnaire EO question only.
+See proposal #448 in Res-Demo 1
+(note: I can successfully print this form in MIT Coeus Consortium instance.)
+Tried to print in Kualico and MIT QA: got this STE:
+
+java.lang.NullPointerException at org.kuali.coeus.s2sgen.impl.generate.support.SF424V2_1Generator.getSF42421(SF424V2_1Generator.java:157) at org.kuali.coeus.s2sgen.impl.generate.support.SF424V2_1Generator.getSF42421Doc(SF424V2_1Generator.java:115) at org.kuali.coeus.s2sgen.impl.generate.support.SF424V2_1Generator.getFormObject(SF424V2_1Generator.java:576) at org.kuali.coeus.s2sgen.impl.print.FormPrintServiceImpl.getPDFStream(FormPrintServiceImpl.java:374) at
+---
+ .../coeus/s2sgen/impl/generate/support/SF424V1_0Generator.java      | 6 +++---
+ .../coeus/s2sgen/impl/generate/support/SF424V2_0Generator.java      | 2 +-
+ .../coeus/s2sgen/impl/generate/support/SF424V2_1Generator.java      | 3 ++-
+ 3 files changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/coeus-s2sgen-impl/src/main/java/org/kuali/coeus/s2sgen/impl/generate/support/SF424V1_0Generator.java b/coeus-s2sgen-impl/src/main/java/org/kuali/coeus/s2sgen/impl/generate/support/SF424V1_0Generator.java
+index 243cd25..3624072 100644
+--- a/coeus-s2sgen-impl/src/main/java/org/kuali/coeus/s2sgen/impl/generate/support/SF424V1_0Generator.java
++++ b/coeus-s2sgen-impl/src/main/java/org/kuali/coeus/s2sgen/impl/generate/support/SF424V1_0Generator.java
+@@ -35,6 +35,7 @@
+ import gov.grants.apply.system.universalCodesV10.CountryCodeType;
+ import gov.grants.apply.system.universalCodesV10.CurrencyCodeType;
+ import org.apache.commons.lang3.StringUtils;
++import org.kuali.coeus.propdev.api.s2s.S2sRevisionTypeContract;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+ import org.apache.xmlbeans.XmlObject;
+@@ -149,9 +150,8 @@ private GrantApplicationType getGrantApplicationType() {
+ 		if (pdDoc.getDevelopmentProposal().getS2sOpportunity() != null
+ 				&& pdDoc.getDevelopmentProposal().getS2sOpportunity()
+ 						.getS2sSubmissionType() != null) {
+-
+-			String revisionCode = pdDoc.getDevelopmentProposal()
+-					.getS2sOpportunity().getS2sRevisionType().getCode();
++			S2sRevisionTypeContract revisionTypeContract = pdDoc.getDevelopmentProposal().getS2sOpportunity().getS2sRevisionType();
++			String revisionCode = revisionTypeContract != null ? revisionTypeContract.getCode() : null;
+ 			if (revisionCode != null) {
+ 				Revision revision = Revision.Factory.newInstance();
+ 				String revision1 = null;
+diff --git a/coeus-s2sgen-impl/src/main/java/org/kuali/coeus/s2sgen/impl/generate/support/SF424V2_0Generator.java b/coeus-s2sgen-impl/src/main/java/org/kuali/coeus/s2sgen/impl/generate/support/SF424V2_0Generator.java
+index 430af04..fa7ef4d 100644
+--- a/coeus-s2sgen-impl/src/main/java/org/kuali/coeus/s2sgen/impl/generate/support/SF424V2_0Generator.java
++++ b/coeus-s2sgen-impl/src/main/java/org/kuali/coeus/s2sgen/impl/generate/support/SF424V2_0Generator.java
+@@ -151,7 +151,7 @@ private SF424 getSF424() {
+                 }
+             }
+             sf424V2.setApplicationType(applicationTypeEnum);
+-            String revisionType = s2sOpportunity.getS2sRevisionType().getCode();
++            String revisionType = s2sOpportunity.getS2sRevisionType() != null ? s2sOpportunity.getS2sRevisionType().getCode() : null;
+             if (revisionType != null) {
+                 RevisionType.Enum revType = null;
+                 if (revisionType.equals(INCREASE_AWARD_CODE)) {
+diff --git a/coeus-s2sgen-impl/src/main/java/org/kuali/coeus/s2sgen/impl/generate/support/SF424V2_1Generator.java b/coeus-s2sgen-impl/src/main/java/org/kuali/coeus/s2sgen/impl/generate/support/SF424V2_1Generator.java
+index 8671cd9..5511dcd 100644
+--- a/coeus-s2sgen-impl/src/main/java/org/kuali/coeus/s2sgen/impl/generate/support/SF424V2_1Generator.java
++++ b/coeus-s2sgen-impl/src/main/java/org/kuali/coeus/s2sgen/impl/generate/support/SF424V2_1Generator.java
+@@ -154,7 +154,8 @@ private SF42421 getSF42421() {
+                 }
+             }
+             sf424V21.setApplicationType(applicationTypeEnum);
+-            String revisionType = s2sOpportunity.getS2sRevisionType().getCode();
++
++            String revisionType = s2sOpportunity.getS2sRevisionType() != null ? s2sOpportunity.getS2sRevisionType().getCode() : null;
+             if (revisionType != null) {
+                 RevisionType.Enum revType = null;
+                 if (revisionType.equals(INCREASE_AWARD_CODE)) {                    

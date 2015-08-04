@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="PropDev-SupplementalPage" parent="PropDev-SupplementalPage-parentBean" />
+    <bean id="PropDev-SupplementalPage-parentBean" parent="PropDev-DocumentPage">
+        <property name="items">
+            <list>
+                <bean parent="PropDev-Supplemental-TabGroup"></bean>
+            </list>
+        </property>
+        <property name="header">
+            <bean parent="Uif-PageHeader" p:headerText="Supplemental Info" />
+        </property>
+    </bean>
+
+    <bean id="PropDev-Supplemental-TabGroup" parent="PropDev-Supplemental-TabGroup-parentBean"/>
+    <bean id="PropDev-Supplemental-TabGroup-parentBean" abstract="true" parent="Kc-DynamicTabSection"
+            p:tabCollectionPropertyName="customDataGroups"
+            p:expressionProperties="groupName:description"
+            p:idSuffixPropertyName="idSuffix">
+        <property name="groupPrototype">
+            <bean parent="PropDev-Supplemental-Section"/>
+        </property>
+    </bean>
+
+    <bean id="PropDev-Supplemental-Section" parent="PropDev-Supplemental-Section-parentBean"/>
+    <bean id="PropDev-Supplemental-Section-parentBean" abstract="true" parent="Uif-VerticalBoxGroup">
+        <property name="header">
+             <bean parent="Uif-SectionHeader" p:headerText="@{#groupName}"/>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="PropDev-Supplemental-Collection"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="PropDev-Supplemental-Collection" parent="PropDev-Supplemental-Collection-parentBean"/>
+    <bean id="PropDev-Supplemental-Collection-parentBean" abstract="true" parent="Uif-ListCollectionSection"
+            p:collectionObjectClass="org.kuali.coeus.common.framework.custom.attr.CustomAttributeDocValue"
+            p:propertyName="document.customDataList"
+            p:renderAddLine="false" p:renderLineActions="false">
+        <property name="items">
+            <list>
+                <bean parent="Uif-InputField" class="org.kuali.coeus.propdev.impl.custom.ProposalDevelopmentCustomDataField"
+                      p:fieldLabel.labelText="@{#line.customAttribute?.label?: &quot;Custom Attribute&quot;}@{#ViewHelper.isRequired(#line.customAttribute, document.customDataList) ? ': [color=red]*[/color]' : ':'}"
+                      p:fieldLabel.renderColon="false"
+                      p:propertyName="value">
+                    <property name="suggest">
+                        <bean parent="Uif-Suggest" p:render="false" />
+                    </property>
+                    <property name="quickfinder">
+                        <bean parent="Uif-QuickFinder" p:render="false" />
+                    </property>
+                    <property name="inquiry">
+                        <bean parent="Uif-Inquiry" p:render="false" p:dataObjectClassName="org.kuali.coeus.common.framework.custom.arg.ArgValueLookup"
+                              p:inquiryParameters="value:value,customAttribute.lookupReturn:argumentName"
+                              p:viewName="PropDev-CustomData-ArgValueInquiry"/>
+                    </property>
+                </bean>
+                <bean parent="Uif-InputField" p:propertyName="customAttribute.lookupReturn" p:fieldLabel.render="false">
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl" />
+                    </property>
+                </bean>
+            </list>
+        </property>
+       <property name="filters">
+            <bean parent="Uif-ConditionalCollectionFilter"
+                  p:expression="#line.customAttribute.groupName eq #groupName"/>
+        </property>
+    </bean>
+</beans>

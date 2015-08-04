@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - Kuali Coeus, a comprehensive research administration system for higher education.
+   - 
+   - Copyright 2005-2015 Kuali, Inc.
+   - 
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as
+   - published by the Free Software Foundation, either version 3 of the
+   - License, or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                    http://www.springframework.org/schema/util
+                    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+
+	<bean id="PropBudget-PeriodsPage" parent="PropBudget-PeriodsPage-parentBean" />
+	<bean id="PropBudget-PeriodsPage-parentBean" parent="PropBudget-Page" p:fieldBindingObjectPath="budget">
+		<property name="items">
+			<list>
+                <bean parent="Uif-InputField" p:fieldLabel.render="false" p:propertyName="budgetId">
+                    <property name="control">
+                        <bean parent="Uif-HiddenControl"/>
+                    </property>
+                </bean>
+				<ref bean="PropBudget-PeriodsPage-CollectionGroup" />
+			</list>
+		</property>
+		<property name="header">
+			<bean parent="Uif-PageHeader" />
+		</property>
+	</bean>
+
+    <bean id="PropBudget-PeriodsPage-CollectionGroup" parent="PropBudget-PeriodsPage-CollectionGroup-parentBean"/>
+    <bean id="PropBudget-PeriodsPage-CollectionGroup-parentBean" parent="Uif-TableCollectionSection" 
+    	  p:headerText="Periods &amp; Totals"
+          p:propertyName="budgetPeriods"
+          p:collectionObjectClass="org.kuali.coeus.common.budget.framework.period.BudgetPeriod"
+          p:addWithDialog="true" p:layoutManager.renderSequenceField="false">
+		<property name="addWithDialogAction">
+			<bean parent="Uif-AddWithDialogAction" p:actionLabel="Add Budget Period" p:iconClass="icon-plus" p:render="@{!#parent.readOnly}"/>
+		</property>
+        <property name="addLineDialog">
+            <bean p:id="PropBudget-PeriodsPage-AddDialog" parent="Uif-AddLineDialog" p:headerText="Add Budget Period" p:retrieveViaAjax="true"
+                  p:destroyDialogOnHidden="true"
+                  p:onHideDialogScript="retrieveComponent('PropBudget-PeriodsPage-CollectionGroup');">
+                <property name="footer.items">
+                    <list>
+                        <bean parent="Uif-AddLineAction-Dialog" p:order="10" p:dialogDismissOption=""
+			       			  p:successCallback="Kc.Dialog.closeDialogWithoutError('PropBudget-PeriodsPage-AddDialog');"
+                        	  p:performClientSideValidation="true"
+                              p:methodToCall="addBudgetPeriod" p:actionLabel="Add Budget Period"/>
+                        <bean parent="Uif-DialogDismissButton" p:order="20" p:actionLabel="Cancel" />
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="items">
+            <list>
+                <bean parent="Kc-InlineEdit-InputField" p:propertyName="startDate" p:required="true"
+                      p:order="10" p:fieldLabel.labelText="Period Start[br]Date ">
+                    <property name="control">
+                        <bean parent="Uif-DateControlOnFocus" p:watermarkText="mm/dd/yyyy" />
+                    </property>
+                </bean>
+                <bean parent="Kc-InlineEdit-InputField" p:propertyName="endDate" p:required="true"
+                      p:order="20">
+                    <property name="control">
+                        <bean parent="Uif-DateControlOnFocus" p:watermarkText="mm/dd/yyyy" />
+                    </property>
+                </bean>
+                <bean parent="Uif-DataField" p:propertyName="numberOfMonths" p:label="Months"
+                      p:order="30"/>
+                <bean parent="Kc-InlineEdit-InputField" p:propertyName="totalCost"
+                      p:order="40"
+                      p:readOnly="@{!#emptyList(budget.budgetLineItems) or !#emptyList(budget.budgetPersonnelDetails) or #parent.readOnly}"/>
+                <bean parent="Kc-InlineEdit-InputField" p:propertyName="totalDirectCost"
+                      p:order="50"
+                      p:readOnly="@{!#emptyList(budget.budgetLineItems) or !#emptyList(budget.budgetPersonnelDetails)or #parent.readOnly}"/>
+                <bean parent="Kc-InlineEdit-InputField" p:propertyName="totalIndirectCost"
+                      p:order="60"
+                      p:readOnly="@{!#emptyList(budget.budgetLineItems) or !#emptyList(budget.budgetPersonnelDetails) or #parent.readOnly}"/>
+                <bean parent="Kc-InlineEdit-InputField" p:propertyName="underrecoveryAmount"
+                      p:order="65"
+                      p:readOnly="@{!#emptyList(budget.budgetLineItems) or !#emptyList(budget.budgetPersonnelDetails) or #parent.readOnly}"/>
+                <bean parent="Kc-InlineEdit-InputField" p:propertyName="costSharingAmount"
+                      p:order="70"
+                      p:readOnly="@{!#emptyList(budget.budgetLineItems) or !#emptyList(budget.budgetPersonnelDetails) or #parent.readOnly}"/>
+                <bean parent="Kc-InlineEdit-InputField" p:propertyName="totalCostLimit"
+                      p:order="80"/>
+                <bean parent="Kc-InlineEdit-InputField" p:propertyName="directCostLimit"
+                      p:order="90"/>
+            </list>
+        </property>
+        <property name="lineActions">
+            <list>
+                <bean parent="Uif-DeleteLineAction-IconOnly" p:order="40"
+                      p:render="@{!#ViewHelper.isBudgetLineItemEditable(#collectionGroup.bindingInfo.bindingPath,#index,editableBudgetLineItems)}" 
+                      p:iconClass="icon-trash">
+                        <property name="confirmationDialog">
+                            <bean parent="Uif-DialogGroup-OkCancel" p:promptText="Are you sure you want to delete period?"/>
+                        </property>
+                </bean>
+            </list>
+        </property>
+        <property name="layoutManager.columnCalculations">
+            <list>
+                <bean parent="Uif-ColumnCalculationInfo-Sum" p:propertyName="numberOfMonths"/>
+                <bean parent="Uif-ColumnCalculationInfo-Sum" p:propertyName="totalCost"/>
+                <bean parent="Uif-ColumnCalculationInfo-Sum" p:propertyName="totalDirectCost"/>
+                <bean parent="Uif-ColumnCalculationInfo-Sum" p:propertyName="totalIndirectCost"/>
+                <bean parent="Uif-ColumnCalculationInfo-Sum" p:propertyName="underrecoveryAmount"/>
+                <bean parent="Uif-ColumnCalculationInfo-Sum" p:propertyName="costSharingAmount"/>
+                <bean parent="Uif-ColumnCalculationInfo-Sum" p:propertyName="totalCostLimit"/>
+                <bean parent="Uif-ColumnCalculationInfo-Sum" p:propertyName="directCostLimit"/>
+            </list>
+        </property>
+        <property name="layoutManager.richTable.templateOptions">
+            <map>
+                <entry key="sDom" value="tip"/>
+                <entry key="bRetrieve" value="true"/>
+                <entry key="bPaginate" value="false"/>
+                <entry key="bInfo" value="false"/>
+            </map>
+        </property>
+        <property name="header.rightGroup">
+            <bean parent="Uif-HeaderRightGroup">
+                <property name="items">
+                    <list>
+                        <bean parent="Uif-SecondaryActionButton-Mini" p:actionLabel="Recalculate with changes"
+                              p:methodToCall="recalculateBudgetWithChanges" p:order="10" p:disabled="@{#parent.readOnly}"/>
+                        <bean parent="Uif-SecondaryActionButton-Mini" p:actionLabel="Reset to period defaults"
+                              p:methodToCall="resetToBudgetPeriodDefault" p:order="20" p:disabled="@{#parent.readOnly}"/>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
+	<!-- this dialog will be triggered from the controller -->
+	<bean id="PropBudget-PeriodsPage-ConfirmPeriodChangesDialog" parent="Uif-DialogGroup-YesNo" p:promptText="@{defaultBudgetPeriodWarningMessage}"/>
+	<bean id="PropBudget-PeriodsPage-ChangePeriodDialog" parent="Uif-DialogGroup-YesNo" p:promptText="Changing the budget period dates will result in changes being made to line item expenses and recalculation of the budget. Do you want to proceed?"/>
+
+    <bean id="PropBudget-PeriodsPage-ReadyToGeneratePeriodsDialog" parent="Uif-DialogGroup-YesNo"
+          p:promptText="Are you ready to apply your Period 1 budget to future periods?"/>
+</beans>

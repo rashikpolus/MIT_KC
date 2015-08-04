@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="Kc-LandingPage-DefaultView" parent="MITKc-LandingPage-DefaultView-parentBean" />
+	<bean id="MITKc-LandingPage-DefaultView-parentBean" abstract="true" p:applyDirtyCheck="false"
+		parent="Kc-LandingPage-DefaultView-parentBean" p:header.render="false" p:breadcrumbs.render="false">
+        <property name="contentContainerCssClasses">
+          <list>
+            <value>container</value>
+          </list>
+        </property>
+		<property name="page">
+			<bean parent="Kc-DashBoard-Home-Page" />
+		</property>
+		<property name="additionalCssFiles">
+			<list>
+				<value>css/mitHomePage.css</value>
+			</list>
+		</property>
+        <property name="additionalScriptFiles">
+            <list>
+                <value>scripts/readmore/readmore.js</value>
+                <value>scripts/landingPage.js</value>
+            </list>
+        </property>
+        <property name="onDocumentReadyScript" value="setupViewMore();"/>
+	</bean>
+</beans>

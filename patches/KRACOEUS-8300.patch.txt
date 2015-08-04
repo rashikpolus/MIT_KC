@@ -1,0 +1,463 @@
+From db6d8732d42a9e3e81212044388550d36c066973 Mon Sep 17 00:00:00 2001
+From: Joe Williams <jwillia@iastate.edu>
+Date: Wed, 5 Nov 2014 15:20:55 -0600
+Subject: [PATCH] KRACOEUS-8300:fixed issues with personnel attachments
+ generated from extended attributes
+
+---
+ .../6.0.0/dml/KR_DML_01_KRACOEUS-8300_B000.sql     |   2 +
+ .../6.0.0/dml/KR_DML_01_KRACOEUS-8300_B000.sql     |   4 +
+ ...alDevelopmentPersonnelAttachmentsAuditRule.java | 152 +++++++++++++++++++++
+ .../impl/core/ProposalDevelopmentDocumentRule.java |   7 +-
+ ...ProposalDevelopmentDataValidationConstants.java |   5 +
+ ...ProposalDevelopmentPersonnelAttachmentRule.java |  57 ++------
+ .../attachment/ProposalPersonBiographyService.java |   2 +-
+ .../ProposalPersonBiographyServiceImpl.java        |  20 ++-
+ ...osalDevelopmentPersonnelAttachmentRuleTest.java |   8 +-
+ 9 files changed, 195 insertions(+), 62 deletions(-)
+ create mode 100644 coeus-db/coeus-db-sql/src/main/resources/org/kuali/coeus/coeus-sql/current/6.0.0/dml/KR_DML_01_KRACOEUS-8300_B000.sql
+ create mode 100644 coeus-db/coeus-db-sql/src/main/resources/org/kuali/coeus/coeus-sql/current_mysql/6.0.0/dml/KR_DML_01_KRACOEUS-8300_B000.sql
+ create mode 100644 coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalDevelopmentPersonnelAttachmentsAuditRule.java
+
+diff --git a/coeus-db/coeus-db-sql/src/main/resources/org/kuali/coeus/coeus-sql/current/6.0.0/dml/KR_DML_01_KRACOEUS-8300_B000.sql b/coeus-db/coeus-db-sql/src/main/resources/org/kuali/coeus/coeus-sql/current/6.0.0/dml/KR_DML_01_KRACOEUS-8300_B000.sql
+new file mode 100644
+index 0000000..44162aa
+--- /dev/null
++++ b/coeus-db/coeus-db-sql/src/main/resources/org/kuali/coeus/coeus-sql/current/6.0.0/dml/KR_DML_01_KRACOEUS-8300_B000.sql
+@@ -0,0 +1,2 @@
++UPDATE KRCR_PARM_T SET VAL = '5' WHERE NMSPC_CD = 'KC-PD' AND PARM_NM = 'DEFAULT_BIOGRAPHY_DOCUMENT_TYPE_CODE'
++/
+diff --git a/coeus-db/coeus-db-sql/src/main/resources/org/kuali/coeus/coeus-sql/current_mysql/6.0.0/dml/KR_DML_01_KRACOEUS-8300_B000.sql b/coeus-db/coeus-db-sql/src/main/resources/org/kuali/coeus/coeus-sql/current_mysql/6.0.0/dml/KR_DML_01_KRACOEUS-8300_B000.sql
+new file mode 100644
+index 0000000..1afad8d
+--- /dev/null
++++ b/coeus-db/coeus-db-sql/src/main/resources/org/kuali/coeus/coeus-sql/current_mysql/6.0.0/dml/KR_DML_01_KRACOEUS-8300_B000.sql
+@@ -0,0 +1,4 @@
++DELIMITER /
++UPDATE KRCR_PARM_T SET VAL = '5' WHERE NMSPC_CD = 'KC-PD' AND PARM_NM = 'DEFAULT_BIOGRAPHY_DOCUMENT_TYPE_CODE'
++/
++DELIMITER ;
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalDevelopmentPersonnelAttachmentsAuditRule.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalDevelopmentPersonnelAttachmentsAuditRule.java
+new file mode 100644
+index 0000000..8936956
+--- /dev/null
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/attachment/ProposalDevelopmentPersonnelAttachmentsAuditRule.java
+@@ -0,0 +1,152 @@
++package org.kuali.coeus.propdev.impl.attachment;
++
++import org.apache.commons.collections4.CollectionUtils;
++import org.apache.commons.lang3.StringUtils;
++import org.kuali.coeus.common.framework.attachment.KcAttachmentService;
++import org.kuali.coeus.propdev.impl.core.DevelopmentProposal;
++import org.kuali.coeus.propdev.impl.core.ProposalDevelopmentDocument;
++import org.kuali.coeus.propdev.impl.person.attachment.ProposalPersonBiography;
++import org.kuali.coeus.propdev.impl.person.attachment.ProposalPersonBiographyService;
++import org.kuali.coeus.sys.framework.rule.KcTransactionalDocumentRuleBase;
++import org.kuali.coeus.sys.framework.service.KcServiceLocator;
++import org.kuali.kra.infrastructure.Constants;
++import org.kuali.kra.infrastructure.KeyConstants;
++import org.kuali.rice.coreservice.framework.parameter.ParameterService;
++import org.kuali.rice.krad.document.Document;
++import org.kuali.rice.krad.rules.rule.DocumentAuditRule;
++import org.kuali.rice.krad.util.AuditCluster;
++import org.kuali.rice.krad.util.AuditError;
++import org.kuali.rice.krad.util.GlobalVariables;
++import org.kuali.rice.krad.util.ObjectUtils;
++
++import java.util.ArrayList;
++import java.util.List;
++
++import static org.kuali.coeus.propdev.impl.datavalidation.ProposalDevelopmentDataValidationConstants.*;
++
++public class ProposalDevelopmentPersonnelAttachmentsAuditRule extends KcTransactionalDocumentRuleBase implements DocumentAuditRule {
++
++    private KcAttachmentService kcAttachmentService;
++    private ParameterService parameterService;
++    private ProposalPersonBiographyService proposalPersonBiographyService;
++
++    public boolean processRunAuditBusinessRules(Document document) {
++        boolean valid = true;
++        ProposalDevelopmentDocument proposalDevelopmentDocument = (ProposalDevelopmentDocument) document;
++        DevelopmentProposal developmentProposal = proposalDevelopmentDocument.getDevelopmentProposal();
++        int index = 0;
++        for (ProposalPersonBiography biography : developmentProposal.getPropPersonBios()) {
++            valid &=checkForDescription(biography);
++            valid &= checkForInvalidCharacters(biography);
++            valid &= checkForDuplicates(biography, developmentProposal.getPropPersonBios(), index);
++            valid &= checkForProposalPerson(biography,index);
++            index++;
++        }
++        return valid;
++    }
++
++    private boolean checkForDescription(ProposalPersonBiography biography){
++        boolean valid = true;
++        String otherCode = getProposalPersonBiographyService().findPropPerDocTypeForOther().getCode();
++        if(StringUtils.equalsIgnoreCase(otherCode,biography.getDocumentTypeCode())) {
++            if(StringUtils.isBlank(biography.getDescription())) {
++                getAuditErrors(ATTACHMENT_PERSONNEL_SECTION_NAME,AUDIT_ERRORS).add(new AuditError(BIOGRAPHIES_KEY, KeyConstants.ERROR_PERSONNEL_ATTACHMENT_DESCRIPTION_REQUIRED,ATTACHMENT_PAGE_ID + "." + ATTACHMENT_PERSONNEL_SECTION_ID));
++                valid = false;
++            }
++        }
++        return valid;
++    }
++    private boolean checkForInvalidCharacters(ProposalPersonBiography proposalPersonBiography) {
++
++        boolean valid = true;
++        // Checking attachment file name for invalid characters.
++        String attachmentFileName = proposalPersonBiography.getName();
++        String invalidCharacters = getKcAttachmentService().getInvalidCharacters(attachmentFileName);
++        if (ObjectUtils.isNotNull(invalidCharacters)) {
++            String parameter = getParameterService().
++                    getParameterValueAsString(ProposalDevelopmentDocument.class, Constants.INVALID_FILE_NAME_CHECK_PARAMETER);
++            if (Constants.INVALID_FILE_NAME_ERROR_CODE.equals(parameter)) {
++                valid = false;
++                getAuditErrors(ATTACHMENT_PERSONNEL_SECTION_NAME,AUDIT_ERRORS).add(new AuditError(BIOGRAPHIES_KEY,KeyConstants.INVALID_FILE_NAME,ATTACHMENT_PAGE_ID+"."+ATTACHMENT_PERSONNEL_SECTION_ID));
++            } else {
++                valid = false;
++                getAuditErrors(ATTACHMENT_PERSONNEL_SECTION_NAME,AUDIT_WARNINGS).add(new AuditError(BIOGRAPHIES_KEY, KeyConstants.INVALID_FILE_NAME, ATTACHMENT_PAGE_ID + "." + ATTACHMENT_PERSONNEL_SECTION_ID));
++            }
++        }
++        return valid;
++    }
++
++    private boolean checkForDuplicates(ProposalPersonBiography biography, List<ProposalPersonBiography> existingBiographies,int index) {
++        boolean valid = true;
++        if(CollectionUtils.isNotEmpty(existingBiographies) && biography.getProposalPersonNumber() != null){
++            for(ProposalPersonBiography personBiography: existingBiographies) {
++                if(personBiography.getProposalPersonNumber() != null && personBiography.getDocumentTypeCode() != null &&
++                        !StringUtils.equalsIgnoreCase(getProposalPersonBiographyService().findPropPerDocTypeForOther().getCode(),personBiography.getDocumentTypeCode()) &&
++                        personBiography.getProposalPersonNumber().equals(biography.getProposalPersonNumber())
++                        && personBiography.getDocumentTypeCode().equals(biography.getDocumentTypeCode())){
++
++                    if(personBiography.getBiographyNumber() != biography.getBiographyNumber()) {
++                        valid = false;
++                        getAuditErrors(ATTACHMENT_PERSONNEL_SECTION_NAME,AUDIT_ERRORS).add(new AuditError(String.format(BIOGRAPHY_TYPE_KEY,index),KeyConstants.ERROR_PERSONNEL_ATTACHMENT_PERSON_DUPLICATE,ATTACHMENT_PAGE_ID + "." + ATTACHMENT_PERSONNEL_SECTION_ID));
++                    }
++                }
++            }
++        }
++        return valid;
++    }
++
++    private boolean checkForProposalPerson(ProposalPersonBiography proposalPersonBiography, int index) {
++        boolean valid= true;
++        if(proposalPersonBiography.getProposalPersonNumber() == null || StringUtils.isBlank(proposalPersonBiography.getProposalPersonNumber().toString())){
++            valid = false;
++            getAuditErrors(ATTACHMENT_PERSONNEL_SECTION_NAME,AUDIT_ERRORS).add(new AuditError(String.format(BIOGRAPHY_PERSON_KEY,index),KeyConstants.ERROR_PERSONNEL_ATTACHMENT_PERSON_REQUIRED,ATTACHMENT_PAGE_ID + "." + ATTACHMENT_PERSONNEL_SECTION_ID));
++        }
++        return valid;
++    }
++
++    private List<AuditError> getAuditErrors(String sectionName, String severity ) {
++        List<AuditError> auditErrors = new ArrayList<AuditError>();
++        String clusterKey = ATTACHMENT_PAGE_NAME + "." + sectionName;
++        if (!GlobalVariables.getAuditErrorMap().containsKey(clusterKey+severity)) {
++            GlobalVariables.getAuditErrorMap().put(clusterKey+severity, new AuditCluster(clusterKey, auditErrors, severity));
++        }
++        else {
++            auditErrors = GlobalVariables.getAuditErrorMap().get(clusterKey+severity).getAuditErrorList();
++        }
++
++        return auditErrors;
++    }
++
++    public KcAttachmentService getKcAttachmentService() {
++        if (kcAttachmentService == null) {
++            kcAttachmentService = KcServiceLocator.getService(KcAttachmentService.class);
++        }
++        return kcAttachmentService;
++    }
++
++    public void setKcAttachmentService(KcAttachmentService kcAttachmentService) {
++        this.kcAttachmentService = kcAttachmentService;
++    }
++
++    public ParameterService getParameterService() {
++        if (parameterService == null) {
++            parameterService = KcServiceLocator.getService(ParameterService.class);
++        }
++        return parameterService;
++    }
++
++    public void setParameterService(ParameterService parameterService) {
++        this.parameterService = parameterService;
++    }
++
++    public ProposalPersonBiographyService getProposalPersonBiographyService() {
++        if (proposalPersonBiographyService == null) {
++            proposalPersonBiographyService = KcServiceLocator.getService(ProposalPersonBiographyService.class);
++        }
++        return proposalPersonBiographyService;
++    }
++
++    public void setProposalPersonBiographyService(ProposalPersonBiographyService proposalPersonBiographyService) {
++        this.proposalPersonBiographyService = proposalPersonBiographyService;
++    }
++}
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentDocumentRule.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentDocumentRule.java
+index bf07233..60e501f 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentDocumentRule.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/core/ProposalDevelopmentDocumentRule.java
+@@ -449,7 +449,9 @@ public boolean processRunAuditBusinessRules(Document document){
+             throw new RuntimeException(new ProposalHierarchyException("Cannot run validation on a Proposal Hierarchy Child."));
+         }
+         boolean retval = true;
+-        
++
++        retval &= new ProposalDevelopmentPersonnelAttachmentsAuditRule().processRunAuditBusinessRules(document);
++
+         retval &= new CustomDataRule().processRules(new AuditProposalCustomDataEvent((KcTransactionalDocumentBase)document));
+         
+         retval &= new ProposalDevelopmentProposalRequiredFieldsAuditRule().processRunAuditBusinessRules(document);
+@@ -509,9 +511,6 @@ public boolean processRunAuditBudgetVersionRule(DevelopmentProposal proposal) {
+ 
+     public boolean processAttachmentRules(ProposalDevelopmentDocument document) {
+         boolean retVal = true;
+-        for (ProposalPersonBiography biography : document.getDevelopmentProposal().getPropPersonBios()) {
+-            retVal &= processSavePersonnelAttachmentBusinessRules(new SavePersonnelAttachmentEvent("",document,biography));
+-        }
+         int index= 0;
+         for (Narrative narrative : document.getDevelopmentProposal().getNarratives()) {
+             retVal &= processSaveNarrativesBusinessRules(new SaveNarrativesEvent("document.developmentProposal.narratives["+index+"]",document,narrative,document.getDevelopmentProposal().getNarratives()));
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/datavalidation/ProposalDevelopmentDataValidationConstants.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/datavalidation/ProposalDevelopmentDataValidationConstants.java
+index 6340335..f3c05f7 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/datavalidation/ProposalDevelopmentDataValidationConstants.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/datavalidation/ProposalDevelopmentDataValidationConstants.java
+@@ -41,8 +41,13 @@
+     public static final String ATTACHMENT_PAGE_NAME = "Attachments";
+     public static final String ATTACHMENT_PROPOSAL_SECTION_ID = "PropDev-AttachmentsPage-ProposalSection";
+     public static final String ATTACHMENT_PROPOSAL_SECTION_NAME = "Proposal Attachments";
++    public static final String ATTACHMENT_PERSONNEL_SECTION_ID = "PropDev-AttachmentsPage-PersonnelSection";
++    public static final String ATTACHMENT_PERSONNEL_SECTION_NAME = "Personnel Attachments";
+     public static final String NARRATIVES_KEY = "document.developmentProposal.narratives";
+     public static final String NARRATIVES_STATUS_KEY = "document.developmentProposal.narratives[%d].moduleStatusCode";
++    public static final String BIOGRAPHIES_KEY = "document.developmentProposal.propPersonBios";
++    public static final String BIOGRAPHY_TYPE_KEY = "document.developmentProposal.propPersonBios[%d].documentTypeCode";
++    public static final String BIOGRAPHY_PERSON_KEY = "document.developmentProposal.propPersonBios[%d].proposalPersonNumberString";
+ 
+     public static final String QUESTIONNAIRE_PAGE_ID = "PropDev-QuestionnairePage";
+     public static final String QUESTIONNAIRE_PAGE_NAME = "Questionnaire";
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/attachment/ProposalDevelopmentPersonnelAttachmentRule.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/attachment/ProposalDevelopmentPersonnelAttachmentRule.java
+index 32c2c56..f516ea4 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/attachment/ProposalDevelopmentPersonnelAttachmentRule.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/attachment/ProposalDevelopmentPersonnelAttachmentRule.java
+@@ -19,18 +19,14 @@
+ import org.apache.commons.lang3.StringUtils;
+ import org.kuali.coeus.common.framework.attachment.KcAttachmentService;
+ import org.kuali.coeus.propdev.impl.core.ProposalDevelopmentDocument;
+-import org.kuali.coeus.sys.framework.gv.GlobalVariableService;
+ import org.kuali.coeus.sys.framework.rule.KcTransactionalDocumentRuleBase;
+ import org.kuali.coeus.sys.framework.service.KcServiceLocator;
+ import org.kuali.kra.infrastructure.Constants;
+ import org.kuali.kra.infrastructure.KeyConstants;
+ import org.kuali.rice.coreservice.framework.parameter.ParameterService;
+-import org.kuali.rice.krad.service.BusinessObjectService;
+ import org.kuali.rice.krad.util.ObjectUtils;
+ 
+-import java.util.HashMap;
+ import java.util.List;
+-import java.util.Map;
+ 
+ import static org.kuali.kra.infrastructure.KeyConstants.ERROR_ATTACHMENT_TYPE_NOT_SELECTED;
+ 
+@@ -45,7 +41,7 @@
+ 
+     private transient KcAttachmentService kcAttachmentService;
+     private transient ParameterService parameterService;
+-    private transient GlobalVariableService globalVariableService;
++    private transient ProposalPersonBiographyService proposalPersonBiographyService;
+ 
+     @Override
+     public boolean processAddPersonnelAttachmentBusinessRules(AddPersonnelAttachmentEvent addPersonnelAttachmentEvent) {
+@@ -58,7 +54,7 @@ public boolean processAddPersonnelAttachmentBusinessRules(AddPersonnelAttachment
+             reportError(DOCUMENT_TYPE_CODE, ERROR_ATTACHMENT_TYPE_NOT_SELECTED);
+         }
+ 
+-        if(findPropPerDocTypeForOther().getCode().equalsIgnoreCase(proposalPersonBiography.getDocumentTypeCode())) {
++        if(getProposalPersonBiographyService().findPropPerDocTypeForOther().getCode().equalsIgnoreCase(proposalPersonBiography.getDocumentTypeCode())) {
+             if(StringUtils.isBlank(proposalPersonBiography.getDescription())) {
+                 reportError(DOC_TYPE_DESCRIPTION, KeyConstants.ERROR_PERSONNEL_ATTACHMENT_DESCRIPTION_REQUIRED);
+                 rulePassed = false;
+@@ -82,31 +78,7 @@ public boolean processReplacePersonnelAttachmentBusinessRules(ReplacePersonnelAt
+ 
+     @Override
+     public boolean processSavePersonnelAttachmentBusinessRules(SavePersonnelAttachmentEvent savePersonnelAttachmentEvent) {
+-        ProposalDevelopmentDocument document = (ProposalDevelopmentDocument) savePersonnelAttachmentEvent.getDocument();
+-        ProposalPersonBiography proposalPersonBiography = savePersonnelAttachmentEvent.getProposalPersonBiography();
+-        boolean rulePassed = true;
+-        
+-        List<ProposalPersonBiography> existingPersonBiographyList = document.getDevelopmentProposal().getPropPersonBios();
+-        if(CollectionUtils.isNotEmpty(existingPersonBiographyList)){
+-            //Loop thru to filter attachment uploaded by the current user
+-            int index=0;
+-            for(ProposalPersonBiography personBiography: existingPersonBiographyList) {
+-                if(findPropPerDocTypeForOther().getCode().equalsIgnoreCase(personBiography.getDocumentTypeCode())) {
+-                    if(StringUtils.isBlank(personBiography.getDescription())) {
+-                        reportError("document.developmentProposal.propPersonBios", KeyConstants.ERROR_PERSONNEL_ATTACHMENT_DESCRIPTION_REQUIRED);
+-                        rulePassed = false;
+-                    }
+-                }
+-                getGlobalVariableService().getMessageMap().clearErrorPath();
+-                getGlobalVariableService().getMessageMap().getErrorPath().add("document.developmentProposal.propPersonBios[" + index +"]");
+-                rulePassed &= checkForInvalidCharacters(personBiography);
+-                rulePassed &= checkForDuplicates(personBiography,existingPersonBiographyList);
+-                rulePassed &= checkForProposalPerson(proposalPersonBiography);
+-                index++;
+-            }
+-        }
+-
+-        return rulePassed;
++        return true;
+     }
+ 
+     private boolean checkForDuplicates(ProposalPersonBiography biography, List<ProposalPersonBiography> existingBiographies) {
+@@ -114,6 +86,7 @@ private boolean checkForDuplicates(ProposalPersonBiography biography, List<Propo
+         if(CollectionUtils.isNotEmpty(existingBiographies) && biography.getProposalPersonNumber() != null){
+             for(ProposalPersonBiography personBiography: existingBiographies) {
+                 if(personBiography.getProposalPersonNumber() != null && personBiography.getDocumentTypeCode() != null &&
++                        !StringUtils.equalsIgnoreCase(getProposalPersonBiographyService().findPropPerDocTypeForOther().getCode(),personBiography.getDocumentTypeCode()) &&
+                         personBiography.getProposalPersonNumber().equals(biography.getProposalPersonNumber())
+                         && personBiography.getDocumentTypeCode().equals(biography.getDocumentTypeCode())){
+ 
+@@ -126,7 +99,7 @@ private boolean checkForDuplicates(ProposalPersonBiography biography, List<Propo
+         }
+         return rulePassed;
+     }
+-    
++
+     private boolean checkForInvalidCharacters(ProposalPersonBiography proposalPersonBiography) {
+         KcAttachmentService attachmentService = getKcAttachmentService();
+         boolean rulePassed = true;
+@@ -148,18 +121,6 @@ private boolean checkForInvalidCharacters(ProposalPersonBiography proposalPerson
+         }
+         return rulePassed;
+     }
+-    
+-    /**
+-     * This method looks up the "Other" PropPerDocType. Method is protected to allow stubbing/mocking out the class
+-     * @return
+-     */
+-    @SuppressWarnings("unchecked")
+-    protected PropPerDocType findPropPerDocTypeForOther() {
+-        Map<String,String> narrativeTypeMap = new HashMap<String,String>();
+-        narrativeTypeMap.put(DOC_TYPE_DESCRIPTION, OTHER_DOCUMENT_TYPE_DESCRIPTION);
+-        BusinessObjectService service = getBusinessObjectService();
+-        return ((List<PropPerDocType>)service.findMatching(PropPerDocType.class, narrativeTypeMap)).get(0);        
+-    }
+ 
+     private boolean checkForProposalPerson(ProposalPersonBiography proposalPersonBiography) {
+         boolean rulePassed= true;
+@@ -190,10 +151,10 @@ protected ParameterService getParameterService() {
+         return this.parameterService;
+     }
+ 
+-    public GlobalVariableService getGlobalVariableService() {
+-        if (this.globalVariableService == null ) {
+-            this.globalVariableService = KcServiceLocator.getService(GlobalVariableService.class);
++    public ProposalPersonBiographyService getProposalPersonBiographyService() {
++        if (this.proposalPersonBiographyService == null ) {
++            this.proposalPersonBiographyService = KcServiceLocator.getService(ProposalPersonBiographyService.class);
+         }
+-        return globalVariableService;
++        return proposalPersonBiographyService;
+     }
+ }
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/attachment/ProposalPersonBiographyService.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/attachment/ProposalPersonBiographyService.java
+index c04424f..fd39055 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/attachment/ProposalPersonBiographyService.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/attachment/ProposalPersonBiographyService.java
+@@ -55,5 +55,5 @@
+ 
+     public void setPersonnelBioTimeStampUser(List<ProposalPersonBiography> proposalPersonBios);
+     public void prepareProposalPersonBiographyForSave(DevelopmentProposal developmentProposal, ProposalPersonBiography biography);
+-
++    public PropPerDocType findPropPerDocTypeForOther();
+ }
+diff --git a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/attachment/ProposalPersonBiographyServiceImpl.java b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/attachment/ProposalPersonBiographyServiceImpl.java
+index 039d6b5..7809559 100644
+--- a/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/attachment/ProposalPersonBiographyServiceImpl.java
++++ b/coeus-impl/src/main/java/org/kuali/coeus/propdev/impl/person/attachment/ProposalPersonBiographyServiceImpl.java
+@@ -22,9 +22,11 @@
+ import org.kuali.kra.infrastructure.Constants;
+ import org.kuali.coeus.propdev.impl.person.ProposalPerson;
+ import org.kuali.coeus.propdev.impl.attachment.AttachmentDao;
++import org.kuali.rice.core.api.criteria.QueryByCriteria;
+ import org.kuali.rice.kim.api.identity.Person;
+ import org.kuali.rice.kim.api.identity.PersonService;
+ import org.kuali.rice.krad.data.DataObjectService;
++import org.kuali.rice.krad.service.BusinessObjectService;
+ import org.kuali.rice.krad.util.ObjectUtils;
+ 
+ import org.springframework.beans.factory.annotation.Autowired;
+@@ -33,13 +35,15 @@
+ 
+ 
+ import java.sql.Timestamp;
+-import java.util.ArrayList;
+-import java.util.Iterator;
+-import java.util.List;
++import java.util.*;
+ 
+ @Component("proposalPersonBiographyService")
+ public class ProposalPersonBiographyServiceImpl implements ProposalPersonBiographyService {
+ 
++    public static final String OTHER_DOCUMENT_TYPE_DESCRIPTION = "Other";
++
++    private static final String DOC_TYPE_DESCRIPTION = "description";
++
+     @Autowired
+     @Qualifier("dataObjectService")
+     private DataObjectService dataObjectService;
+@@ -186,8 +190,14 @@ public void setPersonnelBioTimeStampUser(List<ProposalPersonBiography> proposalP
+              }
+ 
+         }
+-    }   
+-    
++    }
++
++    @Override
++    public PropPerDocType findPropPerDocTypeForOther() {
++        Map<String,String> narrativeTypeMap = new HashMap<String,String>();
++        narrativeTypeMap.put(DOC_TYPE_DESCRIPTION, OTHER_DOCUMENT_TYPE_DESCRIPTION);
++        return getDataObjectService().findMatching(PropPerDocType.class, QueryByCriteria.Builder.andAttributes(narrativeTypeMap).build()).getResults().get(0);
++    }
+ 
+     public AttachmentDao getAttachmentDao() {
+         return attachmentDao;
+diff --git a/coeus-it/src/test/java/org/kuali/kra/proposaldevelopment/rules/ProposalDevelopmentPersonnelAttachmentRuleTest.java b/coeus-it/src/test/java/org/kuali/kra/proposaldevelopment/rules/ProposalDevelopmentPersonnelAttachmentRuleTest.java
+index 62aa923..5da282f 100644
+--- a/coeus-it/src/test/java/org/kuali/kra/proposaldevelopment/rules/ProposalDevelopmentPersonnelAttachmentRuleTest.java
++++ b/coeus-it/src/test/java/org/kuali/kra/proposaldevelopment/rules/ProposalDevelopmentPersonnelAttachmentRuleTest.java
+@@ -74,10 +74,10 @@ public void tearDown() throws Exception {
+     public void testDescriptionRequiredForAttachementTypeOther() throws Exception {
+         newProposalPersonBiography.setDocumentTypeCode(findOtherDocumentTypeCode());
+         newProposalPersonBiography.setDescription(null);
+-        
++
+         assertFalse(rule.processAddPersonnelAttachmentBusinessRules(createAddPersonnelAttachmentEvent()));
+         
+-        checkErrorCountAndContent(".description", KeyConstants.ERROR_PERSONNEL_ATTACHMENT_DESCRIPTION_REQUIRED);
++        checkErrorCountAndContent("description", KeyConstants.ERROR_PERSONNEL_ATTACHMENT_DESCRIPTION_REQUIRED);
+     }
+ 
+     /**
+@@ -105,7 +105,7 @@ public void testUnspecifiedDocumentType() throws Exception {
+         
+         assertFalse(rule.processAddPersonnelAttachmentBusinessRules(createAddPersonnelAttachmentEvent()));
+         
+-        checkErrorCountAndContent(".documentTypeCode", KeyConstants.ERROR_ATTACHMENT_TYPE_NOT_SELECTED);
++        checkErrorCountAndContent("documentTypeCode", KeyConstants.ERROR_ATTACHMENT_TYPE_NOT_SELECTED);
+     }
+     
+     /**
+@@ -121,7 +121,7 @@ public void testUnspecifiedPerson() throws Exception {
+         
+         assertFalse(rule.processAddPersonnelAttachmentBusinessRules(createAddPersonnelAttachmentEvent()));
+         
+-        checkErrorCountAndContent(".proposalPersonNumberString", KeyConstants.ERROR_PERSONNEL_ATTACHMENT_PERSON_REQUIRED);
++        checkErrorCountAndContent("proposalPersonNumberString", KeyConstants.ERROR_PERSONNEL_ATTACHMENT_PERSON_REQUIRED);
+     }
+ 
+     /**
